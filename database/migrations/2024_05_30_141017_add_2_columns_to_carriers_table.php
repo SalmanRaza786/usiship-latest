@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('carriers', function (Blueprint $table) {
+            $table->string('id_card_image')->nullable()->default(null);
+            $table->string('other_docs')->nullable()->default(null);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('carriers', function (Blueprint $table) {
+            $table->dropColumn('id_card_image');
+            $table->dropColumn('other_docs');
+        });
+    }
+};

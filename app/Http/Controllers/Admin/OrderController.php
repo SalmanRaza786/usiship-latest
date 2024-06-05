@@ -1,0 +1,287 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Helpers\Helper;
+use App\Models\OperationalHour;
+use App\Models\Order;
+use App\Models\OrderBookedSlot;
+use App\Models\OrderForm;
+use App\Models\OrderStatus;
+use App\Notifications\OrderNotification;
+use App\Repositries\appointment\AppointmentInterface;
+use App\Repositries\customer\CustomerInterface;
+use App\Repositries\dock\DockRepositry;
+use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\wh\WhInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class OrderController extends Controller
+{
+    private $order;
+    private $wh;
+    private $customer;
+    private $appointment;
+
+    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment){
+        $this->order = $order;
+        $this->wh = $wh;
+        $this->customer =$customer;
+        $this->appointment =$appointment;
+    }
+    public function index()
+    {
+        try {
+            $data['wareHouse']=Helper::fetchOnlyData($this->wh->getAllWhList());
+            $data['customers']=Helper::fetchOnlyData($this->customer->getAllCustomers());
+            $data['status']=Helper::fetchOnlyData($this->order->getAllStatus());
+            return view('admin.order.orders-list')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getOrders()
+    {
+       try {
+        $res = $this->order->getAllOrders();
+        $data = collect([]);
+        foreach ($res['data'] as $row) {
+
+            $fromOperationalHour = $row->bookedSlots->first();
+            $toOperationalHour = $row->bookedSlots->last();
+
+
+            $array = array(
+                'id' => $row->id,
+                'wh_name' => $row->warehouse->title,
+                'customer_name' => $row->customer->name,
+                'start_time_hour' => count($row->bookedSlots) ? date('H', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
+                'end_time_minut' => count($row->bookedSlots) ? date('i', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
+                'end_s' => count($row->bookedSlots) ? date('H', strtotime($toOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
+                'end_e' => count($row->bookedSlots) ? date('i', strtotime($toOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
+                'order_date' => date('d', strtotime($row->order_date)),
+                'order_month' => date('m', strtotime($row->order_date)),
+                'order_year' => date('Y', strtotime($row->order_date)),
+                'active_class' => $row->status->class_name,
+                'status' => $row->status->status_title,
+
+            );
+            $data->push($array);
+            }
+    return Helper::success($data,'Order list');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+
+    }
+
+
+    //getOrderDetail
+    public function getOrderDetail($id)
+    {
+        try {
+
+                 $data['orderDetail']=$this->getOrderInfo($id);
+            return view('admin.order.order-detail')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getAppointmentDetail($id)
+    {
+        try {
+            $data['orderDetail']=$this->getOrderInfo($id);
+            return view('client.screens.appointment.order-detail')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    //getOrderInfo
+    public function getOrderInfo($id)
+    {
+        try {
+
+
+             $res=Helper::fetchOnlyData($this->order->getOrderDetail($id));
+
+            $fromOperationalHour=$res->bookedSlots->first();
+            $toOperationalHour=$res->bookedSlots->last();
+
+            $guards = array_keys(config('auth.guards'));
+            $currentGuard = null;
+
+            foreach ($guards as $guard) {
+                if (Auth::guard($guard)->check()) {
+                    $currentGuard = $guard;
+                    break;
+                }
+            }
+            if($currentGuard !='web'){
+                $allow = 1;
+            }else{
+                $allow= $this->appointment->isAllowToModifyOrder($id);
+            }
+
+
+            $data = array(
+                'id' =>$res->id,
+                'order_id' =>$res->order_id,
+                'isAllowEdit' =>$allow,
+                'guard' =>$currentGuard,
+                'ware_house' =>$res->warehouse->title,
+                'email' =>$res->warehouse->email,
+                'phone' =>$res->warehouse->phone,
+                'customer_name' =>$res->customer->name,
+                'customer_email' =>$res->customer->email,
+                'order_date' => date('d M,Y',strtotime($res->order_date)) ,
+                'slot_from' =>count($res->bookedSlots)? $fromOperationalHour->operationalHour->working_hour:$res->operationalHour->working_hour,
+                'slot_to' => count($res->bookedSlots)? $toOperationalHour->operationalHour->working_hour:$res->operationalHour->working_hour,
+                'dock' =>$res->dock->title,
+                'status' =>$res->status->status_title,
+                'status_id' =>$res->status_id,
+                'status_class' =>$res->status->class_name,
+                'text_class' =>$res->status->text_class,
+                'loadType' =>($res->dock->loadType)?$res->dock->loadType->direction->value .'('.$res->dock->loadType->operation->value .' ,'. $res->dock->loadType->eqType->value.' ,'. $res->dock->loadType->transMode->value.')':'-',
+                'media'=>$res->fileContents,
+                'orderLogs'=>$res->orderLogs,
+                'warehouse'=>$res->warehouse,
+                'orderForm'=>$res->orderForm,
+                'packagingList'=>$res->packgingList?$res->packgingList:[],
+                'orderContacts'=>$res->orderContacts?$res->orderContacts:[],
+            );
+            return Helper::success($data,'Order Info');
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function createNewOrder(Request $request)
+    {
+        try {
+
+            $data['customerId']=$request->customer_id;
+            $data['status']=OrderStatus::get();
+            $data['selectStatus']=$request->order_status;
+            $data['createdBy']=Auth::id();
+            $data['guard']='admin';
+            return view('admin.order.create')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    //storeOrder
+    public function storeOrder(Request $request)
+    {
+        try {
+            $dock=new DockRepositry();
+            $dockInfo=Helper::fetchOnlyData($dock->editDock($request->dock_id));
+           if($isAllow=$this->appointment->checkBookedSlot($dockInfo->slot,$request->opra_id,$request->order_date,$request->wh_id)==0){
+               return Helper::error('all slots are booked of this dock',[]);
+           }
+
+            $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,$request->id);
+           if ($roleUpdateOrCreate->get('status')){
+               return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+           }else{
+               return Helper::error($roleUpdateOrCreate->get('message'),[]);
+           }
+
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function savePackagingInfo(Request $request)
+    {
+        try {
+
+            $roleUpdateOrCreate = $this->appointment->updateOrCreatePackagingInfo($request,$request->id);
+            if ($roleUpdateOrCreate->get('status')){
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            }else{
+                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function savePackagingImages(Request $request)
+    {
+
+        try {
+
+            $roleUpdateOrCreate = $this->appointment->savePackagingImages($request);
+            if ($roleUpdateOrCreate->get('status')){
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            }else{
+                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+            }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+
+    //changeOrderStatus
+    public function changeOrderStatus($orderId,$orderStatus)
+    {
+        try {
+            $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
+             if($order->get('status')){
+                // $this->appointment->bookedSlotsMakedFree($orderId,$orderStatus);
+             }
+             return $order;
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+
+    public function checkOrderId(Request $request)
+    {
+        try {
+            $res= $this->appointment->checkOrderId($request);
+            $data['load']=$res->get('data');
+            return Helper::ajaxSuccess($data,$res->get('message'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+    public function verifyWarehouseId(Request $request)
+    {
+        try {
+                $res= $this->appointment->verifyWarehouseId($request);
+            if ($res->get('status'))
+                return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
+            return Helper::ajaxErrorWithData($res->get('message'), $res->get('data'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public  function undoOrderStatus($orderId)
+    {
+        try {
+            $res= $this->appointment->undoOrderStatus($orderId);
+            if ($res->get('status')){
+                return Helper::success($res->get('data'),$res->get('message'));
+            }else{
+                return Helper::error($res->get('message'),[]);
+            }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+
+
+}
