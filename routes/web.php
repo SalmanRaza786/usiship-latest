@@ -31,7 +31,7 @@ Route::middleware(['auth','verified'])->name('user.')->group(function () {
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 });
 
-
+//welcome
 Route::get('/welcome', function () {
     return view('welcome');
 });
