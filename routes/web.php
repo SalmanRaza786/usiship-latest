@@ -36,12 +36,10 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
+//websocket
 Route::get('/websocket', function () {
-
     \App\Events\MessageEvent::dispatch('Hello');
 });
-
-
 
 
 Route::get('/custom-logout', [HomeController::class, 'customLogout']);
