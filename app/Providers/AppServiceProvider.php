@@ -20,6 +20,8 @@ use App\Repositries\dock\DockInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\notification\NotificationInterface;
+use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
 use App\Repositries\roles\RoleInterface;
@@ -59,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(DockInterface::class,DockRepositry::class);
         $this->app->bind(AppointmentInterface::class,AppointmentRepositry::class);
+        $this->app->bind(NotificationInterface::class,NotificationRepositry::class);
 
 
     }

@@ -36,7 +36,7 @@
 
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bell fs-22'></i>
-                        <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><span id="unreadMessage"></span><span class="visually-hidden">unread messages</span></span>
+                        <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><span class="notificationCounter"></span><span class="visually-hidden">unread messages</span></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
 
@@ -47,7 +47,7 @@
                                         <h6 class="m-0 fs-16 fw-semibold text-white"> Notifications </h6>
                                     </div>
                                     <div class="col-auto dropdown-tabs">
-                                        <span class="badge badge-soft-light fs-13"> 4 New</span>
+                                        <span class="badge badge-soft-light fs-13"> <span class="notificationCounter"></span> New</span>
                                     </div>
                                 </div>
                             </div>
@@ -56,18 +56,25 @@
                         </div>
 
                         <div class="tab-content position-relative" id="notificationItemsTabContent">
-                            <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2" id="notificationArea">
+
+                                <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;">
+                                <div data-simplebar style="max-height: 300px;" class="pe-2" id="notificationArea"></div>
                                 </div>
 
-                            </div>
 
+
+                            <div class="empty-notification-elem d-none">
+
+                                <div class="text-center pb-5 mt-2 ms-1">
+                                    <span class="fs-18 fw-semibold lh-base">Hey! You have no any notifications </span>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
                 </div>
 
-
+{{--user area--}}
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">

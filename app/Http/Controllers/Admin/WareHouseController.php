@@ -231,9 +231,9 @@ class WareHouseController extends Controller
     public function testEmail()
     {
 
-        return view('welcome');
+
         //$orderId,$customerId,$statusId
-        return $res=$this->order->sendNotificationViaEmail(1,2,1);
+        //return $res=$this->order->sendNotification(1,2,1,1);
 
 
         $statusId = 6;
@@ -244,21 +244,26 @@ class WareHouseController extends Controller
             return Helper::error('mail content not exist');
         }
 
+
+
+
+        if (!$customer = User::find($customerId)) {
+            return Helper::error('customer not exist');
+        }
+
+
         $mailData = [
             'subject' => 'Order Requested',
             'greeting' => 'Hello',
             'content' => $mailContent->mail_content,
             'actionText' => 'View Your Order Details',
             'actionUrl' => url('/get-order-detail/' . ($orderId)),
+            'orderId' => $orderId,
+            'statusId' => $statusId,
         ];
+       return  $res=$customer->notify(new OrderNotification($mailData));
 
-
-        if (!$customer = User::find($customerId)) {
-            return Helper::error('customer not exist');
-        }
-        // $res=$customer->notify(new OrderNotification($mailData));
-
-        event(new SendEmailEvent($mailData,$customer));
+       // event(new SendEmailEvent($mailData,$customer));
 
 
     }
@@ -275,10 +280,7 @@ class WareHouseController extends Controller
         dd('event trigger');
     }
 
-    public function welcome()
-    {
-      return view('welcome');
-    }
+
 
 
 }
