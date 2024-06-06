@@ -35,8 +35,6 @@ class Order extends Model
 
     }
 
-
-
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id', 'id');
@@ -55,18 +53,15 @@ class Order extends Model
         return $this->belongsTo(DocksLoadType::class, 'dock_id', 'dock_id');
     }
 
-
     public function fileContents()
     {
         return $this->morphMany(FileContent::class, 'fileable');
     }
 
-
     public function orderForm()
     {
         return $this->hasMany(OrderForm::class, 'order_id', 'id');
     }
-
     public function orderLogs()
     {
         return $this->hasMany(OrderLog::class, 'order_id', 'id');

@@ -149,6 +149,19 @@ class WareHouseController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
+    public function getDoorsByWhId($id)
+    {
+        try {
+            $res = $this->wh->getDoorsByWhId($id);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            } else {
+                return Helper::ajaxError($res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
 
     //whAssignFields
     public function whAssignFields(Request $request)

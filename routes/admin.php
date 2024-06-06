@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\CarriersController;
 use App\Http\Controllers\Admin\DockController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CheckInController;
+use App\Http\Controllers\Admin\OrderContactController;
 
 
 
@@ -65,6 +66,13 @@ use App\Http\Controllers\Admin\CheckInController;
         //Check In
     Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-load-view']);
     Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-load-view']);
+    Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-load-create']);
+
+
+    Route::any('/order-contact-list', [OrderContactController::class, 'orderContactList'])->name('orderContact.list')->middleware(['can:admin-load-view']);
+
+
+
 
 
 
@@ -76,7 +84,7 @@ use App\Http\Controllers\Admin\CheckInController;
     Route::any('/edit-wh/{id}', [WareHouseController::class, 'edit'])->name('wh.edit')->middleware(['can:admin-wh-edit']);
     Route::any('/delete-wh/{id}', [WareHouseController::class, 'destroy'])->name('wh.delete')->middleware(['can:admin-wh-delete']);
     Route::post('/wh-assign-fields', [WareHouseController::class, 'whAssignFields'])->name('wh.assign.fields')->middleware(['can:admin-wh-create']);
-
+        Route::any('/get-door-wh-id/{id}', [WareHouseController::class, 'getDoorsByWhId'])->name('wh-doors.list')->middleware(['can:admin-load-view']);
     //Assign Fileds
     Route::get('/wh-assign-fields-list', [WareHouseController::class, 'whAssignFieldsList'])->name('wh.assign.fields.list')->middleware(['can:admin-wh-create']);
     Route::get('/edit-assigned-fields/{id}', [WareHouseController::class, 'editWhAssignFields'])->name('wh.assign.fields.edit')->middleware(['can:admin-wh-create']);
