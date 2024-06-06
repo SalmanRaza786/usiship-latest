@@ -38,7 +38,8 @@ Route::get('/welcome', function () {
 
 //websocket
 Route::get('/websocket', function () {
-    \App\Events\MessageEvent::dispatch('Hello');
+    \App\Events\MessageEvent::dispatch('Hello Salman');
+    dd('event trigger');
 });
 
 
