@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositries\checkIn;
+namespace App\Repositries\offLoading;
 
 use App\Http\Helpers\Helper;
 
@@ -10,7 +10,7 @@ use App\Models\OrderContacts;
 use App\Models\WareHouse;
 use App\Models\WhDock;
 use App\Repositries\appointment\AppointmentRepositry;
-use App\Repositries\orderContact\OrderContactRepositry;
+use App\Repositries\offLoading\OffLoadingInterface;
 use App\Traits\HandleFiles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -19,27 +19,24 @@ use Illuminate\Validation\ValidationException;
 use DataTables;
 
 
-class CheckInRepositry implements CheckInInterface {
-    protected $checkInFilePath = 'checkin-media/';
+class OffLoadingRepositry implements OffLoadingInterface {
+    protected $offLoadingFilePath = 'off-loading-media/';
     use HandleFiles;
-    public function getCheckinList($request)
+    public function getOffLoadingList($request)
     {
         try {
 
-                $data['totalRecords'] = OrderCheckIn::count();
-
+            $data['totalRecords'] = OrderCheckIn::count();
 
             $qry = OrderCheckIn::query();
-            $qry =$qry->with('orderContact','order.dock.loadType.eqType','status');
+            $qry =$qry->with('order.dock.loadType.eqType','status');
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
             });
 
-
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
-
 
             ///$qry=$qry->where('status','!=',2);
             $data['data']=$qry->orderByDesc('id')->get();
@@ -53,7 +50,7 @@ class CheckInRepositry implements CheckInInterface {
         }
 
     }
-    public function checkinSave($request,$id)
+    public function offLoadingSave($request,$id)
     {
         try {
             DB::beginTransaction();
@@ -75,7 +72,6 @@ class CheckInRepositry implements CheckInInterface {
                 ],
                 [
                     'order_id' =>$request->order_id,
-                    'door_id' =>$request->whDoors,
                     'order_contact_id' => $request->order_contact_id,
                     'container_no' => $request->container_no,
                     'seal_no' => $request->seal_no,
@@ -99,9 +95,6 @@ class CheckInRepositry implements CheckInInterface {
 
                 $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->checkInFilePath);
 
-                $orderContact = new OrderContactRepositry();
-                $orderContact->changeStatus($checkin->order_contact_id, 12);
-
             }
 
             DB::commit();
@@ -114,17 +107,6 @@ class CheckInRepositry implements CheckInInterface {
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
-    }
-    public function findCheckIn($id)
-    {
-        try {
-            $qry= OrderCheckIn::query();
-            $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
-            $data =$qry->where('id',$id)->first();
-            return Helper::success($data, $message="Record found");
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(),[]);
-        }
     }
 
 }

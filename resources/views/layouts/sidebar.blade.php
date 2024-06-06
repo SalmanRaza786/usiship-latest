@@ -65,6 +65,13 @@
                         </a>
                     </li>
                 @endcanany
+                @canany('admin-load-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.off-loading.index')?'active':''}}" href="{{route('admin.off-loading.index')}}" >
+                            <i class="ri-parent-fill"></i> <span>Off Loading</span>
+                        </a>
+                    </li>
+                @endcanany
                 @canany('admin-customer-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.customer.index')?'active':''}}" href="{{route('admin.customer.index')}}" >

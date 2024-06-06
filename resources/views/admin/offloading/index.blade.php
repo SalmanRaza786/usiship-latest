@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Check-In List @endsection
+@section('title') Off Loading List @endsection
 @section('css')
 
 @endsection
@@ -7,21 +7,17 @@
     @component('components.breadcrumb')
         @slot('routeUrl') {{url('/')}} @endslot
         @slot('li_1') Dashboard @endslot
-        @slot('title') Check-In List @endslot
+        @slot('title') Off Loading List @endslot
     @endcomponent
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0">Check-In List</h4>
-
+                        <h4 class="card-title mb-0">Off Loading List</h4>
                     </div>
-
-
                 </div>
                 <div class="card-body border border-dashed border-end-0 border-start-0">
-
                     <form>
                         <div class="row g-3">
                             <div class="col-xxl-7 col-sm-6">
@@ -42,7 +38,6 @@
                                 </div>
                             </div>
                             <!--end col-->
-
                             <div class="col-xxl-2 col-sm-4">
                                 <div>
                                     <button type="button" class="btn btn-primary w-100" id="filter"> <i class="ri-equalizer-fill me-1 align-bottom"></i>
@@ -59,7 +54,7 @@
                     <table class="table table-nowrap align-middle" id="roleTable">
                         <thead class="text-muted table-light">
                         <tr class="text-uppercase">
-                            <th class="sort" data-sort="id">Driver</th>
+                            <th class="sort" data-sort="id">Container</th>
                             <th class="sort" data-sort="id">Direction</th>
                             <th class="sort" data-sort="customer_name">Load Type</th>
                             <th class="sort" data-sort="product_name">Order Ref</th>
@@ -82,7 +77,7 @@
 
 @endsection
 @section('script')
-    <script src="{{ URL::asset('build/js/custom-js/checkin/checkin.js') }}"></script>
+    <script src="{{ URL::asset('build/js/custom-js/offloading/offloading.js') }}"></script>
     <script>
         $(document).ready(function(){
             $('#roleTable').DataTable({
@@ -95,18 +90,18 @@
                 bLengthChange: false,
                 order: [[ 0, "desc" ]],
                 ajax: {
-                    url: "order-contact-list",
+                    url: "check-in-list",
                     data: function (d) {
                         d.s_name = $('input[name=s_name]').val(),
                             d.s_status = $('select[name=s_status]').val()
                     }
                 },
                 columns: [
-                    { data: 'carrier.carrier_company_name' },
+                    { data: 'container_no' },
                     { data: 'order.order_type' },
                     { data: 'order.dock.load_type.eq_type.value' },
                     { data: 'order.order_id'},
-                    { data: 'arrival_time' },
+                    { data: 'order_contact.arrival_time' },
                     { data: 'status' },
                     { data: null, orderable: false },
                 ],
@@ -133,7 +128,7 @@
                             const rowId = data.id;
                             const whId = data.order.wh_id ;
                             const orderId = data.order_id ;
-                            return `@canany('admin-user-edit')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>@endcanany`;
+                            return `@canany('admin-user-edit')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Start Off Loading Now</a>@endcanany`;
                         }
                     }
                 ]

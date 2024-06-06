@@ -22,6 +22,8 @@ use App\Repositries\dock\DockInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\offLoading\OffLoadingInterface;
+use App\Repositries\offLoading\OffLoadingRepositry;
 use App\Repositries\orderContact\OrderContactInterface;
 use App\Repositries\orderContact\OrderContactRepositry;
 use App\Repositries\permissions\PermissionInterface;
@@ -66,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(OrderContactInterface::class,OrderContactRepositry::class);
         $this->app->bind(CheckInInterface::class,CheckInRepositry::class);
-
+        $this->app->bind(OffLoadingInterface::class,OffLoadingRepositry::class);
 
 
     }
