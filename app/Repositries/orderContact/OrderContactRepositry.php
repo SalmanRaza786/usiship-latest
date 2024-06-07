@@ -25,7 +25,7 @@ class OrderContactRepositry implements OrderContactInterface {
             $data['totalRecords'] = OrderContacts::count();
 
             $qry = OrderContacts::query();
-            $qry =$qry->with('carrier','order.dock.loadType.eqType','order.status');
+            $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
 
@@ -97,6 +97,35 @@ class OrderContactRepositry implements OrderContactInterface {
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
+
+    public function changeStatus($id,$status)
+    {
+        try {
+            $order= OrderContacts::find($id);
+            $order->status_id = $status;
+            $order->save();
+            return Helper::success($order,'Status updated');
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+
+        }
+    }
+
+    public function getAllOrderContactList()
+    {
+        try {
+            $qry= OrderContacts::query();
+            $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+
+
 
 
 }

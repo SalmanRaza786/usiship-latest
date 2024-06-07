@@ -179,6 +179,7 @@ class CarriersRepositry implements CarriersInterface {
                             'vehicle_licence_plate' => $request->license_no,
                             'bol_number' => $request->bol_no,
                             'do_number' => $request->do_no,
+                            'status_id' => 9,
                         ]
                     );
                     if($doDocument)

@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\CheckInController;
 use App\Http\Controllers\Admin\NotificationController;
 
 use App\Http\Controllers\Admin\OrderContactController;
+use App\Http\Controllers\Admin\OffLoadingController;
 
 
 
@@ -72,20 +73,10 @@ use App\Http\Controllers\Admin\OrderContactController;
     Route::any('/delete-load-type/{id}', [LoadTypeController::class, 'destroy'])->name('load.delete')->middleware(['can:admin-load-delete']);
     Route::any('/admin-load-type-list', [LoadTypeController::class, 'adminLoadList'])->name('back.load.list')->middleware(['can:admin-load-view']);
 
-        //Check In
-    Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-load-view']);
-    Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-load-view']);
-    Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-load-create']);
-
-
-    Route::any('/order-contact-list', [OrderContactController::class, 'orderContactList'])->name('orderContact.list')->middleware(['can:admin-load-view']);
 
 
 
-
-
-
-    //Ware House
+        //Ware House
     Route::any('/wh', [WareHouseController::class, 'index'])->name('wh.index')->middleware(['can:admin-wh-view']);
     Route::any('/wh-list', [WareHouseController::class, 'whList'])->name('wh.list')->middleware(['can:admin-wh-view']);
     Route::any('/wh-create', [WareHouseController::class, 'createWh'])->name('wh.create')->middleware(['can:admin-wh-create']);
@@ -156,12 +147,34 @@ use App\Http\Controllers\Admin\OrderContactController;
     Route::any('/change-order-status/{orderId}/{orderStatus}', [OrderController::class, 'changeOrderStatus'])->name('change.order.status');
     Route::any('/undo-order-status/{orderId}', [OrderController::class, 'undoOrderStatus'])->name('undo.order.status');
 
+
+
+        //Check In
+        Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-load-view']);
+        Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-load-view']);
+        Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-load-create']);
+
+        //Order Contact
+        Route::any('/order-contact-list', [OrderContactController::class, 'orderContactList'])->name('orderContact.list')->middleware(['can:admin-load-view']);
+
+        //Off Loading
+        Route::any('/off-loading', [OffLoadingController::class, 'index'])->name('off-loading.index')->middleware(['can:admin-load-view']);
+        Route::any('/off-loading-list', [OffLoadingController::class, 'offLoadingList'])->name('off-loading.list')->middleware(['can:admin-load-view']);
+        Route::any('/off-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('off-loading.detail')->middleware(['can:admin-load-view']);
+        Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-load-create']);
+
+
+
+
+
+
     //Notifications
     Route::any('/trigger-notification', [OrderController::class, 'notificationTrigger']);
     Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
     Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
 
-});
+
+    });
 
 
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');
