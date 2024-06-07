@@ -11,6 +11,7 @@ class AdminHomeController extends Controller
     public function index()
     {
         try {
+
             return view('admin.dashboard');
         } catch (\Exception $e) {
             return $e->getMessage();

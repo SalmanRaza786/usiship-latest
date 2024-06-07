@@ -21,6 +21,7 @@ class OrderNotification extends Notification implements ShouldQueue
     public function __construct($mailData)
     {
         $this->mailData = $mailData;
+
     }
 
     /**
