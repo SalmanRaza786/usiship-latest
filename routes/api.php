@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\WareHouseController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Admin\OrderContactController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\OrderController;
     Route::any('/save-orders', [OrderController::class, 'saveOrders']);
     Route::any('/order-detail', [OrderController::class, 'getOrderDetail']);
     Route::any('/get-orders-list', [OrderController::class, 'getOrdersList']);
+    Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
     Route::any('/get-all-status', [OrderController::class, 'getAllStatus']);
     Route::any('/load-wise-docks', [WareHouseController::class, 'loadTypeWiseDocks']);
     Route::any('/get-wh-load-types', [WareHouseController::class, 'getWhLoadTypes']);

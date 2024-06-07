@@ -26,4 +26,19 @@ class OrderContactController extends Controller
         }
 
     }
+    public function getOrderContactList()
+    {
+        try {
+            $res = $this->orderContact->getAllOrderContactList();
+            if ($res->get('status'))
+            {
+                return Helper::success($res->get('data'),'Order Contact list');
+            }else{
+                return Helper::error("Data not found");
+            }
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }

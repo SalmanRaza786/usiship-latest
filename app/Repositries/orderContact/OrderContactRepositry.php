@@ -111,6 +111,19 @@ class OrderContactRepositry implements OrderContactInterface {
         }
     }
 
+    public function getAllOrderContactList()
+    {
+        try {
+            $qry= OrderContacts::query();
+            $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
 
 
 

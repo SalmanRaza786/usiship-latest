@@ -70,7 +70,7 @@ class CarriersController extends Controller
 
     public function carriersCreateOrUpdate(Request $request)
     {
-//        return $request->all();
+
         try {
 
             $roleUpdateOrCreate = $this->carriers->CarriersSave($request,$request->id);
