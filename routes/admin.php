@@ -84,7 +84,9 @@ use App\Http\Controllers\Admin\OffLoadingController;
     Route::any('/edit-wh/{id}', [WareHouseController::class, 'edit'])->name('wh.edit')->middleware(['can:admin-wh-edit']);
     Route::any('/delete-wh/{id}', [WareHouseController::class, 'destroy'])->name('wh.delete')->middleware(['can:admin-wh-delete']);
     Route::post('/wh-assign-fields', [WareHouseController::class, 'whAssignFields'])->name('wh.assign.fields')->middleware(['can:admin-wh-create']);
-        Route::any('/get-door-wh-id/{id}', [WareHouseController::class, 'getDoorsByWhId'])->name('wh-doors.list')->middleware(['can:admin-load-view']);
+    Route::any('/get-door-wh-id/{id}', [WareHouseController::class, 'getDoorsByWhId'])->name('wh-doors.list')->middleware(['can:admin-load-view']);
+
+
     //Assign Fileds
     Route::get('/wh-assign-fields-list', [WareHouseController::class, 'whAssignFieldsList'])->name('wh.assign.fields.list')->middleware(['can:admin-wh-create']);
     Route::get('/edit-assigned-fields/{id}', [WareHouseController::class, 'editWhAssignFields'])->name('wh.assign.fields.edit')->middleware(['can:admin-wh-create']);

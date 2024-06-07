@@ -24,6 +24,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\TextUI\Help;
+use App\Mail\ExampleMail;
+use Illuminate\Support\Facades\Mail;
 
 class WareHouseController extends Controller
 {
@@ -278,6 +280,19 @@ class WareHouseController extends Controller
 
        // event(new SendEmailEvent($mailData,$customer));
 
+
+    }
+
+    public function sendEmail()
+    {
+        $details = [
+            'title' => 'Mail from Example.com',
+            'body' => 'This is a test email sent from Laravel.'
+        ];
+
+         $res=  Mail::to('faheemakramofficial10@gmail.com')->send(new ExampleMail($details));
+         dd($res);
+        return response()->json(['message' => 'Email sent successfully.']);
 
     }
 

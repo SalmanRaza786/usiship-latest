@@ -16,7 +16,8 @@ $(document).ready(function(){
     $('.btn-confirm-order').click(function() {
 
         const statusId = $(this).val();
-        const orderId=$('input[name=id]').val();
+        const orderId=$('input[name=order_id]').val();
+        alert(orderId);
 
         $.ajax({
             url: route('admin.change.order.status',{orderId:orderId,orderStatus:statusId}),

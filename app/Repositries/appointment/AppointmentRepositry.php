@@ -503,7 +503,7 @@ class AppointmentRepositry implements AppointmentInterface {
                 $this->createBookedSlots($orderId);
             }
 
-            $this->sendNotification($orderId,$order->customer_id,$orderStatus,2);
+
 
          return Helper::success($order,'Status updated');
 
@@ -735,20 +735,26 @@ class AppointmentRepositry implements AppointmentInterface {
 
     public function sendNotification($orderId,$customerId,$statusId,$notificationFor)
     {
-        //$userType 1 for admin and 2 for customer
-        $notifyContent = NotificationTemplate::where('status_id', $statusId)->first();
-        if (!$notifyContent) {
-            return Helper::error('notification not configured');
-        }
-            if($notificationFor==1){
-                Helper::createNotificationHelper($notifyContent,'orders');
+        try {
+            //$userType 1 for admin and 2 for customer
+            $notifyContent = NotificationTemplate::where('status_id', $statusId)->first();
+            if (!$notifyContent) {
+                return Helper::error('notification not configured');
+            }
+            if ($notificationFor == 1) {
+                Helper::createNotificationHelper($notifyContent, 'orders');
             }
 
-        if($notificationFor==2){
-            Helper::createEndUserNotificationHelper($notifyContent,'appointments',$customerId,'App\Models\User');
-        }
+            if ($notificationFor == 2) {
+                Helper::createEndUserNotificationHelper($notifyContent, 'appointments', $customerId, 'App\Models\User');
+            }
 
-        $this->sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
+            $this->sendNotificationViaEmail($orderId, $customerId, $statusId, $notifyContent);
+            return Helper::success([],'Notification created successfully');
+        }
+        catch (\Exception $e) {
+                throw $e;
+            }
 
     }
 

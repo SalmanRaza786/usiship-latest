@@ -2,6 +2,8 @@
 
 namespace App\Http\Helpers;
 
+use App\Events\ClientNotificationEvent;
+use App\Events\NotificationEvent;
 use App\Models\Attempt;
 use App\Models\FileContent;
 use App\Models\OperationalHour;
@@ -373,6 +375,21 @@ class Helper
         }
 
 
+    }
+
+
+    public static function notificationTriggerHelper($type)
+    {
+        $notification=new NotificationRepositry();
+        $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type));
+        if($type==1){
+
+            NotificationEvent::dispatch($notifiData);
+        }
+        if($type==2){
+
+            ClientNotificationEvent::dispatch($notifiData);
+        }
     }
 
 

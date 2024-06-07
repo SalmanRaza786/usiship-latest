@@ -87,7 +87,16 @@ class CarriersController extends Controller
         try {
             $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
-                $this->order->changeOrderStatus($request->order_id,9);
+                $order= $this->order->changeOrderStatus($request->order_id,9);
+                if($order->get('status')){
+                    $data=$order->get('data');
+                    $notification= $this->order->sendNotification($data->id,$data->customer_id,9,1);
+                    if($notification->get('status')){
+                        Helper::notificationTriggerHelper(1);
+
+                    }
+                }
+
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }
             return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));

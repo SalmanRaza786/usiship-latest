@@ -146,6 +146,15 @@ class AppointmentController extends Controller
         try {
             $roleUpdateOrCreate = $this->appointment->uploadPackagingList($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
+                $order = $this->appointment->changeOrderStatus($request->id,11);
+                if($order->get('status')){
+                    $data=$order->get('data');
+                    $notification= $this->appointment->sendNotification($data->id,$data->customer_id,11,1);
+                    if($notification->get('status')){
+                        Helper::notificationTriggerHelper(1);
+
+                    }
+                }
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{
                 return Helper::error($roleUpdateOrCreate->get('message'),[]);
