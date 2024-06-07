@@ -31,6 +31,7 @@ interface AppointmentInterface
 
     public function bookedSlotsMakedFree($orderId,$orderStatus);
     public function undoOrderStatus($orderId);
-    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$userType);
+    public function sendNotification($orderId,$customerId,$statusId,$userType);
+    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
     public function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null);
 }

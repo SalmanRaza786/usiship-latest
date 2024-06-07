@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use DataTables;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Permission;
 
 
 class AppointmentRepositry implements AppointmentInterface {
@@ -132,7 +133,7 @@ class AppointmentRepositry implements AppointmentInterface {
 
 
 
-            $this->sendNotificationViaEmail($orderId,$request->customer_id,$request->order_status,1);
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
 
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
@@ -695,53 +696,6 @@ class AppointmentRepositry implements AppointmentInterface {
 
     }
 
-
-    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$userType=null)
-    {
-        try {
-//            $userType 1 for admin and 2 for customer
-
-            $mailContent = NotificationTemplate::where('status_id', $statusId)->first();
-            if (!$mailContent) {
-                return Helper::error('mail content not exist');
-            }
-
-            $mailData = [
-                'subject' => 'Order Requested',
-                'greeting' => 'Hello',
-                'content' => $mailContent->mail_content,
-                'actionText' => 'View Your Order Details',
-                'actionUrl' => url('/get-order-detail/' . ($orderId)),
-                'orderId' => $orderId,
-                'statusId' => $statusId,
-            ];
-
-
-            if (!$customer = User::find($customerId)) {
-                return Helper::error('customer not exist');
-            }
-            // $res=$customer->notify(new OrderNotification($mailData));
-
-
-            event(new SendEmailEvent($mailData, $customer));
-
-            $log = NotificationLog::updateOrCreate(
-                [
-                    'id' => 0,
-                ],
-                [
-                    'order_id' => $orderId,
-                    'status_id' => $statusId,
-                    'content' => $mailContent->mail_content,
-                    'notification_type' => 1,
-                ]
-            );
-
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(), []);
-        }
-    }
-
     public function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null)
     {
         try {
@@ -777,6 +731,57 @@ class AppointmentRepositry implements AppointmentInterface {
 
         }
 
+    }
+
+
+    public function sendNotification($orderId,$customerId,$statusId,$userType=null)
+    {
+        //$userType 1 for admin and 2 for customer
+        $notifyContent = NotificationTemplate::where('status_id', $statusId)->first();
+        if (!$notifyContent) {
+            return Helper::error('notification not configured');
+        }
+
+        Helper::createNotificationHelper($notifyContent,'orders');
+        $this->sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
+
+    }
+
+    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent)
+    {
+        try {
+
+            $mailData = [
+                'subject' => 'Order Requested',
+                'greeting' => 'Hello',
+                'content' => $notifyContent->mail_content,
+                'actionText' => 'View Your Order Details',
+                'actionUrl' => url('/get-order-detail/' . ($orderId)),
+                'orderId' => $orderId,
+                'statusId' => $statusId,
+            ];
+
+            if (!$customer = User::find($customerId)) {
+                return Helper::error('customer not exist');
+            }
+             $res=$customer->notify(new OrderNotification($mailData));
+            //event(new SendEmailEvent($mailData, $customer));
+
+            $log = NotificationLog::updateOrCreate(
+                [
+                    'id' => 0,
+                ],
+                [
+                    'order_id' => $orderId,
+                    'status_id' => $statusId,
+                    'content' => $notifyContent->mail_content,
+                    'notification_type' => 1,
+                ]
+            );
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
 

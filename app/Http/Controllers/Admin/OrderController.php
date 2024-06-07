@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\Notification;
 use App\Models\OperationalHour;
 use App\Models\Order;
 use App\Models\OrderBookedSlot;
@@ -14,6 +16,7 @@ use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customer\CustomerInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\notification\NotificationInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,12 +27,14 @@ class OrderController extends Controller
     private $wh;
     private $customer;
     private $appointment;
+    private $notification;
 
-    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment){
+    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment,NotificationInterface $notification){
         $this->order = $order;
         $this->wh = $wh;
         $this->customer =$customer;
         $this->appointment =$appointment;
+        $this->notification =$notification;
     }
     public function index()
     {
@@ -187,6 +192,7 @@ class OrderController extends Controller
 
             $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,$request->id);
            if ($roleUpdateOrCreate->get('status')){
+               $this->notificationTrigger();
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
@@ -281,6 +287,17 @@ class OrderController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
 
+    }
+
+    public function notificationTrigger()
+    {
+        try {
+            $notifiData=Helper::fetchOnlyData($this->notification->getUnreadNotifications());
+            NotificationEvent::dispatch($notifiData);
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
     }
 
 

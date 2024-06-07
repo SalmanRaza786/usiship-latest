@@ -23,9 +23,6 @@
 <div id="layout-wrapper">
     @routes
     @include('layouts.topbar')
-
-
-
     @include('layouts.sidebar')
 
 
@@ -55,12 +52,13 @@
     </div>
     <!-- end main content-->
 </div>
-<!-- END layout-wrapper -->
+
 
 @include('layouts.customizer')
 
 <!-- JAVASCRIPT -->
 @include('layouts.vendor-scripts')
+
 
 <script>
     $(document).ready(function (){

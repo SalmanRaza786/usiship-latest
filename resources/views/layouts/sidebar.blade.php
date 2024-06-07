@@ -1,4 +1,4 @@
-<!-- ========== App Menu ========== -->
+
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
     <div class="navbar-brand-box">
@@ -153,5 +153,4 @@
     </div>
     <div class="sidebar-background"></div>
 </div>
-
 <div class="vertical-overlay"></div>
