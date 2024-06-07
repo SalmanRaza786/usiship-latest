@@ -243,8 +243,11 @@ class OrderController extends Controller
         try {
             $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
              if($order->get('status')){
-                 $this->notificationTrigger(2);
-                // $this->appointment->bookedSlotsMakedFree($orderId,$orderStatus);
+                 $data=$order->get('data');
+                $notification= $this->appointment->sendNotification($orderId,$data->customer_id,$orderStatus,2);
+                if($notification->get('status')){
+                    $this->notificationTrigger(2);
+                }
              }
              return $order;
         } catch (\Exception $e) {
@@ -294,15 +297,7 @@ class OrderController extends Controller
     public function notificationTrigger($type)
     {
         try {
-            $notifiData=Helper::fetchOnlyData($this->notification->getUnreadNotifications($type));
-            if($type==1){
-
-                NotificationEvent::dispatch($notifiData);
-            }
-            if($type==2){
-
-                ClientNotificationEvent::dispatch($notifiData);
-            }
+          Helper::notificationTriggerHelper($type);
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
