@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\WareHouseController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Admin\OrderContactController;
+use App\Http\Controllers\Admin\CheckInController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -15,6 +16,7 @@ use App\Http\Controllers\Admin\OrderContactController;
     Route::any('/get-load-types', [WareHouseController::class, 'getLoadTypes']);
     Route::any('/get-wh-day-times', [WareHouseController::class, 'getWhDayTimes']);
     Route::any('/save-orders', [OrderController::class, 'saveOrders']);
+    Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
     Route::any('/order-detail', [OrderController::class, 'getOrderDetail']);
     Route::any('/get-orders-list', [OrderController::class, 'getOrdersList']);
     Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
