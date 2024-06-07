@@ -164,18 +164,15 @@ use App\Http\Controllers\Admin\OffLoadingController;
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-load-create']);
 
 
-
-
-
-
-    //Notifications
-    Route::any('/trigger-notification', [OrderController::class, 'notificationTrigger']);
-    Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
-    Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
+        //Notifications
+        Route::any('/trigger-notification', [OrderController::class, 'notificationTrigger']);
 
 
     });
 
+
+    Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
+    Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
 
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');
     Route::get('/admin-logout', [HomeController::class, 'customLogout'])->name('admin.logout');
