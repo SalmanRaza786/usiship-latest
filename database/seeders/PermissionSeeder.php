@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Language;
 use App\Models\PermissionModule;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class PermissionSeeder extends Seeder
@@ -25,15 +23,10 @@ class PermissionSeeder extends Seeder
         $wh_module = PermissionModule::updateOrCreate(['title' => 'Warehouse'], ['title' =>'Warehouse']);
         $customer_module = PermissionModule::updateOrCreate(['title' => 'Customer'], ['title' =>'Customer']);
         $custom_fields_module = PermissionModule::updateOrCreate(['title' => 'Custom Fields'], ['title' =>'Custom Fields']);
-
         $cumpanies_module = PermissionModule::updateOrCreate(['title' => 'Companies'], ['title' =>'Companies']);
         $carriers_module = PermissionModule::updateOrCreate(['title' => 'Carriers'], ['title' =>'Carriers']);
-<<<<<<< HEAD
-=======
         $order = PermissionModule::updateOrCreate(['title' => 'Orders'], ['title' =>'Orders']);
->>>>>>> 1b7ffc7666a4670468613413cf6603bebb506bd8
-
-
+        $notification = PermissionModule::updateOrCreate(['title' => 'Notifications'], ['title' =>'Notifications']);
 
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
 
@@ -101,14 +94,13 @@ class PermissionSeeder extends Seeder
             ['name' => 'admin-carriers-delete', 'module_id' =>$carriers_module->id, 'guard_name' => 'admin'],
 
 
-<<<<<<< HEAD
-=======
+
             //Orders
             ['name' => 'admin-order-view', 'module_id' =>$order->id, 'guard_name' => 'admin'],
 
+            //Notifications
+            ['name' => 'admin-notification-view', 'module_id' =>$notification->id, 'guard_name' => 'admin'],
 
-
->>>>>>> 1b7ffc7666a4670468613413cf6603bebb506bd8
 
 
             //Miscellaneous

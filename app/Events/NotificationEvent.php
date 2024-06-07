@@ -19,17 +19,17 @@ class NotificationEvent implements ShouldBroadcast
      */
 
 
-    public $message;
+    public $notificationData;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($notificationData)
     {
 
-        $this->message  = $message;
+        $this->notificationData  = $notificationData;
     }
 
     /**
@@ -39,8 +39,9 @@ class NotificationEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+
         return [
-            new Channel('testChannel'),
+            new Channel('notificationChannel'),
         ];
     }
 }

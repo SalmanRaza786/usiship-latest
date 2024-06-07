@@ -19,7 +19,11 @@ use App\Http\Controllers\Admin\CarriersController;
 use App\Http\Controllers\Admin\DockController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CheckInController;
+
+use App\Http\Controllers\Admin\NotificationController;
+
 use App\Http\Controllers\Admin\OrderContactController;
+
 
 
 
@@ -30,6 +34,11 @@ use App\Http\Controllers\Admin\OrderContactController;
 
 
     Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
+
+        Route::get('/test', function () {
+            return view('test');
+        });
+
     Route::get('dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
 
     Route::get('/app-settings', [AppSettingsController::class, 'index'])->name('app-settings.index')->middleware(['can:admin-settings-edit']);
@@ -147,8 +156,10 @@ use App\Http\Controllers\Admin\OrderContactController;
     Route::any('/change-order-status/{orderId}/{orderStatus}', [OrderController::class, 'changeOrderStatus'])->name('change.order.status');
     Route::any('/undo-order-status/{orderId}', [OrderController::class, 'undoOrderStatus'])->name('undo.order.status');
 
-
-
+    //Notifications
+    Route::any('/trigger-notification', [OrderController::class, 'notificationTrigger']);
+    Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
+    Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
 
 });
 
@@ -178,4 +189,7 @@ use App\Http\Controllers\Admin\OrderContactController;
     Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
     Route::get('/check-order-id', [OrderController::class, 'checkOrderId'])->name('checkOrderId');
     Route::post('/verify-warehouse-id', [OrderController::class, 'verifyWarehouseId'])->name('verify.warehouse.id');
+
+
+
 

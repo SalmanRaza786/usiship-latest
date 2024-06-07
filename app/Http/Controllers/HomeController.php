@@ -29,6 +29,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
+            return 1;
             return view('client.screens.home');
         } catch (\Exception $e) {
             return $e->getMessage();

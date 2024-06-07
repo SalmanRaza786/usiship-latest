@@ -18,6 +18,7 @@ use App\Repositries\config\PracticeConfigRepositry;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\exam\ExamRepositry;
 use App\Repositries\language\LanguageRepositry;
+use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\qBank\QuestionsRepositry;
 use App\Repositries\student\StudentRepositry;
 use App\Repositries\studentLecture\StudentLectureRepositry;
@@ -281,6 +282,13 @@ class Helper
       OrderBookedSlot::where('order_id',$orderId)->delete();
     }
 
+
+    public static function createNotificationHelper($content,$url)
+    {
+        $notification=new NotificationRepositry();
+        $notification->createNotification($content,$url);
+    }
+
     public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
     {
         try {
@@ -360,5 +368,6 @@ class Helper
 
 
     }
+
 
 }
