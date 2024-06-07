@@ -6,7 +6,7 @@ $(document).ready(function(){
 
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
-            fnShowNotifications(e.notificationData);
+            fnShowNotifications(e.notificationData,1);
         }else{
             $('empty-notification-elem').removeClass('d-none');
         }
@@ -14,9 +14,15 @@ $(document).ready(function(){
 
     });
 
-    function fnShowNotifications(notificationData){
+    function fnShowNotifications(notificationData,isShowToast){
         var notificationHtml='';
         $.each(notificationData, function(key, row) {
+
+            if(isShowToast==1) {
+                $('.toast').toast('show');
+                $('.created-at').text(row.created_at);
+                $('.notification-text').text(row.content);
+            }
 
             notificationHtml+='<div class="text-reset notification-item d-block dropdown-item position-relative btn-read-notification" data="'+row.id+'">'+
                 '<div class="d-flex">'+
@@ -70,13 +76,7 @@ $(document).ready(function(){
             async: false,
             dataType: 'json',
             success: function(response) {
-                fnShowNotifications(response.data);
-
-                showToast();
-
-                // var toastEl = new bootstrap.Toast($('#myToast'));
-                // toastEl.show();
-
+                fnShowNotifications(response.data,0);
             },
             error: function(xhr, status, error) {
                 toastr.error(error);
@@ -105,7 +105,7 @@ $(document).ready(function(){
         var toastEl = new bootstrap.Toast($('#myToast'));
         toastEl.show();
         toastEl._element.addEventListener('hidden.bs.toast', function () {
-            toastContainer.hide(); // Hide the toast container when the toast is hidden
+            toastContainer.hide();
         });
     }
 });

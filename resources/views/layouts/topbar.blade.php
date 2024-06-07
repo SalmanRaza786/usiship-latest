@@ -111,13 +111,28 @@
                     </div>
                 </div>
 
-
-
-
             </div>
         </div>
     </div>
 </header>
 
+<div aria-live="polite" aria-atomic="true" class="bd-example bg-light position-relative">
+    <div class="toast-container position-absolute p-3 top-0 end-0" id="toastPlacement">
+        <div class="toast">
+            <div class="toast-header">
+                <i class="bx bx-bell fs-22 rounded me-2"></i>
+
+                <strong class="me-auto">USI Ship</strong>
+                <small><span class="created-at"></span></small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body  text-bg-light">
+                <span class="notification-text"></span>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{{ URL::asset('build/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+
 

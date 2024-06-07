@@ -59,21 +59,6 @@
 <!-- JAVASCRIPT -->
 @include('layouts.vendor-scripts')
 
-<div aria-live="polite" aria-atomic="true" class="bd-example bg-light position-relative" style="height: 300px;">
-    <div class="toast-container position-absolute p-3" id="toastPlacement">
-        <div class="toast" id="myToast">
-            <div class="toast-header">
-                <img src="assets/images/logo-sm.png" class="rounded me-2" alt="..." height="20">
-                <strong class="me-auto">Velzon</strong>
-                <small>11 mins ago</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                Hello, world! This is a toast message.
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function (){
