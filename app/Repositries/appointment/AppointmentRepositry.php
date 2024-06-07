@@ -733,6 +733,7 @@ class AppointmentRepositry implements AppointmentInterface {
 
     }
 
+
     public function sendNotification($orderId,$customerId,$statusId,$userType=null)
     {
         //$userType 1 for admin and 2 for customer
@@ -782,6 +783,10 @@ class AppointmentRepositry implements AppointmentInterface {
             throw $e;
         }
     }
+
+
+
+
 
 }
 

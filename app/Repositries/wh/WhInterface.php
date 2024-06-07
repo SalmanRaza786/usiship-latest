@@ -23,6 +23,7 @@ interface WhInterface
     public function getOffDays($date,$wh_id);
     public function getWhDayWiseOperationalHours($wh_id);
     public function getDockWiseOperationalHour($request);
+    public function getDoorsByWhId($request);
 
 
 

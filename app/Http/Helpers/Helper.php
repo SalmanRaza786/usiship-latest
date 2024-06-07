@@ -3,6 +3,7 @@
 namespace App\Http\Helpers;
 
 use App\Models\Attempt;
+use App\Models\FileContent;
 use App\Models\OperationalHour;
 use App\Models\OrderBookedSlot;
 use App\Models\Question;
@@ -22,6 +23,7 @@ use App\Repositries\qBank\QuestionsRepositry;
 use App\Repositries\student\StudentRepositry;
 use App\Repositries\studentLecture\StudentLectureRepositry;
 use App\Repositries\user\UserRepositry;
+use App\Traits\HandleFiles;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -29,6 +31,8 @@ use Illuminate\Support\Facades\Redirect;
 
 class Helper
 {
+    use HandleFiles;
+
     public static function sendError($message, $errors = [], $code = 401)
     {
         $response = ['success' => false, 'message' => $message];
@@ -278,9 +282,92 @@ class Helper
       OrderBookedSlot::where('order_id',$orderId)->delete();
     }
 
+
     public static function createNotificationHelper($content,$url)
     {
         $notification=new NotificationRepositry();
         $notification->createNotification($content,$url);
     }
+
+    public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
+    {
+        try {
+
+            foreach ($imageSets as $fieldName => $images) {
+                if (!is_array($images)) {
+                    $images = [];
+                }
+                foreach ($images as $image) {
+                    $filename = self::handleFiles($image, $path);
+                    $media =  Helper::mediaUpload(
+                        $fileName = $filename,
+                        $fileType = 'image',
+                        $fileableId,
+                        $fileableType,
+                        $formId = null,
+                        $fieldName
+                    );
+                }
+            }
+
+            return $media;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public static function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null)
+    {
+        try {
+
+            if($formId != null)
+            {
+                $data =[
+                    'fileable_id' => $fileableId,
+                    'form_id' => $formId,
+                ];
+            }else{
+                $data =[
+                    'fileable_id' => 0,
+                ];
+            }
+
+            $media = FileContent::updateOrCreate(
+                $data,
+                [
+                    'file_name' => $fileName,
+                    'file_type' => $fileType,
+                    'fileable_id' => $fileableId,
+                    'fileable_type' => $fileableType,
+                    'form_id' => $formId,
+                    'field_name' => $fieldName,
+                ]);
+
+            return $media;
+
+        } catch (\Exception $e) {
+            throw $e;
+
+
+        }
+
+    }
+
+    public static function handleFiles( $file, $path ) : string
+    {
+
+        if ($file)  {
+            $uniqueid = uniqid();
+            $extension = $file->getClientOriginalExtension();
+            $filename =$path.$uniqueid.'.'.$extension;
+//        $file->move('storage/uploads/'.$path, $filename);
+            $file->move(public_path('storage/uploads/'.$path), $filename);
+
+            return  $filename;
+        }
+
+
+    }
+
+
 }

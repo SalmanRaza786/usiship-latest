@@ -10,6 +10,8 @@ use App\Repositries\appSettings\AppSettingsInterface;
 use App\Repositries\appSettings\AppSettingsRepositry;
 use App\Repositries\carriers\CarriersInterface;
 use App\Repositries\carriers\CarriersRepositry;
+use App\Repositries\checkIn\CheckInInterface;
+use App\Repositries\checkIn\CheckInRepositry;
 use App\Repositries\companies\CompaniesInterface;
 use App\Repositries\companies\CompaniesRepositry;
 use App\Repositries\customer\CustomerInterface;
@@ -20,8 +22,13 @@ use App\Repositries\dock\DockInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
+
 use App\Repositries\notification\NotificationInterface;
 use App\Repositries\notification\NotificationRepositry;
+
+use App\Repositries\orderContact\OrderContactInterface;
+use App\Repositries\orderContact\OrderContactRepositry;
+
 use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
 use App\Repositries\roles\RoleInterface;
@@ -62,6 +69,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DockInterface::class,DockRepositry::class);
         $this->app->bind(AppointmentInterface::class,AppointmentRepositry::class);
         $this->app->bind(NotificationInterface::class,NotificationRepositry::class);
+
+        $this->app->bind(OrderContactInterface::class,OrderContactRepositry::class);
+        $this->app->bind(CheckInInterface::class,CheckInRepositry::class);
+
 
 
     }

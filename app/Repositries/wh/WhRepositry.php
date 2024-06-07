@@ -8,6 +8,7 @@ use App\Models\OperationalHour;
 use App\Models\OrderBookedSlot;
 use App\Models\WareHouse;
 use App\Models\WhAssignedField;
+use App\Models\WhDoor;
 use App\Models\WhOffDay;
 use App\Models\WhOperationHour;
 use App\Models\WhWorkingHour;
@@ -215,6 +216,17 @@ class WhRepositry implements WhInterface {
             $role = WhAssignedField::find($id);
             $role->delete();
             return Helper::success($role, $message=__('translation.record_deleted'));
+        } catch (ValidationException $validationException) {
+            DB::rollBack();
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        }
+
+    }
+    public function getDoorsByWhId($id)
+    {
+        try {
+            $role = WhDoor::where('wh_id',$id)->get();
+            return Helper::success($role, $message=__('translation.record_found'));
         } catch (ValidationException $validationException) {
             DB::rollBack();
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
