@@ -503,8 +503,7 @@ class AppointmentRepositry implements AppointmentInterface {
                 $this->createBookedSlots($orderId);
             }
 
-
-            $this->sendNotificationViaEmail($orderId,$order->customer_id,$orderStatus,1);
+            $this->sendNotification($orderId,$order->customer_id,$orderStatus,2);
 
          return Helper::success($order,'Status updated');
 
@@ -734,15 +733,21 @@ class AppointmentRepositry implements AppointmentInterface {
     }
 
 
-    public function sendNotification($orderId,$customerId,$statusId,$userType=null)
+    public function sendNotification($orderId,$customerId,$statusId,$notificationFor)
     {
         //$userType 1 for admin and 2 for customer
         $notifyContent = NotificationTemplate::where('status_id', $statusId)->first();
         if (!$notifyContent) {
             return Helper::error('notification not configured');
         }
+            if($notificationFor==1){
+                Helper::createNotificationHelper($notifyContent,'orders');
+            }
 
-        Helper::createNotificationHelper($notifyContent,'orders');
+        if($notificationFor==2){
+            Helper::createEndUserNotificationHelper($notifyContent,'appointments',$customerId,'App\Models\User');
+        }
+
         $this->sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
 
     }
