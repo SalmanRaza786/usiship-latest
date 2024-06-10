@@ -76,6 +76,17 @@ class WareHouseController extends Controller
     public function getDoorsByWhId(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'wh_id' =>'required',
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            if(!WareHouse::find($request->wh_id)){
+                return Helper::error('invalid warehouse id',[]);
+            }
+
             $res = $this->wh->getDoorsByWhId($request->wh_id);
             if ($res->get('status')) {
                 return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
