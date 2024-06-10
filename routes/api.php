@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\CheckInController;
     Route::any('/save-orders', [OrderController::class, 'saveOrders']);
     Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
     Route::any('/order-detail', [OrderController::class, 'getOrderDetail']);
+    Route::any('/get-wh-doors', [WareHouseController::class, 'getDoorsByWhId']);
     Route::any('/get-orders-list', [OrderController::class, 'getOrdersList']);
     Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
     Route::any('/get-all-status', [OrderController::class, 'getAllStatus']);

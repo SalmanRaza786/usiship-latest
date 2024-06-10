@@ -107,7 +107,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Container Open Photo</label>
-                                    <input class="form-control" type="file" id="formFile" disabled="">
+                                    <input class="form-control" type="file" id="formFile" >
                                 </div><div class="d-flex flex-grow-1 gap-2 mt-2">
                                     <a href="#" class="d-block">
                                         <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
@@ -116,71 +116,37 @@
 
                                 </div>
                             </div>
+
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">1st Hour Time</label>
-                                    <input type="text" class="form-control" value="12:22 PM" disabled="">
+                                    <input type="text" class="form-control" disabled="" value="12:22 PM" >
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 1st Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile" disabled="">
+                                    <input class="form-control" type="file" id="formFile">
                                 </div><div class="d-flex flex-grow-1 gap-2 mt-2">
                                     <a href="#" class="d-block">
                                         <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
                                     </a>
 
 
-                                </div>
-                            </div><div class="col-md-6">
-                                <div>
-                                    <label for="basiInput" class="form-label">1st Hour Time</label>
-                                    <input type="text" class="form-control" value="12:22 PM" disabled="">
                                 </div>
                             </div>
-                            <!--end col-->
                             <div class="col-md-6">
-                                <div>
-                                    <label for="labelInput" class="form-label">Upload 1st Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile" disabled="">
-                                </div><div class="d-flex flex-grow-1 gap-2 mt-2">
-                                    <a href="#" class="d-block">
-                                        <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
-                                    </a>
-
-
-                                </div>
-                            </div><div class="col-md-6">
-                                <div>
-                                    <label for="basiInput" class="form-label">1st Hour Time</label>
-                                    <input type="text" class="form-control" value="12:22 PM" disabled="">
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-md-6">
-                                <div>
-                                    <label for="labelInput" class="form-label">Upload 1st Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile" disabled="">
-                                </div><div class="d-flex flex-grow-1 gap-2 mt-2">
-                                    <a href="#" class="d-block">
-                                        <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
-                                    </a>
-
-
-                                </div>
-                            </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">2nd Hour Time</label>
-                                    <input type="text" class="form-control" value="01:20 PM" disabled="">
+                                    <input type="text" class="form-control" disabled="" value="01:20 PM" >
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 2nd Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile" disabled="">
+                                    <input class="form-control" type="file" id="formFile" >
                                 </div><div class="d-flex flex-grow-1 gap-2 mt-2">
                                     <a href="#" class="d-block">
                                         <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
@@ -191,31 +157,31 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">3rd Hour Time</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="text" class="form-control" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 3rd Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input class="form-control" type="file"  id="formFile">
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">4th Hour Time</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="text" class="form-control" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 4th Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input class="form-control" type="file"  id="formFile">
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">5th Hour Time</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="text" class="form-control" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -227,7 +193,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">6th Hour Time</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="text" class="form-control" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -239,7 +205,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">7th Hour Time</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="text" class="form-control" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -251,7 +217,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">8th Hour Time</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="text" class="form-control" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->

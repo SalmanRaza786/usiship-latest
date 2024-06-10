@@ -73,6 +73,20 @@ class WareHouseController extends Controller
 
     }
 
+    public function getDoorsByWhId(Request $request)
+    {
+        try {
+            $res = $this->wh->getDoorsByWhId($request->wh_id);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            } else {
+                return Helper::ajaxError($res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
     public function dockOperationalHour(Request $request){
 
         try {
