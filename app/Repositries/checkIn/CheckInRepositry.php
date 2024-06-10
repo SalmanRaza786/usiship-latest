@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use DataTables;
+use function Symfony\Component\Translation\t;
 
 
 class CheckInRepositry implements CheckInInterface {
@@ -55,6 +56,7 @@ class CheckInRepositry implements CheckInInterface {
     }
     public function checkinSave($request,$id)
     {
+
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
@@ -68,6 +70,8 @@ class CheckInRepositry implements CheckInInterface {
 
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+
 
             $checkin = OrderCheckIn::updateOrCreate(
                 [
