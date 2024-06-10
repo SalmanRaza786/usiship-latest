@@ -125,9 +125,6 @@ $(document).ready(function(){
         addElement();
     });
 
-
-
-
     function addElement(){
 
         $('.btn-save-changes').css('display', 'none');
@@ -156,6 +153,81 @@ $(document).ready(function(){
         $('#addForm')[0].reset();
         $('#addForm').find('option').prop('selected', false);
     }
+
+    $('#toggleOffloadingContainer').on('click', function() {
+        const container = $('#offloadingContainer');
+        if (container.is(':visible')) {
+            container.hide();
+            $(this).text('Show Offloading Container');
+        } else {
+            container.show();
+            $(this).text('Hide Offloading Container');
+        }
+    });
+
+
+
+    function handleImagePreviews(inputId, previewContainerId) {
+        $('#' + inputId).on('change', function(event) {
+            const files = event.target.files;
+            const previewContainer = $('#' + previewContainerId);
+            previewContainer.empty(); // Clear previous previews
+
+            $.each(files, function(index, file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Only image files are allowed!');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const div = $('<div>').addClass('preview');
+                    const img = $('<img>').attr('src', e.target.result).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
+                    div.append(img);
+                    previewContainer.append(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            uploadImages(inputId, files);
+        });
+    }
+    function uploadImages(inputId, files) {
+        const formData = new FormData();
+        $.each(files, function(index, file) {
+            formData.append(inputId + '[]', file);
+        });
+
+        $.ajax({
+            url: '/upload-images',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                console.log(response);
+                alert('Images uploaded successfully');
+            },
+            error: function(error) {
+                console.error(error);
+                alert('Error uploading images');
+            }
+        });
+    }
+    handleImagePreviews('containerImages', 'containerImagesPreview');
+    handleImagePreviews('sealImages', 'sealImagesPreview');
+    handleImagePreviews('openTimeImages', 'openTimeImagesPreview');
+    handleImagePreviews('1stHourImages', '1stHourImagesPreview');
+    handleImagePreviews('2ndHourImages', '2ndHourImagesPreview');
+    handleImagePreviews('3rdHourImages', '3rdHourImagesPreview');
+    handleImagePreviews('4thHourImages', '4thHourImagesPreview');
+    handleImagePreviews('5thHourImages', '5thHourImagesPreview');
+    handleImagePreviews('6thHourImages', '6thHourImagesPreview');
+    handleImagePreviews('7thHourImages', '7thHourImagesPreview');
+    handleImagePreviews('8thHourImages', '8thHourImagesPreview');
+    handleImagePreviews('productStagedImages', 'productStagedImagesPreview');
+    handleImagePreviews('productStagedLocImages', 'productStagedLocImagesPreview');
+    handleImagePreviews('singedOffLoadingSlipImages', 'singedOffLoadingSlipImagesPreview');
+    handleImagePreviews('palletsImages', 'palletsImagesPreview');
 
 
 

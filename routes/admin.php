@@ -162,7 +162,7 @@ use App\Http\Controllers\Admin\OffLoadingController;
         Route::any('/off-loading-list', [OffLoadingController::class, 'offLoadingList'])->name('off-loading.list')->middleware(['can:admin-load-view']);
         Route::any('/off-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('off-loading.detail')->middleware(['can:admin-load-view']);
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-load-create']);
-
+        Route::any('/upload-images', [OffLoadingController::class, 'saveOffLoadingImages'])->name('off-loading.save.images');
 
 
 
@@ -177,12 +177,13 @@ use App\Http\Controllers\Admin\OffLoadingController;
     });
 
 
+
+
+
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');
     Route::get('/admin-logout', [HomeController::class, 'customLogout'])->name('admin.logout');
-
     Route::get('/admin',[LoginController::class,'showAdminLoginForm'])->name('admin.login.view');
     Route::post('/admin',[LoginController::class,'adminLogin'])->name('admin.login');
-
 
     Route::get('/carrier-onboard/{id}', [CarriersController::class, 'carrierOnboard'])->name('carrier.onboard');
     Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
