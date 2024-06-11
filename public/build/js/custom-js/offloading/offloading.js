@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-
+    checkOffLoading();
 
     $('#addForm').on('submit', function(e) {
         e.preventDefault();
@@ -17,38 +17,30 @@ $(document).ready(function(){
                 $(".btn-submit").prop("disabled", true);
             },
             success: function(response) {
-
                 if (response.status==true) {
                     $('.btn-close').click();
-                    resetLoadTypeForm();
-
-                    $('#roleTable').DataTable().ajax.reload();
                     toastr.success(response.message);
-                    $('#addForm')[0].reset();
-
-
+                    $(".btn-submit").addClass('d-none');
+                    $('#offloadingContainer').removeClass('d-none');
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
                 }
 
             },
-
             complete: function(data) {
-                $(".btn-submit").html("Save");
+                $(".btn-submit").html("Start Off Loading Now");
                 $(".btn-submit").prop("disabled", false);
             },
-
             error: function() {
                 // toastr.error('something went wrong');
-                $('.btn-submit').text('Save');
+                $('.btn-submit').text('Start Off Loading Now');
                 $(".btn-submit").prop("disabled", false);
             }
         });
 
 
     });
-
 
     $('#filter').on('click', function() {
         $('#roleTable').DataTable().ajax.reload();
@@ -97,6 +89,7 @@ $(document).ready(function(){
         var id = $(this).attr('data');
         $('.confirm-delete').val(id);
     });
+
     $('.confirm-delete').click(function() {
         var id = $(this).val();
 
@@ -120,28 +113,23 @@ $(document).ready(function(){
         });
     });
 
-    //var initialFormState = $('#addForm').clone();
     $('.btn-modal-close').click(function() {
         addElement();
     });
 
     function addElement(){
-
         $('.btn-save-changes').css('display', 'none');
         $('.btn-add').css('display', 'block');
         $('.add-lang-title').css('display', 'block');
         $('.edit-lang-title').css('display', 'none');
-        //$('#addForm').replaceWith(initialFormState.clone());
         resetLoadTypeForm();
-
     }
+
     function editElement(){
         $('.add-lang-title').css('display', 'none');
         $('.edit-lang-title').css('display', 'block');
         $('.btn-save-changes').css('display', 'block');
         $('.btn-add').css('display', 'none');
-
-
     }
 
     $('#loadTypeModal').modal({
@@ -165,20 +153,16 @@ $(document).ready(function(){
         }
     });
 
-
-
     function handleImagePreviews(inputId, previewContainerId) {
         $('#' + inputId).on('change', function(event) {
             const files = event.target.files;
             const previewContainer = $('#' + previewContainerId);
-            previewContainer.empty(); // Clear previous previews
-
+            previewContainer.empty();
             $.each(files, function(index, file) {
                 if (!file.type.startsWith('image/')) {
-                    alert('Only image files are allowed!');
+                    toastr.error('Only image files are allowed!');
                     return;
                 }
-
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const div = $('<div>').addClass('preview');
@@ -191,28 +175,40 @@ $(document).ready(function(){
             uploadImages(inputId, files);
         });
     }
+
     function uploadImages(inputId, files) {
         const formData = new FormData();
-        $.each(files, function(index, file) {
+        var myfiles = $('#' + inputId)[0].files;
+
+        $.each(myfiles, function(index, file) {
             formData.append(inputId + '[]', file);
         });
 
         $.ajax({
-            url: '/upload-images',
+            url: '/admin/upload-images',
             type: 'POST',
             data: formData,
             contentType: false,
             processData: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             success: function(response) {
                 console.log(response);
-                alert('Images uploaded successfully');
+                if (response.status == true) {
+                    toastr.success(response.message);
+                    $('#input' + inputId).val(response.data.created_at);
+                    $('#' + inputId).prop('disabled', true);
+                } else if (response.status == false) {
+                    toastr.error(response.message);
+                }
             },
             error: function(error) {
-                console.error(error);
-                alert('Error uploading images');
+                toastr.error(error);
             }
         });
     }
+
     handleImagePreviews('containerImages', 'containerImagesPreview');
     handleImagePreviews('sealImages', 'sealImagesPreview');
     handleImagePreviews('openTimeImages', 'openTimeImagesPreview');
@@ -229,7 +225,35 @@ $(document).ready(function(){
     handleImagePreviews('singedOffLoadingSlipImages', 'singedOffLoadingSlipImagesPreview');
     handleImagePreviews('palletsImages', 'palletsImagesPreview');
 
+    function checkOffLoading() {
+        var orderCheckinId = $('#order_checkin_id').val();
 
+        $.ajax({
+            url: '/admin/check-order-checkin-id',
+            type: 'GET',
+            data: { order_checkin_id: orderCheckinId },
+            success: function(response) {
+                if(response.status==true)
+                {
+                    if (response.data==true) {
+                        $(".btn-submit").addClass('d-none');
+                        $('#offloadingContainer').removeClass('d-none');
+                    } else {
+                        $('#offloadingContainer').addClass('d-none');
+                        $('.btn-submit').removeClass('d-none');
+                    }
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+
+            },
+            error: function(error) {
+                console.error(error);
+                toastr.error(error);
+            }
+        });
+    }
 
 
 });

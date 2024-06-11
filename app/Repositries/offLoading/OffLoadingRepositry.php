@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\LoadType;
 use App\Models\OrderCheckIn;
 use App\Models\OrderContacts;
+use App\Models\OrderOffLoading;
 use App\Models\WareHouse;
 use App\Models\WhDock;
 use App\Repositries\appointment\AppointmentRepositry;
@@ -55,51 +56,33 @@ class OffLoadingRepositry implements OffLoadingInterface {
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
-                'order_contact_id' => 'required',
+                'order_checkin_id' => 'required',
                 'order_id' => 'required',
-                'whDoors' => 'required',
-                'container_no' => 'required',
-                'seal_no' => 'required',
-                'do_signature' => 'required',
             ]);
 
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
-            $checkin = OrderCheckIn::updateOrCreate(
+            $offloading = OrderOffLoading::updateOrCreate(
                 [
-                    'order_contact_id' => $id
+                    'order_check_in_id' => $id
                 ],
                 [
                     'order_id' =>$request->order_id,
-                    'order_contact_id' => $request->order_contact_id,
-                    'container_no' => $request->container_no,
-                    'seal_no' => $request->seal_no,
-                    'delivery_order_signature' => $request->do_signature,
-                    'other_document' => $request->other_doc,
+                    'order_check_in_id' => $request->order_checkin_id,
+                    'start_time' => now(),
+                    'end_time' =>null,
+                    'open_time' => now(),
+                    'p_staged_location' => null,
                     'status_id' => 12,
 
                 ]
             );
-            if($checkin)
-            {
-                $fileableId = $checkin->id;
-                $fileableType = 'App\Model\OrderCheckIn';
 
-                $imageSets = [
-                    'containerImages' => $request->file('containerImages', []),
-                    'sealImages' => $request->file('sealImages', []),
-                    'do_signatureImages' => $request->file('do_signatureImages', []),
-                    'other_docImages' => $request->file('other_docImages', []),
-                ];
-
-                $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->checkInFilePath);
-
-            }
 
             DB::commit();
 
-            return Helper::success($checkin, $message=__('translation.record_created'));
+            return Helper::success($offloading, $message="Off-Loading Start Successfully");
 
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
@@ -107,6 +90,57 @@ class OffLoadingRepositry implements OffLoadingInterface {
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+
+    public function offLoadingImagesSave($request,$id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $fileableId = $id;
+            $fileableType = 'App\Model\OrderOffLoading';
+
+            $imageSets = [
+                'containerImages' => $request->file('containerImages', []),
+                'sealImages' => $request->file('sealImages', []),
+                'openTimeImages' => $request->file('openTimeImages', []),
+                '1stHourImages' => $request->file('1stHourImages', []),
+                '2ndHourImages' => $request->file('2ndHourImages', []),
+                '3rdHourImages' => $request->file('3rdHourImages', []),
+                '4thHourImages' => $request->file('4thHourImages', []),
+                '5thHourImages' => $request->file('5thHourImages', []),
+                '6thHourImages' => $request->file('6thHourImages', []),
+                '7thHourImages' => $request->file('7thHourImages', []),
+                '8thHourImages' => $request->file('8thHourImages', []),
+                'productStagedImages' => $request->file('productStagedImages', []),
+                'productStagedLocImages' => $request->file('productStagedLocImages', []),
+                'singedOffLoadingSlipImages' => $request->file('singedOffLoadingSlipImages', []),
+                'palletsImages' => $request->file('palletsImages', []),
+            ];
+
+            $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->offLoadingFilePath);
+
+            DB::commit();
+
+            return Helper::success($media, $message="Images Uploaded Successfully");
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+    public function checkOrderCheckInId($request)
+    {
+        try {
+            $orderId = $request->query('order_checkin_id');
+            $res = OrderOffLoading::where('order_check_in_id', $orderId)->exists();
+            return Helper::success($res, $message='Record found');
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        }
     }
 
 }

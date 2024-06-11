@@ -55,12 +55,39 @@ class OffLoadingController extends Controller
     public function offLoadingCreateOrUpdate(Request $request)
     {
         try {
-            $roleUpdateOrCreate = $this->offLoading->offLoadingSave($request,$request->order_contact_id);
+            $roleUpdateOrCreate = $this->offLoading->offLoadingSave($request,$request->order_checkin_id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
+    }
+    public function saveOffLoadingImages(Request $request)
+    {
+
+         $request->all();
+        try {
+            $roleUpdateOrCreate = $this->offLoading->offLoadingImagesSave($request,1);
+            if ($roleUpdateOrCreate->get('status')){
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            }else{
+                return Helper::error("Images not save");
+            }
+           // return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function checkOrderCheckInId(Request $request)
+    {
+        try {
+            $res= $this->offLoading->checkOrderCheckInId($request);
+            $exists=$res->get('data');
+            return Helper::ajaxSuccess($exists,$res->get('message'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
     }
 }
