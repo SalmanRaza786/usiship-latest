@@ -16,9 +16,6 @@
             max-width: 200px;
             max-height: 200px;
         }
-        #offloadingContainer {
-            display: none;
-        }
     </style>
 @endsection
 @section('content')
@@ -33,12 +30,16 @@
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0">Off Loading Detail {{$data->order->order_id ?? '-'}}</h4>
+                        <h4 class="card-title mb-0">Off Loading Detail - {{$data->order->order_id ?? '-'}}</h4>
                     </div>
                     <div class="col-auto justify-content-sm-end">
-                        <input type="hidden" name="order_checkin_id" value="{{$data->id}}"/>
+                        <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.store')}}" autocomplete="off" id="addForm" >
+                        @csrf
+                        <input type="hidden" name="order_checkin_id" id="order_checkin_id" value="{{$data->id}}"/>
                         <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
-                        <button type="button" id="toggleOffloadingContainer" class="btn btn-success"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
+                        <button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
+{{--                        <button type="button" id="toggleOffloadingContainer" class="btn btn-success"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>--}}
+                        </form>
                     </div>
                 </div>
                 <div class="card-body">
@@ -80,7 +81,7 @@
         </div>
         <!--end col-->
     </div>
-    <div class="row" id="offloadingContainer">
+    <div class="row d-none" id="offloadingContainer">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
@@ -105,7 +106,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Seal #</label>
-                                    <input type="text" class="form-control" id="basicInput">
+                                    <input type="text" class="form-control" id="input">
                                 </div>
                             </div>
                             <!--end col-->
@@ -120,7 +121,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Container Open Time</label>
-                                    <input type="text" class="form-control" id="open_time" disabled="" value="">
+                                    <input type="text" class="form-control" id="inputopenTimeImages" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -137,7 +138,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">1st Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="" >
+                                    <input type="text" class="form-control" id="input1stHourImages" disabled="" value="" >
                                 </div>
                             </div>
                             <!--end col-->
@@ -153,7 +154,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">2nd Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="" >
+                                    <input type="text" class="form-control" disabled="" id="input2ndHourImages" value="" >
                                 </div>
                             </div>
                             <!--end col-->
@@ -168,7 +169,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">3rd Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="">
+                                    <input type="text" class="form-control" disabled="" id="input3rdHourImages" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -183,7 +184,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">4th Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="">
+                                    <input type="text" class="form-control" disabled="" id="input4thHourImages" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -198,7 +199,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">5th Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="">
+                                    <input type="text" class="form-control" disabled="" id="input5thHourImages" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -213,7 +214,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">6th Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="">
+                                    <input type="text" class="form-control" disabled="" id="input6thHourImages" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -228,7 +229,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">7th Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="">
+                                    <input type="text" class="form-control" disabled=""  id="input7thHourImages" value="">
                                 </div>
                             </div>
                             <!--end col-->
@@ -243,7 +244,7 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">8th Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="">
+                                    <input type="text" class="form-control" disabled="" id="input8thHourImages" value="">
                                 </div>
                             </div>
                             <!--end col-->

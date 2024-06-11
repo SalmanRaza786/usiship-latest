@@ -166,6 +166,9 @@ use App\Http\Controllers\Admin\OffLoadingController;
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-load-create']);
         Route::any('/upload-images', [OffLoadingController::class, 'saveOffLoadingImages'])->name('off-loading.save.images');
 
+        Route::get('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId'])->name('off-loading.check.checkin.id');
+
+
         //Notifications
         Route::any('/trigger-notification', [OrderController::class, 'notificationTrigger']);
 
