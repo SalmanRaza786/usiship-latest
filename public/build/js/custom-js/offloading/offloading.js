@@ -235,7 +235,7 @@ $(document).ready(function(){
             success: function(response) {
                 if(response.status==true)
                 {
-                    if (response.data==true) {
+                    if (response.data) {
                         $(".btn-submit").addClass('d-none');
                         $('#offloadingContainer').removeClass('d-none');
                     } else {

@@ -9,4 +9,12 @@ class OrderOffLoading extends Model
 {
     use HasFactory;
     protected $fillable=['order_id','order_check_in_id','start_time','end_time','open_time','p_staged_location','status_id'];
+
+    public function fileContents()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
+
+
+
 }
