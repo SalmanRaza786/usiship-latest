@@ -135,9 +135,9 @@ class OffLoadingRepositry implements OffLoadingInterface {
     public function checkOrderCheckInId($request)
     {
         try {
-            $orderId = $request->query('order_checkin_id');
-            $res = OrderOffLoading::where('order_check_in_id', $orderId)->exists();
-            return Helper::success($res, $message='Record found');
+            $orderCheckinId = $request->order_checkin_id;
+            $res = OrderOffLoading::where('order_check_in_id', $orderCheckinId)->first();
+                return Helper::success($res, $message='Record found');
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }

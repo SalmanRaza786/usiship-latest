@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\WareHouseController;
 use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Admin\OrderContactController;
-use App\Http\Controllers\Admin\CheckInController;
+use App\Http\Controllers\Api\OrderContactController;
+use App\Http\Controllers\Api\CheckInController;
+use App\Http\Controllers\Api\OffLoadingController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -16,12 +17,12 @@ use App\Http\Controllers\Admin\CheckInController;
     Route::any('/get-load-types', [WareHouseController::class, 'getLoadTypes']);
     Route::any('/get-wh-day-times', [WareHouseController::class, 'getWhDayTimes']);
     Route::any('/save-orders', [OrderController::class, 'saveOrders']);
-    Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
+
     Route::any('/order-detail', [OrderController::class, 'getOrderDetail']);
     Route::any('/get-wh-doors', [WareHouseController::class, 'getDoorsByWhId']);
     Route::any('/get-orders-list', [OrderController::class, 'getOrdersList']);
-    Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
-    Route::any('/get-order-check-in-list', [OrderController::class, 'getOrderCheckIList']);
+
+
     Route::any('/get-all-status', [OrderController::class, 'getAllStatus']);
     Route::any('/load-wise-docks', [WareHouseController::class, 'loadTypeWiseDocks']);
     Route::any('/get-wh-load-types', [WareHouseController::class, 'getWhLoadTypes']);
@@ -32,9 +33,18 @@ use App\Http\Controllers\Admin\CheckInController;
     Route::any('edit-schedule', [OrderController::class, 'editSchedule']);
     Route::any('update-schedule', [OrderController::class, 'updateScheduleForm']);
     Route::any('cancel-order', [OrderController::class, 'cancelOrder']);
-
-
     Route::any('/upload-packaging-list', [OrderController::class, 'importPackagingList']);
+
+
+    Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
+    Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
+    Route::any('/get-order-check-in-list', [CheckInController::class, 'getOrderCheckIList']);
+    Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
+    Route::any('/save-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate']);
+    Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
+
+
+
 
 
   });

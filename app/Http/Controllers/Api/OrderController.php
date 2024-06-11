@@ -285,19 +285,5 @@ class OrderController extends Controller
         }
 
     }
-    public function getOrderCheckIList()
-    {
-        try {
-            $res = $this->checkIn->getOrderCheckinList();
-            if ($res->get('status'))
-            {
-                return Helper::success($res->get('data'),'Order Contact list');
-            }else{
-                return Helper::error("Data not found");
-            }
 
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
 }
