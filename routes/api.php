@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\CheckInController;
     Route::any('update-schedule', [OrderController::class, 'updateScheduleForm']);
     Route::any('cancel-order', [OrderController::class, 'cancelOrder']);
 
+
     Route::any('/upload-packaging-list', [OrderController::class, 'importPackagingList']);
 
 
