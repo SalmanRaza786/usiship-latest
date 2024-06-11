@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\CheckInController;
     Route::any('/get-wh-doors', [WareHouseController::class, 'getDoorsByWhId']);
     Route::any('/get-orders-list', [OrderController::class, 'getOrdersList']);
     Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
+    Route::any('/get-order-check-in-list', [OrderController::class, 'getOrderCheckIList']);
     Route::any('/get-all-status', [OrderController::class, 'getAllStatus']);
     Route::any('/load-wise-docks', [WareHouseController::class, 'loadTypeWiseDocks']);
     Route::any('/get-wh-load-types', [WareHouseController::class, 'getWhLoadTypes']);

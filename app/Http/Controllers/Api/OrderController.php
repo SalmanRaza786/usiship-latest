@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Models\Order;
 use App\Repositries\appointment\AppointmentInterface;
+use App\Repositries\checkIn\CheckInInterface;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
@@ -16,10 +17,12 @@ class OrderController extends Controller
 {
     private $order;
     private $wh;
+    private $checkIn;
 
-    public function __construct(AppointmentInterface $order ,WhInterface $wh) {
+    public function __construct(AppointmentInterface $order ,WhInterface $wh,CheckInInterface $checkIn) {
         $this->order = $order;
         $this->wh = $wh;
+        $this->checkIn = $checkIn;
 
     }
     public function saveOrders(Request $request){
@@ -281,5 +284,20 @@ class OrderController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
 
+    }
+    public function getOrderCheckIList()
+    {
+        try {
+            $res = $this->checkIn->getOrderCheckinList();
+            if ($res->get('status'))
+            {
+                return Helper::success($res->get('data'),'Order Contact list');
+            }else{
+                return Helper::error("Data not found");
+            }
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

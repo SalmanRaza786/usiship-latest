@@ -130,6 +130,17 @@ class CheckInRepositry implements CheckInInterface {
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
+    public function getOrderCheckinList()
+    {
+        try {
+            $qry= OrderCheckIn::query();
+            $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
 
 }
 
