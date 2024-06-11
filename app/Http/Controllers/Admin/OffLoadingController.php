@@ -47,6 +47,10 @@ class OffLoadingController extends Controller
         }
 
     }
+    public function save()
+    {
+
+    }
 
     public function offLoadingCreateOrUpdate(Request $request)
     {

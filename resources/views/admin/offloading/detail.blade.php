@@ -1,7 +1,25 @@
 @extends('layouts.master')
 @section('title') Off Loading Detail @endsection
 @section('css')
-
+    <style>
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .preview {
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .preview img {
+            max-width: 200px;
+            max-height: 200px;
+        }
+        #offloadingContainer {
+            display: none;
+        }
+    </style>
 @endsection
 @section('content')
     @component('components.breadcrumb')
@@ -9,24 +27,21 @@
         @slot('li_1') Dashboard @endslot
         @slot('title') Off Loading Detail @endslot
     @endcomponent
-
+    @isset($data)
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
                         <h4 class="card-title mb-0">Off Loading Detail {{$data->order->order_id ?? '-'}}</h4>
-
                     </div>
                     <div class="col-auto justify-content-sm-end">
-                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#loadTypeModal" style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
+                        <input type="hidden" name="order_checkin_id" value="{{$data->id}}"/>
+                        <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
+                        <button type="button" id="toggleOffloadingContainer" class="btn btn-success"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
                     </div>
-
                 </div>
-
-
                 <div class="card-body">
-
                     <div class="live-preview">
                         <div class="row gy-4">
                             <div class="col-xxl-3 col-md-6">
@@ -57,7 +72,6 @@
                                 </div>
                             </div>
                             <!--end col-->
-
                         </div>
                         <!--end row-->
                     </div>
@@ -66,53 +80,56 @@
         </div>
         <!--end col-->
     </div>
-    <div class="row">
+    <div class="row" id="offloadingContainer">
         <div class="col-lg-12">
             <div class="card">
-
                 <div class="card-body">
                     <div class="live-preview">
                         <div class="row gy-4">
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Container #</label>
-                                    <input type="text" class="form-control" id="basiInput">
+                                    <input type="text" class="form-control" id="basicInput">
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Container Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="containerImages" name="containerImages[]" multiple accept="image/*">
                                 </div>
-                            </div><div class="col-md-6">
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="containerImagesPreview" >
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Seal #</label>
-                                    <input type="text" class="form-control" id="basiInput">
+                                    <input type="text" class="form-control" id="basicInput">
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Seal # Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="sealImages" name="sealImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Container Open Time</label>
-                                    <input type="text" class="form-control" id="basiInput" disabled="" value="11:23 AM">
+                                    <input type="text" class="form-control" id="open_time" disabled="" value="">
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Container Open Photo</label>
-                                    <input class="form-control" type="file" id="formFile" >
-                                </div><div class="d-flex flex-grow-1 gap-2 mt-2">
-                                    <a href="#" class="d-block">
-                                        <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
-                                    </a>
-
+                                    <input type="file" class="form-control" id="openTimeImages" name="openTimeImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="openTimeImagesPreview" >
 
                                 </div>
                             </div>
@@ -120,38 +137,32 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">1st Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="12:22 PM" >
+                                    <input type="text" class="form-control" disabled="" value="" >
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 1st Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
-                                </div><div class="d-flex flex-grow-1 gap-2 mt-2">
-                                    <a href="#" class="d-block">
-                                        <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
-                                    </a>
-
+                                    <input type="file" class="form-control" id="1stHourImages" name="1stHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="1stHourImagesPreview" >
 
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">2nd Hour Time</label>
-                                    <input type="text" class="form-control" disabled="" value="01:20 PM" >
+                                    <input type="text" class="form-control" disabled="" value="" >
                                 </div>
                             </div>
                             <!--end col-->
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 2nd Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile" >
-                                </div><div class="d-flex flex-grow-1 gap-2 mt-2">
-                                    <a href="#" class="d-block">
-                                        <img src="https://usiship.com/wp-content/uploads/2015/11/Fotolia_66820150_Subscription_Monthly_M-255x170-1.jpg" alt="" class="avatar-sm rounded object-fit-cover">
-                                    </a>
-
+                                    <input type="file" class="form-control" id="2ndHourImages" name="2ndHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="2ndHourImagesPreview" >
 
                                 </div>
                             </div><div class="col-md-6">
@@ -164,7 +175,10 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 3rd Hour Photo</label>
-                                    <input class="form-control" type="file"  id="formFile">
+                                    <input type="file" class="form-control" id="3rdHourImages" name="3rdHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="3rdHourImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
@@ -176,7 +190,10 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 4th Hour Photo</label>
-                                    <input class="form-control" type="file"  id="formFile">
+                                    <input type="file" class="form-control" id="4thHourImages" name="4thHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="4thHourImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
@@ -188,7 +205,10 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 5th Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="5thHourImages" name="5thHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="5thHourImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
@@ -200,7 +220,10 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 6th Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="6thHourImages" name="6thHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="6thHourImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
@@ -212,7 +235,10 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 7th Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="7thHourImages" name="7thHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="7thHourImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
@@ -224,28 +250,43 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload 8th Hour Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="8thHourImages" name="8thHourImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="8thHourImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Product Staged Location</label>
-                                    <input type="text" class="form-control" value="">
+                                    <input type="file" class="form-control" id="productStagedImages" name="productStagedImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="productStagedImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Product Staged Location Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="productStagedLocImages" name="productStagedLocImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="productStagedLocImagesPreview" >
+
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Signed Off-loading Slip Photo</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="singedOffLoadingSlipImages" name="openTimeImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="singedOffLoadingSlipImagesPreview" >
+
                                 </div>
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Pallets Photos</label>
-                                    <input class="form-control" type="file" id="formFile">
+                                    <input type="file" class="form-control" id="palletsImages" name="palletsImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="palletsImagesPreview" >
+
                                 </div>
                             </div>
 
@@ -262,7 +303,7 @@
         </div>
         <!--end col-->
     </div>
-
+    @endisset
     <!--end row-->
 {{--    @include('admin.checkin.checkin-modals')--}}
 {{--    @include('admin.components.comon-modals.common-modal')--}}
@@ -271,6 +312,10 @@
 @endsection
 @section('script')
     <script src="{{ URL::asset('build/js/custom-js/offloading/offloading.js') }}"></script>
+<script>
 
+
+
+</script>
 
 @endsection
