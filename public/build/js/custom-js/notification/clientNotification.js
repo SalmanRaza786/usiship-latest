@@ -1,8 +1,9 @@
 $(document).ready(function(){
 
     $('.notificationCounter').text(0);
-    window.Echo.channel("notificationChannel").listen("NotificationEvent", (e) => {
-        console.log(e.notificationData.length);
+
+    window.Echo.channel("clientNotificationChannel").listen("ClientNotificationEvent", (e) => {
+        console.log(e.notificationData);
 
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
@@ -75,8 +76,9 @@ $(document).ready(function(){
             type: 'GET',
             async: false,
             dataType: 'json',
-            data:{type:1},
+            data:{type:2},
             success: function(response) {
+                console.log('abc',response);
                 fnShowNotifications(response.data,0);
             },
             error: function(xhr, status, error) {

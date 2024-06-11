@@ -64,6 +64,11 @@ Auth::routes();
     Route::get('/logout', [HomeController::class, 'customLogout'])->name('user.logout');
     Route::group([],base_path("routes/admin.php"));
 
+Route::get('/send-test-email', function () {
+    $subject = 'Test Email Subject';
+    \Illuminate\Support\Facades\Mail::to('salmanrazabwn@gmail.com')->send(new \App\Mail\TestMail($subject));
+    return 'Test email sent!';
+});
 
 
 

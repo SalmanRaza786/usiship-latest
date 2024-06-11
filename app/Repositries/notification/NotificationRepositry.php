@@ -39,11 +39,20 @@ class NotificationRepositry implements NotificationInterface
 
     }
 
-    public function getUnreadNotifications()
+    public function getUnreadNotifications($type)
     {
         try {
+            $qry = Notification::query();
+            if($type==1){
+                $qry=$qry->where('notifiable', 'App\Models\Admin');
+            }
+            if($type==2){
+                $qry=$qry->where('notifiable', 'App\Models\User');
+            }
+            $qry=$qry->where('is_read', 2);
+            $qry=$qry->orderByDesc('id');
+            $notification=$qry->get();
 
-            $notification = Notification::where('notifiable', 'App\Models\Admin')->where('is_read', 2)->get();
             if ($notification->count() > 0) {
                 $notifiData = collect([]);
                 foreach ($notification as $row) {
@@ -86,6 +95,24 @@ class NotificationRepositry implements NotificationInterface
                 }
             }
 
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+    public function createEndUserNotification($notifyContent,$url,$endUserId,$model)
+    {
+        try {
+                    $notification = \App\Models\Notification::updateOrCreate(
+                        [
+                            'id' => 0,
+                        ],
+                        [
+                            'content' => $notifyContent->notify_content,
+                            'notifiable_id' =>$endUserId,
+                            'notifiable' =>$model,
+                            'url' => $url,
+                        ]
+                    );
         } catch (\Exception $e) {
             throw $e;
         }

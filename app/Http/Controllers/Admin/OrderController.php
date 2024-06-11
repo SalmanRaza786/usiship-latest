@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ClientNotificationEvent;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
@@ -192,7 +193,7 @@ class OrderController extends Controller
 
             $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,$request->id);
            if ($roleUpdateOrCreate->get('status')){
-               $this->notificationTrigger();
+               $this->notificationTrigger(1);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
@@ -242,7 +243,11 @@ class OrderController extends Controller
         try {
             $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
              if($order->get('status')){
-                // $this->appointment->bookedSlotsMakedFree($orderId,$orderStatus);
+                 $data=$order->get('data');
+                $notification= $this->appointment->sendNotification($orderId,$data->customer_id,$orderStatus,2);
+                if($notification->get('status')){
+                    $this->notificationTrigger(2);
+                }
              }
              return $order;
         } catch (\Exception $e) {
@@ -289,11 +294,10 @@ class OrderController extends Controller
 
     }
 
-    public function notificationTrigger()
+    public function notificationTrigger($type)
     {
         try {
-            $notifiData=Helper::fetchOnlyData($this->notification->getUnreadNotifications());
-            NotificationEvent::dispatch($notifiData);
+          Helper::notificationTriggerHelper($type);
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

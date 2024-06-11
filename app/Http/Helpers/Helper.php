@@ -2,6 +2,8 @@
 
 namespace App\Http\Helpers;
 
+use App\Events\ClientNotificationEvent;
+use App\Events\NotificationEvent;
 use App\Models\Attempt;
 use App\Models\FileContent;
 use App\Models\OperationalHour;
@@ -289,6 +291,12 @@ class Helper
         $notification->createNotification($content,$url);
     }
 
+    public static function createEndUserNotificationHelper($notifyContent,$url,$endUserId,$model)
+    {
+        $notification=new NotificationRepositry();
+        $notification->createEndUserNotification($notifyContent,$url,$endUserId,$model);
+    }
+
     public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
     {
         try {
@@ -367,6 +375,21 @@ class Helper
         }
 
 
+    }
+
+
+    public static function notificationTriggerHelper($type)
+    {
+        $notification=new NotificationRepositry();
+        $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type));
+        if($type==1){
+
+            NotificationEvent::dispatch($notifiData);
+        }
+        if($type==2){
+
+            ClientNotificationEvent::dispatch($notifiData);
+        }
     }
 
 

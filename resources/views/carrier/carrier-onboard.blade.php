@@ -1,12 +1,9 @@
 @extends('layouts.master-without-nav')
-@section('title')
-   Carrier Onboard
-@endsection
-@section('css')
-    .disabled {
-    pointer-events: none;
-    }
-@endsection
+@section('title') Carrier Onboard @endsection
+
+<style>
+    .disabled { pointer-events: none; }
+</style>
 @section('content')
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
@@ -323,11 +320,11 @@
         </footer>
         <!-- end Footer -->
     </div>
+
 @endsection
+
 @section('script')
-    <script src="{{ URL::asset('build/libs/particles.js/particles.js') }}"></script>
-    <script src="{{ URL::asset('build/js/pages/particles.app.js') }}"></script>
-    <script src="{{ URL::asset('build/js/pages/password-addon.init.js') }}"></script>
+
     <script>
         $(document).ready(function() {
 
