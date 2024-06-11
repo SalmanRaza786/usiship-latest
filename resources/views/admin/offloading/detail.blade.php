@@ -31,6 +31,7 @@
                 <div class="card-header d-flex ">
                     <div class="col">
                         <h4 class="card-title mb-0">Off Loading Detail - {{$data->order->order_id ?? '-'}}</h4>
+                        <input type="hidden" name="off_loading_id" id="off_loading_id" value="0">
                     </div>
                     <div class="col-auto justify-content-sm-end">
                         <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.store')}}" autocomplete="off" id="addForm" >

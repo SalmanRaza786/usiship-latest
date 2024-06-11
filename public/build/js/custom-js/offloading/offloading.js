@@ -179,10 +179,12 @@ $(document).ready(function(){
     function uploadImages(inputId, files) {
         const formData = new FormData();
         var myfiles = $('#' + inputId)[0].files;
+        var offLoadingId = $('#off_loading_id').val();
 
         $.each(myfiles, function(index, file) {
             formData.append(inputId + '[]', file);
         });
+        formData.append('off_loading_id',offLoadingId);
 
         $.ajax({
             url: '/admin/upload-images',
@@ -236,6 +238,7 @@ $(document).ready(function(){
                 if(response.status==true)
                 {
                     if (response.data) {
+                        $('#off_loading_id').val(response.data.id);
                         $(".btn-submit").addClass('d-none');
                         $('#offloadingContainer').removeClass('d-none');
                     } else {
