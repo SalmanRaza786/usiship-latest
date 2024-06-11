@@ -178,7 +178,7 @@ use App\Http\Controllers\Admin\OffLoadingController;
 
 
 
-   
+
 
 
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');
