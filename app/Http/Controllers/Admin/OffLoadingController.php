@@ -66,7 +66,7 @@ class OffLoadingController extends Controller
     public function saveOffLoadingImages(Request $request)
     {
         try {
-            $roleUpdateOrCreate = $this->offloaing->offLoadingImagesSave($request,1);
+            $roleUpdateOrCreate = $this->offloaing->offLoadingImagesSave($request,$request->off_loading_id);
             if ($roleUpdateOrCreate->get('status')){
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{
