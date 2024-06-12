@@ -47,10 +47,6 @@ class OffLoadingController extends Controller
         }
 
     }
-    public function save()
-    {
-
-    }
 
     public function offLoadingCreateOrUpdate(Request $request)
     {
@@ -70,9 +66,10 @@ class OffLoadingController extends Controller
             if ($roleUpdateOrCreate->get('status')){
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{
-                return Helper::error("Images not save");
+//                return Helper::error("Images not save");
+                return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
             }
-           // return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
