@@ -260,12 +260,10 @@
                             </div><div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Product Staged Location</label>
-                                    <input type="file" class="form-control" id="productStagedImages" name="productStagedImages[]" multiple accept="image/*">
+                                    <input type="text" class="form-control" id="product_staged_loc" name="product_staged_loc" >
                                 </div>
-                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="productStagedImagesPreview" >
-
-                                </div>
-                            </div><div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
                                 <div>
                                     <label for="labelInput" class="form-label">Upload Product Staged Location Photo</label>
                                     <input type="file" class="form-control" id="productStagedLocImages" name="productStagedLocImages[]" multiple accept="image/*">
@@ -298,7 +296,7 @@
                     </div>
 
                 </div><div class="card-footer">
-                    <a href="javascript:void(0);" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>
+                    <a href="{{route('admin.off-loading.confirm.packaging.list')}}" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>
 
                 </div>
             </div>

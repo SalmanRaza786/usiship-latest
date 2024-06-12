@@ -112,7 +112,6 @@ class OffLoadingRepositry implements OffLoadingInterface {
                 '6thHourImages' => $request->file('6thHourImages', []),
                 '7thHourImages' => $request->file('7thHourImages', []),
                 '8thHourImages' => $request->file('8thHourImages', []),
-                'productStagedImages' => $request->file('productStagedImages', []),
                 'productStagedLocImages' => $request->file('productStagedLocImages', []),
                 'singedOffLoadingSlipImages' => $request->file('singedOffLoadingSlipImages', []),
                 'palletsImages' => $request->file('palletsImages', []),
