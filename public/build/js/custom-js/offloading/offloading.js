@@ -222,7 +222,6 @@ $(document).ready(function(){
     handleImagePreviews('6thHourImages', '6thHourImagesPreview');
     handleImagePreviews('7thHourImages', '7thHourImagesPreview');
     handleImagePreviews('8thHourImages', '8thHourImagesPreview');
-    handleImagePreviews('productStagedImages', 'productStagedImagesPreview');
     handleImagePreviews('productStagedLocImages', 'productStagedLocImagesPreview');
     handleImagePreviews('singedOffLoadingSlipImages', 'singedOffLoadingSlipImagesPreview');
     handleImagePreviews('palletsImages', 'palletsImagesPreview');

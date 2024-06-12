@@ -27,6 +27,13 @@ class OffLoadingController extends Controller
             return redirect()->back()->with('error',$e->getMessage());
         }
     }
+    public function packagingListConfirmation(){
+        try {
+            return view('admin.offloading.confirm-packaging-list');
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
     public function offLoadingDetail($id)
     {
         try {
