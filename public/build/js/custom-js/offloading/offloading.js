@@ -235,9 +235,11 @@ $(document).ready(function(){
             type: 'GET',
             data: { order_checkin_id: orderCheckinId },
             success: function(response) {
+                console.log(response.data.filemedia);
                 if(response.status==true)
                 {
                     if (response.data) {
+                        displayImages(response.data.filemedia);
                         $('#off_loading_id').val(response.data.id);
                         $(".btn-submit").addClass('d-none');
                         $('#offloadingContainer').removeClass('d-none');
@@ -255,6 +257,23 @@ $(document).ready(function(){
                 console.error(error);
                 toastr.error(error);
             }
+        });
+    }
+    function displayImages(data) {
+        var baseUrl ='{{URL::("public/storage/")}}';
+        data.forEach(function(image) {
+            var img = $('<img>').attr('src', '/storage/uploads/' + image.file_name).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
+            var div = $('<div>').addClass('preview').append(img);
+
+            $('#'+image.field_name+'Preview').append(div);
+            $('#input' + image.field_name).val(image.created_at);
+            $('#' + image.field_name).prop('disabled', true);
+
+            // if (image.field_name === 'containerImages') {
+            //
+            // } else if (image.field_name === 'sealImages') {
+            //     $('#sealImagesPreview').append(div);
+            // }
         });
     }
 

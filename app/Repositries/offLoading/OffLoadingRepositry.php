@@ -98,7 +98,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
             DB::beginTransaction();
 
             $fileableId = $id;
-            $fileableType = 'App\Model\OrderOffLoading';
+            $fileableType = 'App\Models\OrderOffLoading';
 
             $imageSets = [
                 'containerImages' => $request->file('containerImages', []),
@@ -135,11 +135,21 @@ class OffLoadingRepositry implements OffLoadingInterface {
     public function checkOrderCheckInId($request)
     {
         try {
+                $validator = Validator::make($request->all(), [
+                    'order_checkin_id' => 'required',
+                ]);
+
+                if ($validator->fails())
+                    return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
             $orderCheckinId = $request->order_checkin_id;
-            $res = OrderOffLoading::where('order_check_in_id', $orderCheckinId)->first();
-                return Helper::success($res, $message='Record found');
+            $res = OrderOffLoading::with('filemedia')->where('order_check_in_id', $orderCheckinId)->first();
+            return Helper::success($res, $message='Record found');
+
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
         }
     }
 

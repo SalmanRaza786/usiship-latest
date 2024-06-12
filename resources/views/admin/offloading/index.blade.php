@@ -77,9 +77,12 @@
 
 @endsection
 @section('script')
-    <script src="{{ URL::asset('build/js/custom-js/offloading/offloading.js') }}"></script>
+{{--    <script src="{{ URL::asset('build/js/custom-js/offloading/offloading.js') }}"></script>--}}
     <script>
         $(document).ready(function(){
+            $('#filter').on('click', function() {
+                $('#roleTable').DataTable().ajax.reload();
+            });
             $('#roleTable').DataTable({
                 processing: true,
                 serverSide: true,
