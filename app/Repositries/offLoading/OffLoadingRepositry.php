@@ -97,6 +97,19 @@ class OffLoadingRepositry implements OffLoadingInterface {
         try {
             DB::beginTransaction();
 
+            if($request->product_staged_loc)
+            {
+                $offloading = OrderOffLoading::updateOrCreate(
+                    [
+                        'id' => $id,
+                    ],
+                    [
+                        'p_staged_location' => $request->product_staged_loc,
+                    ]
+                );
+
+            }
+
             $fileableId = $id;
             $fileableType = 'App\Models\OrderOffLoading';
 
@@ -145,6 +158,18 @@ class OffLoadingRepositry implements OffLoadingInterface {
             $res = OrderOffLoading::with('filemedia')->where('order_check_in_id', $orderCheckinId)->first();
             return Helper::success($res, $message='Record found');
 
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
+    public function findOffloadingByCheckInId($orderCheckinId)
+    {
+        try {
+            $res = OrderOffLoading::with('checkin','order.packgingList.inventory','order.dock.loadType.eqType')->where('order_check_in_id', $orderCheckinId)->first();
+            return Helper::success($res, $message='Record found');
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         } catch (\Exception $e) {
