@@ -37,16 +37,13 @@ class CarriersController extends Controller
     public function carrierOnboard($id)
     {
         try {
-            //$decryptedId = Crypt::decryptString($id);
             $order = Order::find($id);
             if($order)
             {
                 return view('carrier.carrier-onboard')->with(compact('order'));
-
             }else{
                 return "Invalid Order Id";
             }
-
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }
