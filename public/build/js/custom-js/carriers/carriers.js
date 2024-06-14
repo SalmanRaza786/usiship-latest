@@ -2,10 +2,6 @@
 $(document).ready(function(){
 
 
-
-
-
-
     $('#addFrom').on('submit', function(e) {
         e.preventDefault();
         $.ajax({

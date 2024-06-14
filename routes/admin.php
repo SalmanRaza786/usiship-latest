@@ -24,7 +24,11 @@ use App\Http\Controllers\Admin\NotificationController;
 
 use App\Http\Controllers\Admin\OrderContactController;
 use App\Http\Controllers\Admin\OffLoadingController;
+
 use App\Http\Controllers\Admin\PackagingListController;
+
+use App\Http\Controllers\Admin\PutAwayController;
+
 
 
 
@@ -148,6 +152,11 @@ use App\Http\Controllers\Admin\PackagingListController;
         Route::any('/off-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('off-loading.detail')->middleware(['can:admin-load-view']);
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-load-create']);
         Route::any('/off-loading-upload-images', [OffLoadingController::class, 'saveOffLoadingImages'])->name('off-loading.save.images');
+
+        //Item Put Away
+        Route::any('/put-away', [PutAwayController::class, 'index'])->name('put-away.index')->middleware(['can:admin-load-view']);
+        Route::any('/put-away-list', [PutAwayController::class, 'putAwayList'])->name('put-away.list')->middleware(['can:admin-load-view']);
+        Route::any('/create-put-away/{id}', [PutAwayController::class, 'createPutAway'])->name('put-away.create')->middleware(['can:admin-load-view']);
 
         Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId'])->name('off-loading.check.checkin.id');
         Route::any('/packaging-list-confirm/{id}', [OffLoadingController::class, 'packagingListConfirmation'])->name('off-loading.confirm.packaging.list');
