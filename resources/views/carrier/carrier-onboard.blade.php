@@ -94,14 +94,18 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="input-group input-group-lg mb-4 form-icon right">
-                                                        <input type="text" class="form-control"
-                                                               aria-label="Sizing example input"
-                                                               aria-describedby="inputGroup-sizing-lg">
-                                                        <button class="btn btn-outline-success pe-5" type="button"
-                                                                id="button-addon2"><i class="ri-camera-line fs-24"></i> Scan
-                                                            Now
-                                                        </button>
+
+                                                    <div style="display: none" id="scan-section">
+
+                                                        <button id="switch-camera" style="display:none;">Switch Camera</button>
+                                                        <video id="preview" width="450" height="400"></video>
+                                                        <canvas id="canvas" style="display:none;"></canvas>
+                                                        <p id="qr-result" class="d-none">QR Code Result: <span id="qr-result-text"></span></p>
+                                                        <p  class="d-none" id="message" style="display:none;">QR Code has been scanned!</p>
+                                                    </div>
+                                                    <div class="input-group input-group-lg mb-4 form-icon right d-grid">
+                                                        <button class="btn btn-outline-success pe-5" type="button" id="start-camera"><i class="ri-camera-line fs-24"></i>Scan Now</button>
+
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -111,12 +115,12 @@
                                                         Enter the warehouse ID</p>
                                                 </div>
                                                 <div class="input-group input-group-lg mb-4 form-icon right">
-                                                    <input type="text" class="form-control"  id="warehouseId"
-                                                           aria-label="Sizing example input" name="wh_id"
-                                                           aria-describedby="inputGroup-sizing-lg">
-                                                    <button class="btn btn-outline-success pe-5 " type="button" id="verifyButton"  data-nexttab="pills-info-desc-tab"
-                                                           ><i class=" ri-refresh-line fs-24"></i> Verify Now
-                                                    </button>
+                                                    <input type="text" class="form-control"  id="warehouseId"  aria-label="Sizing example input" name="wh_id"  aria-describedby="inputGroup-sizing-lg">
+
+
+                                                    <button class="btn btn-outline-success pe-5 " type="button" id="verifyButton"  data-nexttab="pills-info-desc-tab"><i class=" ri-refresh-line fs-24"></i> Verify Now  </button>
+
+
                                                 </div>
                                             </div>
                                             <div class="d-flex align-items-start gap-3 mt-4">
@@ -311,23 +315,20 @@
                         <div class="text-center">
                             <p class="mb-0 text-muted">©
                                 <script>document.write(new Date().getFullYear())</script>
-                                2024 USI Ship. Crafted with <i class="mdi mdi-heart text-danger"></i> by MAIT
+                                {{date('Y')}} USI Ship. Crafted with <i class="mdi mdi-heart text-danger"></i> by MAIT
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
         </footer>
-        <!-- end Footer -->
     </div>
-
-@endsection
-
-@section('script')
-
+    @endsection
+    @section('script')
+        <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+      <script src="{{ URL::asset('build/js/custom-js/qr-scanner/qrScanner.js') }}"></script>
     <script>
         $(document).ready(function() {
-
             $('#order_id').on('keyup', function() {
                 var orderId = $(this).val();
 
@@ -361,12 +362,18 @@
                     $('#orderIdFeedback').addClass('d-none').text('');
                 }
             });
-
             $('#verifyButton').on('click', function(){
+
                 let warehouseId = $('#warehouseId').val();
+
+                if (!warehouseId > 0) {
+                    toastr.error('Enter or scan warehouse, please');
+                    return false;
+                }
+
                 let orderId = $('#id').val();
                 var targetTab = $(this).data('nexttab');
-                console.log(targetTab);
+
                 $.ajax({
                     url: '{{ route('verify.warehouse.id') }}',
                     method: 'POST',
@@ -394,7 +401,6 @@
                     }
                 });
             });
-
             $('#CarrierForm').on('submit', function(e) {
                 e.preventDefault();
                 var targetTab = $('#btn-carrier-submit').data('nexttab');
@@ -434,20 +440,14 @@
                 });
 
             });
-
             $('.nexttab').click(function() {
                 var targetTab = $(this).data('nexttab');
                 $('#' + targetTab).tab('show');
             });
-
             $('.previestab').click(function() {
                 var previousTab = $(this).data('previous');
                 $('#' + previousTab).tab('show');
             });
-
-
         });
     </script>
-
-
-@endsection
+    @endsection
