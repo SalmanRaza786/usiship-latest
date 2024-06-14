@@ -15,6 +15,19 @@ class OrderOffLoading extends Model
         return $this->morphMany(FileContent::class, 'fileable');
     }
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
 
+    public function orderCheckIn()
+    {
+        return $this->belongsTo(OrderCheckIn::class, 'order_check_in_id', 'id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class, 'status_id', 'id');
+    }
 
 }
