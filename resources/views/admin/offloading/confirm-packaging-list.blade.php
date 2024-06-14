@@ -144,61 +144,65 @@
                                                 <td class="product-id align-middle">{{$list->qty ?? "-"}}</td>
                                                 <td class="product-id align-middle">
                                                     <div class="hstack gap-3">
-                                                        <a href="javascript:void(0);" class="link-success fs-15"><i class="ri-edit-2-line fs-24"></i></a>
-                                                        <a href="javascript:void(0);" data-row-id="{{ $key }}" data-id ="{{$list->id}}" class="link-danger fs-15 save-row"><i class="ri-save-line fs-24"></i></a>
+                                                        <a href="javascript:void(0);" data-row-id="{{ $key }}" class="link-success fs-15 edit-row"><i class="ri-edit-2-line fs-24"></i></a>
+                                                        <a href="javascript:void(0);" data-row-id="{{ $key }}" data-id ="{{$list->id}}" class="link-danger fs-15 save-row" style="display:none;"><i class="ri-save-line fs-24"></i></a>
                                                     </div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" type="text" style="width: 150px;" name="cartons_qty" placeholder="Cartons Qty"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" type="text" style="width: 150px;" name="cartons_qty"  placeholder="Cartons Qty" disabled></div>
                                                 </td>
-                                                <td><input class="form-control bg-light border-0 product-price" style="width: 150px;" type="number" name="received_each" step="0.01" placeholder="Qty Each"></td>
-                                                <td><input class="form-control bg-light border-0 product-price" style="width: 150px;" type="number" name="exception_qty" step="0.01" placeholder="Exception Qty"></td>
-                                                <td class="product-removal"><a class="btn btn-success">Upload Photo</a></td>
+                                                <td><input class="form-control bg-light border-0 product-price" style="width: 150px;" type="number" name="received_each" step="0.01"   placeholder="Qty Each" disabled></td>
+                                                <td><input class="form-control bg-light border-0 product-price" style="width: 150px;" type="number" name="exception_qty" step="0.01" placeholder="Exception Qty" disabled></td>
                                                 <td class="text-start" style="width: 150px;">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text"  name="ti" placeholder="TI"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 170px;" type="file" name="damage[]" placeholder="Damage" multiple accept="image/*" disabled></div>
+                                                </td>
+                                                <td class="text-start" style="width: 150px;">
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text"  name="ti" placeholder="TI" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text"  name="hi" placeholder="HI"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text"  name="hi" placeholder="HI" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" name="total_pallets" placeholder="Total Pallets"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" name="total_pallets" placeholder="Total Pallets" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="lot_3" placeholder="Lot 3"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="lot_3" placeholder="Lot 3" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="serial_number" placeholder="Serial #"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="serial_number" placeholder="Serial #" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="upc_label" placeholder="UPC Label"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="upc_label" placeholder="UPC Label" disabled></div>
                                                 </td>
-                                                <td class="product-removal"><a class="btn btn-success">Upload Photo</a></td>
-                                                <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="date" name="expiry_date" placeholder="Expiry Date"></div>
-                                                </td>
-                                                <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="length" placeholder="Length"></div>
+                                                <td class="text-start" style="width: 150px;">
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 170px;" type="file" name="upc_label_photo[]" placeholder="UPC Label Photo" multiple accept="image/*" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="width" placeholder="Width"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="date" name="expiry_date" placeholder="Expiry Date" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="height" placeholder="Height"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="length" placeholder="Length" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="weight" placeholder="Weight"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="width" placeholder="Width" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_1" placeholder="Custom Field 1"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="height" placeholder="Height" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_2" placeholder="Custom Field 2"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="number" step="0.01" name="weight" placeholder="Weight" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_3" placeholder="Custom Field 3"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_1" placeholder="Custom Field 1" disabled></div>
                                                 </td>
                                                 <td class="text-start">
-                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_4" placeholder="Custom Field 4"></div>
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_2" placeholder="Custom Field 2" disabled></div>
+                                                </td>
+                                                <td class="text-start">
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_3" placeholder="Custom Field 3" disabled></div>
+                                                </td>
+                                                <td class="text-start">
+                                                    <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_4" placeholder="Custom Field 4" disabled></div>
                                                 </td>
                                             </tr>
 
