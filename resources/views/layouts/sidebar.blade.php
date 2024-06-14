@@ -72,6 +72,13 @@
                         </a>
                     </li>
                 @endcanany
+                @canany('admin-load-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.put-away.index')?'active':''}}" href="{{route('admin.put-away.index')}}" >
+                            <i class="ri-parent-fill"></i> <span>Item Put Away</span>
+                        </a>
+                    </li>
+                @endcanany
                 @canany('admin-customer-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.customer.index')?'active':''}}" href="{{route('admin.customer.index')}}" >

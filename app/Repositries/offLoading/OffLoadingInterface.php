@@ -9,4 +9,6 @@ interface OffLoadingInterface
     public function offLoadingSave($request,$id);
     public function offLoadingImagesSave($request,$id);
 
+    public function getOffLoadingListForPutAway($request);
+
 }
