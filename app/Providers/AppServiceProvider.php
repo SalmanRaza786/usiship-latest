@@ -34,6 +34,8 @@ use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\orderContact\OrderContactInterface;
 use App\Repositries\orderContact\OrderContactRepositry;
 
+use App\Repositries\packagingList\PackagingListInterface;
+use App\Repositries\packagingList\PackagingListRepositry;
 use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
 use App\Repositries\putaway\PutAwayInterface;
@@ -80,7 +82,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(OrderContactInterface::class,OrderContactRepositry::class);
         $this->app->bind(CheckInInterface::class,CheckInRepositry::class);
         $this->app->bind(OffLoadingInterface::class,OffLoadingRepositry::class);
+
+        $this->app->bind(PackagingListInterface::class,PackagingListRepositry::class);
+
         $this->app->bind(PutAwayInterface::class,PutawayRepositry::class);
+
 
 
     }

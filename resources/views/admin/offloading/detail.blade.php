@@ -295,7 +295,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <a href="{{route('admin.off-loading.confirm.packaging.list')}}" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>
+                    <a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>
                 </div>
             </div>
         </div>

@@ -180,14 +180,16 @@ $(document).ready(function(){
         const formData = new FormData();
         var myfiles = $('#' + inputId)[0].files;
         var offLoadingId = $('#off_loading_id').val();
+        var productStageLoc = $('#product_staged_loc').val();
 
         $.each(myfiles, function(index, file) {
             formData.append(inputId + '[]', file);
         });
         formData.append('off_loading_id',offLoadingId);
+        formData.append('product_staged_loc',productStageLoc);
 
         $.ajax({
-            url: '/admin/upload-images',
+            url: '/admin/off-loading-upload-images',
             type: 'POST',
             data: formData,
             contentType: false,
@@ -199,6 +201,7 @@ $(document).ready(function(){
                 console.log(response);
                 if (response.status == true) {
                     toastr.success(response.message);
+
                     $('#input' + inputId).val(response.data.created_at);
                     $('#' + inputId).prop('disabled', true);
                 } else if (response.status == false) {
@@ -240,6 +243,7 @@ $(document).ready(function(){
                     if (response.data) {
                         displayImages(response.data.filemedia);
                         $('#off_loading_id').val(response.data.id);
+                        $('#product_staged_loc').val(response.data.p_staged_location);
                         $(".btn-submit").addClass('d-none');
                         $('#offloadingContainer').removeClass('d-none');
                     } else {
@@ -259,7 +263,7 @@ $(document).ready(function(){
         });
     }
     function displayImages(data) {
-        var baseUrl ='{{URL::("public/storage/")}}';
+
         data.forEach(function(image) {
             var img = $('<img>').attr('src', '/storage/uploads/' + image.file_name).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
             var div = $('<div>').addClass('preview').append(img);
@@ -268,11 +272,6 @@ $(document).ready(function(){
             $('#input' + image.field_name).val(image.created_at);
             $('#' + image.field_name).prop('disabled', true);
 
-            // if (image.field_name === 'containerImages') {
-            //
-            // } else if (image.field_name === 'sealImages') {
-            //     $('#sealImagesPreview').append(div);
-            // }
         });
     }
 

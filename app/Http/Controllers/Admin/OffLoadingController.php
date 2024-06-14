@@ -27,9 +27,10 @@ class OffLoadingController extends Controller
             return redirect()->back()->with('error',$e->getMessage());
         }
     }
-    public function packagingListConfirmation(){
+    public function packagingListConfirmation($id){
         try {
-            return view('admin.offloading.confirm-packaging-list');
+            $data = Helper::fetchOnlyData($this->offloaing->findOffloadingByCheckInId($id));
+            return view('admin.offloading.confirm-packaging-list')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }
@@ -73,7 +74,6 @@ class OffLoadingController extends Controller
             if ($roleUpdateOrCreate->get('status')){
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{
-//                return Helper::error("Images not save");
                 return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
             }
 
@@ -90,7 +90,7 @@ class OffLoadingController extends Controller
                 $data=$res->get('data');
                 return Helper::ajaxSuccess($data,$res->get('message'));
             }else{
-                return Helper::error("Order checkin id not found");
+                return Helper::ajaxErrorWithData($res->get('message'), $res->get('data'));
             }
 
         } catch (\Exception $e) {
