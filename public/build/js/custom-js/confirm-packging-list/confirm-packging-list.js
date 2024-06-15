@@ -1,6 +1,16 @@
 
 $(document).ready(function(){
 
+    $('.edit-row').on('click', function() {
+        var rowId = $(this).data('row-id');
+        var row = $('#row-' + rowId);
+
+        row.find('input').prop('disabled', false);
+        row.find('.btn-success').prop('disabled', false);
+        $(this).hide();
+        row.find('.save-row').show();
+    });
+
     $('.save-row').on('click', function() {
         var rowId = $(this).data('row-id');
         var Id = $(this).data('id');
@@ -37,29 +47,27 @@ $(document).ready(function(){
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             beforeSend: function() {
-                $('.btn-submit').text('Processing...');
-                $(".btn-submit").prop("disabled", true);
+                row.find('.save-row').prop('disabled', true);
             },
             success: function(response) {
                 console.log(response);
                 if (response.status==true) {
                     toastr.success(response.message);
+                    row.find('input').prop('disabled', true);
+                    row.find('.btn-success').prop('disabled', true);
+                    row.find('.save-row').hide();
+                    row.find('.edit-row').show();
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
                 }
-
             },
-
             complete: function(data) {
-                $(".btn-submit").html("Save");
-                $(".btn-submit").prop("disabled", false);
+                row.find('.save-row').prop('disabled', false);
             },
-
             error: function() {
-                // toastr.error('something went wrong');
-                $('.btn-submit').text('Save');
-                $(".btn-submit").prop("disabled", false);
+                 toastr.error('something went wrong');
+                row.find('.save-row').prop('disabled', false);
             }
         });
 
