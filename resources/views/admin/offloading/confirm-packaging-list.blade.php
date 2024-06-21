@@ -22,10 +22,10 @@
                 <div class="card">
                     <div class="card-header d-flex ">
                         <div class="col">
-                            <h4 class="card-title mb-0">Packing List Confirmation</h4>
+                            <h4 class="card-title mb-0">Packing List Confirmation - {{$data->order->order_id ?? '-'}}</h4>
                         </div>
                         <div class="col-auto justify-content-sm-end">
-                            <button type="button" class="btn btn-warning add-btn me-2" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-warning add-btn me-2 d-none" data-bs-toggle="modal"
                                     id="create-btn" data-bs-target="#loadTypeModal" style=""><i class="ri-alert-line align-bottom me-1"></i> Report Exception/Damages
                             </button>
                             <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn"
