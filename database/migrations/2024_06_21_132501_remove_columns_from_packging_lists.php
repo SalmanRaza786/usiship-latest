@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('packging_lists', function (Blueprint $table) {
-            //
+            $table->dropColumn(['recv_qty', 'remarks', 'damage', 'upc_label_photo']);
         });
     }
 
@@ -22,7 +22,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('packging_lists', function (Blueprint $table) {
-            //
+            $table->integer('recv_qty')->nullable()->default(null);
+            $table->text('remarks')->nullable()->default(null);
+            $table->integer('damage')->nullable()->default(null);
+            $table->string('upc_label_photo')->nullable()->default(null);
         });
     }
 };
