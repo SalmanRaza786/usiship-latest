@@ -124,16 +124,22 @@
                     {
                         targets: 5,
                         render: function(data, type, row, meta) {
-                                return '<span class="'+data.class_name+' '+data.text_class+'">'+data.status_title+'</span>';
+                                return '<span class="badge '+data.class_name+' '+data.text_class + ' text-uppercase">'+data.status_title+'</span>';
                         }
                     },
                     {
                         targets: 6,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
+                            const status = data.status;
                             const whId = data.order.wh_id ;
                             const orderId = data.order_id ;
-                            return `@canany('admin-user-edit')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>@endcanany`;
+                            if(status.id == 12)
+                            {
+                                return `@canany('admin-user-edit')<a href="{{route('admin.off-loading.index')}}" type="button" class="btn btn-primary">Ready for Offloading</a>@endcanany`;
+                            }else{
+                                return `@canany('admin-user-edit')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>@endcanany`;
+                            }
                         }
                     }
                 ]

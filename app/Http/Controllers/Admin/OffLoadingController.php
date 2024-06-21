@@ -29,7 +29,7 @@ class OffLoadingController extends Controller
     }
     public function packagingListConfirmation($id){
         try {
-            $data = Helper::fetchOnlyData($this->offloaing->findOffloadingByCheckInId($id));
+             $data = Helper::fetchOnlyData($this->offloaing->findOffloadingByCheckInId($id));
             return view('admin.offloading.confirm-packaging-list')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());

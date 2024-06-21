@@ -157,11 +157,11 @@ class CarriersRepositry implements CarriersInterface {
                 );
                 if($idImage)
                 {
-                    $uploadMedia->mediaUpload($this->carrierFileName,'Image',$role->id,'App/Model/Carriers',null,'id_card_image');
+                    $uploadMedia->mediaUpload($this->carrierFileName,'Image',$role->id,'App/Models/Carriers',null,'id_card_image');
                 }
                 if($otherDocImage)
                 {
-                    $uploadMedia->mediaUpload($this->carrierDocFileName,'Image',$role->id,'App/Model/Carriers',null,'other_docs');
+                    $uploadMedia->mediaUpload($this->carrierDocFileName,'Image',$role->id,'App/Models/Carriers',null,'other_docs');
                 }
 
                 if($role)

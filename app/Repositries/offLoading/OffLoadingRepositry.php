@@ -11,7 +11,9 @@ use App\Models\OrderOffLoading;
 use App\Models\WareHouse;
 use App\Models\WhDock;
 use App\Repositries\appointment\AppointmentRepositry;
+use App\Repositries\checkIn\CheckInRepositry;
 use App\Repositries\offLoading\OffLoadingInterface;
+use App\Repositries\orderContact\OrderContactRepositry;
 use App\Traits\HandleFiles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -74,10 +76,12 @@ class OffLoadingRepositry implements OffLoadingInterface {
                     'end_time' =>null,
                     'open_time' => now(),
                     'p_staged_location' => null,
-                    'status_id' => 12,
+                    'status_id' => 13,
 
                 ]
             );
+            $orderCheckIn = new CheckInRepositry();
+            $orderCheckIn->changeStatus($offloading->order_check_in_id, 3);
 
 
             DB::commit();
@@ -169,8 +173,14 @@ class OffLoadingRepositry implements OffLoadingInterface {
     public function findOffloadingByCheckInId($orderCheckinId)
     {
         try {
-            $res = OrderOffLoading::with('checkin','order.packgingList.inventory','order.dock.loadType.eqType')->where('order_check_in_id', $orderCheckinId)->first();
-            return Helper::success($res, $message='Record found');
+            $res = OrderOffLoading::with('checkin', 'order.packgingList.inventory','order.packgingList.filemedia', 'order.dock.loadType.eqType')->where('order_check_in_id', $orderCheckinId)->first();
+            return Helper::success($res, $message = 'Record found');
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(), []);
+        }
+    }
 
     public function getOffLoadingListForPutAway($request)
     {

@@ -126,7 +126,7 @@
                     {
                         targets: 3,
                         render: function(data, type, row, meta) {
-                         return '<span class="badge '+row.status.class_name +' text-uppercase">'+row.status.status_title+'</span>';
+                         return '<span class="badge '+row.status.class_name +' '+data.status.text_class + ' text-uppercase">'+row.status.status_title+'</span>';
 
                         }
                     },

@@ -13,7 +13,7 @@ class OrderCheckIn extends Model
 
     public function orderContact()
     {
-        return $this->belongsTo(OrderContacts::class, 'order_id', 'id');
+        return $this->belongsTo(OrderContacts::class, 'order_contact_id', 'id');
     }
     public function order()
     {
