@@ -36,10 +36,9 @@
                     <div class="col-auto justify-content-sm-end">
                         <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.store')}}" autocomplete="off" id="addForm" >
                         @csrf
-                        <input type="hidden" name="order_checkin_id" id="order_checkin_id" value="{{$data->id}}"/>
-                        <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
-                        <button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
-{{--                        <button type="button" id="toggleOffloadingContainer" class="btn btn-success"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>--}}
+                            <input type="hidden" name="order_checkin_id" id="order_checkin_id" value="{{$data->id}}"/>
+                            <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
+                            <button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
                         </form>
                     </div>
                 </div>

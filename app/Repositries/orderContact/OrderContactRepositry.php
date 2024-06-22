@@ -123,6 +123,51 @@ class OrderContactRepositry implements OrderContactInterface {
         }
 
     }
+    public function getOrderContact($request)
+    {
+        try {
+            $qry= OrderContacts::find($request->id);
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $data =$qry->orderByDesc('id')->first();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+    public function updateOrderContact($request,$id)
+    {
+        try {
+            DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'order_id' => 'required',
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $orderContact = OrderContacts::updateOrCreate(
+                [
+                    'id' => $id
+                ],
+                [
+                    'is_verify' => '1'
+                ]
+            );
+
+            DB::commit();
+
+            return Helper::success($orderContact, $message="Carrier Documents Approved Successfully");
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
 
 
 

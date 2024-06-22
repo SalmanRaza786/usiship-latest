@@ -137,7 +137,6 @@ use App\Http\Controllers\Admin\PutAwayController;
     Route::any('/change-order-status/{orderId}/{orderStatus}', [OrderController::class, 'changeOrderStatus'])->name('change.order.status');
     Route::any('/undo-order-status/{orderId}', [OrderController::class, 'undoOrderStatus'])->name('undo.order.status');
 
-
         //Check In
         Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-load-view']);
         Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-load-view']);
@@ -145,12 +144,15 @@ use App\Http\Controllers\Admin\PutAwayController;
 
         //Order Contact
         Route::any('/order-contact-list', [OrderContactController::class, 'orderContactList'])->name('orderContact.list')->middleware(['can:admin-load-view']);
+        Route::any('/get-order-contact', [OrderContactController::class, 'getOrderContact'])->name('orderContact.get')->middleware(['can:admin-load-view']);
+        Route::any('/order-contact.update', [OrderContactController::class, 'updateOrderContact'])->name('orderContact.update')->middleware(['can:admin-load-view']);
 
         //Off Loading
         Route::any('/off-loading', [OffLoadingController::class, 'index'])->name('off-loading.index')->middleware(['can:admin-load-view']);
         Route::any('/off-loading-list', [OffLoadingController::class, 'offLoadingList'])->name('off-loading.list')->middleware(['can:admin-load-view']);
         Route::any('/off-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('off-loading.detail')->middleware(['can:admin-load-view']);
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-load-create']);
+        Route::any('/update-off-loading', [OffLoadingController::class, 'offLoadingUpdate'])->name('off-loading.close')->middleware(['can:admin-load-create']);
         Route::any('/off-loading-upload-images', [OffLoadingController::class, 'saveOffLoadingImages'])->name('off-loading.save.images');
 
         //Item Put Away
@@ -173,10 +175,6 @@ use App\Http\Controllers\Admin\PutAwayController;
 
     Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
     Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
-
-
-
-
 
 
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');

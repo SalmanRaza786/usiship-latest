@@ -23,6 +23,10 @@ class OrderContacts extends Model
     {
         return $this->belongsTo(OrderStatus::class, 'status_id', 'id');
     }
+    public function filemedia()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
 
     public function getIsVerifyAttribute($value)
     {

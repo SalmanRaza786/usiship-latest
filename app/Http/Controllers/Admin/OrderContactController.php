@@ -24,7 +24,17 @@ class OrderContactController extends Controller
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
-
+    }
+    public function updateOrderContact(Request $request)
+    {
+        try {
+            $roleUpdateOrCreate = $this->orderContact->updateOrderContact($request,$request->id);
+            if ($roleUpdateOrCreate->get('status'))
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
     }
     public function getOrderContactList()
     {
@@ -33,6 +43,21 @@ class OrderContactController extends Controller
             if ($res->get('status'))
             {
                 return Helper::success($res->get('data'),'Order Contact list');
+            }else{
+                return Helper::error("Data not found");
+            }
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getOrderContact(Request $request)
+    {
+        try {
+            $res = $this->orderContact->getOrderContact($request);
+            if ($res->get('status'))
+            {
+                return Helper::success($res->get('data'),$res->get('message'));
             }else{
                 return Helper::error("Data not found");
             }

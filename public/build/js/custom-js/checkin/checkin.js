@@ -1,7 +1,6 @@
 
 $(document).ready(function(){
 
-
     $('#addForm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
@@ -49,6 +48,42 @@ $(document).ready(function(){
 
     });
 
+    $('#verifyForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-submit').text('Processing...');
+                $(".btn-submit").prop("disabled", true);
+            },
+            success: function(response) {
+                if (response.status==true) {
+                    $('.btn-close').click();
+                    $('#roleTable').DataTable().ajax.reload();
+                    toastr.success(response.message);
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+                $(".btn-submit").html("Verify");
+                $(".btn-submit").prop("disabled", false);
+            },
+            error: function() {
+                $('.btn-submit').text('Verify');
+                $(".btn-submit").prop("disabled", false);
+            }
+        });
+
+
+    });
 
     $('#filter').on('click', function() {
         $('#roleTable').DataTable().ajax.reload();
@@ -93,10 +128,66 @@ $(document).ready(function(){
         });
     });
 
+    $('#roleTable').on('click', '.btn-carrier_docs', function() {
+
+        var whId = $(this).attr('whId');
+        var orderId = $(this).attr('orderId');
+        var id = $(this).attr('data');
+        $.ajax({
+            url: route('admin.orderContact.get'),
+            type: 'GET',
+            async: false,
+            data: {'id':id},
+            dataType: 'json',
+            success: function(response) {
+                var html = '';
+                console.log(response);
+                    if(response.status==true){
+
+                        $('input[name=order_id]').val(response.data.order_id);
+                        $('input[name=id]').val(response.data.id);
+                        $('.job-title').text(response.data.carrier.carrier_company_name);
+
+                        $('.company-name').text(response.data.carrier.company.company_title);
+                        $('.phone_no').text(response.data.carrier.contacts);
+                        $('.arrive_time').text('Arrive Time : '+response.data.arrival_time);
+                        $('.verify').text(response.data.is_verify);
+
+                        $.each(response.data.carrier.docimages, function(index, file) {
+                        html +='<div class="col-sm-3">'+
+                            '<figure class="figure mb-0">'+
+                            ' <img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded" alt="...">'+
+                            ' <figcaption class="figure-caption">'+file.field_name+'</figcaption>'+
+                            ' </figure>'+
+                            '</div>';
+                        });
+                        $.each(response.data.filemedia, function(index, file) {
+                            html +='<div class="col-sm-3">'+
+                                '<figure class="figure mb-0">'+
+                                ' <img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded" alt="...">'+
+                                ' <figcaption class="figure-caption">'+file.field_name+'</figcaption>'+
+                                ' </figure>'+
+                                '</div>';
+                        });
+                        $('#media').html(html);
+                    }else{
+                    toastr.error(response.message)
+                }
+
+
+            },
+            error: function(xhr, status, error) {
+
+           toastr.error(error);
+            }
+        });
+    });
+
     $('#roleTable').on('click', '.btn-delete', function() {
         var id = $(this).attr('data');
         $('.confirm-delete').val(id);
     });
+
     $('.confirm-delete').click(function() {
         var id = $(this).val();
 
@@ -120,14 +211,9 @@ $(document).ready(function(){
         });
     });
 
-    //var initialFormState = $('#addForm').clone();
     $('.btn-modal-close').click(function() {
         addElement();
     });
-
-
-
-
     function addElement(){
 
         $('.btn-save-changes').css('display', 'none');
@@ -143,22 +229,15 @@ $(document).ready(function(){
         $('.edit-lang-title').css('display', 'block');
         $('.btn-save-changes').css('display', 'block');
         $('.btn-add').css('display', 'none');
-
-
     }
-
     $('#loadTypeModal').modal({
         backdrop: 'static',
         keyboard: false
     })
-
     function resetLoadTypeForm() {
         $('#addForm')[0].reset();
         $('#addForm').find('option').prop('selected', false);
     }
-
-
-
 
 });
 

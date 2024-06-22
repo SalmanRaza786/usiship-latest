@@ -7,6 +7,7 @@ interface OffLoadingInterface
     public function getOffLoadingList($request);
     public function checkOrderCheckInId($request);
     public function offLoadingSave($request,$id);
+    public function offLoadingUpdate($request,$id);
     public function offLoadingImagesSave($request,$id);
 
     public function getOffLoadingListForPutAway($request);

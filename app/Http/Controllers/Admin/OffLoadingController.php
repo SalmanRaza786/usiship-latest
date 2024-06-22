@@ -67,6 +67,18 @@ class OffLoadingController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
+    public function offLoadingUpdate(Request $request)
+    {
+         $request->all();
+        try {
+            $roleUpdateOrCreate = $this->offloaing->offLoadingUpdate($request,$request->id);
+            if ($roleUpdateOrCreate->get('status'))
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
     public function saveOffLoadingImages(Request $request)
     {
         try {

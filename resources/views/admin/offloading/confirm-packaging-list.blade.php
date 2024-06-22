@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    Packing List Confirmation
+    Packaging List Confirmation
 @endsection
 @section('css')
 @endsection
@@ -13,7 +13,7 @@
             Dashboard
         @endslot
         @slot('title')
-            Packing List Confirmation
+            Packaging List Confirmation
         @endslot
     @endcomponent
     @isset($data)
@@ -22,21 +22,24 @@
                 <div class="card">
                     <div class="card-header d-flex ">
                         <div class="col">
-                            <h4 class="card-title mb-0">Packing List Confirmation - {{$data->order->order_id ?? '-'}}</h4>
+                            <h4 class="card-title mb-0">Packaging List Confirmation - {{$data->order->order_id ?? '-'}}</h4>
                         </div>
                         <div class="col-auto justify-content-sm-end">
-                            <button type="button" class="btn btn-warning add-btn me-2 d-none" data-bs-toggle="modal"
-                                    id="create-btn" data-bs-target="#loadTypeModal" style=""><i class="ri-alert-line align-bottom me-1"></i> Report Exception/Damages
+                            <button type="button" id="alertButton" style="display:none;" class="btn btn-warning me-2">
+                                <i class="ri-alert-line align-bottom me-1"></i> Report Exception/Damages
                             </button>
-                            <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn"
-                                    data-bs-target="#loadTypeModal" style=""><i class="ri-save-line align-bottom me-1"></i> Save/Close Packing List
-                            </button>
+
                         </div>
-
+                        <div class="col-auto justify-content-sm-end">
+                            <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.close')}}" autocomplete="off" id="addForm" >
+                                @csrf
+                                <input type="hidden" name="id" id="id" value="{{$data->id}}"/>
+                                <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
+                                <button type="submit" class="btn btn-success btn-submit"  style=""> <i class="ri-save-line align-bottom me-1"></i> Save/Close Packing List</button>
+                            </form>
+                        </div>
                     </div>
-
                     <div class="card-body">
-
                         <div class="live-preview">
                             <div class="row gy-4">
                                 <div class="col-xxl-3 col-md-6">
@@ -152,7 +155,7 @@
                                                             <div class="mb-2"><input class="form-control bg-light border-0" type="text" style="width: 150px;" name="cartons_qty" value="{{$list->qty_received_cartons ?? ""}}"  placeholder="Cartons Qty" disabled></div>
                                                         </td>
                                                         <td><input class="form-control bg-light border-0 product-price" style="width: 150px;" type="number" name="received_each" step="0.01"  value="{{$list->qty_received_each ?? ""}}"  placeholder="Qty Each" disabled></td>
-                                                        <td><input class="form-control bg-light border-0 product-price" style="width: 150px;" type="number" name="exception_qty" step="0.01" value="{{$list->exception_qty ?? ""}}" placeholder="Exception Qty" disabled></td>
+                                                        <td><input class="form-control bg-light border-0 exception-qty" style="width: 150px;" type="number" name="exception_qty" step="0.01" value="{{$list->exception_qty ?? ""}}" placeholder="Exception Qty" disabled></td>
                                                         <td class="text-start" style="width: 150px;">
                                                             <div class="mb-2"><input class="form-control bg-light border-0" style="width: 170px;" type="file" name="damageImages[]" placeholder="Damage" multiple accept="image/*" disabled></div>
                                                             @isset($list->filemedia)

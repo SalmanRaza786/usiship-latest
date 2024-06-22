@@ -64,6 +64,7 @@
                             <th class="sort" data-sort="customer_name">Load Type</th>
                             <th class="sort" data-sort="product_name">Order Ref</th>
                             <th class="sort" data-sort="product_name">Arrival Time</th>
+                            <th class="sort" data-sort="product_name">Verify Status</th>
                             <th class="sort" data-sort="product_name">@lang('translation.status')</th>
                             <th class="sort" data-sort="date">@lang('translation.action')</th>
                         </tr>
@@ -107,6 +108,7 @@
                     { data: 'order.dock.load_type.eq_type.value' },
                     { data: 'order.order_id'},
                     { data: 'arrival_time' },
+                    { data: 'is_verify' },
                     { data: 'status' },
                     { data: null, orderable: false },
                 ],
@@ -124,11 +126,21 @@
                     {
                         targets: 5,
                         render: function(data, type, row, meta) {
-                                return '<span class="badge '+data.class_name+' '+data.text_class + ' text-uppercase">'+data.status_title+'</span>';
+                            if (data == 'Verified') {
+                                return '<span class="badge bg-success">'+data+'</span>';
+                            } else  {
+                                return '<span class="badge bg-danger">'+data+'</span>';
+                            }
                         }
                     },
                     {
                         targets: 6,
+                        render: function(data, type, row, meta) {
+                                return '<span class="badge '+data.class_name+' '+data.text_class + ' text-uppercase">'+data.status_title+'</span>';
+                        }
+                    },
+                    {
+                        targets: 7,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
                             const status = data.status;
@@ -138,7 +150,9 @@
                             {
                                 return `@canany('admin-user-edit')<a href="{{route('admin.off-loading.index')}}" type="button" class="btn btn-primary">Ready for Offloading</a>@endcanany`;
                             }else{
-                                return `@canany('admin-user-edit')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>@endcanany`;
+                                return `@canany('admin-user-edit')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>@endcanany
+                                <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Documents</a>
+                                `;
                             }
                         }
                     }

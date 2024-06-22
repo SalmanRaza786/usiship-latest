@@ -237,7 +237,7 @@ $(document).ready(function(){
             type: 'GET',
             data: { order_checkin_id: orderCheckinId },
             success: function(response) {
-                console.log(response.data.filemedia);
+
                 if(response.status==true)
                 {
                     if (response.data) {
