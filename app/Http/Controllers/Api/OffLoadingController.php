@@ -6,17 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Repositries\checkIn\CheckInInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
+use App\Repositries\packagingList\PackagingListRepositry;
 use Illuminate\Http\Request;
 
 class OffLoadingController extends Controller
 {
     private $offloaing;
     private $checkin;
+    private $packging;
 
 
-    public function __construct(OffLoadingInterface $offloaing, CheckinInterface $checkin) {
+    public function __construct(OffLoadingInterface $offloaing, CheckinInterface $checkin,PackagingListRepositry $packging ) {
         $this->offloaing = $offloaing;
         $this->checkin = $checkin;
+        $this->packging = $packging;
     }
     public function offLoadingCreateOrUpdate(Request $request)
     {
@@ -27,6 +30,19 @@ class OffLoadingController extends Controller
             return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function packagingListConfirmation(Request $request){
+
+        try {
+            $roleUpdateOrCreate = $this->offloaing->findOffloadingByCheckInId($request->checkin_id);
+            if ($roleUpdateOrCreate->get('status')){
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            }else{
+                return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+            }
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
         }
     }
     public function saveOffLoadingImages(Request $request)
@@ -58,6 +74,19 @@ class OffLoadingController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
 
+    }
+
+    public function updateOffLoadingPackagingList(Request $request)
+    {
+        try {
+            $roleUpdateOrCreate = $this->packging->updatePackagingList($request,$request->id);
+            if ($roleUpdateOrCreate->get('status'))
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
     }
 
 }

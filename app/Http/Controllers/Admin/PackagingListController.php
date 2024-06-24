@@ -19,7 +19,7 @@ class PackagingListController extends Controller
     {
         try {
 
-          return  $roleUpdateOrCreate = $this->packginglist->updatePackagingList($request,$request->id);
+            $roleUpdateOrCreate = $this->packginglist->updatePackagingList($request,$request->id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
