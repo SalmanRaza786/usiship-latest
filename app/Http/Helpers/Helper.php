@@ -300,24 +300,23 @@ class Helper
     public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
     {
         try {
+                foreach ($imageSets as $fieldName => $images) {
+                    if (!is_array($images)) {
+                        $images = [];
+                    }
+                        foreach ($images as $image) {
+                            $filename = self::handleFiles($image, $path);
+                            $media = Helper::mediaUpload(
+                                $fileName = $filename,
+                                $fileType = 'image',
+                                $fileableId,
+                                $fileableType,
+                                $formId = null,
+                                $fieldName
+                            );
+                        }
 
-            foreach ($imageSets as $fieldName => $images) {
-                if (!is_array($images)) {
-                    $images = [];
                 }
-                foreach ($images as $image) {
-                    $filename = self::handleFiles($image, $path);
-                    $media =  Helper::mediaUpload(
-                        $fileName = $filename,
-                        $fileType = 'image',
-                        $fileableId,
-                        $fileableType,
-                        $formId = null,
-                        $fieldName
-                    );
-                }
-            }
-
             return $media;
         } catch (\Exception $e) {
             throw $e;

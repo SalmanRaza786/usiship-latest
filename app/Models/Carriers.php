@@ -14,4 +14,8 @@ class Carriers extends Model
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
     }
+    public function docimages()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
 }

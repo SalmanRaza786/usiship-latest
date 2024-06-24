@@ -157,11 +157,11 @@ class CarriersRepositry implements CarriersInterface {
                 );
                 if($idImage)
                 {
-                    $uploadMedia->mediaUpload($this->carrierFileName,'Image',$role->id,'App/Model/Carriers',null,'id_card_image');
+                    $uploadMedia->mediaUpload($this->carrierFileName,'Image',$role->id,'App\Models\Carriers',null,'id_card_image');
                 }
                 if($otherDocImage)
                 {
-                    $uploadMedia->mediaUpload($this->carrierDocFileName,'Image',$role->id,'App/Model/Carriers',null,'other_docs');
+                    $uploadMedia->mediaUpload($this->carrierDocFileName,'Image',$role->id,'App\Models\Carriers',null,'other_docs');
                 }
 
                 if($role)
@@ -185,12 +185,12 @@ class CarriersRepositry implements CarriersInterface {
                     if($doDocument)
                     {
                         $this->carrierDoDocument = $this->handleFiles($doDocument, $this->carrierFilePath);
-                        $uploadMedia->mediaUpload($this->carrierDoDocument,'Image',$orderContact->id,'App/Model/OrderContacts',null,'do_document');
+                        $uploadMedia->mediaUpload($this->carrierDoDocument,'Image',$orderContact->id,'App\Models\OrderContacts',null,'do_document');
                     }
                     if($bolImage)
                     {
                         $this->carrierBolImage = $this->handleFiles($bolImage, $this->carrierFilePath);
-                        $uploadMedia->mediaUpload($this->carrierBolImage,'Image',$orderContact->id,'App/Model/OrderContacts',null,'bol_image');
+                        $uploadMedia->mediaUpload($this->carrierBolImage,'Image',$orderContact->id,'App\Models\OrderContacts',null,'bol_image');
                     }
 
 

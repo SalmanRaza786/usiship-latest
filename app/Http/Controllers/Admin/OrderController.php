@@ -191,14 +191,13 @@ class OrderController extends Controller
                return Helper::error('all slots are booked of this dock',[]);
            }
 
-            $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,$request->id);
+             $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
            if ($roleUpdateOrCreate->get('status')){
                $this->notificationTrigger(1);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
            }
-
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

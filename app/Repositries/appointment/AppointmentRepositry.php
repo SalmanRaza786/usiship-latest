@@ -43,6 +43,7 @@ class AppointmentRepositry implements AppointmentInterface {
     protected $orderFileName = "";
     protected $packagingImageFileName = "";
     protected $packagingListFileName = "";
+
     use HandleFiles;
     public function getAppointmentList($request)
     {
@@ -57,6 +58,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     $q->where('title', 'LIKE', "%{$name}%");
                 });
             });
+
             $qry=$qry->when($request->status, function ($query, $status) {
                 return $query->where('status_id',$status);
             });
@@ -125,6 +127,7 @@ class AppointmentRepositry implements AppointmentInterface {
                 'guard' =>$request->guard,
             );
 
+
             //Create booked time slots
             $this->createBookedSlots($orderId);
 
@@ -132,8 +135,8 @@ class AppointmentRepositry implements AppointmentInterface {
             $this->createOrderLog($logData);
 
 
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
 
-            $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
 
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
@@ -198,6 +201,7 @@ class AppointmentRepositry implements AppointmentInterface {
     {
 
         try {
+
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'file.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',

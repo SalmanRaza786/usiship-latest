@@ -39,4 +39,11 @@ class PackgingList extends Model
     {
         return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
     }
+    public function filemedia()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
+
+
+
 }

@@ -29,7 +29,7 @@ class OffLoadingController extends Controller
     }
     public function packagingListConfirmation($id){
         try {
-            $data = Helper::fetchOnlyData($this->offloaing->findOffloadingByCheckInId($id));
+             $data = Helper::fetchOnlyData($this->offloaing->findOffloadingByCheckInId($id));
             return view('admin.offloading.confirm-packaging-list')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
@@ -60,6 +60,18 @@ class OffLoadingController extends Controller
     {
         try {
             $roleUpdateOrCreate = $this->offloaing->offLoadingSave($request,$request->order_checkin_id);
+            if ($roleUpdateOrCreate->get('status'))
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function offLoadingUpdate(Request $request)
+    {
+         $request->all();
+        try {
+            $roleUpdateOrCreate = $this->offloaing->offLoadingUpdate($request,$request->id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));

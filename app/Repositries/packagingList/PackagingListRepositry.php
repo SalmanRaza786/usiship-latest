@@ -31,6 +31,31 @@ class PackagingListRepositry implements PackagingListInterface {
 
         try {
             DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'cartons_qty' => 'nullable|integer',
+                'received_each' => 'nullable|integer',
+                'exception_qty' => 'nullable|integer',
+                'ti' => 'nullable|string',
+                'hi' => 'nullable|string',
+                'total_pallets' => 'nullable|integer',
+                'lot_3' => 'nullable|string',
+                'serial_number' => 'nullable|string',
+                'upc_label' => 'nullable|string',
+                'expiry_date' => 'nullable|date',
+                'length' => 'nullable|numeric',
+                'width' => 'nullable|numeric',
+                'height' => 'nullable|numeric',
+                'weight' => 'nullable|numeric',
+                'custom_field_1' => 'nullable|string',
+                'custom_field_2' => 'nullable|string',
+                'custom_field_3' => 'nullable|string',
+                'custom_field_4' => 'nullable|string',
+                'damageImages.*' => 'nullable|image|max:2048', // Validate each image
+                'upc_label_photos.*' => 'nullable|image|max:2048', // Validate each image
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
             $packinglist = PackgingList::updateOrCreate(
                 [
@@ -58,28 +83,27 @@ class PackagingListRepositry implements PackagingListInterface {
                 ]
             );
 
-//            if($checkin)
-//            {
-//                $fileableId = $checkin->id;
-//                $fileableType = 'App\Model\OrderCheckIn';
-//
-//                $imageSets = [
-//                    'containerImages' => $request->file('containerImages', []),
-//                    'sealImages' => $request->file('sealImages', []),
-//                    'do_signatureImages' => $request->file('do_signatureImages', []),
-//                    'other_docImages' => $request->file('other_docImages', []),
-//                ];
-//
-//                $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->packagingListFilePath);
-//
-//                $orderContact = new OrderContactRepositry();
-//                $orderContact->changeStatus($checkin->order_contact_id, 12);
-//
-//            }
+            if($packinglist)
+            {
+                $fileableId = $packinglist->id;
+                $fileableType = 'App\Models\PackgingList';
+
+                $imageSets = [
+                    'damageImages' => $request->file('damageImages', []),
+                    'upc_label_photos' => $request->file('upc_label_photos', []),
+                ];
+
+                if (!empty($imageSets['damageImages']) || !empty($imageSets['upc_label_photos'])){
+                    $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->packagingListFilePath);
+                }
+
+
+            }
 
             DB::commit();
 
-            return Helper::success($packinglist, $message=__('translation.record_created'));
+            ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
+            return Helper::success($packinglist, $message);
 
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());

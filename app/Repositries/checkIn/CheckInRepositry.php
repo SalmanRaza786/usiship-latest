@@ -27,8 +27,7 @@ class CheckInRepositry implements CheckInInterface {
     {
         try {
 
-                $data['totalRecords'] = OrderCheckIn::count();
-
+            $data['totalRecords'] = OrderCheckIn::count();
 
             $qry = OrderCheckIn::query();
             $qry =$qry->with('orderContact','order.dock.loadType.eqType','status');
@@ -92,7 +91,7 @@ class CheckInRepositry implements CheckInInterface {
             if($checkin)
             {
                 $fileableId = $checkin->id;
-                $fileableType = 'App\Model\OrderCheckIn';
+                $fileableType = 'App\Models\OrderCheckIn';
 
                 $imageSets = [
                     'containerImages' => $request->file('containerImages', []),
@@ -128,6 +127,18 @@ class CheckInRepositry implements CheckInInterface {
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+    public function changeStatus($id,$status)
+    {
+        try {
+            $order= OrderCheckIn::find($id);
+            $order->status_id = $status;
+            $order->save();
+            return Helper::success($order,'Status updated');
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+
         }
     }
     public function getOrderCheckinList()
