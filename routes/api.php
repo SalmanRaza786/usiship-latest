@@ -44,6 +44,10 @@ use App\Http\Controllers\Api\OffLoadingController;
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
 
 
+    Route::any('/get-off-loading-data', [OffLoadingController::class, 'packagingListConfirmation']);
+    Route::any('/update-off-loading-packaging-list', [OffLoadingController::class, 'updateOffLoadingPackagingList']);
+
+
 
 
 
