@@ -89,6 +89,8 @@ $(document).ready(function(){
 
     $('.confirm-delete').click(function() {
         var id = $(this).val();
+
+
         $.ajax({
             url: "delete-role",
             type: 'get',

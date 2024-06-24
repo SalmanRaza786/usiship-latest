@@ -18,9 +18,8 @@
                         <h4 class="card-title mb-0">Item Put Away Detail</h4>
                     </div>
                     <div class="col-auto justify-content-sm-end">
-                        <button type="button" class="btn btn-info add-btn me-2" data-bs-toggle="modal" id="create-btn" data-bs-target="#loadTypeModal" style="
-                  "><i class="ri-eye-line align-bottom me-1"></i> Check Put Away Status</button><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#loadTypeModal" style="
-                  "><i class="ri-add-line align-bottom me-1"></i> Start Put Away Now</button>
+                        <button type="button" class="btn btn-info add-btn me-2 checkPutAwayStatus" id="savePutAwayStatus" ><i class="ri-eye-line align-bottom me-1"></i> Save Put Away Items</button>
+                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="checkPutAwayStatus" data="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->id:''}}" data-bs-target="#loadTypeModal" ><i class="ri-add-line align-bottom me-1"></i> Check Put Away Status</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -69,7 +68,7 @@
                 <div class="card-body">
                     <div class="live-preview">
 
-                        <form action="{{route('admin.put-away.store')}}" method="post">
+                        <form action="{{route('admin.put-away.store')}}" method="post" id="PutAwayForm">
                             @csrf
                             <input type="number" class="d-none" name="hidden_order_id" value="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->order_id:''}}" placeholder="order_id">
                             <input type="number" class="d-none" name="order_off_loading_id" value="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->id:''}}" placeholder="off_loading_id">
@@ -131,7 +130,7 @@
                                     <a class="btn btn-success">Upload Photo</a>
                                 </td>
                                 <td>
-                                    <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2" title="Remove"></i>
+                                    <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2" title="Remove" data="{{$row->id}}"></i>
 
                                 </td>
                             </tr>
@@ -178,15 +177,12 @@
                                 </tr>
                             @endempty
 
-                            <button type="submit" class="btn btn-success">Save</button>
                             </tbody>
 
                             <tbody>
                             <tr>
                                 <td colspan="5">
-                                    <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row" fromData="#offDayGroup" toData="#offDayDivSection">
-                                        <i class="ri-add-fill me-1 align-bottom"></i> Add New Row
-                                    </button>
+                                    <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row"><i class="ri-add-fill me-1 align-bottom"></i>New Row</button>
                                 </td>
                             </tr>
                             </tbody>
@@ -200,7 +196,7 @@
         </div>
     </div>
 
-
+@include('admin.putaway.putaway-modal')
 
 
     @endsection

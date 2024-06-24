@@ -160,6 +160,8 @@ use App\Http\Controllers\Admin\PutAwayController;
         Route::any('/put-away-list', [PutAwayController::class, 'putAwayList'])->name('put-away.list')->middleware(['can:admin-load-view']);
         Route::any('/create-put-away/{id}', [PutAwayController::class, 'createPutAway'])->name('put-away.create')->middleware(['can:admin-load-view']);
         Route::any('/store-put-away', [PutAwayController::class, 'storePutAway'])->name('put-away.store')->middleware(['can:admin-load-view']);
+        Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-load-view']);
+        Route::get('/check-putaway-status/{id}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-load-view']);
 
         Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId'])->name('off-loading.check.checkin.id');
         Route::any('/packaging-list-confirm/{id}', [OffLoadingController::class, 'packagingListConfirmation'])->name('off-loading.confirm.packaging.list');
