@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderCheckIn extends Model
+class
+OrderCheckIn extends Model
 {
     use HasFactory;
 
@@ -28,6 +29,8 @@ class OrderCheckIn extends Model
     {
         return $this->belongsTo(OrderStatus::class, 'status_id', 'id');
     }
+
+
 
 
 

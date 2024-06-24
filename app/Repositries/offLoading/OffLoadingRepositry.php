@@ -177,8 +177,6 @@ class OffLoadingRepositry implements OffLoadingInterface {
 
             return Helper::success($media, $message="Images Uploaded Successfully");
 
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
@@ -199,9 +197,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
             $res = OrderOffLoading::with('filemedia')->where('order_check_in_id', $orderCheckinId)->first();
             return Helper::success($res, $message='Record found');
 
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
+        }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
@@ -212,9 +208,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
         try {
             $res = OrderOffLoading::with('checkin', 'order.packgingList.inventory','order.packgingList.filemedia', 'order.dock.loadType.eqType')->where('order_check_in_id', $orderCheckinId)->first();
             return Helper::success($res, $message = 'Record found');
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
+        }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(), []);
         }
     }
@@ -233,13 +227,29 @@ class OffLoadingRepositry implements OffLoadingInterface {
             return Helper::success($data, $message=__('translation.record_found'));
 
 
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
+        }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
     }
+
+
+        public function getOffLoadingInfo($id)
+    {
+        try {
+
+            $qry = OrderOffLoading::query();
+            $qry = $qry->with('orderCheckIn.orderContact:id,arrival_time','order.loadType.transMode');
+            $data=$qry->find($id);
+            return Helper::success($data, $message=__('translation.record_found'));
+
+
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
 
 }
 

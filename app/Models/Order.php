@@ -86,6 +86,11 @@ class Order extends Model
         return $this->hasMany(OrderContacts::class, 'order_id', 'id');
     }
 
+    public function loadType()
+    {
+        return $this->belongsTo(LoadType::class, 'load_type_id', 'id');
+    }
+
 
 
 }

@@ -24,6 +24,7 @@ interface WhInterface
     public function getWhDayWiseOperationalHours($wh_id);
     public function getDockWiseOperationalHour($request);
     public function getDoorsByWhId($request);
+    public function getWhLocations($whId);
 
 
 

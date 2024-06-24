@@ -9,6 +9,7 @@ use App\Models\OrderBookedSlot;
 use App\Models\WareHouse;
 use App\Models\WhAssignedField;
 use App\Models\WhDoor;
+use App\Models\WhLocation;
 use App\Models\WhOffDay;
 use App\Models\WhOperationHour;
 use App\Models\WhWorkingHour;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Exception;
 use Spatie\Permission\Models\Role;
 
 
@@ -828,6 +830,16 @@ class WhRepositry implements WhInterface {
 
         }
         catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function getWhLocations($whId)
+    {
+        try {
+        $data=WhLocation::where('wh_id',$whId)->get();
+        return Helper::success($data,'Wh Locations');
+        }catch (Exception $e){
             throw $e;
         }
     }
