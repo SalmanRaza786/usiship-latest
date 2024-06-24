@@ -111,4 +111,30 @@ class PutawayRepositry implements PutAwayInterface {
         }
 
     }
+
+    public function deletePutAway($id)
+    {
+        try {
+            $role = OrderItemPutAway::find($id);
+            $role->delete();
+            return Helper::success($role, $message=__('translation.record_deleted'));
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        }
+
+    }
+
+    public function checkPutAwayStatus($offLoadingId)
+    {
+        try {
+
+            $qry=OrderItemPutAway::query();
+            $qry=$qry->with('inventory');
+            $qry=$qry->where('order_off_loading_id',$offLoadingId);
+            $qry=$qry->get();
+            return  Helper::success($qry,'Put away items found');
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\PackgingList;
 use App\Repositries\inventory\InventoryInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\putaway\PutAwayInterface;
@@ -63,5 +64,40 @@ class PutAwayController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
 
+    }
+
+    //deletePutAwayItem
+    public function deletePutAwayItem($id)
+    {
+        try {
+            $res = $this->putAway->deletePutAway($id);
+            return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    //checkPutAwayStatus
+    public function checkPutAwayStatus($offLoadingId)
+    {
+        try {
+              $res = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId));
+              $itemList=collect([]);
+              foreach ($res as $row){
+                $packgingQty= PackgingList::where('inventory_id',$row->inventory_id)->where('order_id',$row->order_id)->sum('qty_received_each');
+
+                  $data=array(
+                      'item_name'=>$row->inventory->item_name,
+                      'sku'=>$row->inventory->sku,
+                      'put_away_qty'=>$row->qty,
+                      'packgingQty'=>$packgingQty,
+                      'pending'=>$packgingQty - $row->qty,
+                  );
+                  $itemList->push($data);
+              }
+
+            return Helper::success($itemList,'Putaway items list');
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
     }
 }
