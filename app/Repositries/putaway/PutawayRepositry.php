@@ -51,4 +51,64 @@ class PutawayRepositry implements PutAwayInterface {
 
     }
 
+    public function updateOrCreatePutAway($request)
+    {
+
+        try {
+            DB::beginTransaction();
+//            $validator = Validator::make($request->all(), [
+//                'qty' => 'required|string|max:255',
+//            ]);
+//            if ($validator->fails())
+//                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $orderId=$request->hidden_order_id;
+            $offLoadingId=$request->order_off_loading_id;
+            $id=$request->putAwayId[0];
+
+            foreach ($request->inventory_id as $key => $val) {
+
+                $item = OrderItemPutAway::updateOrCreate(
+                    [
+                        'id' =>$request->putAwayId[$key]
+                    ],
+                    [
+                        'order_id' =>$orderId,
+                        'order_off_loading_id' =>$offLoadingId,
+                        'inventory_id' => $request->inventory_id[$key],
+                        'qty' =>$request->qty[$key],
+                        'pallet_number' => $request->pallet_number[$key],
+                        'location_id' => $request->loc_id[$key],
+                        'status_id' => 14,
+                    ]
+                );
+            }
+
+            ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
+            DB::commit();
+
+
+            return Helper::success($item,$message);
+        }  catch (\Exception $e) {
+            DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
+    public function getPutAwayItemsAccordingOffLoading($OffLoadingId)
+    {
+        try {
+            $qry = OrderItemPutAway::query();
+            $qry =$qry->with('whLocation','inventory');
+            $qry =$qry->where('order_off_loading_id',$OffLoadingId);
+            $data=$qry->orderByDesc('id')->get();
+            return Helper::success($data, 'record_found');
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
 }

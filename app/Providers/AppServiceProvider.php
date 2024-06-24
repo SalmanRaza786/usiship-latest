@@ -20,6 +20,8 @@ use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\customField\CustomFieldRepositry;
 use App\Repositries\dock\DockInterface;
 use App\Repositries\dock\DockRepositry;
+use App\Repositries\inventory\InventoryInterface;
+use App\Repositries\inventory\InventoryRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
 
@@ -86,6 +88,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PackagingListInterface::class,PackagingListRepositry::class);
 
         $this->app->bind(PutAwayInterface::class,PutawayRepositry::class);
+        $this->app->bind(InventoryInterface::class,InventoryRepositry::class);
 
 
 
