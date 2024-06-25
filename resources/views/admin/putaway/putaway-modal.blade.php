@@ -18,7 +18,7 @@
                         <tr>
                             <th scope="col">Item Name</th>
                             <th scope="col">SKU</th>
-                            <th scope="col">Qty In Packing Slip</th>
+                            <th scope="col">Qty Received</th>
                             <th scope="col">Qty Put Away</th>
                             <th scope="col">Pending</th>
                         </tr>
