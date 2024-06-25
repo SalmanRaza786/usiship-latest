@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\OrderItemPutAway;
 use App\Models\PackgingList;
 use App\Repositries\inventory\InventoryInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
+use App\Repositries\packagingList\PackagingListInterface;
 use App\Repositries\putaway\PutAwayInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
@@ -17,11 +19,13 @@ class PutAwayController extends Controller
     private $offLoading;
     private $wh;
     private $inventory;
-    public function __construct(PutAwayInterface $putAway,OffLoadingInterface $offLoading,WhInterface $wh,InventoryInterface $inventory) {
+    private $packging;
+    public function __construct(PutAwayInterface $putAway,OffLoadingInterface $offLoading,WhInterface $wh,InventoryInterface $inventory,PackagingListInterface $packging) {
         $this->putAway = $putAway;
         $this->offLoading = $offLoading;
         $this->wh = $wh;
         $this->inventory =$inventory;
+        $this->packging =$packging;
     }
 
     public function index(){
@@ -58,7 +62,7 @@ class PutAwayController extends Controller
     //storePutAway
     public function storePutAway(Request $request){
         try {
-
+         $request->all();
            return $this->putAway->updateOrCreatePutAway($request);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
@@ -70,6 +74,9 @@ class PutAwayController extends Controller
     public function deletePutAwayItem($id)
     {
         try {
+            if(!OrderItemPutAway::find($id)){
+                return Helper::error('Invalid id',[]);
+            }
             $res = $this->putAway->deletePutAway($id);
             return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
         } catch (\Exception $e) {
@@ -83,7 +90,7 @@ class PutAwayController extends Controller
               $res = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId));
               $itemList=collect([]);
               foreach ($res as $row){
-                $packgingQty= PackgingList::where('inventory_id',$row->inventory_id)->where('order_id',$row->order_id)->sum('qty_received_each');
+                $packgingQty= $this->packging->getRecvQty($row->order_id,$row->inventory_id);
 
                   $data=array(
                       'item_name'=>$row->inventory->item_name,

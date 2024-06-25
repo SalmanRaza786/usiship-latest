@@ -68,7 +68,7 @@
                 <div class="card-body">
                     <div class="live-preview">
 
-                        <form action="{{route('admin.put-away.store')}}" method="post" id="PutAwayForm">
+                        <form action="{{route('admin.put-away.store')}}" method="post" id="PutAwayForm" enctype="multipart/form-data">
                             @csrf
                             <input type="number" class="d-none" name="hidden_order_id" value="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->order_id:''}}" placeholder="order_id">
                             <input type="number" class="d-none" name="order_off_loading_id" value="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->id:''}}" placeholder="off_loading_id">
@@ -109,7 +109,7 @@
 
                                 </td>
                                 <td>
-                                    <input class="form-control" type="number" step="0.01" placeholder="Qty" name="qty[]" required value="{{$row->qty}}">
+                                    <input class="form-control qty" type="number" step="0.01" placeholder="Qty" name="qty[]" required value="{{$row->qty}}">
                                 </td>
                                 <td>
                                     <input class="form-control" type="number" step="0.01" placeholder="Pallet #" name="pallet_number[]" required value="{{$row->pallet_number}}">
@@ -126,11 +126,25 @@
                                         @endforeach
                                     </select>
                                 </td>
-                                <td class="product-removal">
-                                    <a class="btn btn-success">Upload Photo</a>
+
+                                <td class="text-start" style="width: 150px;">
+                                    <div class="mb-2">
+                                        <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="putawayImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
+                                    </div>
+                                    @isset($row->putAwayMedia)
+                                        <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview">
+                                            @foreach($row->putAwayMedia as $image)
+                                                @if($image->field_name == 'putawayImages')
+                                                    <div class="preview">
+                                                        <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endisset
                                 </td>
                                 <td>
-                                    <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2" title="Remove" data="{{$row->id}}"></i>
+                                    <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2"  title="Remove" data="{{$row->id}}"></i>
 
                                 </td>
                             </tr>
@@ -152,7 +166,7 @@
 
                                     </td>
                                     <td>
-                                        <input class="form-control" type="number" step="0.01" placeholder="Qty" name="qty[]" required value="}">
+                                        <input class="form-control qty" type="number" step="0.01" placeholder="Qty" name="qty[]" required value="}">
                                     </td>
                                     <td>
                                         <input class="form-control" type="number" step="0.01" placeholder="Pallet #" name="pallet_number[]" required value="">
@@ -167,11 +181,26 @@
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td class="product-removal">
-                                        <a class="btn btn-success">Upload Photo</a>
+
+                                    <td class="text-start" style="width: 150px;">
+                                        <div class="mb-2">
+                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="putawayImages[0][]"  multiple accept="image/*" >
+                                        </div>
+
+                                        @isset($row->putAwayMedia)
+                                            <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview">
+                                                @foreach($row->putAwayMedia as $image)
+                                                    @if($image->field_name == 'putawayImages')
+                                                        <div class="preview">
+                                                            <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        @endisset
                                     </td>
                                     <td>
-                                        <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2" title="Remove"></i>
+                                        <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2" data="0" title="Remove"></i>
 
                                     </td>
                                 </tr>
@@ -196,14 +225,11 @@
         </div>
     </div>
 
-@include('admin.putaway.putaway-modal')
-
-
+    @include('admin.putaway.putaway-modal')
+    @include('admin.components.comon-modals.common-modal')
     @endsection
 
-@section('script')
-
+    @section('script')
     <script src="{{ URL::asset('build/js/custom-js/putaway/putaway.js') }}"></script>
-
-@endsection
+    @endsection
 

@@ -20,4 +20,20 @@ class OrderItemPutAway extends Model
         return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
     }
 
+    public function putAwayMedia()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($invoice) {
+            $invoice->putAwayMedia()->delete();
+
+        });
+    }
+
+
+
 }

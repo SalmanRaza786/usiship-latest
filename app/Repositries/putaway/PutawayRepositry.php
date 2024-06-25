@@ -23,6 +23,9 @@ use DataTables;
 
 class PutawayRepositry implements PutAwayInterface {
 
+    protected $putAwayFilePath = 'putaway-media/';
+    use HandleFiles;
+
     public function putAwayList($request)
     {
         try {
@@ -56,11 +59,11 @@ class PutawayRepositry implements PutAwayInterface {
 
         try {
             DB::beginTransaction();
-//            $validator = Validator::make($request->all(), [
-//                'qty' => 'required|string|max:255',
-//            ]);
-//            if ($validator->fails())
-//                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+            $validator = Validator::make($request->all(), [
+                'qty' => 'required',
+            ]);
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
             $orderId=$request->hidden_order_id;
             $offLoadingId=$request->order_off_loading_id;
@@ -82,8 +85,26 @@ class PutawayRepositry implements PutAwayInterface {
                         'status_id' => 14,
                     ]
                 );
-            }
 
+
+                if ($item) {
+                    $fileableId = $item->id;
+                    $fileableType = 'App\Models\OrderItemPutAway';
+
+                    // Handle multiple file uploads for each row
+                    if ($request->hasFile("putawayImages.$key")) {
+                        $uploadedFiles = $request->file("putawayImages.$key");
+
+                        $imageSets = [
+                            'putawayImages' => $uploadedFiles
+                        ];
+
+                        if (!empty($imageSets['putawayImages'])) {
+                            $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->putAwayFilePath);
+                        }
+                    }
+                }
+            }
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
 
@@ -99,6 +120,7 @@ class PutawayRepositry implements PutAwayInterface {
     {
         try {
             $qry = OrderItemPutAway::query();
+            $qry =$qry->with('putAwayMedia');
             $qry =$qry->with('whLocation','inventory');
             $qry =$qry->where('order_off_loading_id',$OffLoadingId);
             $data=$qry->orderByDesc('id')->get();
@@ -115,9 +137,9 @@ class PutawayRepositry implements PutAwayInterface {
     public function deletePutAway($id)
     {
         try {
-            $role = OrderItemPutAway::find($id);
-            $role->delete();
-            return Helper::success($role, $message=__('translation.record_deleted'));
+            $item = OrderItemPutAway::find($id);
+            $item->delete();
+            return Helper::success($item, $message=__('translation.record_deleted'));
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }

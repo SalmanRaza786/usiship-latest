@@ -113,6 +113,18 @@ class PackagingListRepositry implements PackagingListInterface {
 
     }
 
+    public function getRecvQty($orderId,$inventoryId)
+    {
+
+        try {
+          return  $packgingQty= PackgingList::where('inventory_id',$inventoryId)->where('order_id',$orderId)->sum('qty_received_each');
+
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
 
 }
 
