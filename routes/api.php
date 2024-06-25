@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderContactController;
 use App\Http\Controllers\Api\CheckInController;
 use App\Http\Controllers\Api\OffLoadingController;
+use App\Http\Controllers\Api\PutAwayController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -42,6 +43,13 @@ use App\Http\Controllers\Api\OffLoadingController;
     Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
     Route::any('/save-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate']);
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
+
+    //Putaway Items
+        Route::any('/put-away-list', [PutAwayController::class, 'putAwayList']);
+    Route::post('/store-put-away', [PutAwayController::class, 'storePutAway']);
+    Route::any('/create-put-away/{offLoadingId}', [PutAwayController::class, 'createPutAway']);
+    Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem']);
+    Route::get('/check-putaway-status/{id}', [PutAwayController::class, 'checkPutAwayStatus']);
 
 
 
