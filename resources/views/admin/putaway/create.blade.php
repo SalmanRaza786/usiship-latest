@@ -18,8 +18,10 @@
                         <h4 class="card-title mb-0">Item Put Away Detail</h4>
                     </div>
                     <div class="col-auto justify-content-sm-end">
+                        @canany('admin-putaway-create')
                         <button type="button" class="btn btn-info add-btn me-2 checkPutAwayStatus" id="savePutAwayStatus" ><i class="ri-eye-line align-bottom me-1"></i> Save Put Away Items</button>
                         <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="checkPutAwayStatus" data="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->id:''}}" data-bs-target="#loadTypeModal" ><i class="ri-add-line align-bottom me-1"></i> Check Put Away Status</button>
+                        @endcanany
                     </div>
                 </div>
                 <div class="card-body">
@@ -144,7 +146,9 @@
                                     @endisset
                                 </td>
                                 <td>
+                                    @canany('admin-putaway-delete')
                                     <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2"  title="Remove" data="{{$row->id}}"></i>
+                                        @endcanany
 
                                 </td>
                             </tr>
@@ -200,7 +204,9 @@
                                         @endisset
                                     </td>
                                     <td>
+                                        @canany('admin-putaway-delete')
                                         <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2" data="0" title="Remove"></i>
+                                        @endcanany
 
                                     </td>
                                 </tr>
@@ -211,7 +217,9 @@
                             <tbody>
                             <tr>
                                 <td colspan="5">
+                                    @canany('admin-putaway-create')
                                     <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row"><i class="ri-add-fill me-1 align-bottom"></i>New Row</button>
+                                    @endcanany
                                 </td>
                             </tr>
                             </tbody>

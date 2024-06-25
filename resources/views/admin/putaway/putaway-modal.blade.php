@@ -30,7 +30,9 @@
                     <div class="modal-footer">
                         <div class="hstack gap-2 justify-content-end">
                             <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
+                            @canany('admin-putaway-create')
                             <button  type="button" class="btn btn-success btn-close-putaway" data="{{$data['offLoadingInfo']->id}}">Close Put Away</button>
+                            @endcanany
 
                         </div>
                     </div>

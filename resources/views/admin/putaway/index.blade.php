@@ -107,9 +107,7 @@
                             d.s_status = $('select[name=s_status]').val()
 
                     },
-                    // dataSrc: function(response) {
-                    //     console.log('response',response);
-                    // }
+
                 },
 
                 columns: [
@@ -119,28 +117,21 @@
                     { data: null },
                     { data: null, orderable: false },
                 ],
-
-
                 columnDefs: [
-
                     {
                         targets: 3,
                         render: function(data, type, row, meta) {
                          return '<span class="badge '+row.status.class_name +' '+data.status.text_class + ' text-uppercase">'+row.status.status_title+'</span>';
-
                         }
                     },
                     {
                         targets: 4,
                         render: function(data, type, row, meta) {
                             var url = "{{ route('admin.put-away.create', ':id') }}";
-                            return '<a href="'+url.replace(':id', data.id)+'"><button type="button" class="btn btn-secondary waves-effect waves-light">Start Put Away Now</button></a>';
-
+                            return '@canany('admin-putaway-view')<a href="'+url.replace(':id', data.id)+'"><button type="button" class="btn btn-secondary waves-effect waves-light">Start Put Away Now</button></a>@endcanany';
                         }
                     },
-
                 ]
-
             });
 
         });

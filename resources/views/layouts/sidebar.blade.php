@@ -72,7 +72,7 @@
                         </a>
                     </li>
                 @endcanany
-                @canany('admin-load-view')
+                @canany('admin-putaway-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.put-away.index')?'active':''}}" href="{{route('admin.put-away.index')}}" >
                             <i class="ri-parent-fill"></i> <span>Item Put Away</span>
