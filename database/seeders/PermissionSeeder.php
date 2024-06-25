@@ -27,6 +27,7 @@ class PermissionSeeder extends Seeder
         $carriers_module = PermissionModule::updateOrCreate(['title' => 'Carriers'], ['title' =>'Carriers']);
         $order = PermissionModule::updateOrCreate(['title' => 'Orders'], ['title' =>'Orders']);
         $notification = PermissionModule::updateOrCreate(['title' => 'Notifications'], ['title' =>'Notifications']);
+        $itemPutAway = PermissionModule::updateOrCreate(['title' => 'Item Put Away'], ['title' =>'Item Put Away']);
 
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
 
@@ -100,6 +101,12 @@ class PermissionSeeder extends Seeder
 
             //Notifications
             ['name' => 'admin-notification-view', 'module_id' =>$notification->id, 'guard_name' => 'admin'],
+
+            //Item Put Away
+            ['name' => 'admin-putaway-view', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-putaway-create', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-putaway-edit', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-putaway-delete', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
 
 
 
