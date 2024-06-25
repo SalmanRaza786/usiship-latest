@@ -249,6 +249,19 @@ class OffLoadingRepositry implements OffLoadingInterface {
         }
 
     }
+    public function changeOffLoadingStatus($id,$statusId)
+    {
+        try {
+            $qry = OrderOffLoading::find($id);
+            $qry->status_id=$statusId;
+            $qry->save();
+            return Helper::success($qry, $message=__('translation.record_found'));
+
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
 
 
 }

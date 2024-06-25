@@ -1,12 +1,13 @@
 $(document).ready(function() {
 
     $('.btn-add-row').on('click', function() {
-        // Clone the first row
+
         var clonedRow = $('#clonedSection tr:first').clone();
 
-        // Clear input values
+
         clonedRow.find('input').val('');
         clonedRow.find('select').val('');
+        clonedRow.find('.sealImagesPreview').html('');
 
         // Append the cloned row to the table
         $('#clonedSection').append(clonedRow);
@@ -136,7 +137,9 @@ $(document).ready(function() {
                 if(response.status) {
 
                     var html = '';
+                    var totalPending=0;
                     $.each(response.data, function (key, row) {
+                        totalPending=parseFloat(totalPending) + parseFloat(row.pending);
 
                         html += '<tr>' +
                             '<td>' + row.item_name + '</td>' +
@@ -148,6 +151,12 @@ $(document).ready(function() {
 
                         $('#putAwayItems').html(html);
                     });
+
+                    if(totalPending==0){
+                        $('.btn-close-putaway').removeClass('disabled');
+                    }else{
+                        $('.btn-close-putaway').addClass('disabled');
+                    }
                     $('#loadTypeTable').html(html);
                 }
                 else{
@@ -164,25 +173,26 @@ $(document).ready(function() {
             }
         });
     });
-    fnGetPutAwayQty();
-    function fnGetPutAwayQty(){
 
-        const offLoadingId=$('input[name=order_off_loading_id]').val();
+    //btn-close-putaway
+    $('.btn-close-putaway').on('click',function (){
 
+        const offLoadingId=$(this).attr('data');
         $.ajax({
-            url: route('admin.put-away.status',{id:offLoadingId}),
+            url: route('admin.offloading.status.change',{id:offLoadingId}),
             type: 'GET',
             async: false,
             dataType: 'json',
-
+            beforeSend: function() {
+                $('.btn-close-putaway').text('Processing...');
+                $(".btn-close-putaway").prop("disabled", true);
+            },
             success: function(response) {
-
-                if(response.status) {
-                    console.log('response',response);
-                }
-                else{
-                    toastr.error('Record not exist');
-                }
+                window.location.href =route('admin.put-away.index');
+            },
+            complete: function() {
+                $('.btn-close-putaway').text('Close Put Away');
+                $(".btn-close-putaway").prop("disabled",false);
             },
             error: function(xhr, status, error) {
                 if(xhr.responseText){
@@ -193,13 +203,8 @@ $(document).ready(function() {
                 }
             }
         });
-    }
-
-
-
-
-    $('#clonedSection').on('keyup', '.qty', function() {
-
-       // alert('key up');
     });
+
+
+
 });

@@ -88,6 +88,7 @@ class PutAwayController extends Controller
     {
         try {
               $res = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId));
+
               $itemList=collect([]);
               foreach ($res as $row){
                 $packgingQty= $this->packging->getRecvQty($row->order_id,$row->inventory_id);

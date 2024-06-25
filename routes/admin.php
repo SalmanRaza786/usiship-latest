@@ -165,6 +165,7 @@ use App\Http\Controllers\Admin\PutAwayController;
 
         Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId'])->name('off-loading.check.checkin.id');
         Route::any('/packaging-list-confirm/{id}', [OffLoadingController::class, 'packagingListConfirmation'])->name('off-loading.confirm.packaging.list');
+        Route::any('/offloading-status-change/{id}', [OffLoadingController::class, 'offloadingStatusChange'])->name('offloading.status.change');
 
         Route::any('/update-packaging-list', [PackagingListController::class, 'updatePackagingList'])->name('update.packaging.list');
 

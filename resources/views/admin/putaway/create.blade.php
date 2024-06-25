@@ -132,7 +132,7 @@
                                         <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="putawayImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
                                     </div>
                                     @isset($row->putAwayMedia)
-                                        <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview">
+                                        <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview" id="sealImagesPreview">
                                             @foreach($row->putAwayMedia as $image)
                                                 @if($image->field_name == 'putawayImages')
                                                     <div class="preview">
@@ -188,7 +188,7 @@
                                         </div>
 
                                         @isset($row->putAwayMedia)
-                                            <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview">
+                                            <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview" id="sealImagesPreview">
                                                 @foreach($row->putAwayMedia as $image)
                                                     @if($image->field_name == 'putawayImages')
                                                         <div class="preview">

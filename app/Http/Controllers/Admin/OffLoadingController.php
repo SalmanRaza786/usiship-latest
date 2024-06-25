@@ -110,4 +110,15 @@ class OffLoadingController extends Controller
         }
 
     }
+
+    //offloadingStatusChange
+    public function offloadingStatusChange($id)
+    {
+        try {
+            $res= $this->offloaing->changeOffLoadingStatus($id,14);
+           return Helper::success($res->get('data'),'status changed');
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
 }

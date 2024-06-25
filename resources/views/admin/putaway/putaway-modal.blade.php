@@ -30,7 +30,7 @@
                     <div class="modal-footer">
                         <div class="hstack gap-2 justify-content-end">
                             <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
-                            <a href="{{route('admin.put-away.index')}}" type="button" class="btn btn-danger" id="add-btn">Close Put Away</a>
+                            <button  type="button" class="btn btn-success btn-close-putaway" data="{{$data['offLoadingInfo']->id}}">Close Put Away</button>
 
                         </div>
                     </div>

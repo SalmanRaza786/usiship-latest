@@ -123,7 +123,7 @@ class PutawayRepositry implements PutAwayInterface {
             $qry =$qry->with('putAwayMedia');
             $qry =$qry->with('whLocation','inventory');
             $qry =$qry->where('order_off_loading_id',$OffLoadingId);
-            $data=$qry->orderByDesc('id')->get();
+            $data=$qry->get();
             return Helper::success($data, 'record_found');
 
         } catch (ValidationException $validationException) {
@@ -150,9 +150,11 @@ class PutawayRepositry implements PutAwayInterface {
     {
         try {
 
-            $qry=OrderItemPutAway::query();
+            $qry = OrderItemPutAway::query();
             $qry=$qry->with('inventory');
-            $qry=$qry->where('order_off_loading_id',$offLoadingId);
+            $qry=$qry->select('order_id','inventory_id', DB::raw('SUM(qty) as qty'));
+            $qry=$qry->where('order_off_loading_id', $offLoadingId);
+            $qry=$qry->groupBy('order_id','inventory_id');
             $qry=$qry->get();
             return  Helper::success($qry,'Put away items found');
         }catch(\Exception $e){
