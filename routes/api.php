@@ -45,11 +45,12 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
 
     //Putaway Items
-        Route::any('/put-away-list', [PutAwayController::class, 'putAwayList']);
+    Route::any('/put-away-list', [PutAwayController::class, 'putAwayList']);
     Route::post('/store-put-away', [PutAwayController::class, 'storePutAway']);
     Route::any('/create-put-away/{offLoadingId}', [PutAwayController::class, 'createPutAway']);
     Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem']);
     Route::get('/check-putaway-status/{id}', [PutAwayController::class, 'checkPutAwayStatus']);
+    Route::get('/close-putaway', [OffLoadingController::class, 'closeItemPutAway']);
 
 
     Route::any('/get-off-loading-data', [OffLoadingController::class, 'packagingListConfirmation']);
