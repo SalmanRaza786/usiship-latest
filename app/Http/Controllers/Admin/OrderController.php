@@ -88,8 +88,7 @@ class OrderController extends Controller
     public function getOrderDetail($id)
     {
         try {
-
-                 $data['orderDetail']=$this->getOrderInfo($id);
+            $data['orderDetail']=$this->getOrderInfo($id);
             return view('admin.order.order-detail')->with(compact('data'));
         } catch (\Exception $e) {
             return $e->getMessage();

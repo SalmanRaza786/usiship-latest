@@ -28,5 +28,17 @@ class PackagingListController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
+    public function downloadPackagingList()
+    {
+        try {
+           return $roleUpdateOrCreate = $this->packginglist->downloadPackgingListSample();
+            if ($roleUpdateOrCreate->get('status'))
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
 
 }

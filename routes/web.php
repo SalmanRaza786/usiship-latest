@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\LoadTypeController;
 use App\Http\Controllers\Admin\DockController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\Admin\PackagingListController;
 
 
 Auth::routes();
@@ -26,6 +27,7 @@ Auth::routes();
     Route::any('/edit-appointment/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::any('/cancel-appointment/{id}', [AppointmentController::class, 'cancelAppointment'])->name('appointment.cancel');
     Route::any('/upload-packaging-list', [AppointmentController::class, 'uploadPackagingList'])->name('appointment.upload-list');
+    Route::any('/download-packaging-list', [PackagingListController::class, 'downloadPackagingList'])->name('appointment.download-list');
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 
     });

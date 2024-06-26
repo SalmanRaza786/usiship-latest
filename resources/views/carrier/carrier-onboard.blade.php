@@ -26,9 +26,12 @@
                     <div class="col-lg-12">
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
-                                <a href="index.html" class="d-inline-block auth-logo">
-                                    <img src="https://usiship.designkorner.com/storage/appsettings/66461749f06a4.png" alt=""
-                                         height="60">
+                                <a href="#" class="d-inline-block auth-logo">
+                                    @if($appInfo->count() > 0)
+                                        @include('components.auth-logo')
+                                    @else
+                                        <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="" height="50">
+                                    @endif
                                 </a>
                             </div>
                             <p class="mt-3 fs-15 fw-medium">Your Delivery Partners</p>
@@ -221,7 +224,7 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL Image</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"  accept="image/*" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -235,7 +238,7 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Do Document</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document" type="file"  accept="image/*" required>
                                                         </div>
                                                     </div>
 
@@ -244,13 +247,13 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document" type="file">
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*" type="file">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -282,7 +285,7 @@
                                                                    style="width:120px;height:120px"></lord-icon>
                                                     </div>
                                                     <h5>Well Done !</h5>
-                                                    <p class="text-muted">You have Successfully Signed Up</p>
+                                                    <p class="text-muted">You have successfully requested for Check-In</p>
                                                 </div>
                                             </div>
                                         </div>

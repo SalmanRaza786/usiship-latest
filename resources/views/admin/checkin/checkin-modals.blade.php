@@ -36,7 +36,7 @@
                         <div class="col-md-6">
                             <div>
                                 <label for="labelInput" class="form-label">Upload Container Photo</label>
-                                <input class="form-control" type="file" id="formFile" name="containerImages[]" multiple required>
+                                <input class="form-control" type="file" id="formFile" name="containerImages[]" multiple  accept="image/*" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -47,17 +47,17 @@
                         </div><div class="col-md-6">
                             <div>
                                 <label for="labelInput" class="form-label">Upload Seal Photo</label>
-                                <input class="form-control" type="file" id="formFile" name="sealImages[]" multiple required>
+                                <input class="form-control" type="file" id="formFile" name="sealImages[]"  accept="image/*" multiple required>
                             </div>
                         </div><div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Delivery Order Signature</label>
-                                <input type="text" class="form-control" id="basiInput" name="do_signature" required>
+                                <input type="text" class="form-control" id="basiInput" name="do_signature"   required>
                             </div>
                         </div><div class="col-md-6">
                             <div>
                                 <label for="labelInput" class="form-label">Upload Delivery Order Signature Image</label>
-                                <input class="form-control" type="file" id="formFile" name="do_signatureImages[]" multiple required>
+                                <input class="form-control" type="file" id="formFile" name="do_signatureImages[]"  accept="image/*" multiple required>
                             </div>
                         </div><div class="col-md-6">
                             <div>
@@ -67,7 +67,7 @@
                         </div><div class="col-md-6">
                             <div>
                                 <label for="labelInput" class="form-label">Upload Other Document Image</label>
-                                <input class="form-control" type="file" id="formFile" name="other_docImages[]" multiple >
+                                <input class="form-control" type="file" id="formFile" name="other_docImages[]"  accept="image/*" multiple >
                             </div>
                         </div>
 
@@ -141,7 +141,7 @@
                                         <div class="d-none"><i class="ri-map-pin-2-line align-bottom me-1 "></i>  <span class="job-location">Warehouse</span></div>
                                         <div><i class="ri-star-line align-bottom me-1"></i><span class="verify"></span> </div>
                                         <div><i class="ri-time-line align-bottom me-1"></i> <span class="arrive_time"> </span></div>
-                                        <div><button type="submit" class="btn btn-primary viewjob-list btn-submit " id="add-btn">Verify<i class="ri-chat-check-line align-bottom ms-1"></i></button>
+                                        <div><button type="submit" class="btn btn-primary viewjob-list btn-verify " id="add-btn">Verify<i class="ri-chat-check-line align-bottom ms-1"></i></button>
                                     </div>
                                 </div>
                             </div>

@@ -59,8 +59,8 @@ $(document).ready(function(){
             cache: false,
             processData: false,
             beforeSend: function() {
-                $('.btn-submit').text('Processing...');
-                $(".btn-submit").prop("disabled", true);
+                $('.btn-verify').text('Processing...');
+                $(".btn-verify").prop("disabled", true);
             },
             success: function(response) {
                 if (response.status==true) {
@@ -73,12 +73,12 @@ $(document).ready(function(){
                 }
             },
             complete: function(data) {
-                $(".btn-submit").html("Verify");
-                $(".btn-submit").prop("disabled", false);
+                $(".btn-verify").html("Verify");
+                $(".btn-verify").prop("disabled", false);
             },
             error: function() {
-                $('.btn-submit').text('Verify');
-                $(".btn-submit").prop("disabled", false);
+                $('.btn-verify').text('Verify');
+                $(".btn-verify").prop("disabled", false);
             }
         });
 
@@ -152,6 +152,13 @@ $(document).ready(function(){
                         $('.phone_no').text(response.data.carrier.contacts);
                         $('.arrive_time').text('Arrive Time : '+response.data.arrival_time);
                         $('.verify').text(response.data.is_verify);
+
+                        if(response.data.is_verify == "Not Verified")
+                        {
+                            $('.btn-verify').removeClass('d-none');
+                        }else {
+                            $('.btn-verify').addClass('d-none');
+                        }
 
                         $.each(response.data.carrier.docimages, function(index, file) {
                         html +='<div class="col-sm-3">'+

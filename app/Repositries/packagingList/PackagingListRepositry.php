@@ -14,7 +14,9 @@ use App\Repositries\appointment\AppointmentRepositry;
 use App\Repositries\orderContact\OrderContactRepositry;
 use App\Traits\HandleFiles;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use DataTables;
@@ -118,6 +120,23 @@ class PackagingListRepositry implements PackagingListInterface {
 
         try {
           return  $packgingQty= PackgingList::where('inventory_id',$inventoryId)->where('order_id',$orderId)->sum('qty_received_each');
+
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function downloadPackgingListSample()
+    {
+        try {
+            $filePath = public_path('sample_files/packging_list_sample.xlsx');
+            if (!File::exists($filePath)) {
+                return Helper::error('File not found.');
+            }
+            $headers = [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ];
+            return Response::download($filePath, 'packging_list_sample.xlsx', $headers);
 
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
