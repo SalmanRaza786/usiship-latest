@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\OrderOffLoading;
 use App\Repositries\checkIn\CheckInInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use Illuminate\Http\Request;
@@ -58,6 +59,20 @@ class OffLoadingController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
 
+    }
+
+    public function closeItemPutAway(Request $request)
+    {
+        try {
+            $offLoadingId = $request->query('offLoadingId');
+            if(!OrderOffLoading::find($offLoadingId)){
+                return Helper::error('Invalid offloading id',[]);
+            }
+            $res= $this->offloaing->changeOffLoadingStatus($offLoadingId,14);
+            return Helper::success($res->get('data'),'status changed');
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
     }
 
 }
