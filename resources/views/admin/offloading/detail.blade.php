@@ -38,7 +38,7 @@
                         @csrf
                             <input type="hidden" name="order_checkin_id" id="order_checkin_id" value="{{$data->id}}"/>
                             <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
-                            <button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>
+                            @canany('admin-offloading-create')<button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>@endcanany
                         </form>
                     </div>
                 </div>
@@ -294,7 +294,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>
+                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany
                 </div>
             </div>
         </div>

@@ -31,10 +31,12 @@ class CheckInRepositry implements CheckInInterface {
 
             $qry = OrderCheckIn::query();
             $qry =$qry->with('orderContact','order.dock.loadType.eqType','status');
+            $qry =$qry->where('status_id','!=',10);
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
             });
+         
 
 
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));

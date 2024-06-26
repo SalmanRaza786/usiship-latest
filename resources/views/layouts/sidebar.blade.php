@@ -58,14 +58,14 @@
                         </a>
                     </li>
                 @endcanany
-                @canany('admin-load-view')
+                @canany('admin-checkin-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.check-in.index')?'active':''}}" href="{{route('admin.check-in.index')}}" >
                             <i class="ri-parent-fill"></i> <span>Check In</span>
                         </a>
                     </li>
                 @endcanany
-                @canany('admin-load-view')
+                @canany('admin-offloading-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.off-loading.index')?'active':''}}" href="{{route('admin.off-loading.index')}}" >
                             <i class="ri-parent-fill"></i> <span>Off Loading</span>

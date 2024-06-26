@@ -148,11 +148,10 @@
                             const orderId = data.order_id ;
                             if(status.id == 12)
                             {
-                                return `@canany('admin-user-edit')<a href="{{route('admin.off-loading.index')}}" type="button" class="btn btn-primary">Ready for Offloading</a>@endcanany`;
+                                return `@canany('admin-checkin-create')<a href="{{route('admin.off-loading.index')}}" type="button" class="btn btn-primary">Ready for Offloading</a>@endcanany`;
                             }else{
-                                return `@canany('admin-user-edit')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>@endcanany
-                                <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Documents</a>
-                                `;
+                                return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>
+                                <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Documents</a> @endcanany`;
                             }
                         }
                     }

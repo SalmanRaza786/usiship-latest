@@ -134,10 +134,10 @@
                             const orderId = data.order_id ;
                             if(status.id == 3)
                             {
-                                return `@canany('admin-user-edit')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Off Loading In-Progress</a>@endcanany`;
+                                return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Off Loading In-Progress</a>@endcanany`;
                             }else
                             {
-                                return `@canany('admin-user-edit')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Start Off Loading Now</a>@endcanany`;
+                                return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Start Off Loading Now</a>@endcanany`;
                             }
 
                         }

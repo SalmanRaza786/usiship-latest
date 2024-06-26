@@ -40,7 +40,6 @@ class CheckInController extends Controller
 
     public function checkinCreateOrUpdate(Request $request)
     {
-
         try {
           $roleUpdateOrCreate = $this->checkin->checkinSave($request,$request->order_contact_id);
             if ($roleUpdateOrCreate->get('status'))

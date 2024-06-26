@@ -26,6 +26,7 @@ class OrderContactRepositry implements OrderContactInterface {
 
             $qry = OrderContacts::query();
             $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
+            $qry =$qry->where('status_id','!=',12);
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
 

@@ -250,7 +250,7 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document" type="file">
                                                         </div>
                                                     </div>
                                                 </div>
