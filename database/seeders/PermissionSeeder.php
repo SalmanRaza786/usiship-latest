@@ -27,6 +27,8 @@ class PermissionSeeder extends Seeder
         $carriers_module = PermissionModule::updateOrCreate(['title' => 'Carriers'], ['title' =>'Carriers']);
         $order = PermissionModule::updateOrCreate(['title' => 'Orders'], ['title' =>'Orders']);
         $notification = PermissionModule::updateOrCreate(['title' => 'Notifications'], ['title' =>'Notifications']);
+        $CheckIn = PermissionModule::updateOrCreate(['title' => 'Check-In'], ['title' =>'Check-In']);
+        $OffLoading = PermissionModule::updateOrCreate(['title' => 'Off Loading'], ['title' =>'Off Loading']);
         $itemPutAway = PermissionModule::updateOrCreate(['title' => 'Item Put Away'], ['title' =>'Item Put Away']);
 
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
@@ -101,6 +103,18 @@ class PermissionSeeder extends Seeder
 
             //Notifications
             ['name' => 'admin-notification-view', 'module_id' =>$notification->id, 'guard_name' => 'admin'],
+
+            //Checkin Away
+            ['name' => 'admin-checkin-view', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-checkin-create', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-checkin-edit', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-checkin-delete', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+
+            //Off Loading Away
+            ['name' => 'admin-offloading-view', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-offloading-create', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-offloading-edit', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-offloading-delete', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
 
             //Item Put Away
             ['name' => 'admin-putaway-view', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],

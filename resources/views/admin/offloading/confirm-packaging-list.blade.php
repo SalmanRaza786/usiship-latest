@@ -35,7 +35,7 @@
                                 @csrf
                                 <input type="hidden" name="id" id="id" value="{{$data->id}}"/>
                                 <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
-                                <button type="submit" class="btn btn-success btn-submit"  style=""> <i class="ri-save-line align-bottom me-1"></i> Save/Close Packing List</button>
+                                @canany('admin-offloading-create')<button type="submit" class="btn btn-success btn-submit"  style=""> <i class="ri-save-line align-bottom me-1"></i> Save/Close Packing List</button>@endcanany
                             </form>
                         </div>
                     </div>
