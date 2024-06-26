@@ -36,7 +36,7 @@ class CheckInRepositry implements CheckInInterface {
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
             });
-         
+
 
 
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));

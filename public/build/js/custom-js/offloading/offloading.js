@@ -1,6 +1,35 @@
 
 $(document).ready(function(){
     checkOffLoading();
+    checkInputs();
+    function checkInputs() {
+        let allFilled = true;
+        let allDisabled = true;
+
+        $('input[type="text"]').each(function() {
+            if ($(this).val() === '') {
+                allFilled = false;
+            }
+        });
+
+        $('input[type="file"]').each(function() {
+            if (!$(this).prop('disabled')) {
+                allDisabled = false;
+            }
+        });
+
+        if (allFilled && allDisabled) {
+            $('.btn-confirm').removeClass('d-none');
+        } else {
+            $('.btn-confirm').addClass('d-none');
+        }
+    }
+
+    $('input').on('input', function() {
+        checkInputs();
+    });
+
+
 
     $('#addForm').on('submit', function(e) {
         e.preventDefault();
@@ -265,8 +294,10 @@ $(document).ready(function(){
     function displayImages(data) {
 
         data.forEach(function(image) {
+            const a = $('<a>').addClass('popup-img d-inline-block').attr('href','/storage/uploads/' + image.file_name);
             var img = $('<img>').attr('src', '/storage/uploads/' + image.file_name).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
-            var div = $('<div>').addClass('preview').append(img);
+            a.append(img);
+            var div = $('<div>').addClass('preview').append(a);
 
             $('#'+image.field_name+'Preview').append(div);
             $('#input' + image.field_name).val(image.created_at);

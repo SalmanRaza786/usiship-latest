@@ -62,6 +62,11 @@
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link " href="{{route('user.appointment.download-list')}}"  role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                        <i class="ri-download-2-line"></i> <span data-key="t-dashboards">Download Packaging List Sample File</span>
+                    </a>
+                </li>
 
 {{--                <li class="nav-item">--}}
 {{--                    <a class="nav-link menu-link collapsed" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">--}}

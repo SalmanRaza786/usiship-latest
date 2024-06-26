@@ -386,8 +386,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="ms-3 flex-grow-1">
-                                                                            <h6 class="fs-15 mb-0"><a href="javascript:void(0)"></a>
-                                                                            </h6>
+                                                                            <h6 class="fs-15 mb-0"><a href="{{asset('storage/uploads/'.$row->file_name)}}" target="_blank" >{{$row->file_name ?? "-"}}</a></h6>
                                                                         </div>
                                                                     @else
                                                                         <div class="avatar-sm">
@@ -396,7 +395,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="ms-3 flex-grow-1">
-                                                                            <h6 class="fs-15 mb-0"><a href="javascript:void(0)">{{$row->file_name ?? "-"}}</a>
+                                                                            <h6 class="fs-15 mb-0"><a href="{{asset('storage/uploads/'.$row->file_name)}}" target="_blank" >{{$row->file_name ?? "-"}}</a>
                                                                             </h6>
                                                                         </div>
                                                                     @endif
@@ -452,11 +451,11 @@
                                                     <th scope="col">Item Name</th>
                                                     <th scope="col">Sku</th>
                                                     <th scope="col">Qty</th>
-                                                    <th scope="col">Received Qty</th>
-                                                    <th scope="col">HI</th>
-                                                    <th scope="col">Ti</th>
-                                                    <th scope="col">Remarks</th>
-                                                    <th scope="col">Attachments</th>
+{{--                                                    <th scope="col">Received Qty</th>--}}
+{{--                                                    <th scope="col">HI</th>--}}
+{{--                                                    <th scope="col">Ti</th>--}}
+{{--                                                    <th scope="col">Remarks</th>--}}
+{{--                                                    <th scope="col">Attachments</th>--}}
                                                 </tr>
                                                 </thead>
                                                 <tbody id="packagingTable">
@@ -468,11 +467,11 @@
                                                             <td>{{$row->inventory->item_name ?? "-"}}</td>
                                                             <td>{{$row->inventory->sku ?? "-"}}</td>
                                                             <td>{{$row->qty ?? "-"}}</td>
-                                                            <td><input type="number" name="receiveQty[]" placeholder="Enter Qty" value="{{(($row->recv_qty!=null)?$row->recv_qty:"")}}" class="form-control" /> </td>
-                                                            <td><input type="text" name="hi[]" placeholder="Enter HI" value="{{(($row->hi!=null)?$row->hi:"")}}" class="form-control" /> </td>
-                                                            <td><input type="text" name="ti[]" placeholder="Enter Ti" value="{{(($row->ti!=null)?$row->ti:"")}}" class="form-control" /> </td>
-                                                            <td><input type="text" name="remarks[]" placeholder="Enter Remarks" value="{{(($row->remarks!=null)?$row->remarks:"")}}" class="form-control" /></td>
-                                                            <td> <button type="button" data="{{$row->id}}" class="btn btn-outline-primary btn-image-upload right" role="button"  data-bs-toggle="modal"  data-bs-target="#addImagesModal"><i class="ri-upload-line label-icon align-middle fs-16 ms-2"></i> Attach Images</button></td>
+{{--                                                            <td><input type="number" name="receiveQty[]" placeholder="Enter Qty" value="{{(($row->recv_qty!=null)?$row->recv_qty:"")}}" class="form-control" /> </td>--}}
+{{--                                                            <td><input type="text" name="hi[]" placeholder="Enter HI" value="{{(($row->hi!=null)?$row->hi:"")}}" class="form-control" /> </td>--}}
+{{--                                                            <td><input type="text" name="ti[]" placeholder="Enter Ti" value="{{(($row->ti!=null)?$row->ti:"")}}" class="form-control" /> </td>--}}
+{{--                                                            <td><input type="text" name="remarks[]" placeholder="Enter Remarks" value="{{(($row->remarks!=null)?$row->remarks:"")}}" class="form-control" /></td>--}}
+{{--                                                            <td> <button type="button" data="{{$row->id}}" class="btn btn-outline-primary btn-image-upload right" role="button"  data-bs-toggle="modal"  data-bs-target="#addImagesModal"><i class="ri-upload-line label-icon align-middle fs-16 ms-2"></i> Attach Images</button></td>--}}
                                                         </tr>
 
                                                     @endforeach
@@ -484,9 +483,9 @@
 
 
 
-                                                <div class="hstack gap-2 justify-content-end">
-                                                    <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Submit</button>
-                                                </div>
+{{--                                                <div class="hstack gap-2 justify-content-end">--}}
+{{--                                                    <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Submit</button>--}}
+{{--                                                </div>--}}
                                             </form>
                                         @else
                                             <div class="text-center mt-3">
@@ -553,6 +552,7 @@
 
                                     </div>
                                     <div class="card-body">
+
                                         @if(count($data['orderDetail']['data']['orderContacts']) > 0)
                                         <div id="job-list">
                                             @foreach($data['orderDetail']['data']['orderContacts'] as $row)
@@ -578,22 +578,23 @@
                                                             </button>
                                                         </div>
                                                     </div>
-{{--                                                    <p class="text-muted job-description">A UI/UX designer's job is to create user-friendly interfaces that enable users to understand how to use complex technical products. If you're passionate about the latest technology trends and devices, you'll find great fulfillment in being involved in the design process for the next hot gadget.</p>--}}
                                                     <div class="row g-3">
-                                                        <div class="col-sm-4">
-                                                            <figure class="figure mb-0">
-                                                                <img src="{{($row->carrier->id_card_image!=null)?asset('storage/uploads/'.$row->carrier->id_card_image):asset('build/images/small/img-4.jpg')}}" class="figure-img img-fluid rounded" alt="...">
-                                                                <figcaption class="figure-caption">ID Card.</figcaption>
-                                                                <a href="#" type="button" class="float-end" data="{{$row->carrier_id}}" ><i class=" ri-edit-box-fill align-bottom me-1"></i></a>
-                                                            </figure>
-                                                        </div>
-                                                        <div class="col-sm-4">
-                                                            <figure class="figure mb-0">
-                                                                <img src="{{($row->carrier->id_card_image!=null)?asset('storage/uploads/'.$row->carrier->other_docs):asset('build/images/small/img-4.jpg')}}" class="figure-img img-fluid rounded" alt="...">
-                                                                <figcaption class="figure-caption text-end">Other Documents</figcaption>
-                                                                <a href="#" type="button" class="float-end" data="{{$row->carrier_id}}"><i class=" ri-edit-box-fill align-bottom me-1"></i></a>
-                                                            </figure>
-                                                        </div>
+                                                        @foreach($row->filemedia as $image)
+                                                            <div class="col-sm-4">
+                                                                <figure class="figure mb-0">
+                                                                    <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="figure-img img-fluid rounded">
+                                                                    <figcaption class="figure-caption">{{$image->field_name}}</figcaption>
+                                                                </figure>
+                                                            </div>
+                                                        @endforeach
+                                                        @foreach($row->carrier->docimages as $doc)
+                                                                <div class="col-sm-4">
+                                                                    <figure class="figure mb-0">
+                                                                        <img src="{{asset('storage/uploads/'.$doc->file_name)}}" alt="Image Preview" class="figure-img img-fluid rounded">
+                                                                        <figcaption class="figure-caption">{{$doc->field_name}}</figcaption>
+                                                                    </figure>
+                                                                </div>
+                                                            @endforeach
                                                     </div>
 {{--                                                    <div><span class="badge bg-primary-subtle text-primary me-1">Design</span><span class="badge bg-primary-subtle text-primary me-1">Remote</span><span class="badge bg-primary-subtle text-primary me-1">UI/UX Designer</span><span class="badge bg-primary-subtle text-primary me-1">Designer</span></div>--}}
                                                 </div>
@@ -604,7 +605,16 @@
                                                         <div><i class="ri-map-pin-2-line align-bottom me-1"></i>  <span class="job-location">Warehouse</span></div>
                                                         <div><i class="ri-star-line align-bottom me-1"></i>{{$row->is_verify??'-'}} </div>
                                                         <div><i class="ri-time-line align-bottom me-1"></i> <span class="job-postdate">Arrive Time: {{$row->arrival_time??'-'}}</span></div>
-                                                        <div><a href="#!" class="btn btn-primary viewjob-list">Verify<i class="ri-chat-check-line align-bottom ms-1"></i></a></div>
+                                                       @if($row->is_verify === "Not Verified")
+                                                        <div>
+                                                            <form method="post" class=" g-3 needs-validation" action="{{route('admin.orderContact.update')}}" autocomplete="off" id="verifyForm" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{$row->id}}">
+                                                                <input type="hidden" name="order_id" value="{{$data['orderDetail']['data']['id']}}">
+                                                            <button type="submit" class="btn btn-primary viewjob-list btn-verify">Verify<i class="ri-chat-check-line align-bottom ms-1"></i></button>
+                                                            </form>
+                                                        </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>

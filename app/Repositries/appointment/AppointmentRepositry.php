@@ -384,7 +384,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
 
             $qry= Order::query();
-            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company');
+            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {

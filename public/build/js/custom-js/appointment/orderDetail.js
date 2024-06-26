@@ -189,6 +189,41 @@ $(document).ready(function(){
         });
     });
 
+    $('#verifyForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-verify').text('Processing...');
+                $(".btn-verify").prop("disabled", true);
+            },
+            success: function(response) {
+                if (response.status==true) {
+                    toastr.success(response.message);
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+                $(".btn-verify").html("Verify");
+                $(".btn-verify").prop("disabled", false);
+            },
+            error: function() {
+                $('.btn-verify').text('Verify');
+                $(".btn-verify").prop("disabled", false);
+            }
+        });
+
+
+    });
+
 
 })
 
