@@ -50,8 +50,8 @@ class PackagingListRepositry implements PackagingListInterface {
                 'custom_field_2' => 'nullable|string',
                 'custom_field_3' => 'nullable|string',
                 'custom_field_4' => 'nullable|string',
-                'damageImages.*' => 'nullable|image|max:2048', // Validate each image
-                'upc_label_photos.*' => 'nullable|image|max:2048', // Validate each image
+                'damageImages.*' => 'nullable|image|max:2048',
+                'upc_label_photos.*' => 'nullable|image|max:2048',
             ]);
 
             if ($validator->fails())

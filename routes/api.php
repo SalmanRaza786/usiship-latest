@@ -53,6 +53,10 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::get('/close-putaway', [OffLoadingController::class, 'closeItemPutAway']);
 
 
+    Route::any('/get-off-loading-data', [OffLoadingController::class, 'packagingListConfirmation']);
+    Route::any('/update-off-loading-packaging-list', [OffLoadingController::class, 'updateOffLoadingPackagingList']);
+
+
 
 
 
