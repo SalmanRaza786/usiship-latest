@@ -26,11 +26,13 @@ Auth::routes();
     Route::any('/upload-packaging-list', [AppointmentController::class, 'uploadPackagingList'])->name('appointment.upload-list');
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 
+        Route::get('/home', [HomeController::class, 'index'])->name('home');
+        Route::get('/', [HomeController::class, 'index'])->name('index');
+
     });
 
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/', [HomeController::class, 'index'])->name('user.index');
+
 
 
     Route::get('/custom-logout', [HomeController::class, 'customLogout']);
