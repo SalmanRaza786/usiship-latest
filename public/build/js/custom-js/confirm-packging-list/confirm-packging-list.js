@@ -1,6 +1,36 @@
 
 $(document).ready(function(){
 
+    function checkAllFields() {
+        var allFilled = true;
+        $('tr.product').each(function() {
+            var cartonsQty = $(this).find('input[name="cartons_qty"]').val();
+            var receivedEach = $(this).find('input[name="received_each"]').val();
+
+            if (cartonsQty === '' || receivedEach === '') {
+                    allFilled = false;
+                    return false; // break out of each loop
+                }
+
+            if (!allFilled) {
+                return false; // break out of product each loop
+            }
+        });
+        if (allFilled) {
+            $('.btn-submit').show();
+            checkExceptionQty();
+        } else {
+            $('.btn-submit').hide();
+            $('#alertButton').hide();
+
+        }
+    }
+
+    checkAllFields();
+
+    $('input').on('input', function() {
+        checkAllFields();
+    });
 
 
     $('.edit-row').on('click', function() {
@@ -17,6 +47,15 @@ $(document).ready(function(){
         var rowId = $(this).data('row-id');
         var Id = $(this).data('id');
         var row = $('#row-' + rowId);
+
+        // var qty = parseFloat(row.find('input[name="qty"]').val());
+        // var receivedEach = parseFloat(row.find('input[name="received_each"]').val()) || 0;
+        // var exceptionQty = parseFloat(row.find('input[name="exception_qty"]').val()) || 0;
+        //
+        // if (qty !== (receivedEach + exceptionQty)) {
+        //     toastr.error('Qty does not equal the sum of received qty and exception qty.')
+        //     return false;
+        // }
 
         var data = new FormData();
         data.append('id', Id);
@@ -68,7 +107,7 @@ $(document).ready(function(){
                     row.find('.btn-success').prop('disabled', true);
                     row.find('.save-row').hide();
                     row.find('.edit-row').show();
-                    checkExceptionQty();
+                    // checkExceptionQty();
                 }
                 if (response.status==false) {
                     toastr.error(response.message);

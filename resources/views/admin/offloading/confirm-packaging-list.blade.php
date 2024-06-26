@@ -12,6 +12,12 @@
         @slot('li_1')
             Dashboard
         @endslot
+        @slot('routeUrl')
+            {{url('/admin/off-loading')}}
+        @endslot
+        @slot('title')
+           Off Loading List
+        @endslot
         @slot('title')
             Packaging List Confirmation
         @endslot
@@ -139,12 +145,11 @@
 
                                             @isset($data->order->packgingList)
                                                 @foreach($data->order->packgingList as $key => $list)
-
                                                     <tr id="row-{{ $key }}" class="product">
                                                         <td class="product-id align-middle">{{$key + 1}}</td>
                                                         <td class="product-id align-middle">{{$list->inventory->item_name ?? "-"}}</td>
                                                         <td class="product-id align-middle">{{$list->inventory->sku ?? "-"}}</td>
-                                                        <td class="product-id align-middle">{{$list->qty ?? "-"}}</td>
+                                                        <td class="product-id align-middle">{{$list->qty ?? "-"}}<input type="hidden" name="qty" value="{{$list->qty??0}}"/> </td>
                                                         <td class="product-id align-middle">
                                                             <div class="hstack gap-3">
                                                                 <a href="javascript:void(0);" data-row-id="{{ $key }}" class="link-success fs-15 edit-row"><i class="ri-edit-2-line fs-24"></i></a>
@@ -163,7 +168,9 @@
                                                                     @foreach($list->filemedia as $image)
                                                                         @if($image->field_name == 'damageImages')
                                                                             <div class="preview">
-                                                                                <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                                                <a class="popup-img d-inline-block" target="_blank" href="{{asset('storage/uploads/'.$image->file_name)}}">
+                                                                                    <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                                                </a>
                                                                             </div>
                                                                         @endif
                                                                     @endforeach
@@ -195,7 +202,9 @@
                                                                     @foreach($list->filemedia as $image)
                                                                         @if($image->field_name == 'upc_label_photos')
                                                                         <div class="preview">
-                                                                            <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                                            <a class="popup-img d-inline-block" target="_blank" href="{{asset('storage/uploads/'.$image->file_name)}}">
+                                                                                <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                                            </a>
                                                                         </div>
                                                                         @endif
                                                                     @endforeach
@@ -230,9 +239,6 @@
                                                             <div class="mb-2"><input class="form-control bg-light border-0" style="width: 150px;" type="text" name="custom_field_4" value="{{$list->custom_field_4 ?? ""}}" placeholder="Custom Field 4" disabled></div>
                                                         </td>
                                                     </tr>
-
-
-
                                                 @endforeach
                                             @endisset
 

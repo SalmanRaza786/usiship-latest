@@ -90,7 +90,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Container #</label>
-                                    <input type="text" class="form-control" id="basicInput">
+                                    <input type="text" class="form-control"  id="basicInput">
                                 </div>
                             </div>
                             <!--end col-->
@@ -106,7 +106,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Seal #</label>
-                                    <input type="text" class="form-control" id="input">
+                                    <input type="text" class="form-control"  id="input">
                                 </div>
                             </div>
                             <!--end col-->
@@ -291,10 +291,9 @@
                         </div>
                         <!--end row-->
                     </div>
-
                 </div>
                 <div class="card-footer">
-                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany
+                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end btn-confirm">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany
                 </div>
             </div>
         </div>
