@@ -18,8 +18,6 @@ Auth::routes();
 
     Route::middleware(['auth','verified'])->name('user.')->group(function () {
 
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/book-appointment', [AppointmentController::class, 'index'])->name('appointment.index');
     Route::get('/appointments', [AppointmentController::class, 'showAppointmentList'])->name('appointment.show-list');
     Route::any('/appointment-list', [AppointmentController::class, 'appointmentList'])->name('appointment.list');
@@ -29,6 +27,10 @@ Auth::routes();
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 
     });
+
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('user.index');
 
 
     Route::get('/custom-logout', [HomeController::class, 'customLogout']);

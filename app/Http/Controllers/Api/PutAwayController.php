@@ -44,7 +44,8 @@ class PutAwayController extends Controller
             $data['putAwayItems']=Helper::fetchOnlyData($this->putAway->getPutAwayItemsAccordingOffLoading($offLoadingId));
             return Helper::success($data,'Putaway items');
         }catch (\Exception $e) {
-            return redirect()->back()->with('error',$e->getMessage());
+            return Helper::error($e->getMessage(),[]);
+
         }
     }
         public function deletePutAwayItem($id)
