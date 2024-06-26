@@ -154,7 +154,7 @@
                             const rowLoadTypeId = data.load_type_id;
                             const rowStatus = data.status_id;
                             var viewUrl = "{{ route('user.orders.detail', ':id') }}";
-                            if(rowStatus != 7){
+                            if(rowStatus == 6){
                             return      '<div class="dropdown">'+
                                     '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
                                     '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">'+
@@ -169,8 +169,19 @@
                                     '</li>'+
                                 '</ul>'+
                             '</div>';
-                            }else {
+                            }else if(rowStatus == 7){
                                 return '<span class="text-danger">Canceled</span>';
+                            }else if(rowStatus == 2){
+                                return '<span class="text-danger">Rejected</span>';
+                            }else {
+                                return      '<div class="dropdown">'+
+                                    '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
+                                    '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">'+
+                                    '<li><a class="dropdown-item" href="'+viewUrl.replace(':id', rowId)+'"  data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>'+
+                                    '<li><a class="dropdown-item btn-upload"  data="'+rowId+'" data-bs-toggle="modal" data-bs-target="#showModalUpoad"><i class=" ri-timer-line align-bottom me-2 text-muted"></i>Upload packaging list</a></li>'+
+                                    '<li class="dropdown-divider"></li>'+
+                                    '</ul>'+
+                                    '</div>';
                             }
                         }
                     }
