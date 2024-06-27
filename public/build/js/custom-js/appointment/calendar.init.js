@@ -697,8 +697,13 @@ function fnGetOrderDetail(orderId){
 
 
             if(response.status) {
-
-                $('input[name=hidden_order_id]').val(orderId);
+                if(response.data.status_order_by==10){
+                   $('#btn-reschedule').removeClass('d-none');
+                }else{
+                    $('#btn-reschedule').addClass('d-none');
+                }
+             console.log('response',response.data.status_order_by);
+             $('input[name=hidden_order_id]').val(orderId);
             $('#orderStatus').text(response.data.status);
             $('#customerName').text(response.data.customer_name);
             $('#loadType').text(response.data.loadType);

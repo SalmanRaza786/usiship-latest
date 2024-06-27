@@ -16,8 +16,7 @@ $(document).ready(function(){
     $('.btn-confirm-order').click(function() {
 
         const statusId = $(this).val();
-        const orderId=$('input[name=order_id]').val();
-        alert(orderId);
+        const orderId=$('input[name=hidden_order_id]').val();
 
         $.ajax({
             url: route('admin.change.order.status',{orderId:orderId,orderStatus:statusId}),
@@ -166,7 +165,8 @@ $(document).ready(function(){
     $('.btn-undo').click(function() {
 
 
-        const orderId=$('input[name=id]').val();
+        const orderId=$('input[name=hidden_order_id]').val();
+
 
         $.ajax({
             url: route('admin.undo.order.status',{orderId:orderId}),

@@ -106,10 +106,10 @@
             </div>
             <div class="modal-body p-4">
                 <form class="needs-validation" name="event-form" id="form-event" novalidate>
-                    <div class="text-end">
-                        <button type="button" class="btn btn-sm btn-soft-primary" id="btn-detail"   role="button">Detail</button>
-                        <button type="button" class="btn btn-sm btn-soft-primary "  id="btn-reschedule" role="button"  data-bs-toggle="modal"  data-bs-target="#showModalReschedule">Reschedule</button>
-                    </div>
+{{--                    <div class="text-end">--}}
+{{--                        <button type="button" class="btn btn-sm btn-soft-primary" id="btn-detail"   role="button">Detail</button>--}}
+{{--                        <button type="button" class="btn btn-sm btn-soft-primary "  id="btn-reschedule" role="button"  data-bs-toggle="modal"  data-bs-target="#showModalReschedule">Reschedule</button>--}}
+{{--                    </div>--}}
 
                     <div class="event-details">
                         <div class="d-flex mb-2">
@@ -163,8 +163,11 @@
 
                     </div>
                     <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-soft-danger" data-bs-toggle="modal"  data-bs-target="#confirmRejectModal"><i class="ri-close-line align-bottom"></i> Rejected</button>
-                        <button type="button" class="btn btn-success"  data-bs-toggle="modal"  data-bs-target="#confirmAcceptModal">Accepted</button>
+{{--                        <button type="button" class="btn btn-soft-danger" data-bs-toggle="modal"  data-bs-target="#confirmRejectModal"><i class="ri-close-line align-bottom"></i> Rejected</button>--}}
+{{--                        <button type="button" class="btn btn-success"  data-bs-toggle="modal"  data-bs-target="#confirmAcceptModal">Accepted</button>--}}
+
+                        <button type="button" class="btn btn-primary" id="btn-detail"   role="button">Detail</button>
+                        <button type="button" class="btn btn-success"  id="btn-reschedule" role="button"  data-bs-toggle="modal"  data-bs-target="#showModalReschedule">Reschedule</button>
                     </div>
                 </form>
             </div>

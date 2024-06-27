@@ -77,7 +77,7 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'status_title' => 'Carrier Arrived',
-                'class_name' => 'bg-soft-gradient',
+                'class_name' => 'bg-soft-secondary',
                 'order_by' => 21,
                 'color_code' =>'#F06549',
                 'text_class' =>'text-warning',
@@ -85,7 +85,7 @@ class OrderStatusSeeder extends Seeder
 
             [
                 'status_title' => 'Completed',
-                'class_name' => 'text-primary-emphasis',
+                'class_name' => 'bg-soft-info',
                 'order_by' => 22,
                 'color_code' =>'#F06549',
                 'text_class' =>'text-warning',
@@ -93,18 +93,18 @@ class OrderStatusSeeder extends Seeder
 
             [
                 'status_title' => 'Package List Received',
-                'class_name' => 'bg-soft-warning',
+                'class_name' => 'bg-soft-dark',
                 'order_by' => 23,
                 'color_code' =>'#F06549',
-                'text_class' =>'text-warning',
+                'text_class' =>'text-dark',
             ],
 
             [
                 'status_title' => 'Check In',
-                'class_name' => 'bg-soft-warning',
+                'class_name' => 'bg-soft-light',
                 'order_by' => 24,
                 'color_code' =>'#F06549',
-                'text_class' =>'text-warning',
+                'text_class' =>'text-dark',
             ],
 
             [
@@ -117,10 +117,10 @@ class OrderStatusSeeder extends Seeder
 
             [
                 'status_title' => 'Item Put Away',
-                'class_name' => 'bg-soft-warning',
+                'class_name' => 'bg-soft-success',
                 'order_by' => 26,
                 'color_code' =>'#F06549',
-                'text_class' =>'text-warning',
+                'text_class' =>'text-success',
             ],
         ];
         foreach ($orderStatuses as $status){
