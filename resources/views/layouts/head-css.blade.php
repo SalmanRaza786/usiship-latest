@@ -10,6 +10,7 @@
 <link href="{{ URL::asset('build/css/custom.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('build/css/custom.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('build/libs/glightbox/css/glightbox.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ URL::asset('build/libs/fullcalendar/main.min.css')}}" rel="stylesheet" type="text/css" />
 
 
