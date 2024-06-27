@@ -70,14 +70,14 @@ class OrderStatusSeeder extends Seeder
             ],
             [
                 'status_title' => 'Packaging List Requested',
-                'class_name' => 'bg-soft-warning',
+                'class_name' => 'bg-soft-secondary',
                 'order_by' => 20,
                 'color_code' =>'#F06549',
-                'text_class' =>'text-warning',
+                'text_class' =>'text-dark',
             ],
             [
                 'status_title' => 'Carrier Arrived',
-                'class_name' => 'bg-soft-warning',
+                'class_name' => 'bg-soft-gradient',
                 'order_by' => 21,
                 'color_code' =>'#F06549',
                 'text_class' =>'text-warning',
@@ -85,7 +85,7 @@ class OrderStatusSeeder extends Seeder
 
             [
                 'status_title' => 'Completed',
-                'class_name' => 'bg-soft-warning',
+                'class_name' => 'text-primary-emphasis',
                 'order_by' => 22,
                 'color_code' =>'#F06549',
                 'text_class' =>'text-warning',
