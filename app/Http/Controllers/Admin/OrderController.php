@@ -149,6 +149,7 @@ class OrderController extends Controller
                 'status' =>$res->status->status_title,
                 'status_id' =>$res->status_id,
                 'status_class' =>$res->status->class_name,
+                'status_order_by' =>$res->status->order_by,
                 'text_class' =>$res->status->text_class,
                 'loadType' =>($res->dock->loadType)?$res->dock->loadType->direction->value .'('.$res->dock->loadType->operation->value .' ,'. $res->dock->loadType->eqType->value.' ,'. $res->dock->loadType->transMode->value.')':'-',
                 'media'=>$res->fileContents,

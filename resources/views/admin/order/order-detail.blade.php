@@ -13,6 +13,8 @@
     </style>
 @endsection
 @section('content')
+
+    <input type="number" class="d-none" value="{{$data['orderDetail']['data']['id'] ?? "-"}}" name="hidden_order_id" placeholder="hidden order id">
     @include('admin.order.order-detail-container')
     @include('admin.components.comon-modals.common-modal')
 @endsection

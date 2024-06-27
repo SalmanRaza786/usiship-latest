@@ -4,6 +4,8 @@
             <img src="{{asset('build/images/profile-bg.jpg')}}" alt="" class="profile-wid-img">
         </div>
     </div>
+
+
     <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
         <div class="row g-4">
             <div class="col-auto">
