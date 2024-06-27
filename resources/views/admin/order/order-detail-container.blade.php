@@ -438,6 +438,7 @@
                                 <div class="d-flex align-items-center mb-4">
                                     <h5 class="card-title flex-grow-1 mb-0">Packaging List</h5>
                                     <div class="flex-shrink-0">
+                                        <a href="{{route('appointment.download-list')}}" type="button"  class="btn btn-danger" ><i class="ri-download-2-fill me-1 align-bottom"></i> Download Packaging List Sample file</a>
                                         <button type="button"  class="btn btn-danger" id="btn-upload_pack_list" data="{{$data['orderDetail']['data']['id']}}" data-bs-toggle="modal" data-bs-target="#showModalUpoad"><i class="ri-upload-2-fill me-1 align-bottom"></i> Upload Packaging List</button>
                                     </div>
                                 </div>
@@ -450,30 +451,43 @@
                                             <table class="table table-borderless align-middle mb-0">
                                                 <thead class="table-light">
                                                 <tr>
+                                                    <th scope="col">Sr No.</th>
                                                     <th scope="col">Item Name</th>
                                                     <th scope="col">Sku</th>
-                                                    <th scope="col">Qty</th>
-{{--                                                    <th scope="col">Received Qty</th>--}}
-{{--                                                    <th scope="col">HI</th>--}}
-{{--                                                    <th scope="col">Ti</th>--}}
-{{--                                                    <th scope="col">Remarks</th>--}}
-{{--                                                    <th scope="col">Attachments</th>--}}
+                                                    <th scope="col">Qty Per packing Slip</th>
+                                                    <th scope="col">Qty Received Cartons</th>
+                                                    <th scope="col">Qty Received Each</th>
+                                                    <th scope="col">Exception Qty</th>
+                                                    <th scope="col">Damage Images</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="packagingTable">
 
-                                                        @foreach($data['orderDetail']['data']['packagingList'] as $row)
+                                                        @foreach($data['orderDetail']['data']['packagingList'] as $key => $row)
 
                                                         <tr>
                                                             <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                            <td>{{++$key}}</td>
                                                             <td>{{$row->inventory->item_name ?? "-"}}</td>
                                                             <td>{{$row->inventory->sku ?? "-"}}</td>
                                                             <td>{{$row->qty ?? "-"}}</td>
-{{--                                                            <td><input type="number" name="receiveQty[]" placeholder="Enter Qty" value="{{(($row->recv_qty!=null)?$row->recv_qty:"")}}" class="form-control" /> </td>--}}
-{{--                                                            <td><input type="text" name="hi[]" placeholder="Enter HI" value="{{(($row->hi!=null)?$row->hi:"")}}" class="form-control" /> </td>--}}
-{{--                                                            <td><input type="text" name="ti[]" placeholder="Enter Ti" value="{{(($row->ti!=null)?$row->ti:"")}}" class="form-control" /> </td>--}}
-{{--                                                            <td><input type="text" name="remarks[]" placeholder="Enter Remarks" value="{{(($row->remarks!=null)?$row->remarks:"")}}" class="form-control" /></td>--}}
-{{--                                                            <td> <button type="button" data="{{$row->id}}" class="btn btn-outline-primary btn-image-upload right" role="button"  data-bs-toggle="modal"  data-bs-target="#addImagesModal"><i class="ri-upload-line label-icon align-middle fs-16 ms-2"></i> Attach Images</button></td>--}}
+                                                            <td>{{$row->qty_received_cartons ?? "-"}}</td>
+                                                            <td>{{$row->qty_received_each ?? "-"}}</td>
+                                                            <td>{{$row->exception_qty ?? "-"}}</td>
+                                                            <td>
+                                                                @isset($row->filemedia)
+                                                                <div class="avatar-group">
+                                                                    @foreach($row->filemedia as $image)
+                                                                        @if($image->field_name == 'damageImages')
+                                                                    <a href="{{asset('storage/uploads/'.$image->file_name)}}" class="avatar-group-item popup-img" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Damages" data-bs-original-title="Damages">
+                                                                        <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="" class="rounded-circle avatar-sm">
+                                                                    </a>
+                                                                        @endif
+                                                                    @endforeach
+
+                                                                </div>
+                                                                @endisset
+                                                            </td>
                                                         </tr>
 
                                                     @endforeach

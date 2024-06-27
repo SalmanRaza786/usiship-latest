@@ -96,15 +96,12 @@ class OffLoadingController extends Controller
     public function checkOrderCheckInId(Request $request)
     {
         try {
-            $res= $this->offloaing->checkOrderCheckInId($request);
-            if($res->get('data') != null)
+             $res= $this->offloaing->checkOrderCheckInId($request);
+            if($res->get('status'))
             {
                 $data=$res->get('data');
                 return Helper::ajaxSuccess($data,$res->get('message'));
-            }else{
-                return Helper::ajaxErrorWithData($res->get('message'), $res->get('data'));
             }
-
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
