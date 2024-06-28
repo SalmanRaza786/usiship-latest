@@ -169,6 +169,9 @@ class AppointmentController extends Controller
 
               $roleUpdateOrCreate = $this->appointment->updateScheduling($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
+                Helper::notificationTriggerHelper(1);
+                Helper::notificationTriggerHelper(2);
+
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{
                 return Helper::error($roleUpdateOrCreate->get('message'),[]);

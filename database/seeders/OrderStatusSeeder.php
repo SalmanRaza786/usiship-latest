@@ -122,6 +122,13 @@ class OrderStatusSeeder extends Seeder
                 'color_code' =>'#F06549',
                 'text_class' =>'text-success',
             ],
+            [
+                'status_title' => 'Reschedule ',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 101,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
+            ],
         ];
         foreach ($orderStatuses as $status){
             OrderStatus::updateOrCreate(

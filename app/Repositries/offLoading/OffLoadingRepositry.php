@@ -222,6 +222,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
             $qry = $qry->with('order:id,order_id','orderCheckIn:id,container_no','status:id,status_title,class_name,text_class');
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $qry=$qry->where('status_id',14);
             $data['data']=$qry->orderByDesc('id')->get();
 
             return Helper::success($data, $message=__('translation.record_found'));
