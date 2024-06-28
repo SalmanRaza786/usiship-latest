@@ -20,7 +20,7 @@
                     <div class="col-auto justify-content-sm-end">
                         @canany('admin-putaway-create')
                         <button type="button" class="btn btn-info add-btn me-2 checkPutAwayStatus" id="savePutAwayStatus" ><i class="ri-eye-line align-bottom me-1"></i> Save Put Away Items</button>
-                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="checkPutAwayStatus" data="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->id:''}}" data-bs-target="#loadTypeModal" ><i class="ri-add-line align-bottom me-1"></i> Check Put Away Status</button>
+                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="checkPutAwayStatus" orderId="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->order_id:''}}" data="{{isset($data['offLoadingInfo'])?$data['offLoadingInfo']->id:''}}" data-bs-target="#loadTypeModal" ><i class="ri-add-line align-bottom me-1"></i> Check Put Away Status</button>
                         @endcanany
                     </div>
                 </div>

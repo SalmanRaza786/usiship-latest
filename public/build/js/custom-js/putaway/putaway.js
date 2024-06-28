@@ -64,6 +64,7 @@ $(document).ready(function() {
     $('#savePutAwayStatus').on('click',function (){
         $('#PutAwayForm').submit();
     });
+
     $('#PutAwayForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -105,7 +106,7 @@ $(document).ready(function() {
     function fnDeletePutAwayItem(id){
 
         $.ajax({
-            url: route('admin.put-away.delete',{id:id}),
+            url: route('admin.put-away.delete',{offloadingId:id}),
             type: 'get',
             async: false,
             dataType: 'json',
@@ -125,9 +126,11 @@ $(document).ready(function() {
     $('#checkPutAwayStatus').on('click',function (){
 
     const offLoadingId=$(this).attr('data');
+    const orderId=$(this).attr('orderId');
+
 
         $.ajax({
-            url: route('admin.put-away.status',{id:offLoadingId}),
+            url: route('admin.put-away.status',{offloadingId:offLoadingId,orderId:orderId}),
             type: 'GET',
             async: false,
             dataType: 'json',

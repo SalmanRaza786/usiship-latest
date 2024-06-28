@@ -185,11 +185,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body p-4">
-                <form class="needs-validation" novalidate method="Get" action="{{route('admin.order.create')}}">
+                <form class="needs-validation"  method="Get" action="{{route('admin.order.create')}}">
                     <div class="col-12">
                         <div class="mb-3">
                             <label class="form-label">Customers</label>
-                            <select class="form-select " name="customer_id" >
+                            <select class="form-select " name="customer_id" required>
                                 <option value="">Choose One</option>
                                 @foreach($data['customers'] as $row)
                                     <option value="{{ $row->id }}">{{ $row->name}}</option>
@@ -199,13 +199,13 @@
                     </div>
                     <div class="row">
 
-                        <div class="col-6">
+                        <div class="col-6 d-none">
                             <div class="mb-3">
                                 <label class="form-label">Date</label>
-                                <input type="date" name="order_date" class="form-control">
+                                <input type="date" name="order_date" class="form-control" value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label">Status</label>
                                 <select class="form-select wareHouse" name="order_status" required>

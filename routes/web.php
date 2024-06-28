@@ -57,15 +57,11 @@ Auth::routes();
     Route::get('/welcome', function () {
         return view('welcome');
     });
-
-
     //websocket
     Route::get('/websocket', function () {
         \App\Events\MessageEvent::dispatch('Hello Salman');
         dd('event trigger');
     });
-
-
     Route::get('/logout', [HomeController::class, 'customLogout'])->name('user.logout');
     Route::group([],base_path("routes/admin.php"));
     Route::get('/send-test-email', function () {
@@ -73,14 +69,9 @@ Auth::routes();
             \Illuminate\Support\Facades\Mail::to('salmanrazabwn@gmail.com')->send(new \App\Mail\TestMail($subject));
             return 'Test email sent!';
         });
-
-
     Route::get('/qr-code', [QrCodeController::class, 'show']);
-
-
-Route::post('/exam', [PusherController::class, 'pushedData'])->name('exam');
-Route::get('/exam-show', [PusherController::class, 'examShow']);
-
-Route::get('/pusher', function () {
+    Route::post('/exam', [PusherController::class, 'pushedData'])->name('exam');
+    Route::get('/exam-show', [PusherController::class, 'examShow']);
+    Route::get('/pusher', function () {
     return view('pusher');
 });

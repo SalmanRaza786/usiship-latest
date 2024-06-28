@@ -8,7 +8,6 @@ interface PutAwayInterface
     public function updateOrCreatePutAway($request);
     public function getPutAwayItemsAccordingOffLoading($OffLoadingId);
     public function deletePutAway($id);
-
-    public function checkPutAwayStatus($offLoadingId);
+    public function checkPutAwayStatus($offLoadingId,$inventoryId);
 
 }

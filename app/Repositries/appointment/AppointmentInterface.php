@@ -5,6 +5,7 @@ namespace App\Repositries\appointment;
 interface AppointmentInterface
 {
     public function getAppointmentList($request);
+    public function getTransactionsList($request);
 
     public function uploadPackagingList($request);
     public function checkOrderId($request);

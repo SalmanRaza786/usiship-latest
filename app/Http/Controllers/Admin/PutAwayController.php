@@ -84,21 +84,22 @@ class PutAwayController extends Controller
         }
     }
     //checkPutAwayStatus
-    public function checkPutAwayStatus($offLoadingId)
+    public function checkPutAwayStatus($offLoadingId,$orderId)
     {
         try {
-              $res = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId));
 
+            $res=Helper::fetchOnlyData($this->packging->getPackgeingListEachQty($orderId));
               $itemList=collect([]);
               foreach ($res as $row){
-                $packgingQty= $this->packging->getRecvQty($row->order_id,$row->inventory_id);
+
+                    $putAwayQty = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId,$row->inventory_id));
 
                   $data=array(
                       'item_name'=>$row->inventory->item_name,
                       'sku'=>$row->inventory->sku,
-                      'put_away_qty'=>$row->qty,
-                      'packgingQty'=>$packgingQty,
-                      'pending'=>$packgingQty - $row->qty,
+                      'put_away_qty'=>$putAwayQty,
+                      'packgingQty'=>$row->qty_received_each,
+                      'pending'=>$row->qty_received_each - $putAwayQty,
                   );
                   $itemList->push($data);
               }

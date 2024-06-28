@@ -809,6 +809,42 @@ class AppointmentRepositry implements AppointmentInterface {
         }
     }
 
+    public function getTransactionsList($request)
+    {
+
+        try {
+            $data['totalRecords'] = Order::count();
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer');
+
+
+            $qry = $qry->when($request->s_name, function ($query, $name) {
+                return $query->whereHas('warehouse', function ($q) use ($name) {
+                    $q->where('title', 'LIKE', "%{$name}%");
+                });
+            });
+
+            $qry=$qry->when($request->status, function ($query, $status) {
+                return $query->where('status_id',$status);
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) ) {
+                $data['totalRecords']=$qry->count();
+            }
+            return Helper::success($data, $message=__('translation.record_found'));
+
+
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
 
 
 
