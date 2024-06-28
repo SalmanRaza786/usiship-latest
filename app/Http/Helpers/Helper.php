@@ -29,8 +29,11 @@ use App\Traits\HandleFiles;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class Helper
 {
@@ -306,14 +309,15 @@ class Helper
                         $images = [];
                     }
                         foreach ($images as $image) {
-                            $filename = self::handleFiles($image, $path);
+                            $files = self::handleFiles($image, $path);
                             $media = Helper::mediaUpload(
-                                $fileName = $filename,
+                                $fileName = $files['filename'],
                                 $fileType = 'image',
                                 $fileableId,
                                 $fileableType,
                                 $formId = null,
-                                $fieldName
+                                $fieldName,
+                                $thumbnail = $files['thumbnail'],
                             );
                         }
 
@@ -324,7 +328,7 @@ class Helper
         }
     }
 
-    public static function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null)
+    public static function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null,$thumbnail=null)
     {
         try {
 
@@ -344,6 +348,7 @@ class Helper
                 $data,
                 [
                     'file_name' => $fileName,
+                    'file_thumbnail' => $thumbnail,
                     'file_type' => $fileType,
                     'fileable_id' => $fileableId,
                     'fileable_type' => $fileableType,
@@ -361,20 +366,48 @@ class Helper
 
     }
 
-    public static function handleFiles( $file, $path ) : string
+    public static function handleFiles( $file, $path )
     {
 
         if ($file)  {
             $uniqueid = uniqid();
+            $thumbnailpath = $path.'thumbnails/';
             $extension = $file->getClientOriginalExtension();
-            $filename =$path.$uniqueid.'.'.$extension;
-//        $file->move('storage/uploads/'.$path, $filename);
-            $file->move(public_path('storage/uploads/'.$path), $filename);
+            $filename = $path.$uniqueid.'.'.$extension;
+            self::ensureDirectoryExists(public_path('storage/uploads/'.$path));
+            self::ensureDirectoryExists(public_path('storage/uploads/'.$thumbnailpath));
+            if (getimagesize($file)) {
+                $thumbnailFilename = $thumbnailpath . $uniqueid . '_thumb.' . $extension;
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+                $image->scale(width: 300);
+                $image->resize(150, 150);
+                $image->toPng()->save(public_path('storage/uploads/' . $thumbnailFilename));
 
-            return  $filename;
+                $file->move(public_path('storage/uploads/' . $path), $filename);
+                return [
+                    'filename' => $filename,
+                    'thumbnail' => $thumbnailFilename,
+                ];
+            }else{
+                $file->move(public_path('storage/uploads/' . $path), $filename);
+                return [
+                    'filename' => $filename,
+                    'thumbnail' => null,
+                ];
+            }
+
+
         }
 
 
+    }
+
+    public static function ensureDirectoryExists($path)
+    {
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
     }
 
 

@@ -17,8 +17,6 @@ trait HandleFiles
         $uniqueid = uniqid();
         $extension = $file->getClientOriginalExtension();
         $filename =$path.$uniqueid.'.'.$extension;
-        $filethumbnailname =$thumbnailPath.$uniqueid.'.'.$extension;
-//        $file->move('storage/uploads/'.$path, $filename);
 
         $file->move(public_path('storage/uploads/'.$path), $filename);
 
