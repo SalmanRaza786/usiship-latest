@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\OrderOffLoading;
+use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\checkIn\CheckInInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\orderContact\OrderContactInterface;
@@ -13,11 +15,13 @@ class OffLoadingController extends Controller
 {
     private $offloaing;
     private $checkin;
+    private $appointment;
 
 
-    public function __construct(OffLoadingInterface $offloaing, CheckinInterface $checkin) {
+    public function __construct(OffLoadingInterface $offloaing, CheckinInterface $checkin, AppointmentInterface $appointment) {
          $this->offloaing = $offloaing;
          $this->checkin = $checkin;
+         $this->appointment = $appointment;
     }
 
     public function index(){
@@ -112,7 +116,21 @@ class OffLoadingController extends Controller
     public function offloadingStatusChange($id)
     {
         try {
-            $res= $this->offloaing->changeOffLoadingStatus($id,14);
+            $res= $this->offloaing->changeOffLoadingStatus($id,10);
+
+            $offLoading=OrderOffLoading::with('order')->find($id);
+
+            $orderId=$offLoading->id;
+            $statusId=10;
+
+            $order =$this->appointment->changeOrderStatus($orderId,$statusId);
+
+            //1 for admin 2 for user
+             $this->appointment->sendNotification($orderId,$offLoading->customer_id,$statusId,1);
+             $this->appointment->sendNotification($orderId,$offLoading->customer_id,$statusId,2);
+            Helper::notificationTriggerHelper(1);
+            Helper::notificationTriggerHelper(2);
+
            return Helper::success($res->get('data'),'status changed');
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

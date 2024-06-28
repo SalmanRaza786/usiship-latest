@@ -182,7 +182,7 @@ class OrderController extends Controller
     }
 
     //storeOrder
-    public function storeOrder(Request $request)
+    public function  storeOrder(Request $request)
     {
         try {
             $dock=new DockRepositry();
@@ -193,7 +193,9 @@ class OrderController extends Controller
 
              $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
            if ($roleUpdateOrCreate->get('status')){
+               // 1 use for admin 2 for user
                $this->notificationTrigger(1);
+               $this->notificationTrigger(2);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);

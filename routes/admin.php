@@ -176,7 +176,7 @@ use App\Http\Controllers\Admin\PutAwayController;
 
 
         //Notifications
-        Route::any('/trigger-notification', [OrderController::class, 'notificationTrigger']);
+        Route::any('/trigger-notification/{type}', [OrderController::class, 'notificationTrigger']);
 
 
     });
@@ -205,8 +205,6 @@ use App\Http\Controllers\Admin\PutAwayController;
     Route::get('/admin-logout', [HomeController::class, 'customLogout'])->name('admin.logout');
     Route::get('/admin',[LoginController::class,'showAdminLoginForm'])->name('admin.login.view');
     Route::post('/admin',[LoginController::class,'adminLogin'])->name('admin.login');
-    Route::get('/carrier-onboard/{id}', [CarriersController::class, 'carrierOnboard'])->name('carrier.onboard');
-    Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
     Route::get('/check-order-id', [OrderController::class, 'checkOrderId'])->name('checkOrderId');
     Route::post('/verify-warehouse-id', [OrderController::class, 'verifyWarehouseId'])->name('verify.warehouse.id');
 

@@ -134,7 +134,8 @@ class AppointmentRepositry implements AppointmentInterface {
             //create order log
             $this->createOrderLog($logData);
 
-
+            //1 for admin 2 for user
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
             $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
 
 
@@ -325,6 +326,12 @@ class AppointmentRepositry implements AppointmentInterface {
             Helper::deleteBookedSlotsAccordingOrders($order->id);
             $this->createBookedSlots($order->id);
 
+
+            //1 for admin 2 for user
+            $this->sendNotification($id,$order->customer_id,15,1);
+            $this->sendNotification($id,$order->customer_id,15,2);
+
+
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
             return Helper::success($order,$message);
@@ -473,6 +480,7 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
             $qry= OrderStatus::query();
+            $qry =$qry->where('order_by','<',100);
             $data =$qry->get();
             return Helper::success($data, $message="Status found");
 
@@ -740,16 +748,17 @@ class AppointmentRepositry implements AppointmentInterface {
     public function sendNotification($orderId,$customerId,$statusId,$notificationFor)
     {
         try {
-            //$userType 1 for admin and 2 for customer
+
+            //$userType 1 for admin and 2 for customer,3 for both
             $notifyContent = NotificationTemplate::where('status_id', $statusId)->first();
             if (!$notifyContent) {
                 return Helper::error('notification not configured');
             }
-            if ($notificationFor == 1) {
+            if ($notificationFor == 1 ) {
                 Helper::createNotificationHelper($notifyContent, 'orders');
             }
 
-            if ($notificationFor == 2) {
+            if ($notificationFor == 2 ) {
                 Helper::createEndUserNotificationHelper($notifyContent, 'appointments', $customerId, 'App\Models\User');
             }
 

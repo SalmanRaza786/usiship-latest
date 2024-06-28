@@ -82,14 +82,17 @@ class CarriersController extends Controller
     public function saveCarrierInfo(Request $request)
     {
         try {
+             $request->all();
             $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $order= $this->order->changeOrderStatus($request->order_id,9);
                 if($order->get('status')){
-                    $data=$order->get('data');
-                    $notification= $this->order->sendNotification($data->id,$data->customer_id,9,1);
+                    $orderData=$order->get('data');
+                    $notification= $this->order->sendNotification($orderData->id,$orderData->customer_id,9,1);
+                    $notification= $this->order->sendNotification($orderData->id,$orderData->customer_id,9,2);
                     if($notification->get('status')){
                         Helper::notificationTriggerHelper(1);
+                        Helper::notificationTriggerHelper(2);
 
                     }
                 }
