@@ -116,8 +116,8 @@ class OrderContactRepositry implements OrderContactInterface {
     {
         try {
             $qry= OrderContacts::query();
-            $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
-            $qry =$qry->where('status_id','==',9);
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->where('status_id','=',9);
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {

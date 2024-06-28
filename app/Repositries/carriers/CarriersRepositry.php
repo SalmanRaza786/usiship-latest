@@ -117,18 +117,6 @@ class CarriersRepositry implements CarriersInterface {
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
-            $uploadMedia = new AppointmentRepositry();
-            $idImage = $request->file('driver_id_pic');
-            $otherDocImage = $request->file('other_document');
-            $bolImage = $request->file('bol_image');
-            $doDocument = $request->file('do_document');
-            if($idImage) {
-                $this->carrierFileName = $this->handleFiles($idImage, $this->carrierFilePath);
-            }
-            if($otherDocImage) {
-                $this->carrierDocFileName = $this->handleFiles($otherDocImage, $this->carrierFilePath);
-            }
-
 
             $company = Company::updateOrCreate(
                 [
@@ -155,17 +143,19 @@ class CarriersRepositry implements CarriersInterface {
                         'other_docs' =>$this->carrierDocFileName,
                     ]
                 );
-                if($idImage)
-                {
-                    $uploadMedia->mediaUpload($this->carrierFileName,'Image',$role->id,'App\Models\Carriers',null,'id_card_image');
-                }
-                if($otherDocImage)
-                {
-                    $uploadMedia->mediaUpload($this->carrierDocFileName,'Image',$role->id,'App\Models\Carriers',null,'other_docs');
-                }
 
                 if($role)
                 {
+                    $fileableId = $role->id;
+                    $fileableType = 'App\Models\Carriers';
+
+                    $imageSets = [
+                        'driver_id_pic' => $request->file('driver_id_pic', []),
+                        'other_document' => $request->file('other_document', []),
+                    ];
+
+                    $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->carrierFilePath);
+
                     $orderContact = OrderContacts::updateOrCreate(
                         [
                             'order_id' => $request->order_id,
@@ -182,18 +172,18 @@ class CarriersRepositry implements CarriersInterface {
                             'status_id' => 9,
                         ]
                     );
-                    if($doDocument)
+                    if($orderContact)
                     {
-                        $this->carrierDoDocument = $this->handleFiles($doDocument, $this->carrierFilePath);
-                        $uploadMedia->mediaUpload($this->carrierDoDocument,'Image',$orderContact->id,'App\Models\OrderContacts',null,'do_document');
-                    }
-                    if($bolImage)
-                    {
-                        $this->carrierBolImage = $this->handleFiles($bolImage, $this->carrierFilePath);
-                        $uploadMedia->mediaUpload($this->carrierBolImage,'Image',$orderContact->id,'App\Models\OrderContacts',null,'bol_image');
-                    }
+                        $fileableId = $orderContact->id;
+                        $fileableType = 'App\Models\OrderContacts';
 
+                        $imageSets = [
+                            'bol_image' => $request->file('bol_image', []),
+                            'do_document' => $request->file('do_document', []),
+                        ];
 
+                        $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->carrierFilePath);
+                    }
                 }
 
             }
