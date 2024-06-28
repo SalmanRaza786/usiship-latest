@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
     $('.notificationCounter').text(0);
+
     window.Echo.channel("notificationChannel").listen("NotificationEvent", (e) => {
         console.log(e.notificationData.length);
 
@@ -109,4 +110,18 @@ $(document).ready(function(){
             toastContainer.hide();
         });
     }
+
+
+    var pusher = new Pusher('121222f0a05680423bbe', {
+        encrypted: true,
+        cluster: 'ap2'
+    });
+
+    var channel = pusher.subscribe('examData');
+    channel.bind('App\\Events\\CourseEvent', function(data) {
+        console.log('My exam data',data.data.stdName);
+   
+
+
+    });
 });

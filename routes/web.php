@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DockController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\Admin\PackagingListController;
+use App\Http\Controllers\PusherController;
 
 
 Auth::routes();
@@ -50,8 +51,7 @@ Auth::routes();
     Route::get('/dock-wise-hours', [WareHouseController::class, 'getDockWiseHours'])->name('dock.hours.list');
 
     Route::get('/test-email', [WareHouseController::class, 'testEmail']);
-    Route::get('/pusher', [WareHouseController::class, 'pusher']);
-    Route::get('push-data', [WareHouseController::class, 'pushData']);
+
 
     //welcome
     Route::get('/welcome', function () {
@@ -77,3 +77,10 @@ Auth::routes();
 
     Route::get('/qr-code', [QrCodeController::class, 'show']);
 
+
+Route::post('/exam', [PusherController::class, 'pushedData'])->name('exam');
+Route::get('/exam-show', [PusherController::class, 'examShow']);
+
+Route::get('/pusher', function () {
+    return view('pusher');
+});
