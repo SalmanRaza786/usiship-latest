@@ -300,6 +300,7 @@ class OrderController extends Controller
         try {
           Helper::notificationTriggerHelper($type);
 
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

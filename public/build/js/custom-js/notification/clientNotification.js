@@ -25,6 +25,9 @@ $(document).ready(function(){
                 $('.notification-text').text(row.content);
             }
 
+
+
+
             notificationHtml+='<div class="text-reset notification-item d-block dropdown-item position-relative btn-read-notification" data="'+row.id+'">'+
                 '<div class="d-flex">'+
                 '<div class="avatar-xs me-3">'+
@@ -33,7 +36,7 @@ $(document).ready(function(){
                 '</span>'+
                 '</div>'+
                 '<div class="flex-1">'+
-                '<a href="'+row.url+'" class="stretched-link">'+
+                '<a href="'+route(row.url)+'" class="stretched-link">'+
                 // '<h6 class="mt-0 mb-2 fs-13 lh-base">You have received <b class="text-success">20</b> new messages in the conversation   </h6>'+
                 '<h6 class="mt-0 mb-2 fs-13 lh-base">'+row.content+'</h6>'+
 
@@ -111,4 +114,21 @@ $(document).ready(function(){
             toastContainer.hide();
         });
     }
+
+    //pusher notification
+    var pusher = new Pusher('121222f0a05680423bbe', {
+        encrypted: true,
+        cluster: 'ap2'
+    });
+    var channel = pusher.subscribe('clientNotificationChannel');
+    channel.bind('App\\Events\\ClientNotificationEvent', function(e) {
+
+        if(e.notificationData.length > 0){
+            $('empty-notification-elem').addClass('d-none');
+            fnShowNotifications(e.notificationData,1);
+        }else{
+            $('empty-notification-elem').removeClass('d-none');
+        }
+
+    });
 });
