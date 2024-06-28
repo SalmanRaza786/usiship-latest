@@ -122,7 +122,7 @@
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
-              
+
                     {
                         targets: 7,
                         render: function(data, type, row, meta) {
