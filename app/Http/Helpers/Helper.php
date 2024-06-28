@@ -27,6 +27,7 @@ use App\Repositries\studentLecture\StudentLectureRepositry;
 use App\Repositries\user\UserRepositry;
 use App\Traits\HandleFiles;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -382,13 +383,22 @@ class Helper
         $notification=new NotificationRepositry();
         $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type));
         if($type==1){
-
             NotificationEvent::dispatch($notifiData);
         }
         if($type==2){
-
             ClientNotificationEvent::dispatch($notifiData);
         }
+    }
+
+    public static function runQueueWorkCommand()
+    {
+        Artisan::call('queue:work');
+//        $output = Artisan::output();
+//
+//        return response()->json([
+//            'message' => 'Queue worker started',
+//            'output' => $output
+//        ]);
     }
 
 

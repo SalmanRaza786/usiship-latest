@@ -34,7 +34,7 @@ $(document).ready(function(){
                 '</span>'+
                 '</div>'+
                 '<div class="flex-1">'+
-                '<a href="'+route('admin.orders.list')+'" class="stretched-link">'+
+                '<a href="'+route(row.url)+'" class="stretched-link">'+
                 // '<h6 class="mt-0 mb-2 fs-13 lh-base">You have received <b class="text-success">20</b> new messages in the conversation   </h6>'+
                 '<h6 class="mt-0 mb-2 fs-13 lh-base">'+row.content+'</h6>'+
 

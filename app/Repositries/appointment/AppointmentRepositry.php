@@ -755,11 +755,11 @@ class AppointmentRepositry implements AppointmentInterface {
                 return Helper::error('notification not configured');
             }
             if ($notificationFor == 1 ) {
-                Helper::createNotificationHelper($notifyContent, 'orders');
+                Helper::createNotificationHelper($notifyContent, 'admin.orders.list');
             }
 
             if ($notificationFor == 2 ) {
-                Helper::createEndUserNotificationHelper($notifyContent, 'appointments', $customerId, 'App\Models\User');
+                Helper::createEndUserNotificationHelper($notifyContent, 'user.appointment.show-list', $customerId, 'App\Models\User');
             }
 
             $this->sendNotificationViaEmail($orderId, $customerId, $statusId, $notifyContent);
