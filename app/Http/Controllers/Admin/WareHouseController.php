@@ -296,20 +296,5 @@ class WareHouseController extends Controller
 
     }
 
-
-    public function pusher()
-    {
-        MyEvent::dispatch('abc');
-    }
-
-    public function pushData()
-    {
-        event(new SendNotificationEvent('TKNZ'));
-        dd('event trigger');
-    }
-
-
-
-
 }
 
