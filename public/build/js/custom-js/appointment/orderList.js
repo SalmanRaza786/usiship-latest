@@ -192,6 +192,7 @@ $('#uploadForm').on('submit', function(e) {
                 toastr.success(response.message);
                 $('#uploadForm')[0].reset();
                 $('.btn-close').click();
+                $('#roleTable').DataTable().ajax.reload();
                 $('.btn-submit').text('Upload');
                 $(".btn-submit").prop("disabled", false);
             }
@@ -229,6 +230,7 @@ $('#PackagingForm').on('submit', function(e) {
             if (response.status==true) {
                 toastr.success(response.message);
                 $('.btn-submit').text('Submit');
+                $('#roleTable').DataTable().ajax.reload();
                 $(".btn-submit").prop("disabled", false);
             }
             if (response.status==false) {

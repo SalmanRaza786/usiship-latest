@@ -37,7 +37,7 @@
                         <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.store')}}" autocomplete="off" id="addForm" >
                         @csrf
                             <input type="hidden" name="order_checkin_id" id="order_checkin_id" value="{{$data->id}}"/>
-                            <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
+                            <input type="hidden" name="order_id" id="order_id" value="{{$data->order_id}}"/>
                             @canany('admin-offloading-create')<button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start Off Loading Now</button>@endcanany
                         </form>
                     </div>

@@ -62,7 +62,7 @@
                         </div><div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Other Document</label>
-                                <input type="text" class="form-control" id="basiInput" name="other_doc" required>
+                                <input type="text" class="form-control" id="basiInput" name="other_doc">
                             </div>
                         </div><div class="col-md-6">
                             <div>
