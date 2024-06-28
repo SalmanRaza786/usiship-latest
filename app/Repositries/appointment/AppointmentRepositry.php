@@ -39,6 +39,7 @@ use Spatie\Permission\Models\Permission;
 class AppointmentRepositry implements AppointmentInterface {
     protected $orderFilePath = 'order-media/';
     protected $packgingImageFilePath = 'packaging-images/';
+
     protected $packgingListFilePath = 'packaging-list/';
     protected $orderFileName = "";
     protected $packagingImageFileName = "";

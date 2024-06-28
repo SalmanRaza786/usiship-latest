@@ -46,10 +46,13 @@ $(document).ready(function(){
                 $(".btn-submit").prop("disabled", true);
             },
             success: function(response) {
+                console.log(response);
                 if (response.status==true) {
+
                     $('.btn-close').click();
                     toastr.success(response.message);
                     $(".btn-submit").addClass('d-none');
+                    $('#order_id').val(response.data.order_id);
                     $('#offloadingContainer').removeClass('d-none');
                 }
                 if (response.status==false) {
@@ -197,7 +200,7 @@ $(document).ready(function(){
             type: 'GET',
             data: { order_checkin_id: orderCheckinId },
             success: function(response) {
-              
+
                 if(response.status==true)
                 {
                     if (response.data) {

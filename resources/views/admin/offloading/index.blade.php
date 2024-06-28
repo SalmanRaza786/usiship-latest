@@ -32,8 +32,9 @@
                                     <select class="form-control"  name="s_status">
                                         <option value="">Status</option>
                                         <option value="" selected>{{__('translation.all')}}</option>
-                                        <option value="1">Active</option>
-                                        <option value="2">In-Active</option>
+                                        <option selected value="12">Pending</option>
+                                        <option value="3">In-Process</option>
+                                        <option value="10">Completed</option>
                                     </select>
                                 </div>
                             </div>
@@ -134,9 +135,11 @@
                             const orderId = data.order_id ;
                             if(status.id == 3)
                             {
-                                return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Off Loading In-Progress</a>@endcanany`;
-                            }else
+                                return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary "  >Off Loading In-Progress</a>@endcanany`;
+                            }else if(status.id == 10)
                             {
+                                return `@canany('admin-offloading-create')<a href="#" type="button" class="btn btn-primary"  >Off Loading Completed</a>@endcanany`;
+                            }else {
                                 return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Start Off Loading Now</a>@endcanany`;
                             }
 

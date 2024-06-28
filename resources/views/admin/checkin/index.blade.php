@@ -36,8 +36,8 @@
                                     <select class="form-control"  name="s_status">
                                         <option value="">Status</option>
                                         <option value="" selected>{{__('translation.all')}}</option>
-                                        <option value="1">Active</option>
-                                        <option value="2">In-Active</option>
+                                        <option selected value="9">Pending</option>
+                                        <option value="12">Completed</option>
                                     </select>
                                 </div>
                             </div>
@@ -148,10 +148,10 @@
                             const orderId = data.order_id ;
                             if(status.id == 12)
                             {
-                                return `@canany('admin-checkin-create')<a href="{{route('admin.off-loading.index')}}" type="button" class="btn btn-primary">Ready for Offloading</a>@endcanany`;
+                                return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">View Carrier Documents</a>@endcanany`;
                             }else{
                                 return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>
-                                <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Documents</a> @endcanany`;
+                                <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Carrier Documents</a> @endcanany`;
                             }
                         }
                     }
