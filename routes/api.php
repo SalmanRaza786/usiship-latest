@@ -49,7 +49,7 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::post('/store-put-away', [PutAwayController::class, 'storePutAway']);
     Route::any('/create-put-away-content/{offLoadingId}', [PutAwayController::class, 'createPutAway']);
     Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem']);
-    Route::get('/check-putaway-status/{id}', [PutAwayController::class, 'checkPutAwayStatus']);
+    Route::get('/check-putaway-status', [PutAwayController::class, 'checkPutAwayStatus']);
     Route::get('/close-putaway', [OffLoadingController::class, 'closeItemPutAway']);
 
 
