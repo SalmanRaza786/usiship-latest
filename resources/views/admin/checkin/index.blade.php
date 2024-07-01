@@ -34,9 +34,9 @@
                             <div class="col-xxl-3 col-sm-4">
                                 <div>
                                     <select class="form-control"  name="s_status">
-                                        <option value="">Status</option>
-                                        <option value="" selected>{{__('translation.all')}}</option>
-                                        <option selected value="9">Pending</option>
+                                        <option value="">Choose One</option>
+                                        <option value="" selected>All</option>
+                                        <option  value="9">Pending</option>
                                         <option value="12">Completed</option>
                                     </select>
                                 </div>
