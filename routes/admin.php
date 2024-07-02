@@ -176,10 +176,7 @@ use App\Http\Controllers\Admin\PutAwayController;
         Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-putaway-delete']);
         Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
 
-
-
-
-        //Notifications
+        //Notificationss
         Route::any('/trigger-notification/{type}', [OrderController::class, 'notificationTrigger']);
 
 
