@@ -60,8 +60,8 @@ use App\Http\Controllers\Api\PutAwayController;
   });
 
 
-Route::any('/api-login', [AuthController::class, 'login']);
-Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
+    Route::any('/api-login', [AuthController::class, 'login']);
+    Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
 
-Route::any('/upload-file', [OrderController::class, 'uploadFile']);
+    Route::any('/upload-file', [OrderController::class, 'uploadFile']);
 

@@ -28,6 +28,7 @@ class WareHouseController extends Controller
     }
     public function wareHouseList(Request $request){
         try {
+            return 11;
             $res = $this->wh->getWareHousesWithOperationHour($request);
             if($res->get('status')){
                 return Helper::success($res->get('data'),'Warehouse List');

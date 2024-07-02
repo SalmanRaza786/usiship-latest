@@ -26,13 +26,15 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
+
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
 
             if ($validator->fails()){
-                return  Helper::error($validator->errors());
+                return response()->json(['message' => $validator->errors()], 400);
+
             }
 
             if (Admin::query()->where('email',$request->email)->first()){
@@ -43,12 +45,15 @@ class AuthController extends Controller
                 if (User::query()->where('email',$request->email)->first()){
                     return $response=$this->customerLogin($request);
 
+
                 }
 
-            return  Helper::error('Invalid email');
+            return  Helper::createAPIResponce(true,403,'Invalid email',[]);
+
 
         } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
+            return  Helper::createAPIResponce(true,403,$e->getMessage(),[]);
+
         }
     }
     public function adminLogin(Request $request)
@@ -57,7 +62,8 @@ class AuthController extends Controller
 
 
             if (!$admin=Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))) {
-                return Helper::error('Invalid credentials');
+                return response()->json(['message' => 'Invalid credentials.'], 400);
+
             }
 
                 $data['user']=Admin::where('email',$request->email)->with('role')->first();
@@ -75,7 +81,7 @@ class AuthController extends Controller
         try {
 
             if (!$user=Auth::guard('web')->attempt($request->only(['email','password']))) {
-                return Helper::error('Invalid credentials');
+                return response()->json(['message' => 'Invalid credentials.'], 400);
             }
 
             $data['user']=User::where('email',$request->email)->first();

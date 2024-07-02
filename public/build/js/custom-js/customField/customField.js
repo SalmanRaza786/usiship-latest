@@ -73,6 +73,7 @@ $(document).ready(function(){
                     $('input[name=input_type]').val(response.data.load.input_type);
                     $('input[name=place_holder]').val(response.data.load.place_holder);
                     $('#description').val(response.data.load.description);
+                    $('input[name=order_by]').val(response.data.load.order_by);
 
                     if (response.data.load.require_type == 'Yes') {
                         $('input[name=require_type]').prop('checked', true);

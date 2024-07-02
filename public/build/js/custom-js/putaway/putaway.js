@@ -53,7 +53,7 @@ $(document).ready(function() {
 
         $('.confirm-delete').click(function() {
             $rowToDelete.remove();
-         $('#deleteRecordModal').modal('hide');
+            $('#deleteRecordModal').modal('hide');
 
             if(putAwayId > 0){
                 fnDeletePutAwayItem(putAwayId);
@@ -125,8 +125,8 @@ $(document).ready(function() {
 
     $('#checkPutAwayStatus').on('click',function (){
 
-    const offLoadingId=$(this).attr('data');
-    const orderId=$(this).attr('orderId');
+        const offLoadingId=$(this).attr('data');
+        const orderId=$(this).attr('orderId');
 
 
         $.ajax({
