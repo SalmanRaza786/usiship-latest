@@ -127,7 +127,7 @@
                         targets: 7,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
-                            var viewUrl = "{{ route('user.orders.detail', ':id') }}";
+                            var viewUrl = "{{ route('admin.orders.detail', ':id') }}";
 
                                 return      '<div class="dropdown">'+
                                     '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
