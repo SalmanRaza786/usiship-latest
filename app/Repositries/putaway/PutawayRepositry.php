@@ -146,9 +146,13 @@ class PutawayRepositry implements PutAwayInterface {
 
     }
 
-    public function checkPutAwayStatus($offLoadingId)
+    public function checkPutAwayStatus($offLoadingId,$inventoryId)
     {
         try {
+
+
+            $res= OrderItemPutAway::where('inventory_id',$inventoryId)->where('order_off_loading_id',$offLoadingId)->sum('qty');
+            return  Helper::success($res,'Put away items found');
 
             $qry = OrderItemPutAway::query();
             $qry=$qry->with('inventory');
@@ -156,7 +160,7 @@ class PutawayRepositry implements PutAwayInterface {
             $qry=$qry->where('order_off_loading_id', $offLoadingId);
             $qry=$qry->groupBy('order_id','inventory_id');
             $qry=$qry->get();
-            return  Helper::success($qry,'Put away items found');
+
         }catch(\Exception $e){
             throw $e;
         }

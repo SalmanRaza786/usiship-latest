@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DockController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\Admin\PackagingListController;
+use App\Http\Controllers\PusherController;
 
 
 Auth::routes();
@@ -25,7 +26,7 @@ Auth::routes();
     Route::any('/edit-appointment/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::any('/cancel-appointment/{id}', [AppointmentController::class, 'cancelAppointment'])->name('appointment.cancel');
     Route::any('/upload-packaging-list', [AppointmentController::class, 'uploadPackagingList'])->name('appointment.upload-list');
-    Route::any('/download-packaging-list', [PackagingListController::class, 'downloadPackagingList'])->name('appointment.download-list');
+
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 
         Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -34,9 +35,7 @@ Auth::routes();
     });
 
 
-
-
-
+    Route::any('/download-packaging-list', [PackagingListController::class, 'downloadPackagingList'])->name('appointment.download-list');
     Route::get('/custom-logout', [HomeController::class, 'customLogout']);
     Route::any('/upload-packaging-list', [AppointmentController::class, 'uploadPackagingList'])->name('appointment.upload-list');
     Route::any('/update-appointment', [AppointmentController::class, 'update'])->name('appointment.update');
@@ -52,22 +51,17 @@ Auth::routes();
     Route::get('/dock-wise-hours', [WareHouseController::class, 'getDockWiseHours'])->name('dock.hours.list');
 
     Route::get('/test-email', [WareHouseController::class, 'testEmail']);
-    Route::get('/pusher', [WareHouseController::class, 'pusher']);
-    Route::get('push-data', [WareHouseController::class, 'pushData']);
+
 
     //welcome
     Route::get('/welcome', function () {
         return view('welcome');
     });
-
-
     //websocket
     Route::get('/websocket', function () {
         \App\Events\MessageEvent::dispatch('Hello Salman');
         dd('event trigger');
     });
-
-
     Route::get('/logout', [HomeController::class, 'customLogout'])->name('user.logout');
     Route::group([],base_path("routes/admin.php"));
     Route::get('/send-test-email', function () {
@@ -75,7 +69,9 @@ Auth::routes();
             \Illuminate\Support\Facades\Mail::to('salmanrazabwn@gmail.com')->send(new \App\Mail\TestMail($subject));
             return 'Test email sent!';
         });
-
-
     Route::get('/qr-code', [QrCodeController::class, 'show']);
-
+    Route::post('/exam', [PusherController::class, 'pushedData'])->name('exam');
+    Route::get('/exam-show', [PusherController::class, 'examShow']);
+    Route::get('/pusher', function () {
+    return view('pusher');
+});

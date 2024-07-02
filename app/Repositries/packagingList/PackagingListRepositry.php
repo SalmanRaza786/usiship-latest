@@ -115,11 +115,22 @@ class PackagingListRepositry implements PackagingListInterface {
 
     }
 
-    public function getRecvQty($orderId,$inventoryId)
+    public function getPackgeingListEachQty($orderId)
     {
 
         try {
-          return  $packgingQty= PackgingList::where('inventory_id',$inventoryId)->where('order_id',$orderId)->sum('qty_received_each');
+
+
+            $qry = PackgingList::query();
+            $qry = $qry->with('inventory');
+            $qry = $qry->select('order_id', 'inventory_id', DB::raw('SUM(qty_received_each) as qty_received_each'));
+//            $qry = $qry->where('order_off_loading_id', $offLoadingId);
+            $qry = $qry->where('order_id', $orderId);
+            $qry = $qry->groupBy('order_id', 'inventory_id');
+            $qry = $qry->get();
+            return Helper::success($qry, 'Put away items found');
+
+//            $packgingQty= PackgingList::where('inventory_id',$inventoryId)->where('order_id',$orderId)->sum('qty_received_each');
 
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

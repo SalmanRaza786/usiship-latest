@@ -122,7 +122,14 @@
                 @canany('admin-order-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.orders.list')?'active':''}}" href="{{route('admin.orders.list')}}" >
-                            <i class=" ri-gift-2-line"></i> <span>Orders</span>
+                            <i class=" ri-gift-2-line"></i> <span>Orders Scheduling</span>
+                        </a>
+                    </li>
+                @endcanany
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.transactions.index')?'active':''}}" href="{{route('admin.transactions.index')}}" >
+                            <i class=" ri-gift-2-line"></i> <span>Transactions</span>
                         </a>
                     </li>
                 @endcanany

@@ -31,13 +31,13 @@ class CheckInRepositry implements CheckInInterface {
 
             $qry = OrderCheckIn::query();
             $qry =$qry->with('orderContact','order.dock.loadType.eqType','status');
-            $qry =$qry->where('status_id','!=',10);
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
             });
-
-
+            $qry=$qry->when($request->s_status, function ($query, $status) {
+                return $query->where('status_id',$status);
+            });
 
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
@@ -148,6 +148,7 @@ class CheckInRepositry implements CheckInInterface {
         try {
             $qry= OrderCheckIn::query();
             $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $qry =$qry->where('status_id','!=',10);
             $data =$qry->get();
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {

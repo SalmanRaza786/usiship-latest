@@ -218,13 +218,13 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL #</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" type="text" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" multiple type="text" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL Image</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"  accept="image/*" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image[]" type="file" multiple  required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -238,7 +238,7 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Do Document</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document" type="file"  accept="image/*" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document[]" type="file" multiple  accept="image/*" required>
                                                         </div>
                                                     </div>
 
@@ -247,13 +247,13 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic[]" type="file"  accept="image/*" multiple required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*" type="file">
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document[]"  accept="image/*" multiple type="file">
                                                         </div>
                                                     </div>
                                                 </div>

@@ -27,7 +27,7 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::any('/get-all-status', [OrderController::class, 'getAllStatus']);
     Route::any('/load-wise-docks', [WareHouseController::class, 'loadTypeWiseDocks']);
     Route::any('/get-wh-load-types', [WareHouseController::class, 'getWhLoadTypes']);
-    Route::any('/upload-file', [OrderController::class, 'uploadFile']);
+
     Route::any('edit-order-form', [OrderController::class, 'editOrderForm']);
     Route::any('update-order-form', [OrderController::class, 'updateOrderForm']);
 
@@ -49,7 +49,7 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::post('/store-put-away', [PutAwayController::class, 'storePutAway']);
     Route::any('/create-put-away-content/{offLoadingId}', [PutAwayController::class, 'createPutAway']);
     Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem']);
-    Route::get('/check-putaway-status/{id}', [PutAwayController::class, 'checkPutAwayStatus']);
+    Route::get('/check-putaway-status', [PutAwayController::class, 'checkPutAwayStatus']);
     Route::get('/close-putaway', [OffLoadingController::class, 'closeItemPutAway']);
 
 
@@ -63,5 +63,5 @@ use App\Http\Controllers\Api\PutAwayController;
 Route::any('/api-login', [AuthController::class, 'login']);
 Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
 
-
+Route::any('/upload-file', [OrderController::class, 'uploadFile']);
 

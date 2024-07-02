@@ -5,8 +5,8 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
-                <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Add Custom Field</h5>
-                <h5 class="modal-title edit-lang-title" id="exampleModalLabel" style="display: none">Edit Custom Field</h5>
+                <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Putaway Items Status</h5>
+
                 <button type="button" class="btn-close btn-modal-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
             <div>

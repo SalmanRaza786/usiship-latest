@@ -137,6 +137,10 @@ use App\Http\Controllers\Admin\PutAwayController;
     Route::any('/change-order-status/{orderId}/{orderStatus}', [OrderController::class, 'changeOrderStatus'])->name('change.order.status');
     Route::any('/undo-order-status/{orderId}', [OrderController::class, 'undoOrderStatus'])->name('undo.order.status');
 
+        //Transactions
+        Route::any('/transactions', [OrderController::class, 'transactionIndex'])->name('transactions.index')->middleware(['can:admin-order-view']);
+        Route::any('/transactions-list', [OrderController::class, 'transactionsList'])->name('transactions.list');
+
         //Check In
         Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-checkin-view']);
         Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-checkin-view']);
@@ -170,12 +174,9 @@ use App\Http\Controllers\Admin\PutAwayController;
         Route::any('/create-put-away/{id}', [PutAwayController::class, 'createPutAway'])->name('put-away.create')->middleware(['can:admin-putaway-view']);
         Route::any('/store-put-away', [PutAwayController::class, 'storePutAway'])->name('put-away.store')->middleware(['can:admin-putaway-create']);
         Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-putaway-delete']);
-        Route::get('/check-putaway-status/{id}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
+        Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
 
-
-
-
-        //Notifications
+        //Notificationss
         Route::any('/trigger-notification/{type}', [OrderController::class, 'notificationTrigger']);
 
 

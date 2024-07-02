@@ -39,6 +39,7 @@ use Spatie\Permission\Models\Permission;
 class AppointmentRepositry implements AppointmentInterface {
     protected $orderFilePath = 'order-media/';
     protected $packgingImageFilePath = 'packaging-images/';
+
     protected $packgingListFilePath = 'packaging-list/';
     protected $orderFileName = "";
     protected $packagingImageFileName = "";
@@ -755,11 +756,11 @@ class AppointmentRepositry implements AppointmentInterface {
                 return Helper::error('notification not configured');
             }
             if ($notificationFor == 1 ) {
-                Helper::createNotificationHelper($notifyContent, 'orders');
+                Helper::createNotificationHelper($notifyContent, 'admin.orders.list');
             }
 
             if ($notificationFor == 2 ) {
-                Helper::createEndUserNotificationHelper($notifyContent, 'appointments', $customerId, 'App\Models\User');
+                Helper::createEndUserNotificationHelper($notifyContent, 'user.appointment.show-list', $customerId, 'App\Models\User');
             }
 
             $this->sendNotificationViaEmail($orderId, $customerId, $statusId, $notifyContent);
@@ -805,6 +806,42 @@ class AppointmentRepositry implements AppointmentInterface {
 
         } catch (\Exception $e) {
             throw $e;
+        }
+    }
+
+    public function getTransactionsList($request)
+    {
+
+        try {
+            $data['totalRecords'] = Order::count();
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer');
+
+
+            $qry = $qry->when($request->s_name, function ($query, $name) {
+                return $query->whereHas('warehouse', function ($q) use ($name) {
+                    $q->where('title', 'LIKE', "%{$name}%");
+                });
+            });
+
+            $qry=$qry->when($request->status, function ($query, $status) {
+                return $query->where('status_id',$status);
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) ) {
+                $data['totalRecords']=$qry->count();
+            }
+            return Helper::success($data, $message=__('translation.record_found'));
+
+
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
         }
     }
 

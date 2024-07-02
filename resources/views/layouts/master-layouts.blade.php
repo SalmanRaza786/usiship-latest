@@ -23,5 +23,8 @@
     </div>
     @include('layouts.customizer')
     @include('layouts.vendor-scripts')
+
+
     </body>
+
     </html>

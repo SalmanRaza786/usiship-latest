@@ -26,7 +26,7 @@ class OrderContactRepositry implements OrderContactInterface {
 
             $qry = OrderContacts::query();
             $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
-            $qry =$qry->where('status_id','!=',12);
+
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
 
@@ -34,7 +34,7 @@ class OrderContactRepositry implements OrderContactInterface {
                     ->orWhereRelation('carrier','value', 'LIKE', "%{$name}%");
             });
             $qry=$qry->when($request->s_status, function ($query, $status) {
-                return $query->where('status',$status);
+                return $query->where('status_id',$status);
             });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
@@ -116,7 +116,8 @@ class OrderContactRepositry implements OrderContactInterface {
     {
         try {
             $qry= OrderContacts::query();
-            $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->where('status_id','=',9);
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {

@@ -46,10 +46,13 @@ $(document).ready(function(){
                 $(".btn-submit").prop("disabled", true);
             },
             success: function(response) {
+                console.log(response);
                 if (response.status==true) {
+
                     $('.btn-close').click();
                     toastr.success(response.message);
                     $(".btn-submit").addClass('d-none');
+                    $('#order_id').val(response.data.order_id);
                     $('#offloadingContainer').removeClass('d-none');
                 }
                 if (response.status==false) {
@@ -75,76 +78,7 @@ $(document).ready(function(){
         $('#roleTable').DataTable().ajax.reload();
     });
 
-    $('#roleTable').on('click', '.btn-check-in', function() {
-        editElement();
 
-        var whId = $(this).attr('whId');
-        var orderId = $(this).attr('orderId');
-        var id = $(this).attr('data');
-        $.ajax({
-            url: 'get-door-wh-id/'+whId,
-            type: 'GET',
-            async: false,
-            dataType: 'json',
-            success: function(response) {
-
-                    if(response.status==true){
-
-                        $('input[name=order_contact_id]').val(id);
-                        $('input[name=order_id]').val(orderId);
-
-                        $('select[name="whDoors"]').empty();
-                        $('select[name="whDoors"]').append(`<option value="">Choose One</option>`);
-
-                        $.each(response.data, function(key, row) {
-                            $('select[name="whDoors"]').append(`<option value="${row.id}">${row.door_title}</option>`);
-                        });
-
-
-                    }else{
-                    toastr.error(response.message)
-                }
-
-
-            },
-            error: function(xhr, status, error) {
-
-           toastr.error(error);
-            }
-        });
-    });
-
-    $('#roleTable').on('click', '.btn-delete', function() {
-        var id = $(this).attr('data');
-        $('.confirm-delete').val(id);
-    });
-
-    $('.confirm-delete').click(function() {
-        var id = $(this).val();
-
-        $.ajax({
-            url: 'delete-load-type/'+id,
-            type: 'get',
-            async: false,
-            dataType: 'json',
-            success: function(response) {
-
-                $('#roleTable').DataTable().ajax.reload();
-                $('.btn-close').click();
-                toastr.success(response.message);
-
-            },
-            error: function(xhr, status, error) {
-                var errors = xhr.responseJSON.errors;
-                toastr.success(error);
-
-            }
-        });
-    });
-
-    $('.btn-modal-close').click(function() {
-        addElement();
-    });
 
     function addElement(){
         $('.btn-save-changes').css('display', 'none');
@@ -278,6 +212,7 @@ $(document).ready(function(){
                     } else {
                         $('#offloadingContainer').addClass('d-none');
                         $('.btn-submit').removeClass('d-none');
+
                     }
                 }
                 if (response.status==false) {

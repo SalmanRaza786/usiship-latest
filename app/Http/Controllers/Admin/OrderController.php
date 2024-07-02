@@ -300,9 +300,30 @@ class OrderController extends Controller
         try {
           Helper::notificationTriggerHelper($type);
 
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
+    }
+
+    public function transactionIndex()
+    {
+        try {
+
+            return view('admin.transactions.index');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function transactionsList(Request $request){
+        try {
+            $res=$this->appointment->getTransactionsList($request);
+            return Helper::ajaxDatatable($res['data']['data'], $res['data']['totalRecords'], $request);
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
     }
 
 
