@@ -671,7 +671,27 @@ var editAssignedFieldId=0;
                                 `<option value="7" ${response.data.schedule_limit == 7 ? 'selected' : ''}>Seven</option>`+
                                 `<option value="8" ${response.data.schedule_limit == 8 ? 'selected' : ''}>Eight</option>`+
                                 `<option value="9" ${response.data.schedule_limit == 9 ? 'selected' : ''}>Nine</option>`+
-                                `<option value="10" ${response.data.schedule_limit == 10 ? 'selected' : ''}>Ten</option>`
+                                `<option value="10" ${response.data.schedule_limit == 10 ? 'selected' : ''}>Ten</option>`+
+                                `<option value="11" ${response.data.schedule_limit == 11 ? 'selected' : ''}>Eleven</option>`+
+                                `<option value="12" ${response.data.schedule_limit == 12 ? 'selected' : ''}>Twelve</option>`+
+                                `<option value="13" ${response.data.schedule_limit == 13 ? 'selected' : ''}>Thirteen</option>`+
+                                `<option value="14" ${response.data.schedule_limit == 14 ? 'selected' : ''}>Fourteen</option>`+
+                                `<option value="15" ${response.data.schedule_limit == 15 ? 'selected' : ''}>Fifteen</option>`+
+                                ` <option value="16" ${response.data.schedule_limit == 16 ? 'selected' : ''}>Sixteen</option>`+
+                                `<option value="17" ${response.data.schedule_limit == 17 ? 'selected' : ''}>Seventeen</option>`+
+                                `<option value="18" ${response.data.schedule_limit == 18 ? 'selected' : ''}>Eighteen</option>`+
+                                ` <option value="19" ${response.data.schedule_limit == 19 ? 'selected' : ''}>Nineteen</option>`+
+                                `<option value="20" ${response.data.schedule_limit == 20 ? 'selected' : ''}>Twenty</option>`+
+                                `<option value="21" ${response.data.schedule_limit == 21 ? 'selected' : ''}>Twenty One</option>`+
+                                `<option value="22" ${response.data.schedule_limit == 22 ? 'selected' : ''}>Twenty Two</option>`+
+                                `<option  value="23" ${response.data.schedule_limit == 23 ? 'selected' : ''}>Twenty Three</option>`+
+                                `<option value="24" ${response.data.schedule_limit == 24 ? 'selected' : ''}>Twenty Four</option>`+
+                                `<option value="25" ${response.data.schedule_limit == 25 ? 'selected' : ''}>Twenty Five</option>`+
+                                `<option value="26" ${response.data.schedule_limit == 26 ? 'selected' : ''}>Twenty Six</option>`+
+                                `<option value="27" ${response.data.schedule_limit == 27 ? 'selected' : ''}>Twenty Seven</option>`+
+                                `<option value="28" ${response.data.schedule_limit == 28 ? 'selected' : ''}>Twenty Eight</option>`+
+                                `<option value="29" ${response.data.schedule_limit == 29 ? 'selected' : ''}>Twenty Nine</option>`+
+                                `<option value="30" ${response.data.schedule_limit == 30 ? 'selected' : ''}>Thirty</option>`
                         )
                 }else{
                     toastr.error(response.message)

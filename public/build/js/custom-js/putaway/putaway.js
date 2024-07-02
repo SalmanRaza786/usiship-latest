@@ -125,6 +125,7 @@ $(document).ready(function() {
     $('#checkPutAwayStatus').on('click',function (){
 
     const offLoadingId=$(this).attr('data');
+    alert(offLoadingId);
 
         $.ajax({
             url: route('admin.put-away.status',{id:offLoadingId}),

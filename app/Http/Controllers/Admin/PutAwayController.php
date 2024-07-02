@@ -87,7 +87,7 @@ class PutAwayController extends Controller
     public function checkPutAwayStatus($offLoadingId)
     {
         try {
-              $res = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId));
+            return  $res = Helper::fetchOnlyData($this->putAway->checkPutAwayStatus($offLoadingId));
 
               $itemList=collect([]);
               foreach ($res as $row){

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CustomFields extends Model
 {
     use HasFactory;
-    protected $fillable=['label','input_type','place_holder','description','require_type',];
+    protected $fillable=['label','input_type','place_holder','description','require_type','order_by'];
 
     public function orderForm()
     {
