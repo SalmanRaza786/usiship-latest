@@ -423,7 +423,7 @@ class Helper
         }
     }
 
-<<<<<<< HEAD
+
     public function numberToWords($number)
     {
         $words = [
@@ -441,17 +441,17 @@ class Helper
         } elseif ($number == 100) {
             return 'one hundred';
         }
-=======
+    }
+
     public static function runQueueWorkCommand()
     {
         Artisan::call('queue:work');
-//        $output = Artisan::output();
-//
-//        return response()->json([
-//            'message' => 'Queue worker started',
-//            'output' => $output
-//        ]);
->>>>>>> develop
+        $output = Artisan::output();
+        return response()->json([
+            'message' => 'Queue worker started',
+           'output' => $output
+        ]);
+
     }
 
 

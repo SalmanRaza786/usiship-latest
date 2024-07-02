@@ -222,12 +222,14 @@
 
                         <select name="duration" id="" class="form-control" required>
                             <option value="">Choose One</option>
-                            <option value="30">30 Minute</option>
-                            <option value="30">60 Minute</option>
-                            <option value="30">90 Minute</option>
-                            <option value="30">120 Minute</option>
-                            <option value="30">150 Minute</option>
-                            <option value="30">180 Minute</option>
+                            <option value="30">30 Minutes</option>
+                            <option value="60">60 Minutes</option>
+                            <option value="90">90 Minutes</option>
+                            <option value="120">120 Minutes</option>
+                            <option value="150">150 Minutes</option>
+                            <option value="180">180 Minutes</option>
+                            <option value="210">210 Minutes</option>
+                            <option value="240">240 Minutes</option>
                         </select>
                     </div>
                     <div>
