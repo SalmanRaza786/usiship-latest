@@ -71,7 +71,7 @@
                                                     <input type="password" class="form-control" name="password_confirmation" id="c_password" placeholder="{{__('translation.enter_password')}}" required>
                                                 </div>
                                                 <div class="mt-4">
-                                                    <button class="btn btn-success w-100 btn-submit" type="submit">{{__('translation.sign_up')}}</button>
+                                                    <button class="btn btn-success w-100 btn-submit" type="button" >{{__('translation.sign_up')}}</button>
                                                 </div>
                                             </form>
 
@@ -110,6 +110,17 @@
         <script src="{{ URL::asset('build/js/pages/password-addon.init.js') }}"></script>
         <script src="{{ URL::asset('build/js/pages/form-validation.init.js') }}"></script>
         <script src="{{ URL::asset('build/js/pages/passowrd-create.init.js') }}"></script>
+        <script>
+            $(document).ready(function(){
+                $(".btn-submit").on('click',function (event) {
+                    $(".btn-submit").prop("disabled", true);
+                    $(".btn-submit").html("Processing...");
+                    $('#SignupFrom').submit();
+
+                });
+
+            });
+        </script>
     @endsection
 
 

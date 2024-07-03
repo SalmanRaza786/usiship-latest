@@ -64,7 +64,7 @@ var editAssignedFieldId=0;
 
     $('.confirm-delete').click(function() {
         var id = $(this).val();
-        alert(id);
+
 
         $.ajax({
             url: 'delete-wh/'+id,
@@ -117,6 +117,7 @@ var editAssignedFieldId=0;
     $('.btn-add-row').on('click',function(){
         const fromData=$(this).attr('fromData');
         const toData=$(this).attr('toData');
+
         targetSection=toData;
         addNewRow(fromData,toData);
 

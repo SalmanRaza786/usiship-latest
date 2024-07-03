@@ -16,6 +16,7 @@
                     <div id="loadTypeSelectBox"></div>
 
                     <form  method="post" id="whInfoForm" action="{{route('admin.wh.store')}}">
+                        @csrf
                         <div class="step-arrow-nav mt-n3 mx-n3 mb-3">
 
                             <input type="number" value="{{(isset($data['wh']))? $data['wh']->id:0}}" class="d-none" name="id">

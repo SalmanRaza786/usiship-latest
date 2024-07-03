@@ -35,8 +35,8 @@
                 <textarea class="form-control" id="description-field" rows="3" placeholder="Enter address" required="" name="wh_address">{{(isset($data['wh']))? $data['wh']->address:''}}</textarea>
                  </div>
         <div class="col-lg-6">
-                <label for="description-field" class="form-label">Additional Note <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="description-field" rows="3" placeholder="Warehouse Additional Instructions" required name="wh_note">{{(isset($data['wh']))? $data['wh']->note:''}}</textarea>
+                <label for="description-field" class="form-label">Additional Note </label>
+                <textarea class="form-control" id="description-field" rows="3" placeholder="Warehouse Additional Instructions"  name="wh_note">{{(isset($data['wh']))? $data['wh']->note:''}}</textarea>
 
         </div>
         <div class="col-lg-12">
