@@ -54,6 +54,7 @@ $(document).ready(function(){
                     $(".btn-submit").addClass('d-none');
                     $('#order_id').val(response.data.order_id);
                     $('#offloadingContainer').removeClass('d-none');
+                    window.location.reload();
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
