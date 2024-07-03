@@ -101,20 +101,20 @@ class WareHouseController extends Controller
             ]);
 
             if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
 
             if(!WareHouse::find($request->wh_id)){
-                return Helper::error('invalid warehouse id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid warehouse id',[]);
             }
 
             $res = $this->wh->getDoorsByWhId($request->wh_id);
             if ($res->get('status')) {
-                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+                return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
             } else {
-                return Helper::ajaxError($res->get('message'));
+                return  Helper::createAPIResponce(true,400,$res->get('message'),[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
 
