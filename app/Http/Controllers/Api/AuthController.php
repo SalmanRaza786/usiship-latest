@@ -33,26 +33,23 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()){
-                return response()->json(['message' => $validator->errors()], 400);
-
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
 
             if (Admin::query()->where('email',$request->email)->first()){
                 return $response=$this->adminLogin($request);
-
             }
 
                 if (User::query()->where('email',$request->email)->first()){
                     return $response=$this->customerLogin($request);
-
-
                 }
 
-            return  Helper::createAPIResponce(true,403,'Invalid email',[]);
+            return  Helper::createAPIResponce(true,400,'Invalid email',$request->all());
+
 
 
         } catch (\Exception $e) {
-            return  Helper::createAPIResponce(true,403,$e->getMessage(),[]);
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
 
         }
     }
@@ -62,14 +59,14 @@ class AuthController extends Controller
 
 
             if (!$admin=Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))) {
-                return response()->json(['message' => 'Invalid credentials.'], 400);
-
+                return  Helper::createAPIResponce(true,400,'Invalid credentials',$request->all());
             }
 
                 $data['user']=Admin::where('email',$request->email)->with('role')->first();
                 $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
                 $data['userType']='employees';
-                return $data;
+            return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
+
 
         } catch (\Exception $e) {
              throw $e;
@@ -81,13 +78,14 @@ class AuthController extends Controller
         try {
 
             if (!$user=Auth::guard('web')->attempt($request->only(['email','password']))) {
-                return response()->json(['message' => 'Invalid credentials.'], 400);
+                return  Helper::createAPIResponce(true,400,'Invalid credentials',$request->all());
             }
 
             $data['user']=User::where('email',$request->email)->first();
             $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
             $data['userType']='customer';
-            return $data;
+            return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
+
         } catch (\Exception $e) {
             throw $e;
 
@@ -106,21 +104,23 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()){
-                return  Helper::error($validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
 
             if(User::where('email',$request->email)->first()){
-                return Helper::error('Email already exist');
+              return  Helper::createAPIResponce(true,400,'Email already exist',$request->all());
             }
 
-           return $customer = $this->customer->customerSave($request,$request->id);
-
-
-
-
+              $customer = $this->customer->customerSave($request,$request->id);
+            if($customer['status']){
+                return  Helper::createAPIResponce(false,200,'Account created successfully!',Helper::fetchOnlyData($customer));
+            }else{
+                return  Helper::createAPIResponce(true,400,$customer['message'],[]);
+            }
 
         } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
+            return response()->json(['message' => $e], 400);
+
         }
     }
 

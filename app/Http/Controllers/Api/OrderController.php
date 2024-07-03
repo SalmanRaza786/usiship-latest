@@ -28,14 +28,31 @@ class OrderController extends Controller
     public function saveOrders(Request $request){
         try {
               $request->all();
+
+            $validator = Validator::make($request->all(), [
+                'wh_id' =>'required',
+                'dock_id' => 'required',
+                'opra_id' => 'required',
+                'customer_id' => 'required',
+                'order_status' => 'required',
+                'load_type_id' => 'required',
+                'order_date' => 'required',
+            ]);
+
+
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
             $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
-                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+                return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+
         }
 
     }
@@ -62,11 +79,11 @@ class OrderController extends Controller
             ]);
 
             if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
 
             $id=$request->order_id;
             if(!Order::find($id)){
-                return Helper::error('invalid order id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid order id',[]);
             }
 
 
@@ -84,17 +101,15 @@ class OrderController extends Controller
                 'orderLogs'=>$res->orderLogs,
                 'wareHouse'=>$res->warehouse->title,
             );
-
-
-            return Helper::success($data,'Order list');
+            return  Helper::createAPIResponce(false,200,'Order detail',$data);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
     public function getOrdersList()
     {
         try {
-           return $res= $this->order->getAllOrders();
+            $res= $this->order->getAllOrders();
             $data = collect([]);
             foreach ($res['data'] as $row){
 
@@ -112,9 +127,11 @@ class OrderController extends Controller
                 );
                 $data->push($array);
             }
-            return Helper::success($data,'Order list');
+            return  Helper::createAPIResponce(false,200,'Order list',$data);
+
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return  Helper::createAPIResponce(false,400,$e->getMessage(),[]);
+
         }
     }
 
@@ -122,9 +139,11 @@ class OrderController extends Controller
     {
         try {
             $data=Helper::fetchOnlyData($this->order->getAllStatus());
-            return Helper::success($data,'All Status');
+            return  Helper::createAPIResponce(false,200,'All Status',$data);
+
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return  Helper::createAPIResponce(false,400,$e->getMessage(),[]);
+
         }
     }
 
@@ -139,22 +158,23 @@ class OrderController extends Controller
             ]);
 
             if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+
 
             $id=$request->order_id;
             if(!Order::find($id)){
-                return Helper::error('invalid order id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid order id',[]);
             }
 
             $res= $this->order->editAppointment($id);
             if($res->get('data')){
                 $data['load']=$res->get('data');
-                return Helper::ajaxSuccess($data,$res->get('message'));
+                return  Helper::createAPIResponce(false,200,$res->get('message'),$data);
             }else{
-                return Helper::ajaxError('Record not found');
+                return  Helper::createAPIResponce(true,400,'Record not found',[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
 
@@ -164,20 +184,23 @@ class OrderController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'customfield' =>'required',
                 'order_id' =>'required',
+                'customfield.*' => 'required',
+
             ]);
 
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
             $roleUpdateOrCreate = $this->order->update($request,$request->order_id);
             if ($roleUpdateOrCreate->get('status')){
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
-                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+                return  Helper::createAPIResponce(false,400,$roleUpdateOrCreate->get('message'),[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(false,400,$e->getMessage(),[]);
         }
 
     }
@@ -190,12 +213,13 @@ class OrderController extends Controller
                 'order_id' =>'required',
             ]);
 
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
 
             $id=$request->order_id;
             if(!Order::find($id)){
-                return Helper::error('invalid order id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid order id',[]);
             }
              $allow= $this->order->isAllowToModifyOrder($id);
 
@@ -206,16 +230,16 @@ class OrderController extends Controller
                     $request = $res->get('data');
                        $wh= $this->wh->getWareHousesWithOperationHour($request);
                     $data['warehouse']=$wh->get('data');
-                    return Helper::ajaxSuccess($data,$res->get('message'));
+                    return  Helper::createAPIResponce(false,200,$res->get('message'),$data);
                 }else{
-                    return Helper::ajaxError('Record not found');
+                    return  Helper::createAPIResponce(true,400,'Record not found',[]);
                 }
             }else
             {
-                return Helper::error('Not Allow To Modify Please Contact Your System Administrator');
+                return  Helper::createAPIResponce(true,400,'Not Allow To Modify Please Contact Your System Administrator',[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
     public function updateScheduleForm(Request $request){
@@ -227,17 +251,18 @@ class OrderController extends Controller
                 'opra_id' =>'required',
             ]);
 
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
 
             $roleUpdateOrCreate = $this->order->updateScheduling($request,$request->order_id);
             if ($roleUpdateOrCreate->get('status')){
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
-                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+                return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }
@@ -247,23 +272,29 @@ class OrderController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-
                 'order_id' =>'required',
             ]);
 
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
+            if(!Order::find($request->order_id)){
+                return  Helper::createAPIResponce(true,400,'invalid order id',[]);
+            }
+
               $allow= $this->order->isAllowToModifyOrder($request->order_id);
             if ($allow==1) {
                 $res = $this->order->cancelAppointment($request->order_id);
-                return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
+                return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
             }else
             {
-                return Helper::error('Not Allow To Modify Please Contact Your System Administrator');
+                return  Helper::createAPIResponce(true,400,'Not Allow To Modify Please Contact Your System Administrator',[]);
             }
 
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+
         }
     }
 
