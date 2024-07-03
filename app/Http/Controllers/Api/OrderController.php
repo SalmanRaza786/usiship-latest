@@ -60,12 +60,12 @@ class OrderController extends Controller
         try {
             $roleUpdateOrCreate = $this->order->fileUpload($request);
             if ($roleUpdateOrCreate->get('status')){
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
-                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+                return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }
@@ -303,16 +303,16 @@ class OrderController extends Controller
 
             $id=$request->id;
             if(!Order::find($id)){
-                return Helper::error('invalid order id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid order id',[]);
             }
             $roleUpdateOrCreate = $this->order->uploadPackagingList($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
-                return Helper::error($roleUpdateOrCreate->get('message'),[]);
+                return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
             }
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }

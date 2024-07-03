@@ -22,13 +22,13 @@ class OrderContactController extends Controller
             $res = $this->orderContact->getAllOrderContactList();
             if ($res->get('status'))
             {
-                return Helper::success($res->get('data'),'Order Contact list');
+                return  Helper::createAPIResponce(false,200,'Order Contact list',$res->get('data'));
             }else{
-                return Helper::error($res->get('message'),[]);
+                return  Helper::createAPIResponce(true,400,"Data not found",[]);
             }
 
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
 }
