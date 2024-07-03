@@ -281,7 +281,7 @@
                     <select name="wed_to[]" class="form-select">
                         <option value="">Choose One</option>
                         @foreach($data['operationalHours'] as $row)
-                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $wedQuery->pluck('from_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
+                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $wedQuery->pluck('to_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row"  fromData="#wednesdayGroup" toData="#wednesdayDivSection">
@@ -289,8 +289,8 @@
                 </div>
 
                 <div class="input-group" id="wednesdayDivSection">
-                    @if(isset($data['wh']) AND $tuesdayRecordAfterFirst->count() > 0)
-                        @foreach($tuesdayRecordAfterFirst as $tue)
+                    @if(isset($data['wh']) AND $wedRecordAfterFirst->count() > 0)
+                        @foreach($wedRecordAfterFirst as $tue)
                             <div class="input-group mt-1">
                                 <span class="input-group-text">From</span>
 
@@ -390,7 +390,7 @@
                     <select name="thur_to[]" class="form-select">
                         <option value="">Choose One</option>
                         @foreach($data['operationalHours'] as $row)
-                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $thurQuery->pluck('from_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
+                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $thurQuery->pluck('to_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row"  fromData="#thursdayGroup" toData="#thursdayDivSection">
@@ -503,7 +503,7 @@
                     <select name="fri_to[]" class="form-select">
                         <option value="">Choose One</option>
                         @foreach($data['operationalHours'] as $row)
-                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $friQuery->pluck('from_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
+                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $friQuery->pluck('to_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row"  fromData="#fridayGroup" toData="#fridayDivSection">
@@ -540,9 +540,25 @@
 
             </div>
             <div class="d-none">
+
                 <div class="input-group mt-1" id="fridayGroup">
+                    <span class="input-group-text">From</span>
+                    <select name="fri_from[]" class="form-select">
+                        <option value="">Choose One</option>
+                        @foreach($data['operationalHours'] as $row)
+                            <option value="{{ $row->id }}">{{ $row->working_hour}}</option>
+                        @endforeach
+                    </select>
 
+                    <span class="input-group-text">To</span>
 
+                    <select name="fri_to[]" class="form-select">
+                        <option value="">Choose One</option>
+                        @foreach($data['operationalHours'] as $row)
+                            <option value="{{ $row->id }}">{{ $row->working_hour}}</option>
+                        @endforeach
+                    </select>
+                    <button type="button"  id="remove" class="btn btn-outline-danger delete-row" title="Remove"><i class="ri-delete-bin-6-line align-bottom"></i></button>
 
                 </div>
             </div>
@@ -552,11 +568,12 @@
             @isset($data['wh'])
                 @php
                     $satSplitQryResult=\App\Http\Helpers\Helper::getQuerySplit($data,'saturday');
-
                       $satQuery=$satSplitQryResult['dayFirstRecord'];
                       $satRecordAfterFirst =$satSplitQryResult['daySliceRecord'];
+
                 @endphp
             @endisset
+
             <div class="input-group">
                 <label for="experience-Input" class="form-label fs-5">Saturday <span class="text-danger"></span></label>
                 <div class="input-group">
@@ -587,7 +604,7 @@
                     <select name="sat_from[]" class="form-select">
                         <option value="">Choose One</option>
                         @foreach($data['operationalHours'] as $row)
-                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $satRecordAfterFirst->pluck('from_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
+                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $satQuery->pluck('from_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
                         @endforeach
                     </select>
                     <span class="input-group-text">To</span>
@@ -595,7 +612,7 @@
                     <select name="sat_to[]" class="form-select">
                         <option value="">Choose One</option>
                         @foreach($data['operationalHours'] as $row)
-                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $satRecordAfterFirst->pluck('from_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
+                            <option value="{{ $row->id }}" {{(isset($data['wh']) AND $satQuery->pluck('to_wh_id')->first()==$row->id)? "selected":''}}>{{ $row->working_hour}}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-outline-success btn-add-row" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Row"  fromData="#saturdayGroup" toData="#saturdayDivSection">
@@ -605,6 +622,8 @@
                 <div class="input-group" id="saturdayDivSection">
                     @if(isset($data['wh']) AND $satRecordAfterFirst->count() > 0)
                         @foreach($satRecordAfterFirst as $sat)
+
+
                             <div class="input-group mt-1">
                                 <span class="input-group-text">From</span>
 
@@ -828,6 +847,7 @@
 </div>
 
 <div class="d-flex align-items-start gap-3 mt-4">
+
     <button type="button" class="btn btn-light btn-label previestab" data-previous="pills-bill-info-tab"><i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>Back</button>
     <button type="button" class="btn btn-primary btn-label right ms-auto" id="btn-save-wh-info"><i class="ri-bank-card-line label-icon align-middle fs-16 ms-2"></i>Save &amp; Continue to Load Types</button>
     <button type="button" class="btn btn-primary btn-label right ms-auto nexttab d-none" data-nexttab="pills-bill-address-tab" id="btnWorkingHours">Save & Next</button>

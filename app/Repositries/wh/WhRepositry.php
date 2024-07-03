@@ -72,7 +72,7 @@ class WhRepositry implements WhInterface {
                 'wh_phone' => 'required|string|max:255',
                 'wh_status' => 'required|string|max:255',
                 'wh_address' => 'required|string|max:255',
-                'wh_note' => 'required|string|max:255',
+
             ]);
 
             if ($validator->fails())
@@ -90,7 +90,7 @@ class WhRepositry implements WhInterface {
                     'email' => $request->wh_email,
                     'phone' => $request->wh_phone,
                     'address' => $request->wh_address,
-                    'note' => $request->wh_note,
+                    'note' => ($request->wh_note)?$request->wh_note:null,
                     'status' => $request->wh_status,
 
                 ]
@@ -397,7 +397,7 @@ class WhRepositry implements WhInterface {
 
             // Tuesday
             if($request->tue_from){
-                if($request->mon_wh_setup==2){
+                if($request->tue_wh_setup==2){
 
                     $wh = WhWorkingHour::updateOrCreate(
                         [

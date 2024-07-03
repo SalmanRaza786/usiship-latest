@@ -106,7 +106,7 @@ $(document).ready(function() {
     function fnDeletePutAwayItem(id){
 
         $.ajax({
-            url: route('admin.put-away.delete',{offloadingId:id}),
+            url: route('admin.put-away.delete',{id:id}),
             type: 'get',
             async: false,
             dataType: 'json',

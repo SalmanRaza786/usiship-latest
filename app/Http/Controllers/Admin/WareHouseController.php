@@ -111,6 +111,7 @@ class WareHouseController extends Controller
     {
 
         try {
+             $request->all();
             $roleUpdateOrCreate = $this->wh->updateOrCreate($request, $request->id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
@@ -137,8 +138,8 @@ class WareHouseController extends Controller
         try {
             $res = $this->wh->editWh($id);
             if ($res->get('status')) {
-                $data['wh'] = $res->get('data');
 
+                $data['wh'] = $res->get('data');
                 $data['ltMaterial'] = LoadType::getLoadTypeMaterial();
                 $data['customFields'] = Helper::fetchOnlyData($this->customField->customFieldsForDropdown());
                 $data['operationalHours'] = Helper::fetchOnlyData($this->wh->getGeneralOperationalHours());
