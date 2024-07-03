@@ -213,7 +213,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
         }
     }
 
-    public function getOffLoadingListForPutAway($request)
+        public function getOffLoadingListForPutAway($request)
     {
         try {
 
@@ -233,8 +233,6 @@ class OffLoadingRepositry implements OffLoadingInterface {
         }
 
     }
-
-
         public function getOffLoadingInfo($id)
     {
         try {
@@ -250,13 +248,31 @@ class OffLoadingRepositry implements OffLoadingInterface {
         }
 
     }
-    public function changeOffLoadingStatus($id,$statusId)
+        public function changeOffLoadingStatus($id,$statusId)
     {
         try {
             $qry = OrderOffLoading::find($id);
             $qry->status_id=$statusId;
             $qry->save();
             return Helper::success($qry, $message=__('translation.record_found'));
+
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+    public function getOffLoadingListForPutAwayApi($request)
+    {
+        try {
+
+            $qry = OrderOffLoading::query();
+            $qry = $qry->with('order:id,order_id','orderCheckIn:id,container_no','status:id,status_title,class_name,text_class');
+            $qry=$qry->where('status_id',14);
+            $data['data']=$qry->orderByDesc('id')->get();
+
+            return Helper::success($data, $message=__('translation.record_found'));
+
 
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

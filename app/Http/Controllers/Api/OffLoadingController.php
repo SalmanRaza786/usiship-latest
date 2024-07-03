@@ -83,14 +83,13 @@ class OffLoadingController extends Controller
         try {
             $offLoadingId = $request->query('offLoadingId');
             if (!OrderOffLoading::find($offLoadingId)) {
-                return Helper::error('Invalid offloading id', []);
+                return  Helper::createAPIResponce(true,400,'Invalid offloading id',[]);
             }
             $res = $this->offloaing->changeOffLoadingStatus($offLoadingId, 14);
-            return Helper::success($res->get('data'), 'status changed');
-
+            return  Helper::createAPIResponce(false,200,'status changed',$res->get('data'));
          } catch (\Exception $e) {
-                return Helper::ajaxError($e->getMessage());
-}
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+            }
         }
 
     public function updateOffLoadingPackagingList(Request $request)

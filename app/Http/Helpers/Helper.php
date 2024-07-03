@@ -55,16 +55,22 @@ class Helper
             $result['success'] = false;
             $result['code'] = $code;
             $result['message'] = $message;
+            $result['data'] = $content;
         } else {
             $result['success'] = true;
             $result['code'] = $code;
+            $result['message'] = $message;
+
             if ($content == null) {
-                $result['message'] = $message;
+
+                $result['data'] = [];
             } else {
                 $result['data'] = $content;
+
             }
         }
-        return $result;
+        return response()->json($result,$code);
+
     }
 
     // below functions created by Ahsan
