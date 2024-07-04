@@ -50,9 +50,9 @@ class NotificationRepositry implements NotificationInterface
                 $qry=$qry->where('notifiable', 'App\Models\Admin')->where('role_id',$notifiableId);
             }
             if($type==2){
-                $qry=$qry->where('notifiable', 'App\Models\User');
+                $qry=$qry->where('notifiable', 'App\Models\User')->where('notifiable_id',$notifiableId);
             }
-            $qry=$qry->where('is_read', 2)->where('notifiable_id',$notifiableId);
+            $qry=$qry->where('is_read', 2);
             $qry=$qry->orderByDesc('id');
             $notification=$qry->get();
 

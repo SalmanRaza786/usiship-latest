@@ -177,7 +177,7 @@ use App\Http\Controllers\Admin\PutAwayController;
         Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
 
         //Notificationss
-        Route::any('/trigger-notification/{type}', [OrderController::class, 'notificationTrigger']);
+        Route::any('/trigger-notification/{type}/{totifiableId}', [OrderController::class, 'notificationTrigger']);
 
 
     });

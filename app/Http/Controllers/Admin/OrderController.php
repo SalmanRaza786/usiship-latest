@@ -194,8 +194,8 @@ class OrderController extends Controller
              $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
            if ($roleUpdateOrCreate->get('status')){
                // 1 use for admin 2 for user
-               $this->notificationTrigger(1);
-               $this->notificationTrigger(2);
+               $this->notificationTrigger(1,\auth()->user()->role_id);
+               $this->notificationTrigger(2,1);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
@@ -295,10 +295,10 @@ class OrderController extends Controller
 
     }
 
-    public function notificationTrigger($type)
+    public function notificationTrigger($type,$totifiableId)
     {
         try {
-          Helper::notificationTriggerHelper($type);
+        return  $res=Helper::notificationTriggerHelper($type,$totifiableId);
 
 
         } catch (\Exception $e) {

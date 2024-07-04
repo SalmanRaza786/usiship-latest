@@ -75,7 +75,7 @@ $(document).ready(function(){
     getUnreadNotifications();
     function getUnreadNotifications(){
         var userId = $('meta[name="user_id"]').attr('content');
-  
+
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
