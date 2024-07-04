@@ -28,7 +28,9 @@ class NotificationController extends Controller
     public function getUnreadNotifications(Request $request)
     {
         try {
-            $res=Helper::fetchOnlyData($this->notification->getUnreadNotifications($request->type));
+            $type=$request->type;
+            $notifiableId=$request->notifiableId;
+            $res=Helper::fetchOnlyData($this->notification->getUnreadNotifications($type,$notifiableId));
             return Helper::success($res,'Unread notifications list');
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

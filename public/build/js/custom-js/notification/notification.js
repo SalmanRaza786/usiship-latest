@@ -72,12 +72,14 @@ $(document).ready(function(){
 
     getUnreadNotifications();
     function getUnreadNotifications(){
+        var roleId = $('meta[name="role_id"]').attr('content');
+
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
             async: false,
             dataType: 'json',
-            data:{type:1},
+            data:{type:1,notifiableId:roleId},
             success: function(response) {
                 fnShowNotifications(response.data,0);
             },

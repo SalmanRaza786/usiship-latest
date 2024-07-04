@@ -74,14 +74,16 @@ $(document).ready(function(){
 
     getUnreadNotifications();
     function getUnreadNotifications(){
+        var userId = $('meta[name="user_id"]').attr('content');
+  
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
             async: false,
             dataType: 'json',
-            data:{type:2},
+            data:{type:2,notifiableId:userId},
             success: function(response) {
-                console.log('abc',response);
+
                 fnShowNotifications(response.data,0);
             },
             error: function(xhr, status, error) {

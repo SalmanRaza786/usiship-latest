@@ -39,17 +39,20 @@ class NotificationRepositry implements NotificationInterface
 
     }
 
-    public function getUnreadNotifications($type)
+    public function getUnreadNotifications($type,$notifiableId=null)
     {
         try {
+
+
+            //if user type ==1 then $roleIdOrUserId is role_id else $roleIdOrUserId mean customer id
             $qry = Notification::query();
             if($type==1){
-                $qry=$qry->where('notifiable', 'App\Models\Admin');
+                $qry=$qry->where('notifiable', 'App\Models\Admin')->where('role_id',$notifiableId);
             }
             if($type==2){
                 $qry=$qry->where('notifiable', 'App\Models\User');
             }
-            $qry=$qry->where('is_read', 2);
+            $qry=$qry->where('is_read', 2)->where('notifiable_id',$notifiableId);
             $qry=$qry->orderByDesc('id');
             $notification=$qry->get();
 
