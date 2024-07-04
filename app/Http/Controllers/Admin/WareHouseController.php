@@ -296,6 +296,10 @@ class WareHouseController extends Controller
         return response()->json(['message' => 'Email sent successfully.']);
 
     }
+    public function delete()
+    {
+        return redirect()->route('user.index');
+    }
 
 }
 

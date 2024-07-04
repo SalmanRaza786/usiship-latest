@@ -29,10 +29,12 @@ Auth::routes();
 
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 
-        Route::get('/home', [HomeController::class, 'index'])->name('home');
-        Route::get('/', [HomeController::class, 'index'])->name('index');
+
 
     });
+
+        Route::get('/home', [HomeController::class, 'index'])->name('user.home');
+        Route::get('/', [HomeController::class, 'index'])->name('user.index');
 
 
     Route::any('/download-packaging-list', [PackagingListController::class, 'downloadPackagingList'])->name('appointment.download-list');

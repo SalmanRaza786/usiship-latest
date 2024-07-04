@@ -32,10 +32,10 @@ class HomeController extends Controller
             if(Auth::guard('admin')->check()) {
                 return redirect()->route('admin.dashboard');
             }
-            if(Auth::guard('web')->check()) {
+            if (Auth::guard('web')->check() && Auth::user()->hasVerifiedEmail()) {
                 return view('client.screens.home');
             }
-            return redirect()->route('login');
+            return redirect()->route('verification.notice');
 
         } catch (\Exception $e) {
             return $e->getMessage();
