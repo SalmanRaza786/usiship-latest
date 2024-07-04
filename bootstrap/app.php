@@ -20,8 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->alias([
-            'isAdmin' => \App\Http\Middleware\CheckGuardMiddleare::class,
-            'jsonAuth' => \App\Http\Middleware\AuthenticateJson::class,
+            'isUser' => \App\Http\Middleware\CheckGuardMiddleare::class,
+            'isUser' => \Illuminate\Auth\Middleware\Authenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
