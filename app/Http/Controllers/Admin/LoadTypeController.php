@@ -39,7 +39,7 @@ class LoadTypeController extends Controller
     {
 
         try {
-
+ $request->all();
             $roleUpdateOrCreate = $this->load->loadSave($request,$request->hidden_load_type_id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));

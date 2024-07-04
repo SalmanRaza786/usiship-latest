@@ -29,11 +29,13 @@ use App\Traits\HandleFiles;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
+use Spatie\Permission\Models\Permission;
 
 class Helper
 {
@@ -417,15 +419,25 @@ class Helper
     }
 
 
-    public static function notificationTriggerHelper($type)
+    public static function notificationTriggerHelper($type,$totifiableId)
     {
         $notification=new NotificationRepositry();
-        $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type));
+
         if($type==1){
-            NotificationEvent::dispatch($notifiData);
+            $permission = Permission::where('name', 'admin-notification-view')->first();
+            $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
+            if ($hasPermissions->count() > 0) {
+
+                foreach ($hasPermissions as $row) {
+                    $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$row->role_id));
+                     $res= NotificationEvent::dispatch($notifiData);
+                }
+            }
+
         }
         if($type==2){
-            ClientNotificationEvent::dispatch($notifiData);
+            $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
+            return $res= ClientNotificationEvent::dispatch($notifiData);
         }
     }
 
