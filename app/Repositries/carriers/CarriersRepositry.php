@@ -32,7 +32,7 @@ class CarriersRepositry implements CarriersInterface {
         try {
             $data['totalRecords'] = Carriers::count();
 
-            $qry = Carriers::query();
+            $qry = Carriers::with('company');
             $qry=$qry->when($request->name, function ($query, $name) {
                 return $query->where('name',$name);
             });
@@ -135,7 +135,7 @@ class CarriersRepositry implements CarriersInterface {
                         'contacts' => $request->phone_no
                     ],
                     [
-                        'company_id' => 1,
+                        'company_id' => $company->id,
                         'carrier_company_name' => $request->driver_name,
                         'email' => "test@gmail.com",
                         'contacts' => $request->phone_no,

@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::any('edit-schedule', [OrderController::class, 'editSchedule']);
     Route::any('update-schedule', [OrderController::class, 'updateScheduleForm']);
     Route::any('cancel-order', [OrderController::class, 'cancelOrder']);
+
     Route::any('/upload-packaging-list', [OrderController::class, 'importPackagingList']);
 
 
@@ -42,6 +43,7 @@ use App\Http\Controllers\Api\PutAwayController;
     Route::any('/get-order-check-in-list', [CheckInController::class, 'getOrderCheckIList']);
     Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
     Route::any('/save-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate']);
+    Route::any('/close-off-loading', [OffLoadingController::class, 'closeOffLoading']);
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
 
     //Putaway Items
@@ -62,6 +64,5 @@ use App\Http\Controllers\Api\PutAwayController;
 
     Route::any('/api-login', [AuthController::class, 'login']);
     Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
-
     Route::any('/upload-file', [OrderController::class, 'uploadFile']);
 

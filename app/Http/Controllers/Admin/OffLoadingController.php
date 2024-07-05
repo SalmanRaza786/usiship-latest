@@ -73,7 +73,6 @@ class OffLoadingController extends Controller
     }
     public function offLoadingUpdate(Request $request)
     {
-         $request->all();
         try {
             $roleUpdateOrCreate = $this->offloaing->offLoadingUpdate($request,$request->id);
             if ($roleUpdateOrCreate->get('status'))

@@ -25,16 +25,15 @@ class CheckInController extends Controller
             $validator = Validator::make($request->all(), [
                 'order_contact_id' => 'required',
             ]);
-
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
-
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
             $roleUpdateOrCreate = $this->checkin->checkinSave($request,$request->order_contact_id);
             if ($roleUpdateOrCreate->get('status'))
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
-            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
+            return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
     public function getOrderCheckIList()
@@ -43,13 +42,12 @@ class CheckInController extends Controller
             $res = $this->checkin->getOrderCheckinList();
             if ($res->get('status'))
             {
-                return Helper::success($res->get('data'),'Order Contact list');
+                return  Helper::createAPIResponce(false,200,'Order Contact list',$res->get('data'));
             }else{
-                return Helper::error("Data not found");
+                return  Helper::createAPIResponce(true,400,"Data not found",[]);
             }
-
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
 }

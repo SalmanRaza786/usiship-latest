@@ -116,7 +116,7 @@
                 },
 
                 columns: [
-                    { data: 'company_id' },
+                    { data: 'company.company_title' },
                     { data: 'carrier_company_name' },
                     { data: 'email'},
                     { data: 'contacts' },
