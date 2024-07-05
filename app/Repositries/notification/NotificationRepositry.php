@@ -79,7 +79,7 @@ class NotificationRepositry implements NotificationInterface
 
     }
 
-    public function createNotification($notifyContent,$url)
+    public function createNotification($notifyContent,$url,$orderId)
     {
         try {
             $permission = Permission::where('name', 'admin-notification-view')->first();
@@ -100,6 +100,7 @@ class NotificationRepositry implements NotificationInterface
                                 'content' => $notifyContent->notify_content,
                                 'notifiable' => 'App\Models\Admin',
                                 'notifiable_id' =>$user->id,
+                                'target_model_id' =>$orderId,
                                 'url' => $url,
                             ]
                         );
@@ -111,7 +112,7 @@ class NotificationRepositry implements NotificationInterface
             throw $e;
         }
     }
-    public function createEndUserNotification($notifyContent,$url,$endUserId,$model)
+    public function createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId=null)
     {
         try {
                     $notification =Notification::updateOrCreate(
@@ -122,6 +123,7 @@ class NotificationRepositry implements NotificationInterface
                             'content' => $notifyContent->notify_content,
                             'notifiable_id' =>$endUserId,
                             'notifiable' =>$model,
+                            'target_model_id' =>$orderId,
                             'notifiType' => 2,
                             'url' => $url,
                         ]

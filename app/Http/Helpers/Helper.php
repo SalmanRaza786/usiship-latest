@@ -298,16 +298,16 @@ class Helper
     }
 
 
-    public static function createNotificationHelper($content,$url)
+    public static function createNotificationHelper($content,$url,$orderId)
     {
         $notification=new NotificationRepositry();
-        $notification->createNotification($content,$url);
+        $notification->createNotification($content,$url,$orderId);
     }
 
-    public static function createEndUserNotificationHelper($notifyContent,$url,$endUserId,$model)
+    public static function createEndUserNotificationHelper($notifyContent,$url,$endUserId,$model,$orderId)
     {
         $notification=new NotificationRepositry();
-        $notification->createEndUserNotification($notifyContent,$url,$endUserId,$model);
+        $notification->createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId);
     }
 
     public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
