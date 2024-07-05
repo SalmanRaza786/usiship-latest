@@ -498,27 +498,26 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
 
-            $order= Order::find($orderId);
-            $order->status_id=$orderStatus;
-            $order->save();
+           if( $order= Order::find($orderId)) {
+               $order->status_id = $orderStatus;
+               $order->save();
 
-            $logData=array(
-                'orderId' => $orderId,
-                'statusId' =>$orderStatus,
-                'createdBy' =>Auth::id(),
-                'guard' =>'admin',
-            );
+               $logData = array(
+                   'orderId' => $orderId,
+                   'statusId' => $orderStatus,
+                   'createdBy' => Auth::id(),
+                   'guard' => 'admin',
+               );
 
-            //create order log
-            $this->bookedSlotsMakedFree($orderId,$orderStatus);
-            $this->createOrderLog($logData);
-            if($orderStatus==1 AND OrderBookedSlot::where('order_id',$orderId)->count()==0){
-                $this->createBookedSlots($orderId);
-            }
+               //create order log
+               $this->bookedSlotsMakedFree($orderId, $orderStatus);
+               $this->createOrderLog($logData);
+               if ($orderStatus == 1 and OrderBookedSlot::where('order_id', $orderId)->count() == 0) {
+                   $this->createBookedSlots($orderId);
+               }
 
-
-
-         return Helper::success($order,'Status updated');
+               return Helper::success($order, 'Status updated');
+           }
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

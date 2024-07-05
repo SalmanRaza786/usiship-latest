@@ -181,6 +181,7 @@ $(document).ready(function() {
     $('.btn-close-putaway').on('click',function (){
 
         const offLoadingId=$(this).attr('data');
+   
         $.ajax({
             url: route('admin.offloading.status.change',{id:offLoadingId}),
             type: 'GET',
