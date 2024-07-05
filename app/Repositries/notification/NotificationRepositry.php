@@ -47,10 +47,10 @@ class NotificationRepositry implements NotificationInterface
             //if user type ==1 then $roleIdOrUserId is role_id else $roleIdOrUserId mean customer id
             $qry = Notification::query();
             if($type==1){
-                $qry=$qry->where('notifiable', 'App\Models\Admin')->where('role_id',$notifiableId);
+                $qry=$qry->where('notifiable', 'App\Models\Admin')->where('notifiable_id',$notifiableId)->where('notifiType',1);
             }
             if($type==2){
-                $qry=$qry->where('notifiable', 'App\Models\User')->where('notifiable_id',$notifiableId);
+                $qry=$qry->where('notifiable', 'App\Models\User')->where('notifiable_id',$notifiableId)->where('notifiType',2);
             }
             $qry=$qry->where('is_read', 2);
             $qry=$qry->orderByDesc('id');
@@ -63,6 +63,8 @@ class NotificationRepositry implements NotificationInterface
                         'id' => $row->id,
                         'content' => $row->content,
                         'created_at' => $row->created_at->diffForHumans(),
+                        'notifiType' => $row->notifiType,
+                        'notifiableId' => $row->notifiable_id,
                         'url' => $row->url
                     );
                     $notifiData->push($notifiArray);
@@ -105,7 +107,7 @@ class NotificationRepositry implements NotificationInterface
     public function createEndUserNotification($notifyContent,$url,$endUserId,$model)
     {
         try {
-                    $notification = \App\Models\Notification::updateOrCreate(
+                    $notification =Notification::updateOrCreate(
                         [
                             'id' => 0,
                         ],
@@ -113,6 +115,7 @@ class NotificationRepositry implements NotificationInterface
                             'content' => $notifyContent->notify_content,
                             'notifiable_id' =>$endUserId,
                             'notifiable' =>$model,
+                            'notifiType' => 2,
                             'url' => $url,
                         ]
                     );

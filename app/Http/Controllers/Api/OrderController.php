@@ -109,7 +109,7 @@ class OrderController extends Controller
     public function getOrdersList()
     {
         try {
-            $res= $this->order->getAllOrders();
+           return $res= $this->order->getAllOrders();
             $data = collect([]);
             foreach ($res['data'] as $row){
 

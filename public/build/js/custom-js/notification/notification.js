@@ -1,4 +1,7 @@
 $(document).ready(function(){
+    var userId=$('meta[name="user_id"]').attr('content');
+
+
 
     $('.notificationCounter').text(0);
 
@@ -72,14 +75,12 @@ $(document).ready(function(){
 
     getUnreadNotifications();
     function getUnreadNotifications(){
-        var roleId = $('meta[name="role_id"]').attr('content');
-
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
             async: false,
             dataType: 'json',
-            data:{type:1,notifiableId:roleId},
+            data:{type:1,notifiableId:userId},
             success: function(response) {
                 fnShowNotifications(response.data,0);
             },
@@ -122,7 +123,7 @@ $(document).ready(function(){
 
     var channel = pusher.subscribe('notificationChannel');
     channel.bind('App\\Events\\NotificationEvent', function(e) {
-
+console.log('admin side',e.notificationData);
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
             fnShowNotifications(e.notificationData,1);

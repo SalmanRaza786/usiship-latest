@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    var customerId=$('meta[name="user_id"]').attr('content');
+
     $('.notificationCounter').text(0);
 
     window.Echo.channel("clientNotificationChannel").listen("ClientNotificationEvent", (e) => {
@@ -24,9 +26,6 @@ $(document).ready(function(){
                 $('.created-at').text(row.created_at);
                 $('.notification-text').text(row.content);
             }
-
-
-
 
             notificationHtml+='<div class="text-reset notification-item d-block dropdown-item position-relative btn-read-notification" data="'+row.id+'">'+
                 '<div class="d-flex">'+
@@ -74,14 +73,13 @@ $(document).ready(function(){
 
     getUnreadNotifications();
     function getUnreadNotifications(){
-        var userId = $('meta[name="user_id"]').attr('content');
 
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
             async: false,
             dataType: 'json',
-            data:{type:2,notifiableId:userId},
+            data:{type:2,notifiableId:customerId},
             success: function(response) {
 
                 fnShowNotifications(response.data,0);
@@ -124,12 +122,15 @@ $(document).ready(function(){
     });
     var channel = pusher.subscribe('clientNotificationChannel');
     channel.bind('App\\Events\\ClientNotificationEvent', function(e) {
-
+        console.log('e.notificationData',e.notificationData);
+        if(e.notificationData[0].notifiType==2 && e.notificationData[0].notifiableId == customerId){
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
             fnShowNotifications(e.notificationData,1);
-        }else{
+        }
+        else{
             $('empty-notification-elem').removeClass('d-none');
+        }
         }
 
     });
