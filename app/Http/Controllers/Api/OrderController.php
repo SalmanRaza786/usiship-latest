@@ -94,7 +94,10 @@ class OrderController extends Controller
                 'customer_name' =>$res->customer->name,
                 'order_date' => date('d M,Y',strtotime($res->order_date)) ,
                 'slot' => date('i',strtotime($res->operationalHour->working_hour)),
+
                 'dock' =>$res->dock->dock->title,
+                'status_id' =>$res->status_id,
+                'status_order_by' =>$res->status->order_by,
                 'status' =>$res->status->status_title,
                 'status_class' =>$res->status->class_name,
                 'loadType' =>($res->dock->loadType)?$res->dock->loadType->direction->value .'('.$res->dock->loadType->operation->value .' ,'. $res->dock->loadType->eqType->value.' ,'. $res->dock->loadType->transMode->value.')':'-',
