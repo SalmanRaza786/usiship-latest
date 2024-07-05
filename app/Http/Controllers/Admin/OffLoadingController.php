@@ -118,18 +118,17 @@ class OffLoadingController extends Controller
         try {
             $res= $this->offloaing->changeOffLoadingStatus($id,10);
 
-            $offLoading=OrderOffLoading::with('order')->find($id);
-
-            $orderId=$offLoading->id;
+             $offLoading=OrderOffLoading::with('order')->find($id);
+            $orderId=$offLoading->order_id;
             $statusId=10;
 
             $order =$this->appointment->changeOrderStatus($orderId,$statusId);
 
             //1 for admin 2 for user
-             $this->appointment->sendNotification($orderId,$offLoading->customer_id,$statusId,1);
-             $this->appointment->sendNotification($orderId,$offLoading->customer_id,$statusId,2);
+             $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,1);
+             $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,2);
             Helper::notificationTriggerHelper(1,null);
-            Helper::notificationTriggerHelper(2,$offLoading->customer_id);
+            Helper::notificationTriggerHelper(2,$offLoading->order->customer_id);
 
            return Helper::success($res->get('data'),'status changed');
         } catch (\Exception $e) {
