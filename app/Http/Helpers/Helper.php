@@ -4,6 +4,7 @@ namespace App\Http\Helpers;
 
 use App\Events\ClientNotificationEvent;
 use App\Events\NotificationEvent;
+use App\Models\Admin;
 use App\Models\Attempt;
 use App\Models\FileContent;
 use App\Models\OperationalHour;
@@ -297,16 +298,16 @@ class Helper
     }
 
 
-    public static function createNotificationHelper($content,$url)
+    public static function createNotificationHelper($content,$url,$orderId)
     {
         $notification=new NotificationRepositry();
-        $notification->createNotification($content,$url);
+        $notification->createNotification($content,$url,$orderId);
     }
 
-    public static function createEndUserNotificationHelper($notifyContent,$url,$endUserId,$model)
+    public static function createEndUserNotificationHelper($notifyContent,$url,$endUserId,$model,$orderId)
     {
         $notification=new NotificationRepositry();
-        $notification->createEndUserNotification($notifyContent,$url,$endUserId,$model);
+        $notification->createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId);
     }
 
     public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
@@ -429,15 +430,19 @@ class Helper
             if ($hasPermissions->count() > 0) {
 
                 foreach ($hasPermissions as $row) {
-                    $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$row->role_id));
-                     $res= NotificationEvent::dispatch($notifiData);
+                    $users=Admin::where('role_id',$row->role_id)->get();
+                    foreach ($users as $user){
+                        $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$user->id));
+                        $res= NotificationEvent::dispatch($notifiData);
+                    }
+
                 }
             }
 
         }
         if($type==2){
             $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
-            return $res= ClientNotificationEvent::dispatch($notifiData);
+             $res= ClientNotificationEvent::dispatch($notifiData);
         }
     }
 

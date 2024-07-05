@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    var customerId=$('meta[name="user_id"]').attr('content');
+
     $('.notificationCounter').text(0);
 
     window.Echo.channel("clientNotificationChannel").listen("ClientNotificationEvent", (e) => {
@@ -25,8 +27,7 @@ $(document).ready(function(){
                 $('.notification-text').text(row.content);
             }
 
-
-
+            var url =  route('admin.roles.permissions', ':role_id');
 
             notificationHtml+='<div class="text-reset notification-item d-block dropdown-item position-relative btn-read-notification" data="'+row.id+'">'+
                 '<div class="d-flex">'+
@@ -36,7 +37,7 @@ $(document).ready(function(){
                 '</span>'+
                 '</div>'+
                 '<div class="flex-1">'+
-                '<a href="'+route(row.url)+'" class="stretched-link">'+
+                '<a href="'+route(row.url,{ id: row.target_model_id })+'"  class="stretched-link">'+
                 // '<h6 class="mt-0 mb-2 fs-13 lh-base">You have received <b class="text-success">20</b> new messages in the conversation   </h6>'+
                 '<h6 class="mt-0 mb-2 fs-13 lh-base">'+row.content+'</h6>'+
 
@@ -74,14 +75,13 @@ $(document).ready(function(){
 
     getUnreadNotifications();
     function getUnreadNotifications(){
-        var userId = $('meta[name="user_id"]').attr('content');
 
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
             async: false,
             dataType: 'json',
-            data:{type:2,notifiableId:userId},
+            data:{type:2,notifiableId:customerId},
             success: function(response) {
 
                 fnShowNotifications(response.data,0);
@@ -124,12 +124,15 @@ $(document).ready(function(){
     });
     var channel = pusher.subscribe('clientNotificationChannel');
     channel.bind('App\\Events\\ClientNotificationEvent', function(e) {
-
+        console.log('e.notificationData',e.notificationData);
+        if(e.notificationData[0].notifiType==2 && e.notificationData[0].notifiableId == customerId){
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
             fnShowNotifications(e.notificationData,1);
-        }else{
+        }
+        else{
             $('empty-notification-elem').removeClass('d-none');
+        }
         }
 
     });

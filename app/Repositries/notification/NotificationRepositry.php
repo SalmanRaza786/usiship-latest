@@ -47,10 +47,10 @@ class NotificationRepositry implements NotificationInterface
             //if user type ==1 then $roleIdOrUserId is role_id else $roleIdOrUserId mean customer id
             $qry = Notification::query();
             if($type==1){
-                $qry=$qry->where('notifiable', 'App\Models\Admin')->where('role_id',$notifiableId);
+                $qry=$qry->where('notifiable', 'App\Models\Admin')->where('notifiable_id',$notifiableId)->where('notifiType',1);
             }
             if($type==2){
-                $qry=$qry->where('notifiable', 'App\Models\User')->where('notifiable_id',$notifiableId);
+                $qry=$qry->where('notifiable', 'App\Models\User')->where('notifiable_id',$notifiableId)->where('notifiType',2);
             }
             $qry=$qry->where('is_read', 2);
             $qry=$qry->orderByDesc('id');
@@ -63,6 +63,9 @@ class NotificationRepositry implements NotificationInterface
                         'id' => $row->id,
                         'content' => $row->content,
                         'created_at' => $row->created_at->diffForHumans(),
+                        'notifiType' => $row->notifiType,
+                        'notifiableId' => $row->notifiable_id,
+                        'target_model_id' => $row->target_model_id,
                         'url' => $row->url
                     );
                     $notifiData->push($notifiArray);
@@ -76,7 +79,7 @@ class NotificationRepositry implements NotificationInterface
 
     }
 
-    public function createNotification($notifyContent,$url)
+    public function createNotification($notifyContent,$url,$orderId)
     {
         try {
             $permission = Permission::where('name', 'admin-notification-view')->first();
@@ -84,17 +87,24 @@ class NotificationRepositry implements NotificationInterface
             if ($hasPermissions->count() > 0) {
 
                 foreach ($hasPermissions as $row) {
-                    $notification = \App\Models\Notification::updateOrCreate(
-                        [
-                            'id' => 0,
-                        ],
-                        [
-                            'content' => $notifyContent->notify_content,
-                            'notifiable' => 'App\Models\Admin',
-                            'role_id' => $row->role_id,
-                            'url' => $url,
-                        ]
-                    );
+
+
+                    $users = Admin::where('role_id', $row->role_id)->get();
+                    foreach ($users as $user) {
+
+                        $notification = \App\Models\Notification::updateOrCreate(
+                            [
+                                'id' => 0,
+                            ],
+                            [
+                                'content' => $notifyContent->notify_content,
+                                'notifiable' => 'App\Models\Admin',
+                                'notifiable_id' =>$user->id,
+                                'target_model_id' =>$orderId,
+                                'url' => $url,
+                            ]
+                        );
+                    }
                 }
             }
 
@@ -102,10 +112,10 @@ class NotificationRepositry implements NotificationInterface
             throw $e;
         }
     }
-    public function createEndUserNotification($notifyContent,$url,$endUserId,$model)
+    public function createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId=null)
     {
         try {
-                    $notification = \App\Models\Notification::updateOrCreate(
+                    $notification =Notification::updateOrCreate(
                         [
                             'id' => 0,
                         ],
@@ -113,6 +123,8 @@ class NotificationRepositry implements NotificationInterface
                             'content' => $notifyContent->notify_content,
                             'notifiable_id' =>$endUserId,
                             'notifiable' =>$model,
+                            'target_model_id' =>$orderId,
+                            'notifiType' => 2,
                             'url' => $url,
                         ]
                     );

@@ -88,12 +88,13 @@ class OrderController extends Controller
 
 
             $res=Helper::fetchOnlyData($this->order->getOrderDetail($id));
+
             $data = array(
                 'id' =>$res->id,
                 'customer_name' =>$res->customer->name,
                 'order_date' => date('d M,Y',strtotime($res->order_date)) ,
                 'slot' => date('i',strtotime($res->operationalHour->working_hour)),
-                'dock' =>$res->dock->title,
+                'dock' =>$res->dock->dock->title,
                 'status' =>$res->status->status_title,
                 'status_class' =>$res->status->class_name,
                 'loadType' =>($res->dock->loadType)?$res->dock->loadType->direction->value .'('.$res->dock->loadType->operation->value .' ,'. $res->dock->loadType->eqType->value.' ,'. $res->dock->loadType->transMode->value.')':'-',
@@ -109,7 +110,7 @@ class OrderController extends Controller
     public function getOrdersList()
     {
         try {
-            $res= $this->order->getAllOrders();
+           return $res= $this->order->getAllOrders();
             $data = collect([]);
             foreach ($res['data'] as $row){
 

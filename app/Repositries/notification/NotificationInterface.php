@@ -6,6 +6,6 @@ interface NotificationInterface
 {
     public function readNotification($id);
     public function getUnreadNotifications($type,$roleIdOrUserId);
-    public function createNotification($notifyContent,$url);
-    public function createEndUserNotification($notifyContent,$url,$endUserId,$model);
+    public function createNotification($notifyContent,$url,$orderId);
+    public function createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId);
 }

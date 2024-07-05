@@ -193,9 +193,10 @@ class OrderController extends Controller
 
              $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
            if ($roleUpdateOrCreate->get('status')){
+               $orderData=$roleUpdateOrCreate->get('data');
                // 1 use for admin 2 for user
-               $this->notificationTrigger(1,\auth()->user()->role_id);
-               $this->notificationTrigger(2,1);
+               $this->notificationTrigger(1,null);
+               $this->notificationTrigger(2,$orderData->customer_id);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
@@ -245,9 +246,10 @@ class OrderController extends Controller
             $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
              if($order->get('status')){
                  $data=$order->get('data');
-                $notification= $this->appointment->sendNotification($orderId,$data->customer_id,$orderStatus,2);
+                 $customerId=$data->customer_id;
+                $notification= $this->appointment->sendNotification($orderId,$customerId,$orderStatus,2);
                 if($notification->get('status')){
-                    $this->notificationTrigger(2);
+                    $this->notificationTrigger(2,$customerId);
                 }
              }
              return $order;
@@ -298,9 +300,7 @@ class OrderController extends Controller
     public function notificationTrigger($type,$totifiableId)
     {
         try {
-        return  $res=Helper::notificationTriggerHelper($type,$totifiableId);
-
-
+         return $res=Helper::notificationTriggerHelper($type,$totifiableId);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

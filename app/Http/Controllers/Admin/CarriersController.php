@@ -83,6 +83,7 @@ class CarriersController extends Controller
     {
         try {
              $request->all();
+
             $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $order= $this->order->changeOrderStatus($request->order_id,9);
@@ -91,8 +92,8 @@ class CarriersController extends Controller
                     $notification= $this->order->sendNotification($orderData->id,$orderData->customer_id,9,1);
                     $notification= $this->order->sendNotification($orderData->id,$orderData->customer_id,9,2);
                     if($notification->get('status')){
-                        Helper::notificationTriggerHelper(1);
-                        Helper::notificationTriggerHelper(2);
+                        Helper::notificationTriggerHelper(1,null);
+                        Helper::notificationTriggerHelper(2,$orderData->customer_id);
 
                     }
                 }
