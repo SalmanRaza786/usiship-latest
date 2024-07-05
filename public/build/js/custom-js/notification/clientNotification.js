@@ -27,6 +27,8 @@ $(document).ready(function(){
                 $('.notification-text').text(row.content);
             }
 
+            var url =  route('admin.roles.permissions', ':role_id');
+
             notificationHtml+='<div class="text-reset notification-item d-block dropdown-item position-relative btn-read-notification" data="'+row.id+'">'+
                 '<div class="d-flex">'+
                 '<div class="avatar-xs me-3">'+
@@ -35,7 +37,7 @@ $(document).ready(function(){
                 '</span>'+
                 '</div>'+
                 '<div class="flex-1">'+
-                '<a href="'+route(row.url)+'" class="stretched-link">'+
+                '<a href="'+route(row.url,{ id: row.target_model_id })+'"  class="stretched-link">'+
                 // '<h6 class="mt-0 mb-2 fs-13 lh-base">You have received <b class="text-success">20</b> new messages in the conversation   </h6>'+
                 '<h6 class="mt-0 mb-2 fs-13 lh-base">'+row.content+'</h6>'+
 

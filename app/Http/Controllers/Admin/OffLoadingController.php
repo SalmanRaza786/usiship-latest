@@ -128,8 +128,8 @@ class OffLoadingController extends Controller
             //1 for admin 2 for user
              $this->appointment->sendNotification($orderId,$offLoading->customer_id,$statusId,1);
              $this->appointment->sendNotification($orderId,$offLoading->customer_id,$statusId,2);
-            Helper::notificationTriggerHelper(1);
-            Helper::notificationTriggerHelper(2);
+            Helper::notificationTriggerHelper(1,null);
+            Helper::notificationTriggerHelper(2,$offLoading->customer_id);
 
            return Helper::success($res->get('data'),'status changed');
         } catch (\Exception $e) {

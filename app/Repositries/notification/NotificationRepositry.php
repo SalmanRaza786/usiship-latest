@@ -65,6 +65,7 @@ class NotificationRepositry implements NotificationInterface
                         'created_at' => $row->created_at->diffForHumans(),
                         'notifiType' => $row->notifiType,
                         'notifiableId' => $row->notifiable_id,
+                        'target_model_id' => $row->target_model_id,
                         'url' => $row->url
                     );
                     $notifiData->push($notifiArray);
@@ -86,17 +87,23 @@ class NotificationRepositry implements NotificationInterface
             if ($hasPermissions->count() > 0) {
 
                 foreach ($hasPermissions as $row) {
-                    $notification = \App\Models\Notification::updateOrCreate(
-                        [
-                            'id' => 0,
-                        ],
-                        [
-                            'content' => $notifyContent->notify_content,
-                            'notifiable' => 'App\Models\Admin',
-                            'role_id' => $row->role_id,
-                            'url' => $url,
-                        ]
-                    );
+
+
+                    $users = Admin::where('role_id', $row->role_id)->get();
+                    foreach ($users as $user) {
+
+                        $notification = \App\Models\Notification::updateOrCreate(
+                            [
+                                'id' => 0,
+                            ],
+                            [
+                                'content' => $notifyContent->notify_content,
+                                'notifiable' => 'App\Models\Admin',
+                                'notifiable_id' =>$user->id,
+                                'url' => $url,
+                            ]
+                        );
+                    }
                 }
             }
 

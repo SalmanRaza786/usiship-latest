@@ -151,7 +151,7 @@ class AppointmentController extends Controller
                     $data=$order->get('data');
                     $notification= $this->appointment->sendNotification($data->id,$data->customer_id,11,1);
                     if($notification->get('status')){
-                        Helper::notificationTriggerHelper(1);
+                        Helper::notificationTriggerHelper(1,0);
 
                     }
                 }
@@ -169,8 +169,9 @@ class AppointmentController extends Controller
 
               $roleUpdateOrCreate = $this->appointment->updateScheduling($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
-                Helper::notificationTriggerHelper(1);
-                Helper::notificationTriggerHelper(2);
+                $order=$roleUpdateOrCreate->get('data');
+                Helper::notificationTriggerHelper(1,0);
+                Helper::notificationTriggerHelper(2,$order->customer_id);
 
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{

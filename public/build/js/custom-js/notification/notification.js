@@ -37,7 +37,7 @@ $(document).ready(function(){
                 '</span>'+
                 '</div>'+
                 '<div class="flex-1">'+
-                '<a href="'+route(row.url)+'" class="stretched-link">'+
+                '<a href="'+route(row.url,{ id: row.target_model_id })+'"  class="stretched-link">'+
                 // '<h6 class="mt-0 mb-2 fs-13 lh-base">You have received <b class="text-success">20</b> new messages in the conversation   </h6>'+
                 '<h6 class="mt-0 mb-2 fs-13 lh-base">'+row.content+'</h6>'+
 
@@ -75,6 +75,7 @@ $(document).ready(function(){
 
     getUnreadNotifications();
     function getUnreadNotifications(){
+
         $.ajax({
             url: route('notification.unread'),
             type: 'GET',
@@ -123,12 +124,17 @@ $(document).ready(function(){
 
     var channel = pusher.subscribe('notificationChannel');
     channel.bind('App\\Events\\NotificationEvent', function(e) {
-console.log('admin side',e.notificationData);
-        if(e.notificationData.length > 0){
-            $('empty-notification-elem').addClass('d-none');
-            fnShowNotifications(e.notificationData,1);
-        }else{
-            $('empty-notification-elem').removeClass('d-none');
+    console.log('admin side',e.notificationData);
+        if(e.notificationData[0].notifiType==1 && e.notificationData[0].notifiableId == userId) {
+            if (e.notificationData.length > 0) {
+
+                if (e.notificationData.length > 0) {
+                    $('empty-notification-elem').addClass('d-none');
+                    fnShowNotifications(e.notificationData, 1);
+                } else {
+                    $('empty-notification-elem').removeClass('d-none');
+                }
+            }
         }
 
     });
