@@ -64,7 +64,7 @@ $(document).ready(function(){
             async: false,
             dataType: 'json',
             success: function(response) {
-                toastr.success('mark as read successfully');
+                //toastr.success('mark as read successfully');
                 getUnreadNotifications();
             },
             error: function(xhr, status, error) {
