@@ -314,6 +314,16 @@ class OrderController extends Controller
             }
             $roleUpdateOrCreate = $this->order->uploadPackagingList($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
+                $order = $this->order->changeOrderStatus($request->id,11);
+                if($order->get('status')){
+                    $data=$order->get('data');
+                    $notification= $this->order->sendNotification($data->id,$data->customer_id,11,1);
+                    if($notification->get('status')){
+                        Helper::notificationTriggerHelper(1,0);
+
+                    }
+                }
+
                 return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
                 return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
