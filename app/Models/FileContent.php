@@ -18,4 +18,7 @@ class FileContent extends Model
     {
         return $this->belongsTo(OrderForm::class, 'form_id','id');
     }
+    protected $casts = [
+        'created_at' => 'datetime:d M, Y H:i:s ',
+    ];
 }

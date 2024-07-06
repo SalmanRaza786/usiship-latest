@@ -113,11 +113,14 @@ class OffLoadingController extends Controller
             if (!$offLoading=OrderOffLoading::find($offLoadingId)) {
                 return  Helper::createAPIResponce(true,400,'Invalid offloading id',[]);
             }
-            $res = $this->offloaing->changeOffLoadingStatus($offLoadingId, 14);
 
+            $res = $this->offloaing->changeOffLoadingStatus($offLoadingId, 14);
 
             $orderId=$offLoading->order_id;
             $statusId=10;
+
+            $order =$this->appointment->changeOrderStatus($orderId,$statusId);
+
 
             $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,1);
             $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,2);
