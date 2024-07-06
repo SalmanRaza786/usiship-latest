@@ -248,6 +248,7 @@ class OrderController extends Controller
                  $data=$order->get('data');
                  $customerId=$data->customer_id;
                 $notification= $this->appointment->sendNotification($orderId,$customerId,$orderStatus,2);
+
                 if($notification->get('status')){
                     $this->notificationTrigger(2,$customerId);
                 }
@@ -319,7 +320,28 @@ class OrderController extends Controller
     public function transactionsList(Request $request){
         try {
             $res=$this->appointment->getTransactionsList($request);
-            return Helper::ajaxDatatable($res['data']['data'], $res['data']['totalRecords'], $request);
+
+            $transactionData = collect([]);
+
+           foreach ($res['data']['data'] as $row) {
+
+
+               $array = array(
+                   'id' => $row->id,
+                   'enc_id' => encrypt($row->id),
+                   'order_id' => $row->order_id,
+                   'customer_name' => $row->customer->name,
+                   'warehouse_title' =>$row->warehouse->title,
+                   'dock_title' =>$row->dock->dock->title,
+                   'order_date' => $row->order_date,
+                   'operational_hour_working_hour' => $row->operationalHour->working_hour,
+                   'status_title' => $row->status->status_title,
+               );
+               $transactionData->push($array);
+           }
+
+            return Helper::ajaxDatatable($transactionData, $res['data']['totalRecords'], $request);
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

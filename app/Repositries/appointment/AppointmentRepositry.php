@@ -774,9 +774,12 @@ class AppointmentRepositry implements AppointmentInterface {
     public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent)
     {
         try {
+        if($status=OrderStatus::find($statusId)){
+            $statusTitle= $status->status_title;
+        }
 
             $mailData = [
-                'subject' => 'Order Requested',
+                'subject' => 'Order'. $statusTitle,
                 'greeting' => 'Hello',
                 'content' => $notifyContent->mail_content,
                 'actionText' => 'View Your Order Details',
@@ -789,6 +792,20 @@ class AppointmentRepositry implements AppointmentInterface {
                 return Helper::error('customer not exist');
             }
              $res=$customer->notify(new OrderNotification($mailData));
+
+            if($statusId==6){
+                $mailData = [
+                    'subject' => 'Carrier Onboard',
+                    'greeting' => 'Hello',
+                    'content' =>"Click bellow button for upload carrier documents",
+                    'actionText' => 'Carrier Onboard',
+                    'actionUrl' => url('/carrier-onboard/' . (encrypt($orderId))),
+                    'orderId' => $orderId,
+                    'statusId' => $statusId,
+                ];
+
+                $res=$customer->notify(new OrderNotification($mailData));
+            }
             //event(new SendEmailEvent($mailData, $customer));
 
             $log = NotificationLog::updateOrCreate(

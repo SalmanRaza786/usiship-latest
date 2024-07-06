@@ -37,7 +37,7 @@ class CarriersController extends Controller
     public function carrierOnboard($id)
     {
         try {
-            $order = Order::find($id);
+            $order = Order::find(decrypt($id));
             if($order)
             {
                 return view('carrier.carrier-onboard')->with(compact('order'));
