@@ -24,3 +24,7 @@
 
 <link rel="stylesheet" type="text/css" href="{{ asset('build/data-table/css/jquery.dataTables.css') }}"/>
 
+<link href="{{ URL::asset('build/libs/quill/quill.core.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('build/libs/quill/quill.bubble.css')}}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('build/libs/quill/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+

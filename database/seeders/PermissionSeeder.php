@@ -31,6 +31,8 @@ class PermissionSeeder extends Seeder
         $OffLoading = PermissionModule::updateOrCreate(['title' => 'Off Loading'], ['title' =>'Off Loading']);
         $itemPutAway = PermissionModule::updateOrCreate(['title' => 'Item Put Away'], ['title' =>'Item Put Away']);
 
+        $notification_template = PermissionModule::updateOrCreate(['title' => 'Notification Template'], ['title' =>'Notification Template']);
+
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
 
         Permission::upsert([
@@ -121,6 +123,10 @@ class PermissionSeeder extends Seeder
             ['name' => 'admin-putaway-create', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
             ['name' => 'admin-putaway-edit', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
             ['name' => 'admin-putaway-delete', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+
+            //Notifications Templates
+            ['name' => 'admin-notification-template-view', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-notification-template-create', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
 
 
 

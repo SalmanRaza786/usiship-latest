@@ -153,6 +153,10 @@
                                         @canany('admin-custom_fields-view')
                                             <a href="{{route('admin.customField.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.customField.index')?'active':''}}">@lang('translation.custom_fields')</a>
                                         @endcanany
+
+                                        @canany('admin-notification-template-view')
+                                            <a href="{{route('admin.notification.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.notification.index')?'active':''}}">Notification Templates</a>
+                                        @endcanany
                                 </li>
 
 

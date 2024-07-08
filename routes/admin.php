@@ -179,6 +179,11 @@ use App\Http\Controllers\Admin\PutAwayController;
         //Notificationss
         Route::any('/trigger-notification/{type}/{totifiableId}', [OrderController::class, 'notificationTrigger']);
 
+        //Notifications Template
+        Route::any('/templates', [NotificationController::class, 'index'])->name('notification.index')->middleware(['can:admin-notification-template-view']);
+        Route::any('/create-template', [NotificationController::class, 'createTemplate'])->name('notification.create')->middleware(['can:admin-notification-template-create']);
+        Route::any('/store-template', [NotificationController::class, 'storeTemplate'])->name('notification.store')->middleware(['can:admin-notification-template-create']);
+
 
     });
 

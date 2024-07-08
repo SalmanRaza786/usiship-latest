@@ -5,6 +5,7 @@ use App\Http\Helpers\Helper;
 
 use App\Models\Admin;
 use App\Models\Notification;
+use App\Models\NotificationTemplate;
 use App\Models\OperationalHour;
 use App\Models\OrderBookedSlot;
 use App\Models\WareHouse;
@@ -128,6 +129,36 @@ class NotificationRepositry implements NotificationInterface
                             'url' => $url,
                         ]
                     );
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function getNotificationTemplate($statusId)
+    {
+        try {
+        return $res=  NotificationTemplate::where('status_id',$statusId)->latest('id')->first();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function storeUpdateNotificationTemplate($request)
+    {
+        try {
+            $notification =NotificationTemplate::updateOrCreate(
+                [
+                    'status_id' => $request->status_id,
+                ],
+                [
+                    'status_id' => $request->status_id,
+                    'mail_content' =>$request->editorContent,
+                    'sms_content' =>$request->sms_content,
+                    'notify_content' =>$request->notify_content,
+                ]
+            );
+
+            return Helper::success($notification,'template save successfully');
         } catch (\Exception $e) {
             throw $e;
         }

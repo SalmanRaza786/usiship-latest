@@ -60,7 +60,10 @@ class PutawayRepositry implements PutAwayInterface {
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
-                'qty' => 'required',
+                'inventory_id.*' => 'required',
+                'qty.*' => 'required',
+                'pallet_number.*' => 'required',
+                'loc_id.*' => 'required',
             ]);
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());

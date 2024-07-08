@@ -80,14 +80,14 @@ $(document).ready(function() {
                 $('.checkPutAwayStatus').text('Processing...');
                 $(".checkPutAwayStatus").prop("disabled", true);
             },
-            success: function(data) {
+            success: function(response) {
 
-                if (data.status==true) {
-                    toastr.success(data.message);
+                if (response.status==true) {
+                    toastr.success(response.message);
                     window.location.reload();
 
                 }
-                if (data.status==false) {
+                if (response.status==false) {
                     toastr.error(response.message);
                 }
             },
