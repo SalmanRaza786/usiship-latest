@@ -136,17 +136,18 @@ class CustomFieldRepositry implements CustomFieldInterface {
         try {
 
 
-//            $qry = WhAssignedField::query();
-//            $qry=$qry->where('wh_id',$whId);
-//            $qry=$qry->with('customFields');
-//            $data=$qry->get();
-
-
             $qry = WhAssignedField::query();
-            $qry = $qry->where('wh_id', $whId);
-            $qry = $qry->leftJoin('custom_fields', 'wh_assigned_fields.field_id', '=', 'custom_fields.id')
-                ->orderBy('custom_fields.order_by', 'asc');
-            $data = $qry->with('customFields')->get();
+            $qry=$qry->with('customFields');
+            $qry=$qry->where('wh_id',$whId);
+            $qry=$qry->orderBy('order_by','asc');
+            $data=$qry->get();
+
+
+//            $qry = WhAssignedField::query();
+//            $qry = $qry->where('wh_id', $whId);
+//            $qry = $qry->leftJoin('custom_fields', 'wh_assigned_fields.field_id', '=', 'custom_fields.id')
+//                ->orderBy('custom_fields.order_by', 'asc');
+//            $data = $qry->with('customFields')->get();
 
             return Helper::success($data, $message=__('translation.record_found'));
 

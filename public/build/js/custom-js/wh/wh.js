@@ -570,8 +570,7 @@ var editOrderByVal=0;
                             '<td>' + row.custom_fields.label + '</td>' +
                             '<td>' + row.custom_fields.place_holder + '</td>' +
                             '<td>' + row.custom_fields.description + '</td>' +
-
-
+                            '<td>' + row.order_by + '</td>' +
                             '<td>';
                         if (row.status == "Active") {
                             html +='<span class="badge badge-soft-success text-uppercase">Active</span>';

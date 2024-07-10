@@ -11,19 +11,15 @@
     <table class="table align-middle table-nowrap table-striped-columns mb-0">
         <thead class="table-light">
         <tr>
-
-
             <th scope="col">Label</th>
             <th scope="col">Place Holder</th>
-            <th scope="col">Description </th>
-            <th scope="col">Status  </th>
+            <th scope="col">Description</th>
+            <th scope="col">Order By</th>
+            <th scope="col">Status</th>
             <th scope="col" style="width: 150px;">Action</th>
         </tr>
         </thead>
         <tbody id="fieldsTable">
-
-
-
         </tbody>
     </table>
 </div>
