@@ -4,6 +4,7 @@ $(document).ready(function(){
 
 var editLoadTypeId=[];
 var editAssignedFieldId=0;
+var editOrderByVal=0;
 
 
 
@@ -730,7 +731,10 @@ var editAssignedFieldId=0;
 
 
                 editAssignedFieldId=response.data['assignedFields'].field_id;
+                editOrderByVal=response.data['assignedFields'].order_by;
                 customFieldsForMultiSelect(response.data['customFields']);
+                orderByCustomFieldsForMultiSelect();
+
 
 
                 if(response.status==true){
@@ -794,6 +798,39 @@ var editAssignedFieldId=0;
             removeItemButton: true,
         });
     }
+
+    orderByCustomFieldsForMultiSelect();
+    function orderByCustomFieldsForMultiSelect(){
+
+
+        var html = '';
+        html += '<select  class="form-select" data-choices data-choices-removeItem multiple id="orderByCustomFieldDropdown" required data-trigger  name="order_by[]">' +
+            '<option value="">Choose One</option>';
+        for(var i=1 ; i <=50;i++) {
+            let isSelected = '';
+
+
+            if (editOrderByVal > 0 && editOrderByVal == i) {
+                isSelected = 'selected';
+            }
+            html += '<option value="' + i + '" ' + isSelected + '>' + i + '</option>';
+        };
+
+
+        html +='</select>';
+
+
+        $('#orderByDefaultCustomFieldDropDown').html(html);
+        initOrderByFieldsForMultiSelect();
+    }
+    function initOrderByFieldsForMultiSelect(){
+
+        new Choices('#orderByCustomFieldDropdown', {
+            removeItemButton: true,
+        });
+    }
+
+
     getAllCustomFields();
     function getAllCustomFields(){
 
@@ -806,6 +843,7 @@ var editAssignedFieldId=0;
 
                 if(response.status) {
                     customFieldsForMultiSelect(response.data);
+
                 }
                 else{
                     toastr.error('Record not exist');

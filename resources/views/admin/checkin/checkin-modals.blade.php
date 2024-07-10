@@ -12,7 +12,7 @@
             <div>
             </div>
 
-            <form method="post" class=" g-3 needs-validation" action="{{route('admin.checkin.store')}}" autocomplete="off" id="addForm" enctype="multipart/form-data">
+            <form method="post" class=" g-3 needs-validation" action="{{route('admin.checkin.store')}}" autocomplete="off" id="addForm1" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="order_contact_id" value="0">
                 <input type="hidden" name="order_id" value="0">
@@ -29,7 +29,7 @@
                         <div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Container #</label>
-                                <input type="text" class="form-control" id="basiInput" name="container_no" required>
+                                <input type="text" class="form-control" id="basiInput" name="container_no" required placeholder="Container #">
                             </div>
                         </div>
                         <!--end col-->
@@ -42,7 +42,7 @@
                         <div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Seal #</label>
-                                <input type="text" class="form-control" id="basiInput" name="seal_no" required>
+                                <input type="text" class="form-control" id="basiInput" name="seal_no" required placeholder="Seal #">
                             </div>
                         </div><div class="col-md-6">
                             <div>
@@ -52,7 +52,7 @@
                         </div><div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Delivery Order Signature</label>
-                                <input type="text" class="form-control" id="basiInput" name="do_signature"   required>
+                                <input type="text" class="form-control" id="basiInput" name="do_signature"   required placeholder="Delivery Order Signature">
                             </div>
                         </div><div class="col-md-6">
                             <div>
@@ -62,7 +62,7 @@
                         </div><div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Other Document</label>
-                                <input type="text" class="form-control" id="basiInput" name="other_doc">
+                                <input type="text" class="form-control" id="basiInput" name="other_doc" placeholder="Other Document">
                             </div>
                         </div><div class="col-md-6">
                             <div>

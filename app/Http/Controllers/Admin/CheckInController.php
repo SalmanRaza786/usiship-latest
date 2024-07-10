@@ -41,6 +41,7 @@ class CheckInController extends Controller
     public function checkinCreateOrUpdate(Request $request)
     {
         try {
+             $request->all();
           $roleUpdateOrCreate = $this->checkin->checkinSave($request,$request->order_contact_id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));

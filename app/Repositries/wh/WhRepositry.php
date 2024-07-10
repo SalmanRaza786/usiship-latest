@@ -164,11 +164,13 @@ class WhRepositry implements WhInterface {
             foreach ($request->field_id as $key=>$val) {
                 $wh = WhAssignedField::updateOrCreate(
                     [
-                        'id' =>$id
+                        'wh_id' =>$request->hidden_wh_id_fields,
+                        'field_id' =>$val,
                     ],
                     [
                         'wh_id' =>$request->hidden_wh_id_fields,
                         'field_id' =>$val,
+                        'order_by' =>isset($request->order_by[$key])?$request->order_by[$key]:1,
                         'status' => $request->status,
                     ]
                 );

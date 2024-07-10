@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\OrderContactController;
 use App\Http\Controllers\Api\CheckInController;
 use App\Http\Controllers\Api\OffLoadingController;
 use App\Http\Controllers\Api\PutAwayController;
+use App\Http\Controllers\Api\NotificationController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -57,6 +58,11 @@ use App\Http\Controllers\Api\PutAwayController;
 
     Route::any('/get-off-loading-data', [OffLoadingController::class, 'packagingListConfirmation']);
     Route::any('/update-off-loading-packaging-list', [OffLoadingController::class, 'updateOffLoadingPackagingList']);
+
+
+    //Notifications
+    Route::get('/get-unread-notification', [NotificationController::class, 'getUnreadNotifications']);
+    Route::get('/read-notification', [NotificationController::class, 'readNotification']);
 
 
   });

@@ -72,7 +72,8 @@
             </div>
         </div>
     </div>
-    @include('admin.wh.wh-modals')
+    @include('admin.wh.wh-mod
+als')
 
 
 @endsection

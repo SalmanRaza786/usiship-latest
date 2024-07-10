@@ -136,6 +136,10 @@
 
 
                     </div>
+                    <div class="mb-3">
+                        <label for="status-field" class="form-label">Order By</label>
+                        <div id="orderByDefaultCustomFieldDropDown"></div>
+                    </div>
 
                     <div class="mb-3">
                     <label for="status-field" class="form-label">{{__('translation.status')}}</label>
