@@ -31,9 +31,15 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
+                @if (session('error'))
+                    <div class="text-danger mb-5">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
 
                 @yield('content')
+
 
 
                 <div id="myCustomPreLoader" >

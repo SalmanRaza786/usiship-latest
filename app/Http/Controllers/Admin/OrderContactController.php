@@ -54,7 +54,7 @@ class OrderContactController extends Controller
     public function getOrderContact(Request $request)
     {
         try {
-            $res = $this->orderContact->getOrderContact($request);
+            $res = $this->orderContact->getOrderContact($request->id);
             if ($res->get('status'))
             {
                 return Helper::success($res->get('data'),$res->get('message'));

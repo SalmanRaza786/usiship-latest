@@ -125,12 +125,13 @@ class OrderContactRepositry implements OrderContactInterface {
         }
 
     }
-    public function getOrderContact($request)
+    public function getOrderContact($contactId)
     {
         try {
-            $qry= OrderContacts::find($request->id);
+
+            $qry= OrderContacts::query();
             $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
-            $data =$qry->orderByDesc('id')->first();
+            $data =$qry->find($contactId);
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

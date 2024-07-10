@@ -133,6 +133,7 @@ $(document).ready(function(){
         var whId = $(this).attr('whId');
         var orderId = $(this).attr('orderId');
         var id = $(this).attr('data');
+
         $.ajax({
             url: route('admin.orderContact.get'),
             type: 'GET',
@@ -141,7 +142,7 @@ $(document).ready(function(){
             dataType: 'json',
             success: function(response) {
                 var html = '';
-                console.log(response);
+
                     if(response.status==true){
 
                         $('input[name=order_id]').val(response.data.order_id);

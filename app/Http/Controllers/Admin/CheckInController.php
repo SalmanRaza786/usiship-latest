@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\User;
+use App\Notifications\CloseArrivalNotification;
 use App\Repositries\checkIn\CheckInInterface;
 use App\Repositries\companies\CompaniesInterface;
 use App\Repositries\orderContact\OrderContactInterface;
@@ -43,9 +45,11 @@ class CheckInController extends Controller
         try {
              $request->all();
           $roleUpdateOrCreate = $this->checkin->checkinSave($request,$request->order_contact_id);
-            if ($roleUpdateOrCreate->get('status'))
-                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
-            return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+            if ($roleUpdateOrCreate->get('status')) {
+                $this->closeArrivalNotification($request->order_contact_id);
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
+            }
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -59,6 +63,48 @@ class CheckInController extends Controller
             }else{
                 return Helper::error($res->get('message'),[]);
             }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+
+    //closeArrivalNotification
+    public  function closeArrivalNotification($contactId)
+    {
+        try {
+
+             $orderContactInfo=Helper::fetchOnlyData($this->orderContact->getOrderContact($contactId));
+
+            $closeArrivalDoc=collect([]);
+            foreach ($orderContactInfo->filemedia as $contactMedia){
+                $fileMedia=array(
+                    'display_name'=>$contactMedia->field_name,
+                    'file_name'=>$contactMedia->file_name,
+                );
+                $closeArrivalDoc->push($fileMedia);
+            }
+
+            foreach ($orderContactInfo->carrier->docimages as $carrierMedia){
+                $fileMedia=array(
+                    'display_name'=>$carrierMedia->field_name,
+                    'file_name'=>$carrierMedia->file_name,
+                );
+                $closeArrivalDoc->push($fileMedia);
+            }
+                            $mailData = [
+                                'subject' => 'Close Arrival Notification',
+                                'greeting' => 'Hello',
+                                'content' =>'Here are the documents attached for your reference',
+                                'attachments'=>$closeArrivalDoc
+                            ];
+
+            if (!$customer = User::find($orderContactInfo->order->customer_id)) {
+                return Helper::error('customer not exist');
+            }
+            $customer->notify(new CloseArrivalNotification($mailData));
+
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

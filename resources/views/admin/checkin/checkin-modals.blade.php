@@ -12,7 +12,7 @@
             <div>
             </div>
 
-            <form method="post" class=" g-3 needs-validation" action="{{route('admin.checkin.store')}}" autocomplete="off" id="addForm1" enctype="multipart/form-data">
+            <form method="post" class=" g-3 needs-validation" action="{{route('admin.checkin.store')}}" autocomplete="off" id="addForm" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="order_contact_id" value="0">
                 <input type="hidden" name="order_id" value="0">
@@ -79,7 +79,7 @@
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
                         <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Close Arrival</button>
-                        <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none">Close Arrival</button>
+                        <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none">Close Arrivals</button>
                     </div>
                 </div>
             </form>

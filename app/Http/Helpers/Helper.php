@@ -477,5 +477,24 @@ class Helper
 
     }
 
+   public static function getMimeType($fileName)
+    {
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            // Add other mime types as needed
+        ];
+
+        return $mimeTypes[$extension] ?? 'application/octet-stream';
+    }
+
+
 
 }
