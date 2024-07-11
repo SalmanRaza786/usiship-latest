@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\HomeController;
 
         //Home
         Route::any('/admin-home', [HomeController::class, 'adminHome']);
+        Route::any('/customer-home', [HomeController::class, 'customerHome']);
 
     Route::any('/ware-house-list', [WareHouseController::class, 'wareHouseList']);
     Route::any('/dock-operational-hour', [WareHouseController::class, 'dockOperationalHour']);

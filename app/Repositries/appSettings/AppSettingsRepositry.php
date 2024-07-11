@@ -59,7 +59,7 @@ class AppSettingsRepositry implements AppSettingsInterface
     {
         try {
             $qry= AppSetting::query();
-            $qry= $qry->select('id','key','value');
+            $qry= $qry->select('id','key','value','description');
             $data = $qry->get();
             return Helper::success($data, $message="Record found");
 

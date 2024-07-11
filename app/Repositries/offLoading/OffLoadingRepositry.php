@@ -262,13 +262,14 @@ class OffLoadingRepositry implements OffLoadingInterface {
 
     }
 
-    public function getOffLoadingListForPutAwayApi($request)
+    public function getOffLoadingListForPutAwayApi($limit=null)
     {
         try {
 
             $qry = OrderOffLoading::query();
             $qry = $qry->with('order:id,order_id','orderCheckIn:id,container_no','status:id,status_title,class_name,text_class');
             $qry=$qry->where('status_id',14);
+            ($limit!=null)?$qry=$qry->take($limit):'';
             $data['data']=$qry->orderByDesc('id')->get();
 
             return Helper::success($data, $message=__('translation.record_found'));

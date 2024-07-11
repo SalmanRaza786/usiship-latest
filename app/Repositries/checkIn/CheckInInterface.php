@@ -6,7 +6,7 @@ interface CheckInInterface
 {
     public function getCheckinList($request);
     public function findCheckIn($id);
-    public function getOrderCheckinList();
+    public function getOrderCheckinList($limit);
     public function checkinSave($request,$id);
 
 }

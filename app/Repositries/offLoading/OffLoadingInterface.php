@@ -13,6 +13,6 @@ interface OffLoadingInterface
     public function getOffLoadingListForPutAway($request);
     public function getOffLoadingInfo($id);
     public function changeOffLoadingStatus($id,$statusId);
-    public function getOffLoadingListForPutAwayApi($request);
+    public function getOffLoadingListForPutAwayApi($limit);
 
 }

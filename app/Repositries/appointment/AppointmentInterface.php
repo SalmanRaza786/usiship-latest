@@ -35,4 +35,5 @@ interface AppointmentInterface
     public function sendNotification($orderId,$customerId,$statusId,$notificationFor);
     public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
     public function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null);
+    public function getMyAppointmentsForApi($customerId,$limit);
 }

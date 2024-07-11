@@ -861,6 +861,21 @@ class AppointmentRepositry implements AppointmentInterface {
         }
     }
 
+    public function getMyAppointmentsForApi($customerId,$limit=null)
+    {
+
+        try {
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status');
+            $qry=$qry->where('customer_id',$customerId);
+            ($limit!=null)?$qry=$qry->limit($limit):'';
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message=__('translation.record_found'));
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
 
 
 
