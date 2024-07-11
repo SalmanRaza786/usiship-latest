@@ -15,6 +15,7 @@ use App\Repositries\checkIn\CheckInInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\packagingList\PackagingListRepositry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class OffLoadingController extends Controller
 {
@@ -90,13 +91,22 @@ class OffLoadingController extends Controller
     public function checkOrderCheckInId(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'order_checkin_id' =>'required',
+            ]);
+
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
             $res= $this->offloaing->checkOrderCheckInId($request);
             if($res->get('data') != null)
             {
-                $data=$res->get('data');
-                return  Helper::createAPIResponce(false,200,$res->get('message'),$data);
+                return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
             }else{
-                return  Helper::createAPIResponce(false,200,"Order checkin id not found",[]);
+                $data = [
+
+                ];
+                return  Helper::createAPIResponce(false,200,"Order checkin id not found", (object)[]);
             }
 
         } catch (\Exception $e) {
