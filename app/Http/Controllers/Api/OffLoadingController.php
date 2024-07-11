@@ -103,9 +103,6 @@ class OffLoadingController extends Controller
             {
                 return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
             }else{
-                $data = [
-
-                ];
                 return  Helper::createAPIResponce(false,200,"Order checkin id not found", (object)[]);
             }
 
