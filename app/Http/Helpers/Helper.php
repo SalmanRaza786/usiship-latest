@@ -26,6 +26,7 @@ use App\Repositries\qBank\QuestionsRepositry;
 use App\Repositries\student\StudentRepositry;
 use App\Repositries\studentLecture\StudentLectureRepositry;
 use App\Repositries\user\UserRepositry;
+use App\Services\FireBaseNotificationTriggerService;
 use App\Traits\HandleFiles;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Artisan;
@@ -433,6 +434,7 @@ class Helper
                     $users=Admin::where('role_id',$row->role_id)->get();
                     foreach ($users as $user){
                         $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$user->id));
+                        $response =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
                         $res= NotificationEvent::dispatch($notifiData);
                     }
 
@@ -442,6 +444,7 @@ class Helper
         }
         if($type==2){
             $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
+            $response =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
              $res= ClientNotificationEvent::dispatch($notifiData);
         }
     }
@@ -493,6 +496,12 @@ class Helper
         ];
 
         return $mimeTypes[$extension] ?? 'application/octet-stream';
+    }
+
+    public static function fireBaseNotificationTriggerHelper($type,$notifiableId)
+    {
+        $fb=new FireBaseNotificationTriggerService();
+        return   $response=$fb->fireBaseTrigger($type,$notifiableId);
     }
 
 

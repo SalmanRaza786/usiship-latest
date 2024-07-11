@@ -279,10 +279,11 @@ class WareHouseController extends Controller
     }
     public function  test()
     {
-        $type=1;
-        $notifiableId=1;
-        $fb=new FireBaseNotificationTriggerService();
-     return   $response=$fb->fireBaseTrigger($type,$notifiableId);
+
+        $type=2;
+        $notifiableId=10;
+        return  $response =Helper::fireBaseNotificationTriggerHelper($type,$notifiableId);
+
 
 
 //        $notification=new NotificationRepositry();

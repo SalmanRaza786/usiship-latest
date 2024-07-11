@@ -305,6 +305,7 @@ class OrderController extends Controller
     public function notificationTrigger($type,$totifiableId)
     {
         try {
+
          return $res=Helper::notificationTriggerHelper($type,$totifiableId);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

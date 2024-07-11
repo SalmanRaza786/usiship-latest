@@ -58,6 +58,6 @@ public function fireBaseTrigger($type,$notifiableId)
         'json' => $body,
     ]);
 
-    return $response->getBody();
+    echo $response->getBody();
 }
 }
