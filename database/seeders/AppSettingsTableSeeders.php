@@ -57,6 +57,11 @@ class AppSettingsTableSeeders extends Seeder
                 'value' => 'USHIP',
                 'description' => 'Footer Text',
             ],
+            [
+                'key' => 'allow_registration',
+                'value' => 1,
+                'description' =>'1 use for allow 2 use for not allow',
+            ],
 
 
         ];

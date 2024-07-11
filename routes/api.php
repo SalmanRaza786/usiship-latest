@@ -10,9 +10,13 @@ use App\Http\Controllers\Api\CheckInController;
 use App\Http\Controllers\Api\OffLoadingController;
 use App\Http\Controllers\Api\PutAwayController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\HomeController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
+
+        //Home
+        Route::any('/admin-home', [HomeController::class, 'adminHome']);
 
     Route::any('/ware-house-list', [WareHouseController::class, 'wareHouseList']);
     Route::any('/dock-operational-hour', [WareHouseController::class, 'dockOperationalHour']);
@@ -66,6 +70,8 @@ use App\Http\Controllers\Api\NotificationController;
 
 
   });
+
+Route::any('/app-setting', [HomeController::class, 'appSetting']);
 
 
     Route::any('/api-login', [AuthController::class, 'login']);
