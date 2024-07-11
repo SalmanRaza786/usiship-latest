@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\Admin;
 use App\Models\LoadType;
+use App\Models\User;
 use App\Models\WhDock;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\wh\WhInterface;
+use App\Services\FireBaseNotificationTriggerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Mail\ExampleMail;
@@ -276,51 +279,58 @@ class WareHouseController extends Controller
     }
     public function  test()
     {
-        $type=2;
-        $notifiableId=10;
-        $notification=new NotificationRepositry();
-
-        if($type==2){
-              $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
-        }
-
-        $notifyContent= $notifyQuery->first();
+        $type=1;
+        $notifiableId=1;
+        $fb=new FireBaseNotificationTriggerService();
+     return   $response=$fb->fireBaseTrigger($type,$notifiableId);
 
 
-
-
-        $client = new Client();
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.env('FIRE_BASE_ACCESS_TOKEN'),
-        ];
-
-        $body = [
-            'message' => [
-                'token' => 'c5bglgozQ2iP9AEjcpdl1E:APA91bFjmPI0UScgid-lLVLOnBq7NnG14ZEJIoLvdG5LbWT-McW0F2sty3Bsc14CiZ-tBOCvpZq2pt-nedhdPhWIsryZH03sDwZmuc_WgLe9O45znKitJMU1Ih2zVZBLA9DjvLix2AAv',
-                'notification' => [
-                    'body' =>$notifyContent['content'],
-                    'title' =>$notifyContent['content'],
-                ],
-
-                'data' => [
-                    'id' =>(string) $notifyContent['id'],
-                    'content' =>(string) $notifyContent['content'],
-                    'created_at' =>(string) $notifyContent['created_at'],
-                    'notifiType' =>(string) $notifyContent['notifiType'],
-                    'notifiableId' =>(string) $notifyContent['notifiableId'],
-                    'target_model_id' =>(string) $notifyContent['target_model_id'],
-                    'url' =>(string) $notifyContent['url'],
-                ],
-            ],
-        ];
-
-        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
-            'headers' => $headers,
-            'json' => $body,
-        ]);
-
-        echo $response->getBody();
+//        $notification=new NotificationRepositry();
+//
+//        if($type==1){
+//              $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
+//              $deviceId=Admin::where('id',$notifiableId)->pluck('device_id')->first();
+//        }
+//
+//        if($type==2){
+//            $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
+//            $deviceId=User::where('id',$notifiableId)->pluck('device_id')->first();
+//        }
+//
+//        $notifyContent= $notifyQuery->first();
+//
+//        $client = new Client();
+//        $headers = [
+//            'Content-Type' => 'application/json',
+//            'Authorization' => 'Bearer '.env('FIRE_BASE_ACCESS_TOKEN'),
+//        ];
+//
+//        $body = [
+//            'message' => [
+//                'token' =>$deviceId,
+//                'notification' => [
+//                    'body' =>$notifyContent['content'],
+//                    'title' =>$notifyContent['content'],
+//                ],
+//
+//                'data' => [
+//                    'id' =>(string) $notifyContent['id'],
+//                    'content' =>(string) $notifyContent['content'],
+//                    'created_at' =>(string) $notifyContent['created_at'],
+//                    'notifiType' =>(string) $notifyContent['notifiType'],
+//                    'notifiableId' =>(string) $notifyContent['notifiableId'],
+//                    'target_model_id' =>(string) $notifyContent['target_model_id'],
+//                    'url' =>(string) $notifyContent['url'],
+//                ],
+//            ],
+//        ];
+//
+//        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+//            'headers' => $headers,
+//            'json' => $body,
+//        ]);
+//
+//        echo $response->getBody();
 
     }
 
