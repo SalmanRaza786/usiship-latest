@@ -2,30 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\MyEvent;
-use App\Events\SendEmailEvent;
-use App\Events\SendNotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Models\LoadType;
-use App\Models\NotificationTemplate;
-use App\Models\OperationalHour;
-use App\Models\OrderBookedSlot;
-use App\Models\User;
 use App\Models\WhDock;
-use App\Models\WhOffDay;
-use App\Models\WhWorkingHour;
-use App\Notifications\OrderNotification;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customField\CustomFieldInterface;
-use App\Repositries\dock\DockRepositry;
+use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\wh\WhInterface;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use PHPUnit\TextUI\Help;
+use Illuminate\Support\Facades\Http;
 use App\Mail\ExampleMail;
 use Illuminate\Support\Facades\Mail;
+use GuzzleHttp\Client;
+
 
 class WareHouseController extends Controller
 {
@@ -244,62 +234,96 @@ class WareHouseController extends Controller
 
     }
 
-    public function testEmail()
+    public function testOld()
     {
+      //  $response = Http::post($url, $params);
 
 
-        //$orderId,$customerId,$statusId
-        //return $res=$this->order->sendNotification(1,2,1,1);
+//    use GuzzleHttp\Client;
+//        $client = new Client();
 
-
-        $statusId = 6;
-        $orderId = 1;
-        $customerId = 2;
-        $mailContent = NotificationTemplate::where('status_id', $statusId)->first();
-        if(!$mailContent){
-            return Helper::error('mail content not exist');
-        }
-
-
-
-
-        if (!$customer = User::find($customerId)) {
-            return Helper::error('customer not exist');
-        }
-
-
-        $mailData = [
-            'subject' => 'Order Requested',
-            'greeting' => 'Hello',
-            'content' => $mailContent->mail_content,
-            'actionText' => 'View Your Order Details',
-            'actionUrl' => url('/get-order-detail/' . ($orderId)),
-            'orderId' => $orderId,
-            'statusId' => $statusId,
-        ];
-       return  $res=$customer->notify(new OrderNotification($mailData));
-
-       // event(new SendEmailEvent($mailData,$customer));
-
-
-    }
-
-    public function sendEmail()
-    {
-        $details = [
-            'title' => 'Mail from Example.com',
-            'body' => 'This is a test email sent from Laravel.'
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ya29.c.c0ASRK0GbK8eKtIpWrseoUgxx3GP-yyi1Hc9lU6DYxdeny9NIoF4qf31FgTEn3KlZCrToZWWAsvTiHUOdC1kcjvq2nABVSw_T9xYhYgqeo7kvswBUDqQw29Xx5YVpko-69JcMUljvighfB21aexKENdFy4EkWj8J701EBKFroABfrL0otKxRYF8U_toJIL5k4VHSbsMCZYE8jD2RWlYCsuZLSanFlxVSxSdfpsx_ugGcf9XMS7AmnXceIbWq18mpdc7PMcIk12TL07j6VQw4FvUfVmwA2hgkrgZy0gmL3wsHIU9CBD9ofK2BggxPUUG3gSYV1t_P4Ti55xl2EV7w_T4XbhLXmspv1rjExJmJSzY0ZMGVOIxw4jf2oT384Dj3qw7uYkr2mgjnc5k2QIoMcvM3ecxd8ZR7tbSIM7B5WXV9Wl4tqlMt429y8902W18yZ_wJt7lIBgsWctOdlm9FJB6YBzuYmyf-Rc1alnSsmWBkjj9lQh7m060ygq5aFxB_uM6rJIy0SJtVUb7heFqxgkqj0Omq9Rymj-uhxSB0vVvkgryYbql8Up0bkyMcuyh0c878Jn1ag8VrYZw1Yg13Qtf95wVFmelMlq7b79XhfOYxlVnsRBl5yiUUdr6cqIac_kBZaexj6UywiaMXp1z3MWgfpuScZcb9e0Y2Uo2vwcXs19VOJkx-X0ia6ed_sxl3biX4nSdpQpkmbUbJ8wRigRRMqsu3l263grWrxOrooMuhu82OrJU9bikftnB0sue9ft0gM3ZhI3avd5ZxjSXbWxu_j4IRrplbk6FY5on6v9VYnRu65QQuu74itsJJQU18qkWr2Um_ZfqR1dn9pX-un6glUagF_om2-fmw-4Q1IraXFvqOV10lMBuglRx1QomYvJ3z7IknhF_Fai-yUd2Jxl7luIzrUOYpa5jpnWbckwaZc9YgWIQdZgik0JgxqV1bdd41ZWVduXqRgbbZbq8BlrYmVxjmXqBiiqdmcokW27xRxkMi68d5jS-8k'
         ];
 
-         $res=  Mail::to('faheemakramofficial10@gmail.com')->send(new ExampleMail($details));
-         dd($res);
-        return response()->json(['message' => 'Email sent successfully.']);
+        $body = [
+            'message' => [
+                'token' => 'c5bglgozQ2iP9AEjcpdl1E:APA91bFjmPI0UScgid-lLVLOnBq7NnG14ZEJIoLvdG5LbWT-McW0F2sty3Bsc14CiZ-tBOCvpZq2pt-nedhdPhWIsryZH03sDwZmuc_WgLe9O45znKitJMU1Ih2zVZBLA9DjvLix2AAv',
+                'notification' => [
+                    'body' => 'This is my magic, Salman',
+                    'title' => 'FCM Message',
+                ],
+                'data' => [
+                    'key1' => 'value1',
+                    'key2' => 'value2',
+                ],
+            ],
+        ];
+
+//        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+//            'headers' => $headers,
+//            'json' => $body,
+//        ]);
+
+        $response= Http::post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+            'headers' => $headers,
+            'json' => $body,
+        ]);
+
+        echo $response->getBody();
 
     }
-    public function delete()
+    public function  test()
     {
-        return redirect()->route('user.index');
+        $type=2;
+        $notifiableId=10;
+        $notification=new NotificationRepositry();
+
+        if($type==2){
+              $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
+        }
+
+        $notifyContent= $notifyQuery->first();
+
+
+
+
+        $client = new Client();
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer '.env('FIRE_BASE_ACCESS_TOKEN'),
+        ];
+
+        $body = [
+            'message' => [
+                'token' => 'c5bglgozQ2iP9AEjcpdl1E:APA91bFjmPI0UScgid-lLVLOnBq7NnG14ZEJIoLvdG5LbWT-McW0F2sty3Bsc14CiZ-tBOCvpZq2pt-nedhdPhWIsryZH03sDwZmuc_WgLe9O45znKitJMU1Ih2zVZBLA9DjvLix2AAv',
+                'notification' => [
+                    'body' =>$notifyContent['content'],
+                    'title' =>$notifyContent['content'],
+                ],
+
+                'data' => [
+                    'id' =>(string) $notifyContent['id'],
+                    'content' =>(string) $notifyContent['content'],
+                    'created_at' =>(string) $notifyContent['created_at'],
+                    'notifiType' =>(string) $notifyContent['notifiType'],
+                    'notifiableId' =>(string) $notifyContent['notifiableId'],
+                    'target_model_id' =>(string) $notifyContent['target_model_id'],
+                    'url' =>(string) $notifyContent['url'],
+                ],
+            ],
+        ];
+
+        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+            'headers' => $headers,
+            'json' => $body,
+        ]);
+
+        echo $response->getBody();
+
     }
+
 
 }
 

@@ -111,7 +111,7 @@ class PutAwayController extends Controller
         }
         public function putAwayList(Request $request){
         try {
-            $res=$this->offLoading->getOffLoadingListForPutAwayApi($request);
+            $res=$this->offLoading->getOffLoadingListForPutAwayApi();
             return  Helper::createAPIResponce(false,200,'Put away items list',$res['data']['data']);
             } catch (\Exception $e) {
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);

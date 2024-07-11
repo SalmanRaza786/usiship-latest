@@ -52,7 +52,7 @@ Auth::routes();
     Route::any('/order-timing', [OrderController::class, 'orderTiming']);
     Route::get('/dock-wise-hours', [WareHouseController::class, 'getDockWiseHours'])->name('dock.hours.list');
 
-    Route::get('/test-email', [WareHouseController::class, 'testEmail']);
+    Route::get('/test', [WareHouseController::class, 'test']);
 
 
     //welcome

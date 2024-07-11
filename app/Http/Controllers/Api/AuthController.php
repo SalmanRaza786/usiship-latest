@@ -63,8 +63,11 @@ class AuthController extends Controller
             }
 
                 $data['user']=Admin::where('email',$request->email)->with('role')->first();
+                $data['user']->device_id=$request->device_id;
+                $data['user']->save();
                 $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
                 $data['userType']='employees';
+
             return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
 
 
@@ -82,6 +85,8 @@ class AuthController extends Controller
             }
 
             $data['user']=User::where('email',$request->email)->first();
+            $data['user']->device_id=$request->device_id;
+            $data['user']->save();
             $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
             $data['userType']='customer';
             return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
