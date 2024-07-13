@@ -268,8 +268,7 @@ class OrderController extends Controller
     {
         try {
             $res= $this->appointment->checkOrderId($request);
-            $data['load']=$res->get('data');
-            return Helper::ajaxSuccess($data,$res->get('message'));
+            return Helper::ajaxSuccess($res,'Order ID validation');
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -306,7 +305,7 @@ class OrderController extends Controller
     {
         try {
 
-         return $res=Helper::notificationTriggerHelper($type,$totifiableId);
+          $res=Helper::notificationTriggerHelper($type,$totifiableId);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

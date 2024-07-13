@@ -20,14 +20,14 @@ $(document).ready(function(){
 
     function fnShowNotifications(notificationData,isShowToast){
         var notificationHtml='';
+
+        if(isShowToast==1) {
+            $('.toast').toast('show');
+            $('.created-at').text(notificationData[0].created_at);
+            $('.notification-text').text(notificationData[0].content);
+        }
+
         $.each(notificationData, function(key, row) {
-
-            if(isShowToast==1) {
-                $('.toast').toast('show');
-                $('.created-at').text(row.created_at);
-                $('.notification-text').text(row.content);
-            }
-
 
             notificationHtml+='<div class="text-reset notification-item d-block dropdown-item position-relative btn-read-notification" data="'+row.id+'">'+
                 '<div class="d-flex">'+
@@ -124,7 +124,7 @@ $(document).ready(function(){
 
     var channel = pusher.subscribe('notificationChannel');
     channel.bind('App\\Events\\NotificationEvent', function(e) {
-    console.log('admin side',e.notificationData);
+
         if(e.notificationData[0].notifiType==1 && e.notificationData[0].notifiableId == userId) {
             if (e.notificationData.length > 0) {
 

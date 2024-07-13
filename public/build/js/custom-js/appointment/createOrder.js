@@ -187,6 +187,7 @@ function getLoadTypeAccordingWareHouse(whId){
             showLoader();
         },
         success: function(response) {
+            console.log('wh load type',response);
             if(response.status) {
                 var html = '';
                 var noresult = '';
@@ -237,6 +238,7 @@ function getLoadTypeAccordingWareHouse(whId){
 }
 $('#loadTypeTable').on('click', '.btn-dock', function(){
     var loadTypeId = $(this).data('value');
+
     getDockAccordingLoadType(loadTypeId);
     let nextTabId = $(this).attr("data-nexttab");
     let nextTabButton = document.querySelector(`[data-bs-target="#${nextTabId}"]`);
@@ -258,7 +260,7 @@ function getDockAccordingLoadType(loadTypeId){
             showLoader();
         },
         success: function(response) {
-
+            console.log('dock list',response.data);
             if(response.status) {
                 $('input[name="load_type_id"]').val(loadTypeId);
                 var html = '';

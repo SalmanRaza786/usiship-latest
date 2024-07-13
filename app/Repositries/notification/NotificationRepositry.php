@@ -40,7 +40,7 @@ class NotificationRepositry implements NotificationInterface
 
     }
 
-    public function getUnreadNotifications($type,$notifiableId=null)
+    public function getUnreadNotifications($type,$notifiableId=null,$limit=null)
     {
         try {
 
@@ -54,6 +54,7 @@ class NotificationRepositry implements NotificationInterface
                 $qry=$qry->where('notifiable', 'App\Models\User')->where('notifiable_id',$notifiableId)->where('notifiType',2);
             }
             $qry=$qry->where('is_read', 2);
+            ($limit > 0)? $qry=$qry->take($limit):'';
             $qry=$qry->orderByDesc('id');
             $notification=$qry->get();
 

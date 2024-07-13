@@ -83,6 +83,9 @@ class CarriersController extends Controller
     {
         try {
              $request->all();
+           if(Order::where('id',$request->order_id)->where('order_id', $request->order_no)->count()==0){
+               return Helper::error('Invalid order id or reference no');
+           }
 
             $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){

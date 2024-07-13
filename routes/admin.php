@@ -41,9 +41,7 @@ use App\Http\Controllers\Admin\PutAwayController;
 
     Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/test', function () {
-            return view('test');
-        });
+
 
     Route::get('dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
     Route::get('/app-settings', [AppSettingsController::class, 'index'])->name('app-settings.index')->middleware(['can:admin-settings-edit']);

@@ -133,6 +133,18 @@
                                     <div class="row g-3" id="media">
 
                                     </div>
+                                    <table class="table table-nowrap align-middle">
+                                        <thead class="text-muted table-light">
+                                        <tr class="text-uppercase">
+                                            <th class="sort" data-sort="id">Ttile</th>
+                                            <th class="sort" data-sort="id">File</th>
+                                            <th class="sort" data-sort="id">Action</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody id="dockTable"></tbody>
+
+                                    </table>
                                 </div>
                                 <div class="card-footer border-top-dashed">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">

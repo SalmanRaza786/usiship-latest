@@ -4,7 +4,7 @@
             <div class="d-flex">
                 <a href="{{url('/')}}" class="logo logo-light">
             <span class="logo-sm">
-            <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="" height="22">
+            <img src="https://i.ibb.co/D8JmrVD/USI-Logo-High-light.png" alt="" height="22">
             </span>
                     <span class="logo-lg">
             <img src="https://i.ibb.co/D8JmrVD/USI-Logo-High-light.png" alt="" height="55" />

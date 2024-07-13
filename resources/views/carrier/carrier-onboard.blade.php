@@ -169,9 +169,9 @@
                                                     <input type="text" class="form-control" id="order_id" name="order_no"
                                                            aria-label="Sizing example input"
                                                            aria-describedby="inputGroup-sizing-lg" required></div>
-                                                <div class="alert d-none" id="orderIdFeedback" role="alert">
-                                                    <strong></strong>
-                                                </div>
+                                                <div id="orderIdFeedback" ></div>
+
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
@@ -334,35 +334,35 @@
         $(document).ready(function() {
             $('#order_id').on('keyup', function() {
                 var orderId = $(this).val();
+                var id=$('input[name=order_id]').val();
 
+                var errorText='';
                 if (orderId.length > 0) {
+
                     $.ajax({
                         url: '{{ route("checkOrderId") }}',
                         method: 'GET',
-                        data: { order_id: orderId },
+                        data: { order_id: orderId,id:id },
                         success: function(response) {
 
-                            if (response.data.load) {
-                                $('#orderIdFeedback')
-                                    .removeClass('d-none alert-danger')
-                                    .addClass('alert-success')
-                                    .text('Order ID is Available.');
-                            } else {
-                                $('#orderIdFeedback')
-                                    .removeClass('d-none alert-success')
-                                    .addClass('alert-danger')
-                                    .text('Order ID not Available.');
+                            if (response.data==1) {
+                                $("#btn-carrier-submit").prop("disabled", false);
+                                 errorText='<span></span>';
                             }
+                            if (response.data==0) {
+                                $("#btn-carrier-submit").prop("disabled", true);
+                                 errorText='<span class="text-danger">Invalid Order Reference</span>';
+                            }
+
+
+                            $('#orderIdFeedback').html(errorText)
                         },
                         error: function() {
-                            $('#orderIdFeedback')
-                                .removeClass('d-none alert-success')
-                                .addClass('alert-danger')
-                                .text('An error occurred while checking the Order ID.');
+                            $('#orderIdFeedback').text('An error occurred while checking the Order ID.').css({'color': 'red' });
                         }
                     });
                 } else {
-                    $('#orderIdFeedback').addClass('d-none').text('');
+                    $('#orderIdFeedback').html(errorText)
                 }
             });
             $('#verifyButton').on('click', function(){
@@ -407,7 +407,7 @@
             $('#CarrierForm').on('submit', function(e) {
                 e.preventDefault();
                 var targetTab = $('#btn-carrier-submit').data('nexttab');
-                console.log(targetTab);
+
                 $.ajax({
                     url: $(this).attr('action'),
                     method: 'POST',
@@ -423,7 +423,7 @@
                     success: function(response) {
                         if (response.status==true) {
                             toastr.success(response.message);
-                            $('.btn-submit').text('Submit');
+                            $('.btn-submit').text('>Checked In');
                             $(".btn-submit").prop("disabled", false);
                             $('#' + targetTab).tab('show');
                         }
@@ -432,12 +432,12 @@
                         }
                     },
                     complete: function(data) {
-                        $(".btn-submit").html("Submit");
+                        $(".btn-submit").html(">Checked In");
                         $(".btn-submit").prop("disabled", false);
                     },
                     error: function() {
                         // toastr.error('something went wrong');
-                        $('.btn-submit').text('Submit');
+                        $('.btn-submit').text('>Checked In');
                         $(".btn-submit").prop("disabled", false);
                     }
                 });

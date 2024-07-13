@@ -76,4 +76,10 @@ Auth::routes();
     Route::get('/exam-show', [PusherController::class, 'examShow']);
     Route::get('/pusher', function () {
     return view('pusher');
+
+
+});
+
+Route::get('/sidebar', function () {
+    return view('sidebar');
 });

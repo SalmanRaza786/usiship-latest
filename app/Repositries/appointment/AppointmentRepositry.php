@@ -642,9 +642,10 @@ class AppointmentRepositry implements AppointmentInterface {
     public function checkOrderId($request)
     {
         try {
+            $id = $request->query('id');
             $orderId = $request->query('order_id');
-            $res = Order::where('order_id', $orderId)->exists();
-            return Helper::success($res, $message='Record found');
+            return  $res = Order::where('id', $id)->where('order_id', $orderId)->count();
+             Helper::success($res, $message='Record found');
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }

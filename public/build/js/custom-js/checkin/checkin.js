@@ -95,6 +95,7 @@ $(document).ready(function(){
         var whId = $(this).attr('whId');
         var orderId = $(this).attr('orderId');
         var id = $(this).attr('data');
+
         $.ajax({
             url: 'get-door-wh-id/'+whId,
             type: 'GET',
@@ -143,6 +144,7 @@ $(document).ready(function(){
             success: function(response) {
                 var html = '';
 
+                console.log('response',response);
                     if(response.status==true){
 
                         $('input[name=order_id]').val(response.data.order_id);
@@ -161,23 +163,34 @@ $(document).ready(function(){
                             $('.btn-verify').addClass('d-none');
                         }
 
+                        var html='';
                         $.each(response.data.carrier.docimages, function(index, file) {
-                        html +='<div class="col-sm-3">'+
-                            '<figure class="figure mb-0">'+
-                            ' <img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded" alt="...">'+
-                            ' <figcaption class="figure-caption">'+file.field_name+'</figcaption>'+
-                            ' </figure>'+
-                            '</div>';
+                            html +='<tr>' +
+                                '<td><figcaption class="figure-caption">'+file.field_name+'</figcaption></td>' +
+                                '<td><img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded"  height="80" width="70"></td>' +
+                               '<td><i class="ri ri-close-fill"></td>'+
+                             '<tr>';
+
                         });
+
+
                         $.each(response.data.filemedia, function(index, file) {
-                            html +='<div class="col-sm-3">'+
-                                '<figure class="figure mb-0">'+
-                                ' <img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded" alt="...">'+
-                                ' <figcaption class="figure-caption">'+file.field_name+'</figcaption>'+
-                                ' </figure>'+
-                                '</div>';
+
+                            // html +='<div class="col-sm-3">'+
+                            //     '<figure class="figure mb-0">'+
+                            //     ' <img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded" alt="...">'+
+                            //     ' <figcaption class="figure-caption">'+file.field_name+'</figcaption>'+
+                            //     ' </figure>'+
+                            //     '</div>';
+
+                            html +='<tr>' +
+                                '<td><figcaption class="figure-caption">'+file.field_name+'</figcaption></td>' +
+                                '<td><img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded"  height="80" width="70"></td>' +
+                                '<td><i class="ri ri-close-fill"></td>'+
+
+                                '<tr>';
                         });
-                        $('#media').html(html);
+                        $('#dockTable').html(html);
                     }else{
                     toastr.error(response.message)
                 }
