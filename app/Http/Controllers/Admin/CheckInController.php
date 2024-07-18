@@ -57,7 +57,7 @@ class CheckInController extends Controller
     public  function findCheckIn($checkinId)
     {
         try {
-            $res= $this->checkin->findCheckIn($checkinId);
+            $res= $this->checkin->findOrderContact($checkinId);
             if ($res->get('status')){
                 return Helper::success($res->get('data'),$res->get('message'));
             }else{
@@ -111,4 +111,6 @@ class CheckInController extends Controller
         }
 
     }
+
+
 }

@@ -238,7 +238,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
         try {
 
             $qry = OrderOffLoading::query();
-            $qry = $qry->with('orderCheckIn.orderContact:id,arrival_time','order.loadType.transMode');
+            $qry = $qry->with('orderCheckIn.orderContact:id,arrival_time','order.loadType.transMode','order.packgingList.inventory');
             $data=$qry->find($id);
             return Helper::success($data, $message=__('translation.record_found'));
 

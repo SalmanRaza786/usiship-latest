@@ -260,6 +260,40 @@ $(document).ready(function(){
         $('#addForm').find('option').prop('selected', false);
     }
 
+
+    $('#checkInContainerNumber').on('keyup', function() {
+        const containerNumber = $('#checkInContainerNumber').val();
+        const orderContactId = $('#orderContactId').val();
+
+        $.ajax({
+            url: 'get-checkin-container/'+orderContactId,
+            type: 'GET',
+            async: false,
+            dataType: 'json',
+            success: function(response) {
+                if(containerNumber > 0) {
+                    if (response.data.vehicle_number != containerNumber) {
+                        var errorHtml = '<span style="color:red">Invalid container number</span>'
+                        $(".btn-close-arrival").prop("disabled", true);
+
+                    } else {
+                        var errorHtml = '<span></span>'
+                        $(".btn-close-arrival").prop("disabled", false);
+                    }
+                    $('#containerError').html(errorHtml);
+                }else{
+                    var errorHtml = '<span></span>'
+                    $('#containerError').html(errorHtml);
+                    $(".btn-close-arrival").prop("disabled", false);
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error);
+            }
+        });
+
+    });
+
 });
 
 

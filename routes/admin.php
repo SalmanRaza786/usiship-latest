@@ -144,6 +144,7 @@ use App\Http\Controllers\Admin\PutAwayController;
         Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-checkin-view']);
         Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-checkin-create']);
         Route::any('/close-arrival-notification/{id}', [CheckInController::class, 'closeArrivalNotification']);
+        Route::any('/get-checkin-container/{id}', [CheckInController::class, 'findCheckIn']);
 
 
         //Order Contact

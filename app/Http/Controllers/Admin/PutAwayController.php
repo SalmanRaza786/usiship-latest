@@ -39,9 +39,10 @@ class PutAwayController extends Controller
     //createPutAway
     public function createPutAway($offLoadingId){
         try {
+
              $data['offLoadingInfo']=Helper::fetchOnlyData($this->offLoading->getOffLoadingInfo($offLoadingId));
              $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations($data['offLoadingInfo']->order->wh_id));
-             $data['inventory']=Helper::fetchOnlyData($this->inventory->getAllItems());
+             $data['inventory']=count($data['offLoadingInfo']->order->packgingList)?$data['offLoadingInfo']->order->packgingList:[];
              $data['putAwayItems']=Helper::fetchOnlyData($this->putAway->getPutAwayItemsAccordingOffLoading($offLoadingId));
             return view('admin.putaway.create')->with(compact('data'));
         }catch (\Exception $e) {

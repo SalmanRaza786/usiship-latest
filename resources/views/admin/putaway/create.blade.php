@@ -99,13 +99,14 @@
                                     <input type="number" class="d-none" name="putAwayId[]" value="{{$row->id}}">
 
                                         <select name="inventory_id[]" class="form-control"  data-choices required>
-                                            <option value="">Choose SKU</option>
+                                            <option value="">Choose SKU 2</option>
                                             @foreach($data['inventory'] as  $inventory)
-                                                <option value="{{ $inventory->id }}"
+                                                {{$inventory}}
+                                                <option value="{{ $inventory->inventory->id }}"
                                                 @if($row->inventory_id==$inventory->id)
                                                     {{ "selected"}}
                                                     @endif
-                                                    >{{ $inventory->item_name .'('.$inventory->sku.')' }}</option>
+                                                    >{{ $inventory->inventory->item_name .'('.$inventory->inventory->sku.')' }}</option>
                                             @endforeach
                                         </select>
 
@@ -162,9 +163,9 @@
                                         <select name="inventory_id[]" class="form-control"  data-choices required>
                                             <option value="">Choose SKU</option>
                                             @foreach($data['inventory'] as  $inventory)
-                                                <option value="{{ $inventory->id }}"
-
-                                                >{{ $inventory->item_name .'('.$inventory->sku.')' }}</option>
+                                                <option value="{{$inventory->inventory->id }}">
+                                                    {{ $inventory->inventory->item_name .'('.$inventory->inventory->sku.')' }}
+                                                </option>
                                             @endforeach
                                         </select>
 

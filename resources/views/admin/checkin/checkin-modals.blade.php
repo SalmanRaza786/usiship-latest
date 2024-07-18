@@ -14,8 +14,8 @@
 
             <form method="post" class=" g-3 needs-validation" action="{{route('admin.checkin.store')}}" autocomplete="off" id="addForm" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="order_contact_id" value="0">
-                <input type="hidden" name="order_id" value="0">
+                <input type="hidden" name="order_contact_id" value="0" id="orderContactId">
+                <input type="hidden" name="order_id" value="0" id="orderId">
                 <div class="modal-body">
 
                     <div class="row gy-4">
@@ -29,7 +29,8 @@
                         <div class="col-md-6">
                             <div>
                                 <label for="basiInput" class="form-label">Container #</label>
-                                <input type="text" class="form-control" id="basiInput" name="container_no" required placeholder="Container #">
+                                <input type="text" class="form-control" name="container_no" id="checkInContainerNumber" required placeholder="Container #">
+                                <div id="containerError"></div>
                             </div>
                         </div>
                         <!--end col-->
@@ -51,8 +52,8 @@
                             </div>
                         </div><div class="col-md-6">
                             <div>
-                                <label for="basiInput" class="form-label">Delivery Order Signature</label>
-                                <input type="text" class="form-control" id="basiInput" name="do_signature"   required placeholder="Delivery Order Signature">
+                                <label for="basiInput" class="form-label">Delivery Number</label>
+                                <input type="text" class="form-control" id="basiInput" name="do_signature"   required placeholder="Delivery Number">
                             </div>
                         </div><div class="col-md-6">
                             <div>
@@ -79,7 +80,7 @@
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
                         <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Close Arrival</button>
-                        <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none">Close Arrivals</button>
+                        <button type="submit" class="btn btn-success btn-submit btn-save-changes btn-close-arrival" id="add-btn" style="display: none">Close Arrivals</button>
                     </div>
                 </div>
             </form>
@@ -136,7 +137,7 @@
                                     <table class="table table-nowrap align-middle">
                                         <thead class="text-muted table-light">
                                         <tr class="text-uppercase">
-                                            <th class="sort" data-sort="id">Ttile</th>
+                                            <th class="sort" data-sort="id">Title</th>
                                             <th class="sort" data-sort="id">File</th>
                                             <th class="sort" data-sort="id">Action</th>
 

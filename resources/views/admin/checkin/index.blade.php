@@ -136,7 +136,7 @@
                     {
                         targets: 6,
                         render: function(data, type, row, meta) {
-                                return '<span class="badge '+data.class_name+' '+data.text_class + ' text-uppercase">'+data.status_title+'</span>';
+                                return '<span class="badge bg-primary'+data.class_name+' '+data.text_class + ' text-uppercase">'+data.status_title+'</span>';
                         }
                     },
                     {
