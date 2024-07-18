@@ -53,6 +53,7 @@ Auth::routes();
     Route::get('/dock-wise-hours', [WareHouseController::class, 'getDockWiseHours'])->name('dock.hours.list');
 
     Route::get('/test', [WareHouseController::class, 'test']);
+    Route::get('/scan', [WareHouseController::class, 'scan']);
 
 
     //welcome

@@ -3,6 +3,23 @@
 
 <style>
     .disabled { pointer-events: none; }
+    @media (max-width: 768px) {
+        #preview {
+            width: 100%;
+            height: auto;
+        }
+
+        .input-group-lg {
+            display: flex;
+            justify-content: center;
+        }
+
+        #start-camera {
+            width: 100%;
+            max-width: 450px;
+        }
+    }
+
 </style>
 @section('content')
     <div class="auth-page-wrapper pt-5">
@@ -97,20 +114,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-
-                                                    <div style="display: none" id="scan-section">
-
-                                                        <button id="switch-camera" style="display:none;">Switch Camera</button>
-                                                        <video id="preview" width="450" height="400"></video>
+                                                    <div style="display: none" id="scan-section" class="col-12 text-center">
+                                                        <video id="preview" class="w-100" style="max-width: 450px; height: auto;"></video>
                                                         <canvas id="canvas" style="display:none;"></canvas>
                                                         <p id="qr-result" class="d-none">QR Code Result: <span id="qr-result-text"></span></p>
-                                                        <p  class="d-none" id="message" style="display:none;">QR Code has been scanned!</p>
+                                                        <p class="d-none" id="message" style="display:none;">QR Code has been scanned!</p>
                                                     </div>
-                                                    <div class="input-group input-group-lg mb-4 form-icon right d-grid">
+                                                    <div class="input-group input-group-lg mb-4 form-icon right d-grid col-12">
                                                         <button class="btn btn-outline-success pe-5" type="button" id="start-camera"><i class="ri-camera-line fs-24"></i>Scan Now</button>
-
                                                     </div>
                                                 </div>
+
                                                 <hr>
                                                 <div>
                                                     <h5 class="mb-1">Or Enter the Warehouse ID</h5>

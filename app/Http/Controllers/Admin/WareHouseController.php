@@ -334,6 +334,10 @@ class WareHouseController extends Controller
 //        echo $response->getBody();
 
     }
+    public function scan()
+    {
+        return view('scan');
+    }
 
 
 }
