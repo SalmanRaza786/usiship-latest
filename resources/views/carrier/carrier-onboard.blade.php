@@ -2,25 +2,52 @@
 @section('title') Carrier Onboard @endsection
 
 <style>
-    .disabled { pointer-events: none; }
-    @media (max-width: 768px) {
-        #preview {
-            width: 100%;
-            height: auto;
-        }
+    #my-qr-reader {
+        padding: 20px !important;
+        border: 1.5px solid #b2b2b2 !important;
+        border-radius: 8px;
+    }
 
-        .input-group-lg {
-            display: flex;
-            justify-content: center;
-        }
+    #my-qr-reader img[alt="Info icon"] {
+        display: none;
+    }
 
-        #start-camera {
-            width: 100%;
-            max-width: 450px;
-        }
+    #my-qr-reader img[alt="Camera based scan"] {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: 1px solid #b2b2b2;
+        outline: none;
+        border-radius: 0.25em;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        background-color: #008000ad;
+        transition: 0.3s background-color;
+    }
+
+    button:hover {
+        background-color: #008000;
+    }
+
+    #html5-qrcode-anchor-scan-type-change {
+        text-decoration: none !important;
+        color: #1d9bf0;
+    }
+
+    video {
+        width: 100% !important;
+        border: 1px solid #b2b2b2 !important;
+        border-radius: 0.25em;
     }
 
 </style>
+
 @section('content')
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
@@ -114,12 +141,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div style="display: none" id="scan-section" class="col-12 text-center">
-                                                        <video id="preview" class="w-100" style="max-width: 450px; height: auto;"></video>
-                                                        <canvas id="canvas" style="display:none;"></canvas>
-                                                        <p id="qr-result" class="d-none">QR Code Result: <span id="qr-result-text"></span></p>
-                                                        <p class="d-none" id="message" style="display:none;">QR Code has been scanned!</p>
+
+                                                    <div class="section">
+                                                        <div id="my-qr-reader">
+                                                        </div>
                                                     </div>
+
                                                     <div class="input-group input-group-lg mb-4 form-icon right d-grid col-12">
                                                         <button class="btn btn-outline-success pe-5" type="button" id="start-camera"><i class="ri-camera-line fs-24"></i>Scan Now</button>
                                                     </div>
@@ -342,8 +369,10 @@
     </div>
     @endsection
     @section('script')
-        <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
-      <script src="{{ URL::asset('build/js/custom-js/qr-scanner/qrScanner.js') }}"></script>
+{{--        <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>--}}
+{{--      <script src="{{ URL::asset('build/js/custom-js/qr-scanner/qrScanner.js') }}"></script>--}}
+
+<script src="{{ URL::asset('build/js/html5-qrcode.min.js')}}"></script>
     <script>
         $(document).ready(function() {
             $('#order_id').on('keyup', function() {
@@ -467,4 +496,33 @@
             });
         });
     </script>
+        <script>
+            // script.js file
+
+            function domReady(fn) {
+                if (
+                    document.readyState === "complete" ||
+                    document.readyState === "interactive"
+                ) {
+                    setTimeout(fn, 1000);
+                } else {
+                    document.addEventListener("DOMContentLoaded", fn);
+                }
+            }
+
+            domReady(function () {
+
+                // If found you qr code
+                function onScanSuccess(decodeText, decodeResult) {
+                    alert("You Qr is : " + decodeText, decodeResult);
+                }
+
+                let htmlscanner = new Html5QrcodeScanner(
+                    "my-qr-reader",
+                    { fps: 10, qrbos: 250 }
+                );
+                htmlscanner.render(onScanSuccess);
+            });
+
+        </script>
     @endsection

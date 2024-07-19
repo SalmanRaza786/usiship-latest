@@ -237,39 +237,31 @@ class WareHouseController extends Controller
 
     }
 
-    public function testOld()
+    public function test()
     {
-      //  $response = Http::post($url, $params);
 
-
-//    use GuzzleHttp\Client;
-//        $client = new Client();
-
+        $client = new Client();
         $headers = [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ya29.c.c0ASRK0GbK8eKtIpWrseoUgxx3GP-yyi1Hc9lU6DYxdeny9NIoF4qf31FgTEn3KlZCrToZWWAsvTiHUOdC1kcjvq2nABVSw_T9xYhYgqeo7kvswBUDqQw29Xx5YVpko-69JcMUljvighfB21aexKENdFy4EkWj8J701EBKFroABfrL0otKxRYF8U_toJIL5k4VHSbsMCZYE8jD2RWlYCsuZLSanFlxVSxSdfpsx_ugGcf9XMS7AmnXceIbWq18mpdc7PMcIk12TL07j6VQw4FvUfVmwA2hgkrgZy0gmL3wsHIU9CBD9ofK2BggxPUUG3gSYV1t_P4Ti55xl2EV7w_T4XbhLXmspv1rjExJmJSzY0ZMGVOIxw4jf2oT384Dj3qw7uYkr2mgjnc5k2QIoMcvM3ecxd8ZR7tbSIM7B5WXV9Wl4tqlMt429y8902W18yZ_wJt7lIBgsWctOdlm9FJB6YBzuYmyf-Rc1alnSsmWBkjj9lQh7m060ygq5aFxB_uM6rJIy0SJtVUb7heFqxgkqj0Omq9Rymj-uhxSB0vVvkgryYbql8Up0bkyMcuyh0c878Jn1ag8VrYZw1Yg13Qtf95wVFmelMlq7b79XhfOYxlVnsRBl5yiUUdr6cqIac_kBZaexj6UywiaMXp1z3MWgfpuScZcb9e0Y2Uo2vwcXs19VOJkx-X0ia6ed_sxl3biX4nSdpQpkmbUbJ8wRigRRMqsu3l263grWrxOrooMuhu82OrJU9bikftnB0sue9ft0gM3ZhI3avd5ZxjSXbWxu_j4IRrplbk6FY5on6v9VYnRu65QQuu74itsJJQU18qkWr2Um_ZfqR1dn9pX-un6glUagF_om2-fmw-4Q1IraXFvqOV10lMBuglRx1QomYvJ3z7IknhF_Fai-yUd2Jxl7luIzrUOYpa5jpnWbckwaZc9YgWIQdZgik0JgxqV1bdd41ZWVduXqRgbbZbq8BlrYmVxjmXqBiiqdmcokW27xRxkMi68d5jS-8k'
+            'Authorization' => 'Bearer ya29.c.c0ASRK0GaZBxFzE9VX-bz3Aip6A4rqZ8Jg0zaqbVYthdaTzk4H-_-VtLPs_dRRyF5pOZovozBeTx-j-yPT_mwFF8b1fbbMGlMJ0kUF26LSJyO7x1FFwHehQocQ2kXxHv432SpS9doN1FLYoNjSqrPJ7gqMzoJFH2lJ6gavBKQSXY6D3kGNDCOjIk61o4ke69UyBuAHuQ9am7OHhSW1sb2OqcsfWqD46l2sAUZIZ5yYNiW-TbeuLSAxAzC4HW9ETI_yvqHpejbipHzE4CklXh7RBGfe-SNTJgL6dFb12aO8PJIj-aJ6S2sjWX_k67xCMuYcYOtX21dOpLQWaMv4y6Pybe6iA3NNBD2PQSMx-txsRHoZwzL4ZXwIx14YL385Pf-B7_FXkliq4ZIfaQqI3cQn57tY_vR8_FQhgY1x0865t_B-O5zr6oF1rzQF6fia97wduQ1U1F-BSSSw_mwaQqk2sMi_-6mv2nI5BJWRBrY-tl2ny3dcmUwIv-JnVlcFzpj-QW-hWcVkdWbSub2yd3dtVrO2hnMnhlOfzgsWqnUjpt0ZyqJIOlUdaSOShS1em0wIr7io0qadwj1hSZF0yoRbZqv1usSotqidSw9BU90j8W-bMhfofBvtOn89SJBO86425O3IaBUh6tMysOiwn1wXl5iOStR6zJiw1MOF4rUXjcBaayhOyWxsbu5YWUXw89er0UeBggRUQUrW9u6v20YQi4o4bRg3-BFRae_Bltz6hb98gR0nkOkJ6zJXOMF1RVdii7rsOogrUfqJauIoxiFQmS_9n7z-0aO7jJfhelZnVFIM_h9wIkO2xwIcv76fYfwyqsJ4_56QYxRzJ527Wqt1pqagIg7fegzepyJWwb9JXYYt7ne40YRyS-eStcaJnxXlxm0MzvM49h9d5dj-k2SX8ceBgMvlM4ynd-ofF1X53IORriUm9xv6oOrV10zZF5vF77zJqR_QcVX5dMUUYo1VlqRS95hz2Jv1bc_pQevrm39o2dg_ygMe21f',
         ];
 
         $body = [
             'message' => [
-                'token' => 'c5bglgozQ2iP9AEjcpdl1E:APA91bFjmPI0UScgid-lLVLOnBq7NnG14ZEJIoLvdG5LbWT-McW0F2sty3Bsc14CiZ-tBOCvpZq2pt-nedhdPhWIsryZH03sDwZmuc_WgLe9O45znKitJMU1Ih2zVZBLA9DjvLix2AAv',
+                'token' =>'fkbZdvdzRiyqivMu6NC66g:APA91bHavhlFUu9p19gzKyZOeuoG7Cg6_eoKLWqnLV9CshPQGem0ZpEav-CA6RetdmSl2qg_xT3PtR47-AoH-W5C4JHZvCmcCcABPanSH2AsRrEMgA9hwFBmkO6glTmJo0ezA9wuGqkI',
                 'notification' => [
-                    'body' => 'This is my magic, Salman',
-                    'title' => 'FCM Message',
+                    'body' =>'Test',
+                    'title' =>'Test',
                 ],
+
                 'data' => [
-                    'key1' => 'value1',
-                    'key2' => 'value2',
+                    'id' =>'1',
+
                 ],
             ],
         ];
 
-//        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
-//            'headers' => $headers,
-//            'json' => $body,
-//        ]);
-
-        $response= Http::post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
             'headers' => $headers,
             'json' => $body,
         ]);
@@ -277,7 +269,7 @@ class WareHouseController extends Controller
         echo $response->getBody();
 
     }
-    public function  test()
+    public function  testNew()
     {
 
         $type=2;

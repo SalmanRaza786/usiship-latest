@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\Admin\PackagingListController;
 use App\Http\Controllers\PusherController;
+use App\Http\Controllers\FirebaseController;
 
 
 Auth::routes();
@@ -81,6 +82,8 @@ Auth::routes();
 
 });
 
-Route::get('/sidebar', function () {
+    Route::get('/sidebar', function () {
     return view('sidebar');
 });
+    Route::get('/firebase-access-token', [FirebaseController::class, 'getAccessToken']);
+

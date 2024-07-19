@@ -6,10 +6,34 @@ use App\Http\Helpers\Helper;
 use App\Models\Admin;
 use App\Models\User;
 use App\Repositries\notification\NotificationRepositry;
+use Google\Auth\Credentials\ServiceAccountCredentials;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class FireBaseNotificationTriggerService
 {
+
+    protected $credentials;
+
+    public function __construct()
+    {
+        $keyFilePath = public_path('service/usi-ship-ef242408d0be.json');
+        $scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+
+        $this->credentials = new ServiceAccountCredentials($scopes, $keyFilePath);
+    }
+
+    public function getAccessToken()
+    {
+        try {
+            $this->credentials->fetchAuthToken(); // Ensure the token is fetched
+            $accessToken = $this->credentials->getLastReceivedToken();
+            return $accessToken['access_token'];
+        } catch (RequestException $e) {
+            // Handle the exception
+            throw new \Exception('Failed to obtain access token: ' . $e->getMessage());
+        }
+    }
 public function fireBaseTrigger($type,$notifiableId)
 {
 
@@ -27,10 +51,12 @@ public function fireBaseTrigger($type,$notifiableId)
 
     $notifyContent= $notifyQuery->first();
 
+    $accessToken=$this->getAccessToken();
+
     $client = new Client();
     $headers = [
         'Content-Type' => 'application/json',
-        'Authorization' => 'Bearer '.env('FIRE_BASE_ACCESS_TOKEN'),
+        'Authorization' => 'Bearer '.$accessToken,
     ];
 
     $body = [

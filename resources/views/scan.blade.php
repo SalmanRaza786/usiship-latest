@@ -6,10 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-          href="style.css">
-    <title>QR Code Scanner / Reader
-    </title>
+
+    <title>QR Scanner Scan </title>
+
     <style>
         /* style.css file*/
         body {
@@ -20,7 +19,7 @@
             height: 100vh;
             box-sizing: border-box;
             text-align: center;
-            background: rgb(128 0 0 / 66%);
+
         }
         .container {
             width: 100%;
@@ -89,15 +88,13 @@
 
 <body>
 <div class="container">
-    <h1>Scan QR Codes</h1>
+
     <div class="section">
         <div id="my-qr-reader">
         </div>
     </div>
 </div>
-<script
-    src="https://unpkg.com/html5-qrcode">
-</script>
+<script src="{{ URL::asset('build/js/html5-qrcode.min.js')}}"></script>
 <script>
     // script.js file
 
