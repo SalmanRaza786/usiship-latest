@@ -8,5 +8,6 @@ interface CheckInInterface
     public function findOrderContact($id);
     public function getOrderCheckinList($limit);
     public function checkinSave($request,$id);
+    public function findCheckIn($id);
 
 }

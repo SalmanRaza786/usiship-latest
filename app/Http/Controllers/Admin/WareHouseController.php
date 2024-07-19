@@ -237,7 +237,7 @@ class WareHouseController extends Controller
 
     }
 
-    public function test()
+    public function testOld()
     {
 
         $client = new Client();
@@ -269,7 +269,7 @@ class WareHouseController extends Controller
         echo $response->getBody();
 
     }
-    public function  testNew()
+    public function  test()
     {
 
         $type=2;

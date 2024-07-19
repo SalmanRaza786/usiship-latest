@@ -22,6 +22,7 @@
 <script src="{{ URL::asset('build/js/pages/invoicecreate.init.js') }}"></script>
 <script src="{{ URL::asset('build/libs/quill/quill.min.js')}}"></script>
 <script src="{{ URL::asset('build/js/pages/form-editor.init.js')}}"></script>
+<script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
 
 
 <script src="{{ URL::asset('build/js/custom-js/notification/notification.js') }}"></script>

@@ -168,25 +168,17 @@ $(document).ready(function(){
                             html +='<tr>' +
                                 '<td><figcaption class="figure-caption">'+file.field_name+'</figcaption></td>' +
                                 '<td><img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded"  height="80" width="70"></td>' +
-                               '<td><i class="ri ri-close-fill"></td>'+
+                                '<td><a  class="btn-delete-media cursor-pointer"  fileId="'+file.id+'"><i class="ri ri-close-fill fs-1"></i></a></td>'+
                              '<tr>';
 
                         });
 
 
                         $.each(response.data.filemedia, function(index, file) {
-
-                            // html +='<div class="col-sm-3">'+
-                            //     '<figure class="figure mb-0">'+
-                            //     ' <img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded" alt="...">'+
-                            //     ' <figcaption class="figure-caption">'+file.field_name+'</figcaption>'+
-                            //     ' </figure>'+
-                            //     '</div>';
-
                             html +='<tr>' +
                                 '<td><figcaption class="figure-caption">'+file.field_name+'</figcaption></td>' +
                                 '<td><img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded"  height="80" width="70"></td>' +
-                                '<td><i class="ri ri-close-fill"></td>'+
+                                '<td><a  class="btn-delete-media cursor-pointer"  fileId="'+file.id+'" ><i class="ri ri-close-fill fs-1"></i></a></td>'+
 
                                 '<tr>';
                         });
@@ -251,6 +243,7 @@ $(document).ready(function(){
         $('.btn-save-changes').css('display', 'block');
         $('.btn-add').css('display', 'none');
     }
+
     $('#loadTypeModal').modal({
         backdrop: 'static',
         keyboard: false
@@ -293,6 +286,26 @@ $(document).ready(function(){
         });
 
     });
+
+    $('#dockTable').on('click', '.btn-delete-media', function() {
+        var fileId = $(this).attr('fileId');
+
+        $.ajax({
+            url: route('admin.delete.media',{id:fileId}),
+            type: 'get',
+            async: false,
+            dataType: 'json',
+            success: function(response) {
+                 $('.btn-close').click();
+                toastr.success(response.message);
+            },
+            error: function(xhr, status, error) {
+                var errors = xhr.responseJSON.errors;
+                toastr.success(error);
+            }
+        });
+    });
+
 
 });
 

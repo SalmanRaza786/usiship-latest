@@ -1,6 +1,4 @@
 
-
-
 <div class="modal fade" id="checkInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -87,10 +85,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 <div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -139,6 +133,7 @@
                                         <tr class="text-uppercase">
                                             <th class="sort" data-sort="id">Title</th>
                                             <th class="sort" data-sort="id">File</th>
+                                            <th class="sort" data-sort="id">Update File</th>
                                             <th class="sort" data-sort="id">Action</th>
 
                                         </tr>

@@ -55,6 +55,12 @@
                         <!--end row-->
                     </form>
                 </div>
+
+
+
+
+
+
                 <div class="card-body pt-0">
                     <table class="table table-nowrap align-middle" id="roleTable">
                         <thead class="text-muted table-light">
@@ -78,12 +84,15 @@
     </div>
     <!--end row-->
     @include('admin.checkin.checkin-modals')
-{{--    @include('admin.components.comon-modals.common-modal')--}}
+
 
 
 @endsection
 @section('script')
+    <script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
     <script src="{{ URL::asset('build/js/custom-js/checkin/checkin.js') }}"></script>
+
+
     <script>
         $(document).ready(function(){
             $('#roleTable').DataTable({
@@ -146,19 +155,25 @@
                             const status = data.status;
                             const whId = data.order.wh_id ;
                             const orderId = data.order_id ;
-                            if(status.id == 12)
+                            if(data.is_verify=='Verified')
                             {
-                                return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">View Carrier Documents</a>@endcanany`;
-                            }else{
-                                return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>
-                                <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Carrier Documents</a> @endcanany`;
+
+                                if(status.id == 12){
+                                    return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">View Carrier Documents</a>@endcanany`
+                                }else{
+                                    return `@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>
+                                    <a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">View Carrier Documents</a>@endcanany`;
+                                }
+                            }
+                            else{
+                                return `<a href="#" type="button" class="btn btn-primary btn-carrier_docs" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#documentModal">Verify Carrier Documents</a>`;
                             }
                         }
                     }
                 ]
             });
-
         });
     </script>
+
 
 @endsection

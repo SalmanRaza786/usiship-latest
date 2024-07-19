@@ -25,6 +25,8 @@ use App\Repositries\inventory\InventoryRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
 
+use App\Repositries\media\MediaInterface;
+use App\Repositries\media\MediaRepositry;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\offLoading\OffLoadingRepositry;
 
@@ -89,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(PutAwayInterface::class,PutawayRepositry::class);
         $this->app->bind(InventoryInterface::class,InventoryRepositry::class);
+        $this->app->bind(MediaInterface::class,MediaRepositry::class);
 
 
 

@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\OffLoadingController;
 use App\Http\Controllers\Admin\PackagingListController;
 
 use App\Http\Controllers\Admin\PutAwayController;
+use App\Http\Controllers\Admin\MediaController;
 
 
 
@@ -183,6 +184,9 @@ use App\Http\Controllers\Admin\PutAwayController;
         Route::any('/templates', [NotificationController::class, 'index'])->name('notification.index')->middleware(['can:admin-notification-template-view']);
         Route::any('/create-template', [NotificationController::class, 'createTemplate'])->name('notification.create')->middleware(['can:admin-notification-template-create']);
         Route::any('/store-template', [NotificationController::class, 'storeTemplate'])->name('notification.store')->middleware(['can:admin-notification-template-create']);
+
+        //Media Controller
+        Route::any('/delete-media/{id}', [MediaController::class, 'deleteMedia'])->name('delete.media');
 
 
     });
