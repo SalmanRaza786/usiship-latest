@@ -35,10 +35,6 @@
         background-color: #008000;
     }
 
-    #html5-qrcode-anchor-scan-type-change {
-        text-decoration: none !important;
-        color: #1d9bf0;
-    }
 
     video {
         width: 100% !important;
@@ -142,13 +138,11 @@
                                                 </div>
                                                 <div class="row">
 
-                                                    <div class="section">
-                                                        <div id="my-qr-reader">
-                                                        </div>
-                                                    </div>
+                                                    <div id="my-qr-reader" style="display: none" ></div>
+
 
                                                     <div class="input-group input-group-lg mb-4 form-icon right d-grid col-12">
-                                                        <button class="btn btn-outline-success pe-5" type="button" id="start-camera"><i class="ri-camera-line fs-24"></i>Scan Now</button>
+                                                        <button class="btn btn-outline-success pe-5 btn-scan-now" type="button" id="start-camera"><i class="ri-camera-line fs-24"></i>Scan Now</button>
                                                     </div>
                                                 </div>
 
@@ -369,12 +363,19 @@
     </div>
     @endsection
     @section('script')
-{{--        <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>--}}
-{{--      <script src="{{ URL::asset('build/js/custom-js/qr-scanner/qrScanner.js') }}"></script>--}}
-
 <script src="{{ URL::asset('build/js/html5-qrcode.min.js')}}"></script>
     <script>
+        var startScannerButton = document.getElementById('start-camera');
+        var scanSection = document.getElementById('my-qr-reader');
+        var qrInputElement = document.getElementById('warehouseId');
+        const verifyButton = document.getElementById('verifyButton');
+        const stopScannerButton = document.getElementById('html5-qrcode-button-camera-stop');
+        let htmlscanner;
+
         $(document).ready(function() {
+
+
+
             $('#order_id').on('keyup', function() {
                 var orderId = $(this).val();
                 var id=$('input[name=order_id]').val();
@@ -390,11 +391,11 @@
 
                             if (response.data==1) {
                                 $("#btn-carrier-submit").prop("disabled", false);
-                                 errorText='<span></span>';
+                                errorText='<span></span>';
                             }
                             if (response.data==0) {
                                 $("#btn-carrier-submit").prop("disabled", true);
-                                 errorText='<span class="text-danger">Invalid Order Reference</span>';
+                                errorText='<span class="text-danger">Invalid Order Reference</span>';
                             }
 
 
@@ -429,12 +430,16 @@
                         orderId: orderId
                     },
                     success: function(response){
+
                         if (response.status == true) {
+                            console.log('verify htmlscanner',htmlscanner);
+                            if (htmlscanner) {
+                                htmlscanner.clear();
+                            }
                             toastr.success(response.message);
                             $('#currentDateTime').val(response.data.current_date_time);
                             $('#timeDiff').text(response.data.time_difference);
                             $('#' + targetTab).tab('show');
-
                         }
 
                         if (response.status == false) {
@@ -494,11 +499,14 @@
                 var previousTab = $(this).data('previous');
                 $('#' + previousTab).tab('show');
             });
-        });
-    </script>
-        <script>
-            // script.js file
 
+
+        });
+
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
             function domReady(fn) {
                 if (
                     document.readyState === "complete" ||
@@ -514,15 +522,23 @@
 
                 // If found you qr code
                 function onScanSuccess(decodeText, decodeResult) {
-                    alert("You Qr is : " + decodeText, decodeResult);
+                    qrInputElement.value = decodeText;
+                    console.log('stopScannerButton',stopScannerButton);
+                    console.log('verifyButton',verifyButton);
+                    verifyButton.click();
                 }
 
-                let htmlscanner = new Html5QrcodeScanner(
-                    "my-qr-reader",
-                    { fps: 10, qrbos: 250 }
-                );
-                htmlscanner.render(onScanSuccess);
-            });
+                startScannerButton.addEventListener('click', function () {
+                    scanSection.style.display = 'block';
+                    startScannerButton.style.display = 'none';
+                    htmlscanner = new Html5QrcodeScanner(
+                        "my-qr-reader",
+                        { fps: 10, qrbos: 250 }
+                    );
+                    htmlscanner.render(onScanSuccess);
+                });
 
-        </script>
+            });
+        });
+    </script>
     @endsection
