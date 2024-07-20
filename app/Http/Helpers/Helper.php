@@ -338,7 +338,33 @@ class Helper
         }
     }
 
-    public static function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null,$thumbnail=null)
+    public static function createOrUpdateSingleMedia($imageFile,$fileableId,$fileableType,$path,$fileId,$fieldName)
+    {
+        try {
+
+            $files = self::handleFiles($imageFile, $path);
+
+                    $media = FileContent::updateOrCreate(
+                        [
+                            'id' => $fileId
+                        ],
+                    [
+                    'file_name' => $files['filename'],
+                    'file_thumbnail' =>  $files['thumbnail'],
+                    'file_type' => 'Image',
+                    'fileable_id' => $fileableId,
+                    'fileable_type' => $fileableType,
+                    'form_id' => null,
+                    'field_name' => $fieldName,
+                ]);
+
+
+            return $media;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+    public static function mediaUpload($fileName=null,$fileType=null,$fileableId,$fileableType=null,$formId=null,$fieldName=null,$thumbnail=null)
     {
         try {
 
@@ -350,7 +376,7 @@ class Helper
                 ];
             }else{
                 $data =[
-                    'fileable_id' => 0,
+                    'fileable_id' => $fileableId
                 ];
             }
 
