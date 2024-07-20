@@ -99,7 +99,7 @@ class PutAwayController extends Controller
                         'item_name'=>$row->inventory->item_name,
                         'sku'=>$row->inventory->sku,
                         'put_away_qty'=>intval($putAwayQty),
-                        'packgingQty'=>$row->qty_received_each?$row->qty_received_each:0,
+                        'packgingQty'=>$row->qty_received_each?$row->qty_received_each:'0',
                         'pending'=>$row->qty_received_each - $putAwayQty,
                     );
                     $itemList->push($data);

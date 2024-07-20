@@ -141,17 +141,10 @@ class OrderContactRepositry implements OrderContactInterface {
 
     }
 
-    public function updateOrderContact($request,$id)
+    public function updateOrderContact($id)
     {
         try {
-            DB::beginTransaction();
-            $validator = Validator::make($request->all(), [
-                'id' => 'required',
-                'order_id' => 'required',
-            ]);
 
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
             $orderContact = OrderContacts::updateOrCreate(
                 [
@@ -161,8 +154,6 @@ class OrderContactRepositry implements OrderContactInterface {
                     'is_verify' => '1'
                 ]
             );
-
-            DB::commit();
 
             return Helper::success($orderContact, $message="Carrier Documents Approved Successfully");
 

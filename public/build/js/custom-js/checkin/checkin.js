@@ -129,72 +129,6 @@ $(document).ready(function(){
         });
     });
 
-    $('#roleTable').on('click', '.btn-carrier_docs', function() {
-
-        var whId = $(this).attr('whId');
-        var orderId = $(this).attr('orderId');
-        var id = $(this).attr('data');
-
-        $.ajax({
-            url: route('admin.orderContact.get'),
-            type: 'GET',
-            async: false,
-            data: {'id':id},
-            dataType: 'json',
-            success: function(response) {
-                var html = '';
-
-                console.log('response',response);
-                    if(response.status==true){
-
-                        $('input[name=order_id]').val(response.data.order_id);
-                        $('input[name=id]').val(response.data.id);
-                        $('.job-title').text(response.data.carrier.carrier_company_name);
-
-                        $('.company-name').text(response.data.carrier.company.company_title);
-                        $('.phone_no').text(response.data.carrier.contacts);
-                        $('.arrive_time').text('Arrive Time : '+response.data.arrival_time);
-                        $('.verify').text(response.data.is_verify);
-
-                        if(response.data.is_verify == "Not Verified")
-                        {
-                            $('.btn-verify').removeClass('d-none');
-                        }else {
-                            $('.btn-verify').addClass('d-none');
-                        }
-
-                        var html='';
-                        $.each(response.data.carrier.docimages, function(index, file) {
-                            html +='<tr>' +
-                                '<td><figcaption class="figure-caption">'+file.field_name+'</figcaption></td>' +
-                                '<td><img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded"  height="80" width="70"></td>' +
-                                '<td><a  class="btn-delete-media cursor-pointer"  fileId="'+file.id+'"><i class="ri ri-close-fill fs-1"></i></a></td>'+
-                             '<tr>';
-
-                        });
-
-
-                        $.each(response.data.filemedia, function(index, file) {
-                            html +='<tr>' +
-                                '<td><figcaption class="figure-caption">'+file.field_name+'</figcaption></td>' +
-                                '<td><img src="/storage/uploads/'+file.file_name+'" class="figure-img img-fluid rounded"  height="80" width="70"></td>' +
-                                '<td><a  class="btn-delete-media cursor-pointer"  fileId="'+file.id+'" ><i class="ri ri-close-fill fs-1"></i></a></td>'+
-
-                                '<tr>';
-                        });
-                        $('#dockTable').html(html);
-                    }else{
-                    toastr.error(response.message)
-                }
-
-
-            },
-            error: function(xhr, status, error) {
-
-           toastr.error(error);
-            }
-        });
-    });
 
     $('#roleTable').on('click', '.btn-delete', function() {
         var id = $(this).attr('data');
@@ -304,6 +238,224 @@ $(document).ready(function(){
                 toastr.success(error);
             }
         });
+    });
+
+
+    $('#roleTable').on('click', '.btn-carrier_docs', function() {
+
+        var whId = $(this).attr('whId');
+        var orderId = $(this).attr('orderId');
+        var id = $(this).attr('data');
+
+        $.ajax({
+            url: route('admin.orderContact.get'),
+            type: 'GET',
+            async: false,
+            data: {'id':id},
+            dataType: 'json',
+            success: function(response) {
+                var html = '';
+
+                console.log('response',response);
+                html +='      <div class="row">\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">Company Name</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="company_name" type="text" required value="'+response.company_name+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">Company Phone No.</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="company_phone_no" type="text" required value="'+response.company_phone+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '            </div>\n' +
+                    '            <div class="row">\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">Driver\'s Name</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="driver_name" type="text" required value="'+response.driver_name+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">Driver\'s Phone No.</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="phone_no" type="text" required value="'+response.driver_phone+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '            </div>\n' +
+                    '            <div class="row">\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">Container/Trailer #</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="vehicle_no" type="text" required value="'+response.vehicle_number+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">Vehicle License Plate #</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="license_no" type="text" required value="'+response.vehicle_licence_plate+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '            </div>\n' +
+                    '            <div class="row">\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">BOL #</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" multiple type="text" required value="'+response.bol_number+'">\n' +
+                    '                    </div>\n' +
+                    '                </div>\n' +
+                    '                <div class="col-md-6">\n' +
+                    '                    <div  class="mt-2">\n' +
+                    '                        <label for="formSizeLarge" class="form-label">BOL Image</label>\n' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image[]" type="file" multiple  required>\n' +
+                    '                    </div>\n' +
+                    '                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">\n' +
+                    '                        <div class="gallery-box card">\n' +
+                    '                            <div class="gallery-container">\n' +
+                    '                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">\n' +
+                    '                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />\n' +
+                    '                                    <div class="gallery-overlay">\n' +
+                    '                                        <h5 class="overlay-caption">BOL Image</h5>\n' +
+                    '                                    </div>' +
+                    '                                </a>' +
+                    '                            </div>' +
+                    '\n' +
+                    '                        </div>' +
+                    '                    </div>' +
+                    '\n' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            <div class="row">' +
+                    '                <div class="col-md-6">' +
+                    '                    <div  class="mt-2">' +
+                    '                        <label for="formSizeLarge" class="form-label">Do #</label>' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="do_no" type="text" required value="'+response.do_number+'">' +
+                    '                    </div>' +
+                    '\n' +
+                    '                </div>' +
+                    '                <div class="col-md-6">' +
+                    '                    <div  class="mt-2">' +
+                    '                        <label for="formSizeLarge" class="form-label">Do Document</label>' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="do_document[]" type="file" multiple  accept="image/*" required>' +
+                    '                    </div>' +
+                    '\n' +
+                    '                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">' +
+                    '                        <div class="gallery-box card">' +
+                    '                            <div class="gallery-container">' +
+                    '                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">' +
+                    '                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />' +
+                    '                                    <div class="gallery-overlay">' +
+                    '                                        <h5 class="overlay-caption">BOL Image</h5>' +
+                    '                                    </div>' +
+                    '                                </a>' +
+                    '                            </div>' +
+                    '\n' +
+                    '                        </div>' +
+                    '                    </div>' +
+                    '                </div>' +
+                    '\n' +
+                    '            </div>' +
+                    '            <div class="row">' +
+                    '                <div class="col-md-6">' +
+                    '                    <div  class="mt-2">' +
+                    '                        <label for="formSizeLarge" class="form-label">Upload Driver\'s ID</label>' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic[]" type="file"  accept="image/*" multiple required>' +
+                    '                    </div>\n' +
+                    '\n' +
+                    '                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">' +
+                    '                        <div class="gallery-box card">' +
+                    '                            <div class="gallery-container">' +
+                    '                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">' +
+                    '                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />' +
+                    '                                    <div class="gallery-overlay">' +
+                    '                                        <h5 class="overlay-caption">BOL Image</h5>' +
+                    '                                    </div>' +
+                    '                                </a>' +
+                    '                            </div>' +
+                    '\n' +
+                    '                        </div>' +
+                    '                    </div>' +
+                    '                </div>' +
+                    '                <div class="col-md-6">' +
+                    '                    <div  class="mt-2">' +
+                    '                        <label for="formSizeLarge" class="form-label">Upload Driver\'s Other Docs</label>' +
+                    '                        <input class="form-control form-control-lg" id="formSizeLarge" name="other_document[]"  accept="image/*" multiple type="file">' +
+                    '                    </div>' +
+                    '\n' +
+                    '                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">' +
+                    '                        <div class="gallery-box card">' +
+                    '                            <div class="gallery-container">' +
+                    '                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">' +
+                    '                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />' +
+                    '                                    <div class="gallery-overlay">' +
+                    '                                        <h5 class="overlay-caption">BOL Image</h5>' +
+                    '                                    </div>' +
+                    '                                </a>' +
+                    '                            </div>' +
+                    '\n' +
+                    '                        </div>' +
+                    '                    </div>' +
+                    '                </div>' +
+                    '            </div>';
+
+
+                $('#carrierInfo1').html(html);
+
+
+
+
+            },
+            error: function(xhr, status, error) {
+
+                toastr.error(error);
+            }
+        });
+    });
+
+
+
+    $('#CarrierVerifyForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-submit').text('Processing...');
+                $(".btn-submit").prop("disabled", true);
+            },
+            success: function(response) {
+
+                if (response.status==true) {
+                    toastr.success(response.message);
+                    window.location.reload();
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+
+                }
+
+            },
+
+            complete: function(data) {
+                $(".btn-submit").html("Verify & Save");
+                $(".btn-submit").prop("disabled", false);
+            },
+
+            error: function() {
+                // toastr.error('something went wrong');
+                $('.btn-submit').text('Verify & Save');
+                $(".btn-submit").prop("disabled", false);
+            }
+        });
+
+
     });
 
 

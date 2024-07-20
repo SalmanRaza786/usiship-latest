@@ -89,6 +89,12 @@
                                     @isset($order)
                                     <input type="hidden" name="order_id" id="id" value="{{$order->id??"0"}}">
                                     @endisset
+
+                                    <input type="hidden" name="company_id" id="id" value="0">
+                                    <input type="hidden" name="carrier_id" id="id" value="0">
+                                    <input type="hidden" name="orderContactId" id="id" value="0">
+                                    <input type="hidden" name="from" id="id" value="0">
+
                                     <div class="text-center pt-3 pb-4 mb-1">
                                         <h5>Driver's Self Check In</h5>
                                     </div>
@@ -253,13 +259,15 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL #</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" multiple type="text" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no"  type="text" required>
+
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL Image</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image[]" type="file" multiple  required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"   required>
+                                                            <input type="text" class="d-none"  name="bolFileId" value="0">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -273,7 +281,8 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Do Document</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document[]" type="file" multiple  accept="image/*" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document" type="file"   accept="image/*" required>
+                                                            <input type="text" class="d-none" name="doFileId" value="0">
                                                         </div>
                                                     </div>
 
@@ -282,13 +291,16 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic[]" type="file"  accept="image/*" multiple required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*"  required>
+                                                            <input type="text" class="d-none"  name="driverFileId" value="0">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document[]"  accept="image/*" multiple type="file">
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*"  type="file">
+
+                                                            <input type="text" class="d-none"  name="otherDocFileId" value="0">
                                                         </div>
                                                     </div>
                                                 </div>

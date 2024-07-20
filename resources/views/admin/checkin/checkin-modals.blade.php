@@ -85,8 +85,10 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+
+<div class="modal fade" id="OlddocumentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
                 <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Carrier Documents</h5>
@@ -96,76 +98,249 @@
             <div>
             </div>
 
-            <form method="post" class=" g-3 needs-validation" action="{{route('admin.orderContact.update')}}" autocomplete="off" id="verifyForm" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="id" value="0">
-                <input type="hidden" name="order_id" value="0">
-                <div class="modal-body">
-                    <div id="job-list">
-                            <div class="card joblist-card">
-                                <div class="card-body">
-                                    <div class="d-flex mb-4">
-                                        <div class="avatar-sm">
-                                            <div class="avatar-title bg-light rounded">
-                                                <img src="{{asset('build/images/companies/img-7.png')}}" alt="" class="avatar-xxs companyLogo-img">
-                                            </div>
-                                        </div>
-                                        <div class="ms-3 flex-grow-1">
+{{--            <form method="post" class=" g-3 needs-validation" action="{{route('admin.orderContact.update')}}" autocomplete="off" id="verifyForm" enctype="multipart/form-data">--}}
+{{--                @csrf--}}
+{{--                <input type="hidden" name="id" value="0">--}}
+{{--                <input type="hidden" name="order_id" value="0">--}}
+{{--                <div class="modal-body">--}}
+{{--                    <div id="job-list">--}}
+{{--                            <div class="card joblist-card">--}}
+{{--                                <div class="card-body">--}}
+{{--                                    <div class="d-flex mb-4">--}}
+{{--                                        <div class="avatar-sm">--}}
+{{--                                            <div class="avatar-title bg-light rounded">--}}
+{{--                                                <img src="{{asset('build/images/companies/img-7.png')}}" alt="" class="avatar-xxs companyLogo-img">--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                        <div class="ms-3 flex-grow-1">--}}
 
-                                            <a href="#!">
-                                                <h5 class="job-title"></h5>
-                                            </a>
-                                            <p class="company-name text-muted mb-0"> </p>
-                                        </div>
-                                        <div>
-                                            <button type="button" class="btn btn-ghost-primary btn-icon custom-toggle" data-bs-toggle="button">
-                                                <span class="icon-on"><i class="ri-bookmark-line"></i></span>
-                                                <span class="icon-off"><i class="ri-bookmark-fill"></i></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {{--                                                    <p class="text-muted job-description">A UI/UX designer's job is to create user-friendly interfaces that enable users to understand how to use complex technical products. If you're passionate about the latest technology trends and devices, you'll find great fulfillment in being involved in the design process for the next hot gadget.</p>--}}
-                                    <div class="row g-3" id="media">
+{{--                                            <a href="#!">--}}
+{{--                                                <h5 class="job-title"></h5>--}}
+{{--                                            </a>--}}
+{{--                                            <p class="company-name text-muted mb-0"> </p>--}}
+{{--                                        </div>--}}
+{{--                                        <div>--}}
+{{--                                            <button type="button" class="btn btn-ghost-primary btn-icon custom-toggle" data-bs-toggle="button">--}}
+{{--                                                <span class="icon-on"><i class="ri-bookmark-line"></i></span>--}}
+{{--                                                <span class="icon-off"><i class="ri-bookmark-fill"></i></span>--}}
+{{--                                            </button>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    --}}{{--                                                    <p class="text-muted job-description">A UI/UX designer's job is to create user-friendly interfaces that enable users to understand how to use complex technical products. If you're passionate about the latest technology trends and devices, you'll find great fulfillment in being involved in the design process for the next hot gadget.</p>--}}
+{{--                                    <div class="row g-3" id="media">--}}
 
-                                    </div>
-                                    <table class="table table-nowrap align-middle">
-                                        <thead class="text-muted table-light">
-                                        <tr class="text-uppercase">
-                                            <th class="sort" data-sort="id">Title</th>
-                                            <th class="sort" data-sort="id">File</th>
-                                            <th class="sort" data-sort="id">Update File</th>
-                                            <th class="sort" data-sort="id">Action</th>
+{{--                                    </div>--}}
+{{--                                    <table class="table table-nowrap align-middle">--}}
+{{--                                        <thead class="text-muted table-light">--}}
+{{--                                        <tr class="text-uppercase">--}}
+{{--                                            <th class="sort" data-sort="id">Title</th>--}}
+{{--                                            <th class="sort" data-sort="id">File</th>--}}
+{{--                                            <th class="sort" data-sort="id">Update File</th>--}}
+{{--                                            <th class="sort" data-sort="id">Action</th>--}}
 
-                                        </tr>
-                                        </thead>
-                                        <tbody id="dockTable"></tbody>
+{{--                                        </tr>--}}
+{{--                                        </thead>--}}
+{{--                                        <tbody id="dockTable"></tbody>--}}
 
-                                    </table>
-                                </div>
-                                <div class="card-footer border-top-dashed">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                                        <div><i class="ri-phone-line align-bottom me-1"></i> <span class="phone_no"></span></div>
-                                        <div class="d-none"><span class="job-experience">1 - 2 Year</span></div>
-                                        <div class="d-none"><i class="ri-map-pin-2-line align-bottom me-1 "></i>  <span class="job-location">Warehouse</span></div>
-                                        <div><i class="ri-star-line align-bottom me-1"></i><span class="verify"></span> </div>
-                                        <div><i class="ri-time-line align-bottom me-1"></i> <span class="arrive_time"> </span></div>
-                                        <div><button type="submit" class="btn btn-primary viewjob-list btn-verify " id="add-btn">Verify<i class="ri-chat-check-line align-bottom ms-1"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
+{{--                                    </table>--}}
+{{--                                </div>--}}
+{{--                                <div class="card-footer border-top-dashed">--}}
+{{--                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">--}}
+{{--                                        <div><i class="ri-phone-line align-bottom me-1"></i> <span class="phone_no"></span></div>--}}
+{{--                                        <div class="d-none"><span class="job-experience">1 - 2 Year</span></div>--}}
+{{--                                        <div class="d-none"><i class="ri-map-pin-2-line align-bottom me-1 "></i>  <span class="job-location">Warehouse</span></div>--}}
+{{--                                        <div><i class="ri-star-line align-bottom me-1"></i><span class="verify"></span> </div>--}}
+{{--                                        <div><i class="ri-time-line align-bottom me-1"></i> <span class="arrive_time"> </span></div>--}}
+{{--                                        <div><button type="submit" class="btn btn-primary viewjob-list btn-verify " id="add-btn">Verify<i class="ri-chat-check-line align-bottom ms-1"></i></button>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <div class="modal-footer">--}}
+{{--                    <div class="hstack gap-2 justify-content-end">--}}
+{{--                        <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>--}}
 {{--                        <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Close Arrival</button>--}}
 {{--                        <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none">Close Arrival</button>--}}
-                    </div>
-                </div>
-            </form>
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </form>--}}
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light p-3">
+                <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Carrier Documents</h5>
+                <h5 class="modal-title edit-lang-title" id="exampleModalLabel" style="display: none">Carrier Documents</h5>
+                <button type="button" class="btn-close btn-modal-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            </div>
+            <div>
+            </div>
+            <div class="modal-body">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Company Name</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="company_name" type="text" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Company Phone No.</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="company_phone_no" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Driver's Name</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="driver_name" type="text" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Driver's Phone No.</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="phone_no" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Container/Trailer #</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="vehicle_no" type="text" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Vehicle License Plate #</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="license_no" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">BOL #</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" multiple type="text" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">BOL Image</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image[]" type="file" multiple  required>
+                    </div>
+                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                        <div class="gallery-box card">
+                            <div class="gallery-container">
+                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">
+                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />
+                                    <div class="gallery-overlay">
+                                        <h5 class="overlay-caption">BOL Image</h5>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Do #</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="do_no" type="text" required>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Do Document</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="do_document[]" type="file" multiple  accept="image/*" required>
+                    </div>
+
+                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                        <div class="gallery-box card">
+                            <div class="gallery-container">
+                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">
+                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />
+                                    <div class="gallery-overlay">
+                                        <h5 class="overlay-caption">BOL Image</h5>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic[]" type="file"  accept="image/*" multiple required>
+                    </div>
+
+                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                        <div class="gallery-box card">
+                            <div class="gallery-container">
+                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">
+                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />
+                                    <div class="gallery-overlay">
+                                        <h5 class="overlay-caption">BOL Image</h5>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div  class="mt-2">
+                        <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
+                        <input class="form-control form-control-lg" id="formSizeLarge" name="other_document[]"  accept="image/*" multiple type="file">
+                    </div>
+
+                    <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
+                        <div class="gallery-box card">
+                            <div class="gallery-container">
+                                <a class="image-popup" href="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" title="">
+                                    <img class="gallery-img img-fluid mx-auto" src="/storage/uploads/off-loading-media/668f8c93d92c0.jpg" alt="" />
+                                    <div class="gallery-overlay">
+                                        <h5 class="overlay-caption">BOL Image</h5>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            </div>
+
+                            <div class="modal-footer">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
+                                    <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Close Arrival</button>
+                                    <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none">Close Arrival</button>
+                                </div>
+                            </div>
+
+        </div>
+    </div>
+</div>
+
 
 
 

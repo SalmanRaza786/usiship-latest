@@ -152,6 +152,7 @@ use App\Http\Controllers\Admin\MediaController;
         Route::any('/order-contact-list', [OrderContactController::class, 'orderContactList'])->name('orderContact.list')->middleware(['can:admin-load-view']);
         Route::any('/get-order-contact', [OrderContactController::class, 'getOrderContact'])->name('orderContact.get')->middleware(['can:admin-load-view']);
         Route::any('/order-contact.update', [OrderContactController::class, 'updateOrderContact'])->name('orderContact.update')->middleware(['can:admin-load-view']);
+        Route::any('/verify-carrier/{id}', [OrderContactController::class, 'verifyCarrier'])->name('carrier.verify')->middleware(['can:admin-load-view']);
 
         //Off Loading
         Route::any('/off-loading', [OffLoadingController::class, 'index'])->name('off-loading.index')->middleware(['can:admin-offloading-view']);
