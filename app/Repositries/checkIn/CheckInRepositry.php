@@ -75,7 +75,7 @@ class CheckInRepositry implements CheckInInterface {
                     'containerImages' => 'required',
                     'sealImages' => 'required',
                     'do_signatureImages' => 'required',
-                    'other_docImages' => 'required',
+             
 
                 ]);
             }

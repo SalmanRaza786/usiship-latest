@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-    
+
     $('#UpdateCheckInForm').on('submit', function(e) {
 
         e.preventDefault();

@@ -376,7 +376,7 @@ class Helper
                 ];
             }else{
                 $data =[
-                    'fileable_id' => $fileableId
+                    'fileable_id' => 0
                 ];
             }
 

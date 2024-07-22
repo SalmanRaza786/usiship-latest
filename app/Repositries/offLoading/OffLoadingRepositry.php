@@ -138,6 +138,30 @@ class OffLoadingRepositry implements OffLoadingInterface {
         try {
             DB::beginTransaction();
 
+            if($request->type_container_number)
+            {
+                $offloading = OrderOffLoading::updateOrCreate(
+                    [
+                        'id' => $id,
+                    ],
+                    [
+                        'container_number' => $request->type_container_number,
+                    ]
+                );
+
+            }
+            if($request->seal_no)
+            {
+                $offloading = OrderOffLoading::updateOrCreate(
+                    [
+                        'id' => $id,
+                    ],
+                    [
+                        'seal' => $request->seal_no,
+                    ]
+                );
+
+            }
             if($request->product_staged_loc)
             {
                 $offloading = OrderOffLoading::updateOrCreate(
