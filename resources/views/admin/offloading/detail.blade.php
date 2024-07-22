@@ -295,7 +295,7 @@
                 </div>
                 <div class="card-footer">
 {{--                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end btn-confirm">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany--}}
-                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end" disabled >Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany
+                    @canany('admin-offloading-create')<button data="{{$data->id}}" class="btn btn-success float-end" id="confirmPackgingList">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></button>@endcanany
                 </div>
             </div>
         </div>
