@@ -18,6 +18,7 @@ $(document).ready(function(){
             }
         });
 
+        return allFilled;
         if (allFilled && allDisabled) {
             $('.btn-confirm').removeClass('d-none');
         } else {
@@ -280,6 +281,18 @@ $(document).ready(function(){
 
         });
     }
+
+    $('#confirmPackgingList').click(function (){
+        var id=$(this).attr('data');
+       console.log(id);
+       console.log(checkInputs());
+
+       if(checkInputs()){
+           window.location.href = route('admin.off-loading.confirm.packaging.list',{id:id});
+       }else{
+           toastr.error('Fill all fields');
+       }
+    })
 
 
 });
