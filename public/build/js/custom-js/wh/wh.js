@@ -609,9 +609,11 @@ var editOrderByVal=0;
             '<option value="">Choose One</option>';
 
         $.each(loadTypeData, function (key, row) {
+
             let isSelected = '';
                 if(editLoadTypeId.length > 0) {
-                    const foundObject = editLoadTypeId.find(item => item.id === row.id);
+                    const foundObject = editLoadTypeId.find(item => item.load_type_id === row.id);
+
                     if (foundObject != undefined) {
                         isSelected = 'selected';
                     }
@@ -635,6 +637,7 @@ var editOrderByVal=0;
 
         var dockId = $(this).attr('data');
 
+
         $.ajax({
             url:route('admin.dock.edit',{id:dockId}),
             type: 'GET',
@@ -642,7 +645,6 @@ var editOrderByVal=0;
             dataType: 'json',
 
             success: function(response) {
-
                 editLoadTypeId=response.data.dock_load_types;
                 getLoadTypeAccordingWareHouse(response.data.wh_id);
 

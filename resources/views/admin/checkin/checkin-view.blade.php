@@ -33,13 +33,13 @@
                                     <select  class="form-select" id="status_field" required data-trigger name="whDoors" >
                                         <option value="">Choose One</option>
                                         @isset($data['doors'])
-                                        @foreach($data['doors'] as $door)
+                                            @foreach($data['doors'] as $door)
                                                 <option value="{{$door->id}}"
                                                 @if($door->id==$data['orderContacts']['door_id'])
                                                     {{ 'selected' }}
                                                     @endif
                                                 >{{$door->door_title}}</option>
-                                        @endforeach
+                                            @endforeach
                                         @endisset
 
                                     </select>
@@ -159,7 +159,7 @@
                         </div>
                         <div class="modal-footer">
                             <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
+                                <a href="{{route('admin.check-in.index')}}"><button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">Back</button></a>
                                 <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Save Changes</button>
 
                             </div>
