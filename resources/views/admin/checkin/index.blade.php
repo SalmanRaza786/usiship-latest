@@ -87,14 +87,9 @@
 
 
 
-@endsection
-@section('script')
-
+    @endsection
+    @section('script')
     <script src="{{ URL::asset('build/js/custom-js/checkin/checkin.js') }}"></script>
-
-
-
-
     <script>
         $(document).ready(function(){
             $('#roleTable').DataTable({
@@ -158,13 +153,15 @@
                             const whId = data.order.wh_id ;
                             const orderId = data.order_id ;
                             var url = "{{ route('admin.carrier.verify', ':id') }}";
+                            var checkInurl = "{{ route('admin.checkin.view', ':id') }}";
                             if(data.is_verify=='Verified')
                             {
 
                                 if(status.id == 12){
-                                    return '@canany('admin-checkin-create')<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary">View Carrier Documents</a>@endcanany'
+                                    return '@canany('admin-checkin-create')<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary me-2">View Carrier Documents</a>'+
+                                    '<a href="'+checkInurl.replace(':id', rowId)+'" type="button" class="btn btn-primary">View CheckIn</a>@endcanany'
                                 }else{
-                                    return '@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in me-2" data="${rowId}" whId="${whId}" orderId="${orderId}" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>'+
+                                    return '@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in me-2" data="'+rowId+'" whId="'+whId+'" orderId="'+orderId+'" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>'+
                                     '<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary">View Carrier Document</a>@endcanany';
                                 }
                             }
@@ -177,6 +174,4 @@
             });
         });
     </script>
-
-
-@endsection
+    @endsection

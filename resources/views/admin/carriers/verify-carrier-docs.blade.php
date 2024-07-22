@@ -26,6 +26,20 @@
 
                     <div class="card-header">
                         <h5 class="card-title mb-0"> Carriers Verify </h5>
+
+
+                            <div class="col-lg-12">
+                                <div class="hstack justify-content-end gap-2">
+
+                                    @if($data['orderContacts']['is_verify']=='Verified')
+                                        <span class="text-success"> Verified</span>
+                                    @else
+                                        <span class="text-danger">Not Verified</span>
+                                    @endif
+                                </div>
+                            </div>
+
+
                     </div>
                     <div class="card-body">
                         <div class="row g-4 mt-1">
@@ -86,6 +100,7 @@
                                         <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"   >
                                         <input type="text" class="d-none"  name="bolFileId" value="{{$data['orderContacts']['bolFileId']}}">
                                     </div>
+
                                     <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
                                         <div class="gallery-box card">
                                             <div class="gallery-container">
@@ -183,7 +198,7 @@
                                 <div class="hstack justify-content-end gap-2">
                                     <a  href="{{route('admin.check-in.index')}}" class="btn btn-primary"><i class="ri-arrow-go-back-fill align-bottom"></i> Back</a>
                                     @if($data['orderContacts']['is_verify']=='Verified')
-                                        <button type="button" class="btn btn-success" disabled>Verified</button>
+                                        <button type="submit" class="btn btn-success" >Save Changes</button>
                                     @else
                                     <button type="submit" class="btn btn-primary btn-submit">Verify & Save</button>
                                         @endif

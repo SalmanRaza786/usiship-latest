@@ -30,6 +30,11 @@ OrderCheckIn extends Model
         return $this->belongsTo(OrderStatus::class, 'status_id', 'id');
     }
 
+    public function checkInMedia()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
+
 
 
 

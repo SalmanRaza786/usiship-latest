@@ -142,6 +142,7 @@ use App\Http\Controllers\Admin\MediaController;
 
         //Check In
         Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-checkin-view']);
+        Route::any('/checkin-view/{id}', [CheckInController::class, 'checkinView'])->name('checkin.view');
         Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-checkin-view']);
         Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-checkin-create']);
         Route::any('/close-arrival-notification/{id}', [CheckInController::class, 'closeArrivalNotification']);
