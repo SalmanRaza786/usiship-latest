@@ -1,7 +1,8 @@
 
 $(document).ready(function(){
 
-    $('#addForm').on('submit', function(e) {
+    $('#checkInForm').on('submit', function(e) {
+
         e.preventDefault();
         $.ajax({
             url: $(this).attr('action'),
@@ -16,14 +17,14 @@ $(document).ready(function(){
                 $(".btn-submit").prop("disabled", true);
             },
             success: function(response) {
-
+                console.log('response',response);
                 if (response.status==true) {
                     $('.btn-close').click();
                     resetLoadTypeForm();
 
                     $('#roleTable').DataTable().ajax.reload();
                     toastr.success(response.message);
-                    $('#addForm')[0].reset();
+                    $('#checkInForm')[0].reset();
 
 
                 }
@@ -34,20 +35,19 @@ $(document).ready(function(){
             },
 
             complete: function(data) {
-                $(".btn-submit").html("Save");
+                $(".btn-submit").html("Close Arrivals");
                 $(".btn-submit").prop("disabled", false);
             },
 
             error: function() {
                 // toastr.error('something went wrong');
-                $('.btn-submit').text('Save');
+                $('.btn-submit').text('Close Arrivals');
                 $(".btn-submit").prop("disabled", false);
             }
         });
 
 
     });
-
     $('#verifyForm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
@@ -84,17 +84,16 @@ $(document).ready(function(){
 
 
     });
-
     $('#filter').on('click', function() {
         $('#roleTable').DataTable().ajax.reload();
     });
-
     $('#roleTable').on('click', '.btn-check-in', function() {
         editElement();
 
         var whId = $(this).attr('whId');
         var orderId = $(this).attr('orderId');
         var id = $(this).attr('data');
+
 
         $.ajax({
             url: 'get-door-wh-id/'+whId,
@@ -128,13 +127,10 @@ $(document).ready(function(){
             }
         });
     });
-
-
     $('#roleTable').on('click', '.btn-delete', function() {
         var id = $(this).attr('data');
         $('.confirm-delete').val(id);
     });
-
     $('.confirm-delete').click(function() {
         var id = $(this).val();
 
@@ -157,7 +153,6 @@ $(document).ready(function(){
             }
         });
     });
-
     $('.btn-modal-close').click(function() {
         addElement();
     });
@@ -177,20 +172,18 @@ $(document).ready(function(){
         $('.btn-save-changes').css('display', 'block');
         $('.btn-add').css('display', 'none');
     }
-
     $('#loadTypeModal').modal({
         backdrop: 'static',
         keyboard: false
     })
     function resetLoadTypeForm() {
-        $('#addForm')[0].reset();
-        $('#addForm').find('option').prop('selected', false);
+        $('#checkInForm')[0].reset();
+        $('#checkInForm').find('option').prop('selected', false);
     }
-
-
     $('#checkInContainerNumber').on('keyup', function() {
         const containerNumber = $('#checkInContainerNumber').val();
         const orderContactId = $('#orderContactId').val();
+
 
         $.ajax({
             url: 'get-checkin-container/'+orderContactId,
@@ -198,12 +191,16 @@ $(document).ready(function(){
             async: false,
             dataType: 'json',
             success: function(response) {
-                if(containerNumber > 0) {
-                    if (response.data.vehicle_number != containerNumber) {
+
+                if(containerNumber.length > 0) {
+                    if (response.data.vehicle_number != containerNumber)
+                    {
+                        console.log('error');
                         var errorHtml = '<span style="color:red">Invalid container number</span>'
                         $(".btn-close-arrival").prop("disabled", true);
 
                     } else {
+                        console.log('not error');
                         var errorHtml = '<span></span>'
                         $(".btn-close-arrival").prop("disabled", false);
                     }
@@ -220,7 +217,6 @@ $(document).ready(function(){
         });
 
     });
-
     $('#dockTable').on('click', '.btn-delete-media', function() {
         var fileId = $(this).attr('fileId');
 
@@ -239,8 +235,6 @@ $(document).ready(function(){
             }
         });
     });
-
-
     $('#roleTable').on('click', '.btn-carrier_docs', function() {
 
         var whId = $(this).attr('whId');
@@ -413,9 +407,6 @@ $(document).ready(function(){
             }
         });
     });
-
-
-
     $('#CarrierVerifyForm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
@@ -458,6 +449,50 @@ $(document).ready(function(){
 
     });
 
+
+    $('#UpdateCheckInForm').on('submit', function(e) {
+
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-submit').text('Processing...');
+                $(".btn-submit").prop("disabled", true);
+            },
+            success: function(response) {
+                console.log('response',response);
+                if (response.status==true) {
+                    toastr.success(response.message);
+                  window.location.reload();
+
+
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+
+            },
+
+            complete: function(data) {
+                $(".btn-submit").html("Save Changes");
+                $(".btn-submit").prop("disabled", false);
+            },
+
+            error: function() {
+                // toastr.error('something went wrong');
+                $('.btn-submit').text('Close Arrivals');
+                $(".btn-submit").prop("disabled", false);
+            }
+        });
+
+
+    });
 
 });
 

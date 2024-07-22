@@ -69,6 +69,17 @@ class CheckInRepositry implements CheckInInterface {
                 'do_signature' => 'required',
             ]);
 
+            if($request->orderCheckInId==0){
+
+                $validator = Validator::make($request->all(), [
+                    'containerImages' => 'required',
+                    'sealImages' => 'required',
+                    'do_signatureImages' => 'required',
+                    'other_docImages' => 'required',
+
+                ]);
+            }
+
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
@@ -76,7 +87,7 @@ class CheckInRepositry implements CheckInInterface {
 
             $checkin = OrderCheckIn::updateOrCreate(
                 [
-                    'order_contact_id' => $id
+                    'id' => $id
                 ],
                 [
                     'order_id' =>$request->order_id,
@@ -95,23 +106,38 @@ class CheckInRepositry implements CheckInInterface {
                 $fileableId = $checkin->id;
                 $fileableType = 'App\Models\OrderCheckIn';
 
-                $imageSets = [
-                    'containerImages' => $request->file('containerImages', []),
-                    'sealImages' => $request->file('sealImages', []),
-                    'do_signatureImages' => $request->file('do_signatureImages', []),
-                    'other_docImages' => $request->file('other_docImages', []),
-                ];
+//                $imageSets = [
+//                    'containerImages' => $request->file('containerImages', []),
+//                    'sealImages' => $request->file('sealImages', []),
+//                    'do_signatureImages' => $request->file('do_signatureImages', []),
+//                    'other_docImages' => $request->file('other_docImages', []),
+//                ];
+//                $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->checkInFilePath);
 
-                $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->checkInFilePath);
+
+                if($request->file('containerImages')){
+                    $media = Helper::createOrUpdateSingleMedia($request->file('containerImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->containerFileId,'containerImages');
+                }
+
+                if($request->file('sealImages')){
+                    $media = Helper::createOrUpdateSingleMedia($request->file('sealImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->sealFileId,'sealImages');
+                }
+
+                if($request->file('do_signatureImages')){
+                    $media = Helper::createOrUpdateSingleMedia($request->file('do_signatureImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->doFileId,'do_signatureImages');
+                }
+
+                if($request->file('other_docImages')){
+                    $media = Helper::createOrUpdateSingleMedia($request->file('other_docImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->otherFileId,'other_docImages');
+                }
 
                 $orderContact = new OrderContactRepositry();
                 $orderContact->changeStatus($checkin->order_contact_id, 12);
-
             }
 
             DB::commit();
-
-            return Helper::success($checkin, $message=__('translation.record_created'));
+            $id==0?$message='Record created successfully':$message='Record updated successfully';
+            return Helper::success($checkin, $message);
 
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
@@ -135,7 +161,7 @@ class CheckInRepositry implements CheckInInterface {
     {
         try {
             $qry= OrderCheckIn::query();
-            $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $qry= $qry->with('orderContact','checkInMedia','order.dock.loadType.eqType','status','door');
             $data =$qry->where('id',$id)->first();
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
