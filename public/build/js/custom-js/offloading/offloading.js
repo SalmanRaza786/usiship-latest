@@ -118,7 +118,29 @@ $(document).ready(function(){
     });
 
     function handleImagePreviews(inputId, previewContainerId) {
+
         $('#' + inputId).on('change', function(event) {
+
+            var dbContainerNumber=$('input[name=db_container_number]').val();
+            var type_container_number=$('input[name=type_container_number]').val();
+
+            var db_seal_no=$('input[name=db_seal_no]').val();
+            var seal_no=$('input[name=seal_no]').val();
+
+            if(inputId=='containerImages') {
+                if (dbContainerNumber != type_container_number) {
+                    toastr.error('invalid container#');
+                    return false;
+                }
+            }
+
+            if(inputId=='sealImages'){
+                if(db_seal_no != seal_no){
+                    toastr.error('invalid seal#');
+                    return false;
+                }
+            }
+
             const files = event.target.files;
             const previewContainer = $('#' + previewContainerId);
             previewContainer.empty();
@@ -141,16 +163,30 @@ $(document).ready(function(){
     }
 
     function uploadImages(inputId, files) {
+
+
         const formData = new FormData();
         var myfiles = $('#' + inputId)[0].files;
         var offLoadingId = $('#off_loading_id').val();
         var productStageLoc = $('#product_staged_loc').val();
+
+        var type_container_number=$('input[name=type_container_number]').val();
+
+
+
+
+
+        //db_seal_no
 
         $.each(myfiles, function(index, file) {
             formData.append(inputId + '[]', file);
         });
         formData.append('off_loading_id',offLoadingId);
         formData.append('product_staged_loc',productStageLoc);
+        formData.append('type_container_number',type_container_number);
+        formData.append('seal_no',$('input[name=seal_no]').val());
+
+
 
         $.ajax({
             url: '/admin/off-loading-upload-images',
@@ -206,6 +242,9 @@ $(document).ready(function(){
                 {
                     if (response.data) {
                         displayImages(response.data.filemedia);
+                        $('input[name=type_container_number]').val(response.data.container_number);
+                        $('input[name=seal_no]').val(response.data.seal);
+
                         $('#off_loading_id').val(response.data.id);
                         $('#product_staged_loc').val(response.data.p_staged_location);
                         $(".btn-submit").addClass('d-none');

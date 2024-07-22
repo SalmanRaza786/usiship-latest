@@ -48,7 +48,8 @@
                             <div class="col-xxl-3 col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Container #</label>
-                                    <input type="text" class="form-control" id="basiInput" value="{{$data->container_no ?? '-'}}" disabled="">
+                                    <input type="text" class="form-control" id="basiInput" value="{{$data->container_no ?? '-'}}" disabled="" name="db_container_number">
+                                    <input type="hidden" class="form-control"  value="{{$data->seal_no ?? '-'}}" disabled="" name="db_seal_no" placeholder="Db Seal Number">
                                 </div>
                             </div>
                             <!--end col-->
@@ -90,7 +91,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Container #</label>
-                                    <input type="text" class="form-control"  id="basicInput">
+                                    <input type="text" class="form-control"  id="basicInput" name="type_container_number">
                                 </div>
                             </div>
                             <!--end col-->
@@ -106,7 +107,7 @@
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Seal #</label>
-                                    <input type="text" class="form-control"  id="input">
+                                    <input type="text" class="form-control"  id="input" name="seal_no">
                                 </div>
                             </div>
                             <!--end col-->
@@ -293,7 +294,8 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end btn-confirm">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany
+{{--                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end btn-confirm">Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany--}}
+                    @canany('admin-offloading-create')<a href="{{route('admin.off-loading.confirm.packaging.list',$data->id)}}" class="btn btn-success float-end" disabled >Confirm Packing List<i class="ri-arrow-right-s-line align-middle ms-1 lh-1"></i></a>@endcanany
                 </div>
             </div>
         </div>

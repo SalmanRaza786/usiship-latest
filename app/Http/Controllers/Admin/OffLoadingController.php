@@ -42,7 +42,7 @@ class OffLoadingController extends Controller
     public function offLoadingDetail($id)
     {
         try {
-            $data = Helper::fetchOnlyData($this->checkin->findCheckIn($id));
+            $data= Helper::fetchOnlyData($this->checkin->findCheckIn($id));
             return view('admin.offloading.detail')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
