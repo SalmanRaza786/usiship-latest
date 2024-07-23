@@ -272,7 +272,7 @@ class WareHouseController extends Controller
     public function  test()
     {
 
-        $type=2;
+       return $type=2;
         $notifiableId=10;
         return  $response =Helper::fireBaseNotificationTriggerHelper($type,$notifiableId);
 
