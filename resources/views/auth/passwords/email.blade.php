@@ -38,7 +38,7 @@
                                         <div class="card-body p-4">
                                             <div class="text-center mt-2">
                                                 <h5 class="text-primary">Forgot Password?</h5>
-                                                <p class="text-muted">Reset password with Belhasa E-learning</p>
+                                                <p class="text-muted">Reset password with USI Ship</p>
 
                                                 <lord-icon src="https://cdn.lordicon.com/rhvddzym.json" trigger="loop"
                                                            colors="primary:#0ab39c" class="avatar-xl">
@@ -57,7 +57,7 @@
                                             <div class="p-2">
 
                                                 <form class="form-horizontal" method="POST"
-                                                      action="{{ route('password.email') }}">
+                                                      action="{{ route('password.email') }}" id="LoginForm">
                                                     @csrf
                                                     <div class="mb-3">
                                                         <label for="useremail" class="form-label">Email</label>
@@ -72,7 +72,12 @@
                                                         @enderror
                                                     </div>
                                                     <div class="text-center mt-4">
-                                                        <button class="btn btn-success w-100" type="submit">Send Reset Link</button>
+                                                        <button class="btn btn-success w-100 btn-submit"  type="button">Send Reset Link</button>
+                                                    </div>
+
+                                                    <div class="mt-5 text-center">
+                                                        <p class="mb-0">Already have an account ?
+                                                            <a href="{{url('login')}}" class="fw-semibold text-primary text-decoration-underline">Login</a> </p>
                                                     </div>
 
 
@@ -106,5 +111,16 @@
 
 @section('script')
     <script src="{{ URL::asset('build/js/pages/password-addon.init.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            $(".btn-submit").on('click',function (event) {
+                $(".btn-submit").prop("disabled", true);
+                $(".btn-submit").html("Processing...");
+                $('#LoginForm').submit();
+
+            });
+
+        });
+    </script>
 @endsection
 

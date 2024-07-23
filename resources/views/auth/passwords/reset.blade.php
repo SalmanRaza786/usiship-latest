@@ -38,7 +38,7 @@
                                         <div class="card-body p-4">
                                             <div class="text-center mt-2">
                                                 <h5 class="text-primary">Forgot Password?</h5>
-                                                <p class="text-muted">Reset password with Belhasa E-learning</p>
+                                                <p class="text-muted">Reset password with USI Ship</p>
 
                                                 <lord-icon src="https://cdn.lordicon.com/rhvddzym.json" trigger="loop"
                                                            colors="primary:#0ab39c" class="avatar-xl">
@@ -80,6 +80,11 @@
 
                                                     <div class="text-end">
                                                         <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Reset</button>
+                                                    </div>
+
+                                                    <div class="mt-5 text-center">
+                                                        <p class="mb-0">Already have an account ?
+                                                            <a href="{{url('login')}}" class="fw-semibold text-primary text-decoration-underline">Login</a> </p>
                                                     </div>
 
                                                 </form><!-- end form -->

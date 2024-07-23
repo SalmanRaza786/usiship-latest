@@ -29,7 +29,14 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            return view('client.screens.home');
+            if(Auth::guard('admin')->check()) {
+                return redirect()->route('admin.dashboard');
+            }
+            if (Auth::guard('web')->check() && Auth::user()->hasVerifiedEmail()) {
+                return view('client.screens.home');
+            }
+            return redirect()->route('verification.notice');
+
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -38,10 +45,18 @@ class HomeController extends Controller
     public function customLogout()
     {
         try {
+            if(Auth::guard('admin')->check()) {
+                Auth::logout();
+                Session::flush();
+                return redirect()->route('admin.login.view');
+            }
+            if(Auth::guard('web')->check()) {
+                Auth::logout();
+                Session::flush();
+                return redirect()->route('user.index');
+            }
 
-            Auth::logout();
-            Session::flush();
-            return redirect()->route('user.index');
+
 
         } catch (\Exception $e) {
             return $e->getMessage();

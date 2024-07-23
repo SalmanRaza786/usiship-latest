@@ -1,4 +1,4 @@
-<!-- ========== App Menu ========== -->
+
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
     <div class="navbar-brand-box">
@@ -58,17 +58,31 @@
                         </a>
                     </li>
                 @endcanany
-                @canany('admin-load-view')
+                @canany('admin-checkin-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.check-in.index')?'active':''}}" href="{{route('admin.check-in.index')}}" >
-                            <i class="ri-parent-fill"></i> <span>Check In</span>
+                            <i class="ri-bug-2-line"></i> <span>Check In</span>
+                        </a>
+                    </li>
+                @endcanany
+                @canany('admin-offloading-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.off-loading.index')?'active':''}}" href="{{route('admin.off-loading.index')}}" >
+                            <i class=" ri-command-fill"></i> <span>Off Loading</span>
+                        </a>
+                    </li>
+                @endcanany
+                @canany('admin-putaway-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.put-away.index')?'active':''}}" href="{{route('admin.put-away.index')}}" >
+                            <i class="ri-git-repository-line"></i> <span>Item Put Away</span>
                         </a>
                     </li>
                 @endcanany
                 @canany('admin-customer-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.customer.index')?'active':''}}" href="{{route('admin.customer.index')}}" >
-                            <i class="ri-parent-fill"></i> <span>Customers </span>
+                            <i class="ri-user-add-fill"></i> <span>Customers </span>
                         </a>
                     </li>
                 @endcanany
@@ -76,7 +90,7 @@
                 @canany('admin-load-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.load.index')?'active':''}}" href="{{route('admin.load.index')}}" >
-                            <i class="ri-parent-fill"></i> <span>Load Type</span>
+                            <i class="ri-radar-line"></i> <span>Load Type</span>
                         </a>
                     </li>
                 @endcanany
@@ -84,7 +98,7 @@
                 @canany('admin-companies-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.companies.index')?'active':''}}" href="{{route('admin.companies.index')}}" >
-                            <i class="ri-parent-fill"></i> <span>Companies</span>
+                            <i class="ri-keyboard-box-fill"></i> <span>Companies</span>
                         </a>
                     </li>
                 @endcanany
@@ -92,7 +106,7 @@
                 @canany('admin-carriers-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.carriers.index')?'active':''}}" href="{{route('admin.carriers.index')}}" >
-                            <i class="ri-parent-fill"></i> <span>Carriers</span>
+                            <i class="ri-coin-line"></i> <span>Carriers</span>
                         </a>
                     </li>
                 @endcanany
@@ -100,7 +114,7 @@
                 @canany('admin-wh-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.wh.index')?'active':''}}" href="{{route('admin.wh.index')}}" >
-                            <i class="ri-parent-fill"></i> <span>WareHouses</span>
+                            <i class="ri-water-flash-fill"></i> <span>WareHouses</span>
                         </a>
                     </li>
                     @endcanany
@@ -108,7 +122,14 @@
                 @canany('admin-order-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.orders.list')?'active':''}}" href="{{route('admin.orders.list')}}" >
-                            <i class="ri-parent-fill"></i> <span>Orders</span>
+                            <i class=" ri-gift-2-line"></i> <span>Orders Scheduling</span>
+                        </a>
+                    </li>
+                @endcanany
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.transactions.index')?'active':''}}" href="{{route('admin.transactions.index')}}" >
+                            <i class=" ri-gift-2-line"></i> <span>Transactions</span>
                         </a>
                     </li>
                 @endcanany
@@ -132,6 +153,10 @@
                                         @canany('admin-custom_fields-view')
                                             <a href="{{route('admin.customField.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.customField.index')?'active':''}}">@lang('translation.custom_fields')</a>
                                         @endcanany
+
+                                        @canany('admin-notification-template-view')
+                                            <a href="{{route('admin.notification.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.notification.index')?'active':''}}">Notification Templates</a>
+                                        @endcanany
                                 </li>
 
 
@@ -146,5 +171,4 @@
     </div>
     <div class="sidebar-background"></div>
 </div>
-
 <div class="vertical-overlay"></div>

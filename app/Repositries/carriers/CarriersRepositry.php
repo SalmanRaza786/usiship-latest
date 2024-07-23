@@ -7,6 +7,7 @@ use App\Models\Admin;
 use App\Models\Carriers;
 use App\Models\Company;
 use App\Models\CustomFields;
+use App\Models\FileContent;
 use App\Models\LoadType;
 use App\Models\OrderContacts;
 use App\Repositries\appointment\AppointmentRepositry;
@@ -32,7 +33,7 @@ class CarriersRepositry implements CarriersInterface {
         try {
             $data['totalRecords'] = Carriers::count();
 
-            $qry = Carriers::query();
+            $qry = Carriers::with('company');
             $qry=$qry->when($request->name, function ($query, $name) {
                 return $query->where('name',$name);
             });
@@ -110,29 +111,28 @@ class CarriersRepositry implements CarriersInterface {
                 'order_id' => 'required',
                 'driver_name'=> 'required',
                 'phone_no' => 'required',
-                'driver_id_pic' => 'required',
+
 
             ]);
+
+            if($request->from==0){
+                $validator = Validator::make($request->all(), [
+                    'other_document' => 'required',
+                    'driver_id_pic'=> 'required',
+                    'do_document' => 'required',
+                    'bol_image' => 'required',
+
+
+                ]);
+            }
 
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
-            $uploadMedia = new AppointmentRepositry();
-            $idImage = $request->file('driver_id_pic');
-            $otherDocImage = $request->file('other_document');
-            $bolImage = $request->file('bol_image');
-            $doDocument = $request->file('do_document');
-            if($idImage) {
-                $this->carrierFileName = $this->handleFiles($idImage, $this->carrierFilePath);
-            }
-            if($otherDocImage) {
-                $this->carrierDocFileName = $this->handleFiles($otherDocImage, $this->carrierFilePath);
-            }
-
 
             $company = Company::updateOrCreate(
                 [
-                    'company_title' => $request->company_name,
+                    'id' => $request->company_id,
                 ],
                 [
                     'company_title' => $request->company_name,
@@ -142,12 +142,12 @@ class CarriersRepositry implements CarriersInterface {
 
             if($company)
             {
-                $role = Carriers::updateOrCreate(
+                $carrier = Carriers::updateOrCreate(
                     [
-                        'contacts' => $request->phone_no
+                        'id' => $request->carrier_id
                     ],
                     [
-                        'company_id' => 1,
+                        'company_id' => $company->id,
                         'carrier_company_name' => $request->driver_name,
                         'email' => "test@gmail.com",
                         'contacts' => $request->phone_no,
@@ -155,54 +155,54 @@ class CarriersRepositry implements CarriersInterface {
                         'other_docs' =>$this->carrierDocFileName,
                     ]
                 );
-                if($idImage)
+                if($carrier)
                 {
-                    $uploadMedia->mediaUpload($this->carrierFileName,'Image',$role->id,'App/Model/Carriers',null,'id_card_image');
-                }
-                if($otherDocImage)
-                {
-                    $uploadMedia->mediaUpload($this->carrierDocFileName,'Image',$role->id,'App/Model/Carriers',null,'other_docs');
-                }
+                    $fileableId = $carrier->id;
+                    $fileableType = 'App\Models\Carriers';
 
-                if($role)
-                {
+                    if($request->file('driver_id_pic')){
+                        $media = Helper::createOrUpdateSingleMedia($request->file('driver_id_pic'), $fileableId, $fileableType, $this->carrierFilePath,$request->driverFileId,'driver_id_pic');
+                    }
+
+                    if($request->file('other_document')){
+                        $media = Helper::createOrUpdateSingleMedia($request->file('other_document'), $fileableId, $fileableType, $this->carrierFilePath,$request->otherDocFileId,'other_document');
+                    }
+
                     $orderContact = OrderContacts::updateOrCreate(
                         [
                             'order_id' => $request->order_id,
-                            'carrier_id' => $role->id,
+                            'carrier_id' => $carrier->id,
                         ],
                         [
                             'order_id' => $request->order_id,
-                            'carrier_id' => $role->id,
+                            'carrier_id' => $carrier->id,
                             'arrival_time' => $request->currentdatetime,
                             'vehicle_number' => $request->vehicle_no,
                             'vehicle_licence_plate' => $request->license_no,
                             'bol_number' => $request->bol_no,
                             'do_number' => $request->do_no,
+                            'status_id' => 9,
                         ]
                     );
-                    if($doDocument)
+                    if($orderContact)
                     {
-                        $this->carrierDoDocument = $this->handleFiles($doDocument, $this->carrierFilePath);
-                        $uploadMedia->mediaUpload($this->carrierDoDocument,'Image',$orderContact->id,'App/Model/OrderContacts',null,'do_document');
-                    }
-                    if($bolImage)
-                    {
-                        $this->carrierBolImage = $this->handleFiles($bolImage, $this->carrierFilePath);
-                        $uploadMedia->mediaUpload($this->carrierBolImage,'Image',$orderContact->id,'App/Model/OrderContacts',null,'bol_image');
-                    }
+                        $fileableId = $orderContact->id;
+                        $fileableType = 'App\Models\OrderContacts';
 
+                        if($request->file('bol_image')){
+                            $media = Helper::createOrUpdateSingleMedia($request->file('bol_image'), $fileableId, $fileableType, $this->carrierFilePath,$request->bolFileId,'bol_image');
 
+                        }
+                        if($request->file('do_document')){
+                            $media = Helper::createOrUpdateSingleMedia($request->file('do_document'), $fileableId, $fileableType, $this->carrierFilePath,$request->doFileId,'do_document');
+                        }
+                    }
                 }
-
             }
 
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
             return Helper::success($orderContact, $message);
-        } catch (ValidationException $validationException) {
-            DB::rollBack();
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);

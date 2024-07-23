@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "google/auth": "^1.41",
+        "intervention/image": "^3.7",
         "laravel/framework": "^11.0",
         "laravel/reverb": "@beta",
         "laravel/sanctum": "^4.0",
@@ -13,6 +15,7 @@
         "laravel/ui": "^4.5",
         "maatwebsite/excel": "^3.1",
         "pusher/pusher-php-server": "^7.2",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.6",
         "tightenco/ziggy": "^2.2",
         "yajra/laravel-datatables-oracle": "^11"

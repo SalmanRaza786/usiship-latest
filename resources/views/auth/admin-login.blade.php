@@ -64,7 +64,7 @@
                                     @if ($message = Session::get('error'))
                                         <span class="text-center text-danger"> {{ $message }}</span>
                                     @endif
-                                    <form action="{{ route('admin.login') }}" method="POST">
+                                    <form action="{{ route('admin.login') }}" method="POST" id="LoginForm">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Email</label>
@@ -92,7 +92,7 @@
                                         </div>
 
                                         <div class="mt-4">
-                                            <button class="btn btn-success w-100" type="submit">Sign In</button>
+                                            <button class="btn btn-success w-100 btn-submit" type="button">Sign In</button>
                                         </div>
 
                                     </form>
@@ -102,9 +102,9 @@
                         </div>
                         <!-- end card -->
 
-                        <div class="mt-4 text-center">
-                            <p class="mb-0">Forgot password? <a href="{{ route('password.request') }}" class="fw-semibold text-primary text-decoration-underline"> Reset Now </a> </p>
-                        </div>
+{{--                        <div class="mt-4 text-center">--}}
+{{--                            <p class="mb-0">Forgot password? <a href="{{ route('password.request') }}" class="fw-semibold text-primary text-decoration-underline"> Reset Now </a> </p>--}}
+{{--                        </div>--}}
 
                     </div>
                 </div>
@@ -120,5 +120,16 @@
     <script src="{{ URL::asset('build/libs/particles.js/particles.js') }}"></script>
     <script src="{{ URL::asset('build/js/pages/particles.app.js') }}"></script>
     <script src="{{ URL::asset('build/js/pages/password-addon.init.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            $(".btn-submit").on('click',function (event) {
+                $(".btn-submit").prop("disabled", true);
+                $(".btn-submit").html("Processing...");
+                $('#LoginForm').submit();
+
+            });
+
+        });
+    </script>
 
 @endsection

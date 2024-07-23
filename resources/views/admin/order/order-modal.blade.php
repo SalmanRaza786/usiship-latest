@@ -106,10 +106,10 @@
             </div>
             <div class="modal-body p-4">
                 <form class="needs-validation" name="event-form" id="form-event" novalidate>
-                    <div class="text-end">
-                        <button type="button" class="btn btn-sm btn-soft-primary" id="btn-detail"   role="button">Detail</button>
-                        <button type="button" class="btn btn-sm btn-soft-primary "  id="btn-reschedule" role="button"  data-bs-toggle="modal"  data-bs-target="#showModalReschedule">Reschedule</button>
-                    </div>
+{{--                    <div class="text-end">--}}
+{{--                        <button type="button" class="btn btn-sm btn-soft-primary" id="btn-detail"   role="button">Detail</button>--}}
+{{--                        <button type="button" class="btn btn-sm btn-soft-primary "  id="btn-reschedule" role="button"  data-bs-toggle="modal"  data-bs-target="#showModalReschedule">Reschedule</button>--}}
+{{--                    </div>--}}
 
                     <div class="event-details">
                         <div class="d-flex mb-2">
@@ -163,8 +163,11 @@
 
                     </div>
                     <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-soft-danger" data-bs-toggle="modal"  data-bs-target="#confirmRejectModal"><i class="ri-close-line align-bottom"></i> Rejected</button>
-                        <button type="button" class="btn btn-success"  data-bs-toggle="modal"  data-bs-target="#confirmAcceptModal">Accepted</button>
+{{--                        <button type="button" class="btn btn-soft-danger" data-bs-toggle="modal"  data-bs-target="#confirmRejectModal"><i class="ri-close-line align-bottom"></i> Rejected</button>--}}
+{{--                        <button type="button" class="btn btn-success"  data-bs-toggle="modal"  data-bs-target="#confirmAcceptModal">Accepted</button>--}}
+
+                        <button type="button" class="btn btn-primary" id="btn-detail"   role="button">Detail</button>
+                        <button type="button" class="btn btn-success"  id="btn-reschedule" role="button"  data-bs-toggle="modal"  data-bs-target="#showModalReschedule">Reschedule</button>
                     </div>
                 </form>
             </div>
@@ -182,11 +185,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body p-4">
-                <form class="needs-validation" novalidate method="Get" action="{{route('admin.order.create')}}">
+                <form class="needs-validation"  method="Get" action="{{route('admin.order.create')}}">
                     <div class="col-12">
                         <div class="mb-3">
                             <label class="form-label">Customers</label>
-                            <select class="form-select " name="customer_id" >
+                            <select class="form-select " name="customer_id" required>
                                 <option value="">Choose One</option>
                                 @foreach($data['customers'] as $row)
                                     <option value="{{ $row->id }}">{{ $row->name}}</option>
@@ -196,13 +199,13 @@
                     </div>
                     <div class="row">
 
-                        <div class="col-6">
+                        <div class="col-6 d-none">
                             <div class="mb-3">
                                 <label class="form-label">Date</label>
-                                <input type="date" name="order_date" class="form-control">
+                                <input type="date" name="order_date" class="form-control" value="{{ date('Y-m-d') }}">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="mb-3">
                                 <label class="form-label">Status</label>
                                 <select class="form-select wareHouse" name="order_status" required>

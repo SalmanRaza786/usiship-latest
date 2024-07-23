@@ -63,13 +63,9 @@
                                                     </div>
                                                 </div>
 
-                                                {{--                                                <div class="form-check">--}}
-                                                {{--                                                    <input class="form-check-input" type="checkbox" value="" name="remember" {{ old('remember') ? 'checked' : '' }} id="auth-remember-check">--}}
-                                                {{--                                                    <label class="form-check-label" for="auth-remember-check">{{__('translation.remember_me')}}</label>--}}
-                                                {{--                                                </div>--}}
 
                                                 <div class="mt-4">
-                                                    <button class="btn btn-success w-100 btn-submit" type="submit">Sign in</button>
+                                                    <button class="btn btn-success w-100 btn-submit" type="button">Sign in</button>
 
                                                 </div>
 
@@ -106,5 +102,16 @@
 
 @section('script')
     <script src="{{ URL::asset('build/js/pages/password-addon.init.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            $(".btn-submit").on('click',function (event) {
+                $(".btn-submit").prop("disabled", true);
+                $(".btn-submit").html("Processing...");
+                $('#LoginForm').submit();
+
+            });
+
+        });
+    </script>
 @endsection
 

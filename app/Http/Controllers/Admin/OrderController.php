@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ClientNotificationEvent;
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\Notification;
 use App\Models\OperationalHour;
 use App\Models\Order;
 use App\Models\OrderBookedSlot;
@@ -14,6 +17,7 @@ use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customer\CustomerInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\notification\NotificationInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,12 +28,14 @@ class OrderController extends Controller
     private $wh;
     private $customer;
     private $appointment;
+    private $notification;
 
-    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment){
+    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment,NotificationInterface $notification){
         $this->order = $order;
         $this->wh = $wh;
         $this->customer =$customer;
         $this->appointment =$appointment;
+        $this->notification =$notification;
     }
     public function index()
     {
@@ -82,8 +88,11 @@ class OrderController extends Controller
     public function getOrderDetail($id)
     {
         try {
+            if (!Order::find($id)) {
+                return back()->with('error','Invalid order id');
 
-                 $data['orderDetail']=$this->getOrderInfo($id);
+            }
+            $data['orderDetail']=$this->getOrderInfo($id);
             return view('admin.order.order-detail')->with(compact('data'));
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -144,6 +153,7 @@ class OrderController extends Controller
                 'status' =>$res->status->status_title,
                 'status_id' =>$res->status_id,
                 'status_class' =>$res->status->class_name,
+                'status_order_by' =>$res->status->order_by,
                 'text_class' =>$res->status->text_class,
                 'loadType' =>($res->dock->loadType)?$res->dock->loadType->direction->value .'('.$res->dock->loadType->operation->value .' ,'. $res->dock->loadType->eqType->value.' ,'. $res->dock->loadType->transMode->value.')':'-',
                 'media'=>$res->fileContents,
@@ -176,7 +186,7 @@ class OrderController extends Controller
     }
 
     //storeOrder
-    public function storeOrder(Request $request)
+    public function  storeOrder(Request $request)
     {
         try {
             $dock=new DockRepositry();
@@ -185,13 +195,16 @@ class OrderController extends Controller
                return Helper::error('all slots are booked of this dock',[]);
            }
 
-            $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,$request->id);
+             $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
            if ($roleUpdateOrCreate->get('status')){
+               $orderData=$roleUpdateOrCreate->get('data');
+               // 1 use for admin 2 for user
+               $this->notificationTrigger(1,null);
+               $this->notificationTrigger(2,$orderData->customer_id);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
            }
-
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
@@ -236,7 +249,13 @@ class OrderController extends Controller
         try {
             $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
              if($order->get('status')){
-                // $this->appointment->bookedSlotsMakedFree($orderId,$orderStatus);
+                 $data=$order->get('data');
+                 $customerId=$data->customer_id;
+                $notification= $this->appointment->sendNotification($orderId,$customerId,$orderStatus,2);
+
+                if($notification->get('status')){
+                    $this->notificationTrigger(2,$customerId);
+                }
              }
              return $order;
         } catch (\Exception $e) {
@@ -249,8 +268,7 @@ class OrderController extends Controller
     {
         try {
             $res= $this->appointment->checkOrderId($request);
-            $data['load']=$res->get('data');
-            return Helper::ajaxSuccess($data,$res->get('message'));
+            return Helper::ajaxSuccess($res,'Order ID validation');
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -276,6 +294,57 @@ class OrderController extends Controller
             }else{
                 return Helper::error($res->get('message'),[]);
             }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+
+    public function notificationTrigger($type,$totifiableId)
+    {
+        try {
+
+          $res=Helper::notificationTriggerHelper($type,$totifiableId);
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function transactionIndex()
+    {
+        try {
+
+            return view('admin.transactions.index');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function transactionsList(Request $request){
+        try {
+            $res=$this->appointment->getTransactionsList($request);
+
+            $transactionData = collect([]);
+
+           foreach ($res['data']['data'] as $row) {
+
+
+               $array = array(
+                   'id' => $row->id,
+                   'enc_id' => encrypt($row->id),
+                   'order_id' => $row->order_id,
+                   'customer_name' => $row->customer->name,
+                   'warehouse_title' =>$row->warehouse->title,
+                   'dock_title' =>$row->dock->dock->title,
+                   'order_date' => $row->order_date,
+                   'operational_hour_working_hour' => $row->operationalHour->working_hour,
+                   'status_title' => $row->status->status_title,
+               );
+               $transactionData->push($array);
+           }
+
+            return Helper::ajaxDatatable($transactionData, $res['data']['totalRecords'], $request);
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

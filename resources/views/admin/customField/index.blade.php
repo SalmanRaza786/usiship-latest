@@ -59,6 +59,7 @@
                                 <th class="sort" data-sort="customer_name">Place Holder</th>
                                 <th class="sort" data-sort="product_name">Description</th>
                                 <th class="sort" data-sort="product_name">Require Type</th>
+                                <th class="sort" data-sort="product_name">Order By</th>
 {{--                                <th class="sort" data-sort="product_name">@lang('translation.status')</th>--}}
                                 <th class="sort" data-sort="date">@lang('translation.action')</th>
 
@@ -107,11 +108,12 @@
                     { data: 'place_holder'},
                     { data: 'description' },
                     { data: 'require_type' },
+                    { data: 'order_by' },
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
                     {
-                        targets: 5,
+                        targets: 6,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
 

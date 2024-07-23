@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Http\Resources\UserResource;
 use App\Models\Admin;
+use App\Models\DeviceToken;
 use App\Models\Student;
 use App\Models\User;
 use App\Repositries\customer\CustomerInterface;
@@ -26,29 +27,31 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
+
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
 
             if ($validator->fails()){
-                return  Helper::error($validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
 
             if (Admin::query()->where('email',$request->email)->first()){
                 return $response=$this->adminLogin($request);
-
             }
 
                 if (User::query()->where('email',$request->email)->first()){
                     return $response=$this->customerLogin($request);
-
                 }
 
-            return  Helper::error('Invalid email');
+            return  Helper::createAPIResponce(true,400,'Invalid email',$request->all());
+
+
 
         } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+
         }
     }
     public function adminLogin(Request $request)
@@ -57,13 +60,18 @@ class AuthController extends Controller
 
 
             if (!$admin=Auth::guard('admin')->attempt($request->only(['email','password']), $request->get('remember'))) {
-                return Helper::error('Invalid credentials');
+                return  Helper::createAPIResponce(true,400,'Invalid credentials',$request->all());
             }
 
                 $data['user']=Admin::where('email',$request->email)->with('role')->first();
+
                 $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
+
                 $data['userType']='employees';
-                return $data;
+                 $this->deviceTokenCreateOrUpdate($data['accessToken'],$data['user']->id,'App\Models\Admin',$request->device_id);
+
+            return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
+
 
         } catch (\Exception $e) {
              throw $e;
@@ -75,13 +83,16 @@ class AuthController extends Controller
         try {
 
             if (!$user=Auth::guard('web')->attempt($request->only(['email','password']))) {
-                return Helper::error('Invalid credentials');
+                return  Helper::createAPIResponce(true,400,'Invalid credentials',$request->all());
             }
 
             $data['user']=User::where('email',$request->email)->first();
+
             $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
             $data['userType']='customer';
-            return $data;
+            $this->deviceTokenCreateOrUpdate($data['accessToken'],$data['user']->id,'App\Models\User',$request->device_id);
+            return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
+
         } catch (\Exception $e) {
             throw $e;
 
@@ -100,21 +111,72 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()){
-                return  Helper::error($validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
 
             if(User::where('email',$request->email)->first()){
-                return Helper::error('Email already exist');
+              return  Helper::createAPIResponce(true,400,'Email already exist',$request->all());
             }
 
-           return $customer = $this->customer->customerSave($request,$request->id);
-
-
-
-
+              $customer = $this->customer->customerSave($request,$request->id);
+            if($customer['status']){
+                return  Helper::createAPIResponce(false,200,'Account created successfully!',Helper::fetchOnlyData($customer));
+            }else{
+                return  Helper::createAPIResponce(true,400,$customer['message'],[]);
+            }
 
         } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
+            return response()->json(['message' => $e], 400);
+
+        }
+    }
+    public function deviceTokenCreateOrUpdate($accessToken,$authId,$authType,$deviceToken)
+    {
+        try {
+
+            $deviceToken = DeviceToken::updateOrCreate(
+                [
+                    'access_token' => $accessToken
+                ],
+                [
+                    'auth_id'=> $authId,
+                    'auth_type'=> $authType,
+                    'device_token' =>$deviceToken,
+                    'access_token' => $accessToken,
+                ]
+        );
+
+            return $deviceToken;
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 400);
+        }
+    }
+
+
+    public function logout(Request $request)
+    {
+        try {
+
+            if(!$request->user()){
+                return  Helper::createAPIResponce(true,400,'invalid access token',[]);
+            }
+
+              $authorizationHeader = $request->header('Authorization');
+            if ($authorizationHeader) {
+                $parts = explode(' ', $authorizationHeader);
+                if (count($parts) === 2 && $parts[0] === 'Bearer') {
+                      $token = $parts[1];
+                }
+            }
+
+            $res=DeviceToken::where('access_token',$token)->delete();
+            $request->user()->currentAccessToken()->delete();
+
+            return  Helper::createAPIResponce(false,200,'Logged out successfully',[]);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 400);
         }
     }
 

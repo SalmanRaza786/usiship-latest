@@ -21,6 +21,7 @@ class OrderNotification extends Notification implements ShouldQueue
     public function __construct($mailData)
     {
         $this->mailData = $mailData;
+
     }
 
     /**
@@ -42,7 +43,7 @@ class OrderNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject($this->mailData['subject'])
             ->greeting($this->mailData['greeting'])
-            ->line( $this->mailData['content'])
+            ->line(new \Illuminate\Support\HtmlString($this->mailData['content']))
             ->action( $this->mailData['actionText'],$this->mailData['actionUrl'])
             ->line('Thank you for using our application!');
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\DocksLoadType;
 use App\Models\LoadType;
 use App\Models\WhDock;
 use App\Repositries\loadType\loadTypeInterface;
@@ -39,7 +40,7 @@ class LoadTypeController extends Controller
     {
 
         try {
-
+ $request->all();
             $roleUpdateOrCreate = $this->load->loadSave($request,$request->hidden_load_type_id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
@@ -88,7 +89,7 @@ class LoadTypeController extends Controller
     {
 
         try {
-            if(WhDock::where('load_type_id',$id)->count() > 0){
+            if(DocksLoadType::where('load_type_id',$id)->count() > 0){
                 return Helper::error('some docks linked under this load type',[]);
             }
             $res = $this->load->deleteload($id);

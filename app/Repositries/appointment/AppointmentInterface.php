@@ -5,6 +5,7 @@ namespace App\Repositries\appointment;
 interface AppointmentInterface
 {
     public function getAppointmentList($request);
+    public function getTransactionsList($request);
 
     public function uploadPackagingList($request);
     public function checkOrderId($request);
@@ -31,6 +32,8 @@ interface AppointmentInterface
 
     public function bookedSlotsMakedFree($orderId,$orderStatus);
     public function undoOrderStatus($orderId);
-    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$userType);
+    public function sendNotification($orderId,$customerId,$statusId,$notificationFor);
+    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
     public function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null);
+    public function getMyAppointmentsForApi($customerId,$limit);
 }

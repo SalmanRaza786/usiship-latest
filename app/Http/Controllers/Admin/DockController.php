@@ -35,7 +35,8 @@ class DockController extends Controller
     public function dockList(Request $request){
         try {
 
-                $res=$this->dock->dockList($request,1);
+            $whId=$request->query('wh_id');
+                $res=$this->dock->dockList($request,$whId);
             if($res['data']->count() > 0){
 
                 $data = collect([]);

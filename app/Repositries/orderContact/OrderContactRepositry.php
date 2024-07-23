@@ -1,12 +1,14 @@
 <?php
-namespace App\Repositries\loadType;
+namespace App\Repositries\orderContact;
 
 use App\Http\Helpers\Helper;
 
 use App\Models\Admin;
 use App\Models\LoadType;
+use App\Models\OrderContacts;
 use App\Models\WareHouse;
 use App\Models\WhDock;
+use App\Repositries\orderContact\OrderContactInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -14,98 +16,32 @@ use Illuminate\Validation\ValidationException;
 use DataTables;
 
 
-class loadTypeRepositry implements loadTypeInterface {
+class OrderContactRepositry implements OrderContactInterface {
 
-    public function getloadList($request,$wh_id=null)
+    public function getOrderContactList($request)
     {
         try {
-            if($wh_id!=null) {
-                $data['totalRecords'] = LoadType::where('wh_id',$wh_id)->count();
-            }else {
-                $data['totalRecords'] = LoadType::count();
-            }
 
-            $qry = LoadType::query();
-            $qry =$qry->with('direction','operation','eqType','transMode');
+            $data['totalRecords'] = OrderContacts::count();
+
+            $qry = OrderContacts::query();
+            $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
+
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
 
-                return $query->whereRelation('direction','value', 'LIKE', "%{$name}%")
-                    ->orWhereRelation('operation','value', 'LIKE', "%{$name}%")
-                    ->orWhereRelation('eqType','value', 'LIKE', "%{$name}%")
-                    ->orWhereRelation('transMode','value', 'LIKE', "%{$name}%");
+                return $query->whereRelation('order','value', 'LIKE', "%{$name}%")
+                    ->orWhereRelation('carrier','value', 'LIKE', "%{$name}%");
             });
-
             $qry=$qry->when($request->s_status, function ($query, $status) {
-                return $query->where('status',$status);
-            });
-            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
-            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
-
-
-
-            ($wh_id > 0)?$qry=$qry->where('wh_id',$wh_id)->orWhere('wh_id',null):$qry=$qry->where('wh_id',null);;
-
-
-            $qry=$qry->where('status','!=',2);
-            $data['data']=$qry->orderByDesc('id')->get();
-
-//            if (!empty($request->get('s_name')) OR !empty($request->get('s_status')) ) {
-//                $data['totalRecords']=$data['data']->count();
-//            }
-            return Helper::success($data, $message=__('translation.record_found'));
-
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(),[]);
-        }
-
-    }
-    public function getAllloadListByWh($wh_id)
-    {
-        try {
-            $data['wh'] = WareHouse::find($wh_id);
-            $qry = LoadType::query();
-            $qry =$qry->with('direction','operation','eqType','transMode');
-            ($wh_id > 0)?$qry=$qry->where('wh_id',$wh_id)->orWhere('wh_id',null):$qry=$qry->where('wh_id',null);
-            $data['loadType']=$qry->get();
-            return Helper::success($data, $message=__('translation.record_found'));
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(),[]);
-        }
-    }
-    public function adminLoadTypeList($request)
-    {
-        try {
-
-                $data['totalRecords'] = LoadType::count();
-
-
-            $qry = LoadType::query();
-            $qry =$qry->with('wareHouse','direction','operation','eqType','transMode');
-
-            $qry=$qry->when($request->s_name, function ($query, $name) {
-
-                return $query->whereRelation('direction','value', 'LIKE', "%{$name}%")
-                    ->orWhereRelation('operation','value', 'LIKE', "%{$name}%")
-                    ->orWhereRelation('eqType','value', 'LIKE', "%{$name}%")
-                    ->orWhereRelation('transMode','value', 'LIKE', "%{$name}%");
-            });
-
-            $qry=$qry->when($request->s_status, function ($query, $status) {
-                return $query->where('status',$status);
+                return $query->where('status_id',$status);
             });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
 
             $data['data']=$qry->orderByDesc('id')->get();
 
-            if (!empty($request->get('s_name')) OR !empty($request->get('s_status')) ) {
-                $data['totalRecords']=$data['data']->count();
-            }
+
             return Helper::success($data, $message=__('translation.record_found'));
 
         } catch (ValidationException $validationException) {
@@ -116,7 +52,7 @@ class loadTypeRepositry implements loadTypeInterface {
 
     }
 
-    public function loadSave($request,$id)
+    public function orderContactSave($request,$id)
     {
         try {
             DB::beginTransaction();
@@ -163,37 +99,63 @@ class loadTypeRepositry implements loadTypeInterface {
         }
     }
 
-    public function deleteload($id)
+    public function changeStatus($id,$status)
     {
         try {
+            $order= OrderContacts::find($id);
+            $order->status_id = $status;
+            $order->save();
+            return Helper::success($order,'Status updated');
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
 
-            $role = LoadType::find($id);
-            $role->delete();
-            return Helper::success($role, $message=__('translation.record_deleted'));
-        } catch (ValidationException $validationException) {
-            DB::rollBack();
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        }
-
-    }
-    public function editload($id)
-    {
-        try {
-            $res = LoadType::findOrFail($id);
-            return Helper::success($res, $message='Record found');
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }
     }
 
-    public function getGeneralLoadTypes()
+    public function getAllOrderContactList($limit=null)
+    {
+        try {
+            $qry= OrderContacts::query();
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->where('status_id','=',9);
+            $qry =$qry->orderByDesc('id');
+            ($limit!=null)?$qry->take($limit):'';
+            $data=$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function getOrderContact($contactId)
     {
         try {
 
-            $qry = LoadType::query();
-            $qry = $qry->where('wh_id',null);
-            $data['data']=$qry->orderByDesc('id')->get();
-            return Helper::success($data, $message=__('translation.record_found'));
+            $qry= OrderContacts::query();
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $data =$qry->find($contactId);
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+    public function updateOrderContact($id)
+    {
+        try {
+
+
+            $orderContact = OrderContacts::updateOrCreate(
+                [
+                    'id' => $id
+                ],
+                [
+                    'is_verify' => '1'
+                ]
+            );
+
+            return Helper::success($orderContact, $message="Carrier Documents Approved Successfully");
 
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
@@ -203,22 +165,9 @@ class loadTypeRepositry implements loadTypeInterface {
 
     }
 
-    public function getCombineLoadType($whId)
-    {
-        try {
 
-            $qry = LoadType::query();
-            $qry = $qry->where('wh_id',null)->orWhere('wh_id',$whId);
-            $data=$qry->orderByDesc('id')->get();
-            return Helper::success($data, $message=__('translation.record_found'));
 
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(),[]);
-        }
 
-    }
 
 }
 

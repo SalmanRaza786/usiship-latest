@@ -23,19 +23,20 @@ class LoadTypeSeeder extends Seeder
             }
 
         //Equipment Type
-        $eqTypeOptions = ['Dry Van'];
+
+        $eqTypeOptions = ['Dry Van','Container Floor Loaded','Container Palatize'];
         foreach ($eqTypeOptions as $key=>$val){
             LTEquipmentType::updateOrCreate(['value' =>$val], ['value' =>$val]);
         }
 
         //Transportation Mode
-        $transportOptions = ['FTL','PTL'];
+        $transportOptions = ['FTL','LTL','Courier'];
         foreach ($transportOptions as $key=>$val){
             LTTransportaionMode::updateOrCreate(['value' =>$val], ['value' =>$val]);
         }
 
         // Operation
-        $transportOptions = ['Live'];
+        $transportOptions = ['Live','Drop'];
         foreach ($transportOptions as $key=>$val){
             LTOperation::updateOrCreate(['value' =>$val], ['value' =>$val]);
         }

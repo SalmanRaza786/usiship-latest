@@ -108,12 +108,14 @@ $(document).ready(function(){
                         $('select[name="duration"]')
                             .html(
                                 `<option  value = "" > Choose  One </option>`+
-                                 `<option value="30" ${response.data.load.duration == '30' ? 'selected' : ''}>30 Minute</option>`+
-                                `<option value="60" ${response.data.load.duration == '60' ? 'selected' : ''}>60 Minute</option>`+
-                                `<option value="90" ${response.data.load.duration == '90' ? 'selected' : ''}>90 Minute</option>`+
-                                `<option value="120" ${response.data.load.duration == '120' ? 'selected' : ''}>120 Minute</option>`+
-                                `<option value="150 ${response.data.load.duration == '150' ? 'selected' : ''}">150 Minute</option>`+
-                                `<option value="180" ${response.data.load.duration == '180' ? 'selected' : ''}>180 Minute</option>`
+                                 `<option value="30" ${response.data.load.duration == '30' ? 'selected' : ''}>30 Minutes</option>`+
+                                `<option value="60" ${response.data.load.duration == '60' ? 'selected' : ''}>60 Minutes</option>`+
+                                `<option value="90" ${response.data.load.duration == '90' ? 'selected' : ''}>90 Minutes</option>`+
+                                `<option value="120" ${response.data.load.duration == '120' ? 'selected' : ''}>120 Minutes</option>`+
+                                `<option value="150 ${response.data.load.duration == '150' ? 'selected' : ''}">150 Minutes</option>`+
+                                `<option value="180" ${response.data.load.duration == '180' ? 'selected' : ''}>180 Minutes</option>`+
+                                `<option value="210" ${response.data.load.duration == '210' ? 'selected' : ''}>210 Minutes</option>`+
+                                `<option value="240" ${response.data.load.duration == '240' ? 'selected' : ''}>240 Minutes</option>`
                     )
 
                     }else{

@@ -169,7 +169,10 @@
     </div>
 @endsection
 @section('script')
+
     <script src="{{ URL::asset('build/js/custom-js/appsettings/appsettings.js') }}"></script>
+
+
 
 @endsection
 

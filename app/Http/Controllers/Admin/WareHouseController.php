@@ -2,28 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\MyEvent;
-use App\Events\SendEmailEvent;
-use App\Events\SendNotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\Admin;
 use App\Models\LoadType;
-use App\Models\NotificationTemplate;
-use App\Models\OperationalHour;
-use App\Models\OrderBookedSlot;
 use App\Models\User;
 use App\Models\WhDock;
-use App\Models\WhOffDay;
-use App\Models\WhWorkingHour;
-use App\Notifications\OrderNotification;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customField\CustomFieldInterface;
-use App\Repositries\dock\DockRepositry;
+use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\wh\WhInterface;
-use Carbon\Carbon;
+use App\Services\FireBaseNotificationTriggerService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use PHPUnit\TextUI\Help;
+use Illuminate\Support\Facades\Http;
+use App\Mail\ExampleMail;
+use Illuminate\Support\Facades\Mail;
+use GuzzleHttp\Client;
+
 
 class WareHouseController extends Controller
 {
@@ -109,6 +104,7 @@ class WareHouseController extends Controller
     {
 
         try {
+             $request->all();
             $roleUpdateOrCreate = $this->wh->updateOrCreate($request, $request->id);
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
@@ -135,8 +131,8 @@ class WareHouseController extends Controller
         try {
             $res = $this->wh->editWh($id);
             if ($res->get('status')) {
-                $data['wh'] = $res->get('data');
 
+                $data['wh'] = $res->get('data');
                 $data['ltMaterial'] = LoadType::getLoadTypeMaterial();
                 $data['customFields'] = Helper::fetchOnlyData($this->customField->customFieldsForDropdown());
                 $data['operationalHours'] = Helper::fetchOnlyData($this->wh->getGeneralOperationalHours());
@@ -144,6 +140,19 @@ class WareHouseController extends Controller
                 return view('admin.wh.create')->with(compact('data'));
             } else {
                 return Helper::ajaxError('Record not found');
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function getDoorsByWhId($id)
+    {
+        try {
+            $res = $this->wh->getDoorsByWhId($id);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            } else {
+                return Helper::ajaxError($res->get('message'));
             }
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
@@ -228,56 +237,98 @@ class WareHouseController extends Controller
 
     }
 
-    public function testEmail()
+    public function testOld()
     {
 
-        return view('welcome');
-        //$orderId,$customerId,$statusId
-        return $res=$this->order->sendNotificationViaEmail(1,2,1);
-
-
-        $statusId = 6;
-        $orderId = 1;
-        $customerId = 2;
-        $mailContent = NotificationTemplate::where('status_id', $statusId)->first();
-        if(!$mailContent){
-            return Helper::error('mail content not exist');
-        }
-
-        $mailData = [
-            'subject' => 'Order Requested',
-            'greeting' => 'Hello',
-            'content' => $mailContent->mail_content,
-            'actionText' => 'View Your Order Details',
-            'actionUrl' => url('/get-order-detail/' . ($orderId)),
+        $client = new Client();
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ya29.c.c0ASRK0GaZBxFzE9VX-bz3Aip6A4rqZ8Jg0zaqbVYthdaTzk4H-_-VtLPs_dRRyF5pOZovozBeTx-j-yPT_mwFF8b1fbbMGlMJ0kUF26LSJyO7x1FFwHehQocQ2kXxHv432SpS9doN1FLYoNjSqrPJ7gqMzoJFH2lJ6gavBKQSXY6D3kGNDCOjIk61o4ke69UyBuAHuQ9am7OHhSW1sb2OqcsfWqD46l2sAUZIZ5yYNiW-TbeuLSAxAzC4HW9ETI_yvqHpejbipHzE4CklXh7RBGfe-SNTJgL6dFb12aO8PJIj-aJ6S2sjWX_k67xCMuYcYOtX21dOpLQWaMv4y6Pybe6iA3NNBD2PQSMx-txsRHoZwzL4ZXwIx14YL385Pf-B7_FXkliq4ZIfaQqI3cQn57tY_vR8_FQhgY1x0865t_B-O5zr6oF1rzQF6fia97wduQ1U1F-BSSSw_mwaQqk2sMi_-6mv2nI5BJWRBrY-tl2ny3dcmUwIv-JnVlcFzpj-QW-hWcVkdWbSub2yd3dtVrO2hnMnhlOfzgsWqnUjpt0ZyqJIOlUdaSOShS1em0wIr7io0qadwj1hSZF0yoRbZqv1usSotqidSw9BU90j8W-bMhfofBvtOn89SJBO86425O3IaBUh6tMysOiwn1wXl5iOStR6zJiw1MOF4rUXjcBaayhOyWxsbu5YWUXw89er0UeBggRUQUrW9u6v20YQi4o4bRg3-BFRae_Bltz6hb98gR0nkOkJ6zJXOMF1RVdii7rsOogrUfqJauIoxiFQmS_9n7z-0aO7jJfhelZnVFIM_h9wIkO2xwIcv76fYfwyqsJ4_56QYxRzJ527Wqt1pqagIg7fegzepyJWwb9JXYYt7ne40YRyS-eStcaJnxXlxm0MzvM49h9d5dj-k2SX8ceBgMvlM4ynd-ofF1X53IORriUm9xv6oOrV10zZF5vF77zJqR_QcVX5dMUUYo1VlqRS95hz2Jv1bc_pQevrm39o2dg_ygMe21f',
         ];
 
+        $body = [
+            'message' => [
+                'token' =>'fkbZdvdzRiyqivMu6NC66g:APA91bHavhlFUu9p19gzKyZOeuoG7Cg6_eoKLWqnLV9CshPQGem0ZpEav-CA6RetdmSl2qg_xT3PtR47-AoH-W5C4JHZvCmcCcABPanSH2AsRrEMgA9hwFBmkO6glTmJo0ezA9wuGqkI',
+                'notification' => [
+                    'body' =>'Test',
+                    'title' =>'Test',
+                ],
 
-        if (!$customer = User::find($customerId)) {
-            return Helper::error('customer not exist');
-        }
-        // $res=$customer->notify(new OrderNotification($mailData));
+                'data' => [
+                    'id' =>'1',
 
-        event(new SendEmailEvent($mailData,$customer));
+                ],
+            ],
+        ];
 
+        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+            'headers' => $headers,
+            'json' => $body,
+        ]);
+
+        echo $response->getBody();
 
     }
-
-
-    public function pusher()
+    public function  test()
     {
-        MyEvent::dispatch('abc');
+
+       return $type=2;
+        $notifiableId=10;
+        return  $response =Helper::fireBaseNotificationTriggerHelper($type,$notifiableId);
+
+
+
+//        $notification=new NotificationRepositry();
+//
+//        if($type==1){
+//              $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
+//              $deviceId=Admin::where('id',$notifiableId)->pluck('device_id')->first();
+//        }
+//
+//        if($type==2){
+//            $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
+//            $deviceId=User::where('id',$notifiableId)->pluck('device_id')->first();
+//        }
+//
+//        $notifyContent= $notifyQuery->first();
+//
+//        $client = new Client();
+//        $headers = [
+//            'Content-Type' => 'application/json',
+//            'Authorization' => 'Bearer '.env('FIRE_BASE_ACCESS_TOKEN'),
+//        ];
+//
+//        $body = [
+//            'message' => [
+//                'token' =>$deviceId,
+//                'notification' => [
+//                    'body' =>$notifyContent['content'],
+//                    'title' =>$notifyContent['content'],
+//                ],
+//
+//                'data' => [
+//                    'id' =>(string) $notifyContent['id'],
+//                    'content' =>(string) $notifyContent['content'],
+//                    'created_at' =>(string) $notifyContent['created_at'],
+//                    'notifiType' =>(string) $notifyContent['notifiType'],
+//                    'notifiableId' =>(string) $notifyContent['notifiableId'],
+//                    'target_model_id' =>(string) $notifyContent['target_model_id'],
+//                    'url' =>(string) $notifyContent['url'],
+//                ],
+//            ],
+//        ];
+//
+//        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+//            'headers' => $headers,
+//            'json' => $body,
+//        ]);
+//
+//        echo $response->getBody();
+
     }
-
-    public function pushData()
+    public function scan()
     {
-        event(new SendNotificationEvent('TKNZ'));
-        dd('event trigger');
-    }
-
-    public function welcome()
-    {
-      return view('welcome');
+        return view('scan');
     }
 
 

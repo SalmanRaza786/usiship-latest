@@ -1,10 +1,14 @@
 <?php
 
 
-namespace App\Repositries\checkIn;
-interface CheckInInterface
+namespace App\Repositries\orderContact;
+interface OrderContactInterface
 {
-    public function getCheckinList($request,$wh_id);
-    public function checkinSave($request,$id);
-    
+    public function getOrderContactList($request);
+    public function getAllOrderContactList($limit);
+    public function getOrderContact($contactId);
+    public function updateOrderContact($id);
+    public function orderContactSave($request,$id);
+    public function changeStatus($id,$status_id);
+
 }

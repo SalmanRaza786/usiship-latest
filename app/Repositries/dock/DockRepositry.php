@@ -36,7 +36,7 @@ class DockRepositry implements DockInterface {
     public function getDockListByLoadtype($loadTypeId,$whId)
     {
         try {
-
+//here
             $qry=DocksLoadType::query();
             $qry=$qry->with('dock:id,title,wh_id');
             $qry=$qry->with('loadType:id,wh_id,duration');

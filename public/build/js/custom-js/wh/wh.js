@@ -4,6 +4,7 @@ $(document).ready(function(){
 
 var editLoadTypeId=[];
 var editAssignedFieldId=0;
+var editOrderByVal=0;
 
 
 
@@ -64,7 +65,7 @@ var editAssignedFieldId=0;
 
     $('.confirm-delete').click(function() {
         var id = $(this).val();
-        alert(id);
+
 
         $.ajax({
             url: 'delete-wh/'+id,
@@ -117,6 +118,7 @@ var editAssignedFieldId=0;
     $('.btn-add-row').on('click',function(){
         const fromData=$(this).attr('fromData');
         const toData=$(this).attr('toData');
+
         targetSection=toData;
         addNewRow(fromData,toData);
 
@@ -293,12 +295,14 @@ var editAssignedFieldId=0;
                     $('select[name="duration"]')
                         .html(
                             `<option  value = "" > Choose  One </option>`+
-                            `<option value="30" ${response.data.load.duration == '30' ? 'selected' : ''}>30 Minute</option>`+
-                            `<option value="60" ${response.data.load.duration == '60' ? 'selected' : ''}>60 Minute</option>`+
-                            `<option value="90" ${response.data.load.duration == '90' ? 'selected' : ''}>90 Minute</option>`+
-                            `<option value="120" ${response.data.load.duration == '120' ? 'selected' : ''}>120 Minute</option>`+
-                            `<option value="150 ${response.data.load.duration == '150' ? 'selected' : ''}">150 Minute</option>`+
-                            `<option value="180" ${response.data.load.duration == '180' ? 'selected' : ''}>180 Minute</option>`
+                            `<option value="30" ${response.data.load.duration == '30' ? 'selected' : ''}>30 Minutes</option>`+
+                            `<option value="60" ${response.data.load.duration == '60' ? 'selected' : ''}>60 Minutes</option>`+
+                            `<option value="90" ${response.data.load.duration == '90' ? 'selected' : ''}>90 Minutes</option>`+
+                            `<option value="120" ${response.data.load.duration == '120' ? 'selected' : ''}>120 Minutes</option>`+
+                            `<option value="150 ${response.data.load.duration == '150' ? 'selected' : ''}">150 Minutes</option>`+
+                            `<option value="180" ${response.data.load.duration == '180' ? 'selected' : ''}>180 Minutes</option>`+
+                            `<option value="210" ${response.data.load.duration == '210' ? 'selected' : ''}>210 Minutes</option>`+
+                            `<option value="240" ${response.data.load.duration == '240' ? 'selected' : ''}>240 Minutes</option>`
                         )
 
                 }else{
@@ -566,8 +570,7 @@ var editAssignedFieldId=0;
                             '<td>' + row.custom_fields.label + '</td>' +
                             '<td>' + row.custom_fields.place_holder + '</td>' +
                             '<td>' + row.custom_fields.description + '</td>' +
-
-
+                            '<td>' + row.order_by + '</td>' +
                             '<td>';
                         if (row.status == "Active") {
                             html +='<span class="badge badge-soft-success text-uppercase">Active</span>';
@@ -606,9 +609,11 @@ var editAssignedFieldId=0;
             '<option value="">Choose One</option>';
 
         $.each(loadTypeData, function (key, row) {
+
             let isSelected = '';
                 if(editLoadTypeId.length > 0) {
-                    const foundObject = editLoadTypeId.find(item => item.id === row.id);
+                    const foundObject = editLoadTypeId.find(item => item.load_type_id === row.id);
+
                     if (foundObject != undefined) {
                         isSelected = 'selected';
                     }
@@ -632,6 +637,7 @@ var editAssignedFieldId=0;
 
         var dockId = $(this).attr('data');
 
+
         $.ajax({
             url:route('admin.dock.edit',{id:dockId}),
             type: 'GET',
@@ -639,7 +645,6 @@ var editAssignedFieldId=0;
             dataType: 'json',
 
             success: function(response) {
-
                 editLoadTypeId=response.data.dock_load_types;
                 getLoadTypeAccordingWareHouse(response.data.wh_id);
 
@@ -671,7 +676,27 @@ var editAssignedFieldId=0;
                                 `<option value="7" ${response.data.schedule_limit == 7 ? 'selected' : ''}>Seven</option>`+
                                 `<option value="8" ${response.data.schedule_limit == 8 ? 'selected' : ''}>Eight</option>`+
                                 `<option value="9" ${response.data.schedule_limit == 9 ? 'selected' : ''}>Nine</option>`+
-                                `<option value="10" ${response.data.schedule_limit == 10 ? 'selected' : ''}>Ten</option>`
+                                `<option value="10" ${response.data.schedule_limit == 10 ? 'selected' : ''}>Ten</option>`+
+                                `<option value="11" ${response.data.schedule_limit == 11 ? 'selected' : ''}>Eleven</option>`+
+                                `<option value="12" ${response.data.schedule_limit == 12 ? 'selected' : ''}>Twelve</option>`+
+                                `<option value="13" ${response.data.schedule_limit == 13 ? 'selected' : ''}>Thirteen</option>`+
+                                `<option value="14" ${response.data.schedule_limit == 14 ? 'selected' : ''}>Fourteen</option>`+
+                                `<option value="15" ${response.data.schedule_limit == 15 ? 'selected' : ''}>Fifteen</option>`+
+                                ` <option value="16" ${response.data.schedule_limit == 16 ? 'selected' : ''}>Sixteen</option>`+
+                                `<option value="17" ${response.data.schedule_limit == 17 ? 'selected' : ''}>Seventeen</option>`+
+                                `<option value="18" ${response.data.schedule_limit == 18 ? 'selected' : ''}>Eighteen</option>`+
+                                ` <option value="19" ${response.data.schedule_limit == 19 ? 'selected' : ''}>Nineteen</option>`+
+                                `<option value="20" ${response.data.schedule_limit == 20 ? 'selected' : ''}>Twenty</option>`+
+                                `<option value="21" ${response.data.schedule_limit == 21 ? 'selected' : ''}>Twenty One</option>`+
+                                `<option value="22" ${response.data.schedule_limit == 22 ? 'selected' : ''}>Twenty Two</option>`+
+                                `<option  value="23" ${response.data.schedule_limit == 23 ? 'selected' : ''}>Twenty Three</option>`+
+                                `<option value="24" ${response.data.schedule_limit == 24 ? 'selected' : ''}>Twenty Four</option>`+
+                                `<option value="25" ${response.data.schedule_limit == 25 ? 'selected' : ''}>Twenty Five</option>`+
+                                `<option value="26" ${response.data.schedule_limit == 26 ? 'selected' : ''}>Twenty Six</option>`+
+                                `<option value="27" ${response.data.schedule_limit == 27 ? 'selected' : ''}>Twenty Seven</option>`+
+                                `<option value="28" ${response.data.schedule_limit == 28 ? 'selected' : ''}>Twenty Eight</option>`+
+                                `<option value="29" ${response.data.schedule_limit == 29 ? 'selected' : ''}>Twenty Nine</option>`+
+                                `<option value="30" ${response.data.schedule_limit == 30 ? 'selected' : ''}>Thirty</option>`
                         )
                 }else{
                     toastr.error(response.message)
@@ -707,7 +732,10 @@ var editAssignedFieldId=0;
 
 
                 editAssignedFieldId=response.data['assignedFields'].field_id;
+                editOrderByVal=response.data['assignedFields'].order_by;
                 customFieldsForMultiSelect(response.data['customFields']);
+                orderByCustomFieldsForMultiSelect();
+
 
 
                 if(response.status==true){
@@ -771,6 +799,39 @@ var editAssignedFieldId=0;
             removeItemButton: true,
         });
     }
+
+    orderByCustomFieldsForMultiSelect();
+    function orderByCustomFieldsForMultiSelect(){
+
+
+        var html = '';
+        html += '<select  class="form-select" data-choices data-choices-removeItem multiple id="orderByCustomFieldDropdown" required data-trigger  name="order_by[]">' +
+            '<option value="">Choose One</option>';
+        for(var i=1 ; i <=50;i++) {
+            let isSelected = '';
+
+
+            if (editOrderByVal > 0 && editOrderByVal == i) {
+                isSelected = 'selected';
+            }
+            html += '<option value="' + i + '" ' + isSelected + '>' + i + '</option>';
+        };
+
+
+        html +='</select>';
+
+
+        $('#orderByDefaultCustomFieldDropDown').html(html);
+        initOrderByFieldsForMultiSelect();
+    }
+    function initOrderByFieldsForMultiSelect(){
+
+        new Choices('#orderByCustomFieldDropdown', {
+            removeItemButton: true,
+        });
+    }
+
+
     getAllCustomFields();
     function getAllCustomFields(){
 
@@ -783,6 +844,7 @@ var editAssignedFieldId=0;
 
                 if(response.status) {
                     customFieldsForMultiSelect(response.data);
+
                 }
                 else{
                     toastr.error('Record not exist');

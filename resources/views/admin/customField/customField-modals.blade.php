@@ -46,13 +46,19 @@
                         <div class="invalid-feedback">Please enter a place holder name.</div>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Order By</label>
+                        <input type="number" class="form-control" name="order_by" placeholder="Enter order number" required>
 
+
+                    </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
                         <textarea type="text" class="form-control" name="description" id="description" placeholder="Enter description name" required></textarea>
                         <div class="valid-feedback"></div>
                         <div class="invalid-feedback">Please enter a description.</div>
                     </div>
+
 
 
                     <div class="form-check form-switch form-switch-right form-switch-md">

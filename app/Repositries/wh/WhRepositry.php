@@ -8,6 +8,8 @@ use App\Models\OperationalHour;
 use App\Models\OrderBookedSlot;
 use App\Models\WareHouse;
 use App\Models\WhAssignedField;
+use App\Models\WhDoor;
+use App\Models\WhLocation;
 use App\Models\WhOffDay;
 use App\Models\WhOperationHour;
 use App\Models\WhWorkingHour;
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Exception;
 use Spatie\Permission\Models\Role;
 
 
@@ -69,7 +72,7 @@ class WhRepositry implements WhInterface {
                 'wh_phone' => 'required|string|max:255',
                 'wh_status' => 'required|string|max:255',
                 'wh_address' => 'required|string|max:255',
-                'wh_note' => 'required|string|max:255',
+
             ]);
 
             if ($validator->fails())
@@ -87,7 +90,7 @@ class WhRepositry implements WhInterface {
                     'email' => $request->wh_email,
                     'phone' => $request->wh_phone,
                     'address' => $request->wh_address,
-                    'note' => $request->wh_note,
+                    'note' => ($request->wh_note)?$request->wh_note:null,
                     'status' => $request->wh_status,
 
                 ]
@@ -161,11 +164,13 @@ class WhRepositry implements WhInterface {
             foreach ($request->field_id as $key=>$val) {
                 $wh = WhAssignedField::updateOrCreate(
                     [
-                        'id' =>$id
+                        'wh_id' =>$request->hidden_wh_id_fields,
+                        'field_id' =>$val,
                     ],
                     [
                         'wh_id' =>$request->hidden_wh_id_fields,
                         'field_id' =>$val,
+                        'order_by' =>isset($request->order_by[$key])?$request->order_by[$key]:1,
                         'status' => $request->status,
                     ]
                 );
@@ -215,6 +220,17 @@ class WhRepositry implements WhInterface {
             $role = WhAssignedField::find($id);
             $role->delete();
             return Helper::success($role, $message=__('translation.record_deleted'));
+        } catch (ValidationException $validationException) {
+            DB::rollBack();
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        }
+
+    }
+    public function getDoorsByWhId($id)
+    {
+        try {
+            $role = WhDoor::where('wh_id',$id)->get();
+            return Helper::success($role, $message=__('translation.record_found'));
         } catch (ValidationException $validationException) {
             DB::rollBack();
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
@@ -383,7 +399,7 @@ class WhRepositry implements WhInterface {
 
             // Tuesday
             if($request->tue_from){
-                if($request->mon_wh_setup==2){
+                if($request->tue_wh_setup==2){
 
                     $wh = WhWorkingHour::updateOrCreate(
                         [
@@ -816,6 +832,16 @@ class WhRepositry implements WhInterface {
 
         }
         catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function getWhLocations($whId)
+    {
+        try {
+        $data=WhLocation::where('wh_id',$whId)->get();
+        return Helper::success($data,'Wh Locations');
+        }catch (Exception $e){
             throw $e;
         }
     }

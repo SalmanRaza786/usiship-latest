@@ -16,7 +16,7 @@ $(document).ready(function(){
     $('.btn-confirm-order').click(function() {
 
         const statusId = $(this).val();
-        const orderId=$('input[name=id]').val();
+        const orderId=$('input[name=hidden_order_id]').val();
 
         $.ajax({
             url: route('admin.change.order.status',{orderId:orderId,orderStatus:statusId}),
@@ -165,7 +165,8 @@ $(document).ready(function(){
     $('.btn-undo').click(function() {
 
 
-        const orderId=$('input[name=id]').val();
+        const orderId=$('input[name=hidden_order_id]').val();
+
 
         $.ajax({
             url: route('admin.undo.order.status',{orderId:orderId}),
@@ -186,6 +187,41 @@ $(document).ready(function(){
                 //toastr.error(err.responseJSON.message);
             }
         });
+    });
+
+    $('#verifyForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-verify').text('Processing...');
+                $(".btn-verify").prop("disabled", true);
+            },
+            success: function(response) {
+                if (response.status==true) {
+                    toastr.success(response.message);
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+                $(".btn-verify").html("Verify");
+                $(".btn-verify").prop("disabled", false);
+            },
+            error: function() {
+                $('.btn-verify').text('Verify');
+                $(".btn-verify").prop("disabled", false);
+            }
+        });
+
+
     });
 
 

@@ -10,6 +10,7 @@
     <meta content="" name="description" />
     <meta content="" name="author" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="user_id" content="{{ auth()->user()->id }}">
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('build/images/logo-dark.png') }}">
@@ -23,9 +24,6 @@
 <div id="layout-wrapper">
     @routes
     @include('layouts.topbar')
-
-
-
     @include('layouts.sidebar')
 
 
@@ -33,9 +31,15 @@
     <div class="main-content">
         <div class="page-content">
             <div class="container-fluid">
+                @if (session('error'))
+                    <div class="text-danger mb-5">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
 
                 @yield('content')
+
 
 
                 <div id="myCustomPreLoader" >
@@ -55,12 +59,13 @@
     </div>
     <!-- end main content-->
 </div>
-<!-- END layout-wrapper -->
+
 
 @include('layouts.customizer')
 
 <!-- JAVASCRIPT -->
 @include('layouts.vendor-scripts')
+
 
 <script>
     $(document).ready(function (){

@@ -1,12 +1,49 @@
 @extends('layouts.master-without-nav')
-@section('title')
-   Carrier Onboard
-@endsection
-@section('css')
-    .disabled {
-    pointer-events: none;
+@section('title') Carrier Onboard @endsection
+
+<style>
+    #my-qr-reader {
+        padding: 20px !important;
+        border: 1.5px solid #b2b2b2 !important;
+        border-radius: 8px;
     }
-@endsection
+
+    #my-qr-reader img[alt="Info icon"] {
+        display: none;
+    }
+
+    #my-qr-reader img[alt="Camera based scan"] {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: 1px solid #b2b2b2;
+        outline: none;
+        border-radius: 0.25em;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        background-color: #008000ad;
+        transition: 0.3s background-color;
+    }
+
+    button:hover {
+        background-color: #008000;
+    }
+
+
+    video {
+        width: 100% !important;
+        border: 1px solid #b2b2b2 !important;
+        border-radius: 0.25em;
+    }
+
+</style>
+
 @section('content')
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
@@ -29,9 +66,12 @@
                     <div class="col-lg-12">
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
-                                <a href="index.html" class="d-inline-block auth-logo">
-                                    <img src="https://usiship.designkorner.com/storage/appsettings/66461749f06a4.png" alt=""
-                                         height="60">
+                                <a href="#" class="d-inline-block auth-logo">
+                                    @if($appInfo->count() > 0)
+                                        @include('components.auth-logo')
+                                    @else
+                                        <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="" height="50">
+                                    @endif
                                 </a>
                             </div>
                             <p class="mt-3 fs-15 fw-medium">Your Delivery Partners</p>
@@ -49,6 +89,12 @@
                                     @isset($order)
                                     <input type="hidden" name="order_id" id="id" value="{{$order->id??"0"}}">
                                     @endisset
+
+                                    <input type="hidden" name="company_id" id="id" value="0">
+                                    <input type="hidden" name="carrier_id" id="id" value="0">
+                                    <input type="hidden" name="orderContactId" id="id" value="0">
+                                    <input type="hidden" name="from" id="id" value="0">
+
                                     <div class="text-center pt-3 pb-4 mb-1">
                                         <h5>Driver's Self Check In</h5>
                                     </div>
@@ -97,16 +143,15 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="input-group input-group-lg mb-4 form-icon right">
-                                                        <input type="text" class="form-control"
-                                                               aria-label="Sizing example input"
-                                                               aria-describedby="inputGroup-sizing-lg">
-                                                        <button class="btn btn-outline-success pe-5" type="button"
-                                                                id="button-addon2"><i class="ri-camera-line fs-24"></i> Scan
-                                                            Now
-                                                        </button>
+
+                                                    <div id="my-qr-reader" style="display: none" ></div>
+
+
+                                                    <div class="input-group input-group-lg mb-4 form-icon right d-grid col-12">
+                                                        <button class="btn btn-outline-success pe-5 btn-scan-now" type="button" id="start-camera"><i class="ri-camera-line fs-24"></i>Scan Now</button>
                                                     </div>
                                                 </div>
+
                                                 <hr>
                                                 <div>
                                                     <h5 class="mb-1">Or Enter the Warehouse ID</h5>
@@ -114,12 +159,12 @@
                                                         Enter the warehouse ID</p>
                                                 </div>
                                                 <div class="input-group input-group-lg mb-4 form-icon right">
-                                                    <input type="text" class="form-control"  id="warehouseId"
-                                                           aria-label="Sizing example input" name="wh_id"
-                                                           aria-describedby="inputGroup-sizing-lg">
-                                                    <button class="btn btn-outline-success pe-5 " type="button" id="verifyButton"  data-nexttab="pills-info-desc-tab"
-                                                           ><i class=" ri-refresh-line fs-24"></i> Verify Now
-                                                    </button>
+                                                    <input type="text" class="form-control"  id="warehouseId"  aria-label="Sizing example input" name="wh_id"  aria-describedby="inputGroup-sizing-lg">
+
+
+                                                    <button class="btn btn-outline-success pe-5 " type="button" id="verifyButton"  data-nexttab="pills-info-desc-tab"><i class=" ri-refresh-line fs-24"></i> Verify Now  </button>
+
+
                                                 </div>
                                             </div>
                                             <div class="d-flex align-items-start gap-3 mt-4">
@@ -165,9 +210,9 @@
                                                     <input type="text" class="form-control" id="order_id" name="order_no"
                                                            aria-label="Sizing example input"
                                                            aria-describedby="inputGroup-sizing-lg" required></div>
-                                                <div class="alert d-none" id="orderIdFeedback" role="alert">
-                                                    <strong></strong>
-                                                </div>
+                                                <div id="orderIdFeedback" ></div>
+
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
@@ -214,13 +259,15 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL #</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" type="text" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no"  type="text" required>
+
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL Image</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"   required>
+                                                            <input type="text" class="d-none"  name="bolFileId" value="0">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -234,7 +281,8 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Do Document</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="do_document" type="file"   accept="image/*" required>
+                                                            <input type="text" class="d-none" name="doFileId" value="0">
                                                         </div>
                                                     </div>
 
@@ -243,13 +291,16 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*"  required>
+                                                            <input type="text" class="d-none"  name="driverFileId" value="0">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document" type="file" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*"  type="file">
+
+                                                            <input type="text" class="d-none"  name="otherDocFileId" value="0">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -281,7 +332,7 @@
                                                                    style="width:120px;height:120px"></lord-icon>
                                                     </div>
                                                     <h5>Well Done !</h5>
-                                                    <p class="text-muted">You have Successfully Signed Up</p>
+                                                    <p class="text-muted">You have successfully requested for Check-In</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -314,62 +365,74 @@
                         <div class="text-center">
                             <p class="mb-0 text-muted">©
                                 <script>document.write(new Date().getFullYear())</script>
-                                2024 USI Ship. Crafted with <i class="mdi mdi-heart text-danger"></i> by MAIT
+                                {{date('Y')}} USI Ship. Crafted with <i class="mdi mdi-heart text-danger"></i> by MAIT
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
         </footer>
-        <!-- end Footer -->
     </div>
-@endsection
-@section('script')
-    <script src="{{ URL::asset('build/libs/particles.js/particles.js') }}"></script>
-    <script src="{{ URL::asset('build/js/pages/particles.app.js') }}"></script>
-    <script src="{{ URL::asset('build/js/pages/password-addon.init.js') }}"></script>
+    @endsection
+    @section('script')
+<script src="{{ URL::asset('build/js/html5-qrcode.min.js')}}"></script>
     <script>
+        var startScannerButton = document.getElementById('start-camera');
+        var scanSection = document.getElementById('my-qr-reader');
+        var qrInputElement = document.getElementById('warehouseId');
+        const verifyButton = document.getElementById('verifyButton');
+        const stopScannerButton = document.getElementById('html5-qrcode-button-camera-stop');
+        let htmlscanner;
+
         $(document).ready(function() {
+
+
 
             $('#order_id').on('keyup', function() {
                 var orderId = $(this).val();
+                var id=$('input[name=order_id]').val();
 
+                var errorText='';
                 if (orderId.length > 0) {
+
                     $.ajax({
                         url: '{{ route("checkOrderId") }}',
                         method: 'GET',
-                        data: { order_id: orderId },
+                        data: { order_id: orderId,id:id },
                         success: function(response) {
 
-                            if (response.data.load) {
-                                $('#orderIdFeedback')
-                                    .removeClass('d-none alert-danger')
-                                    .addClass('alert-success')
-                                    .text('Order ID is Available.');
-                            } else {
-                                $('#orderIdFeedback')
-                                    .removeClass('d-none alert-success')
-                                    .addClass('alert-danger')
-                                    .text('Order ID not Available.');
+                            if (response.data==1) {
+                                $("#btn-carrier-submit").prop("disabled", false);
+                                errorText='<span></span>';
                             }
+                            if (response.data==0) {
+                                $("#btn-carrier-submit").prop("disabled", true);
+                                errorText='<span class="text-danger">Invalid Order Reference</span>';
+                            }
+
+
+                            $('#orderIdFeedback').html(errorText)
                         },
                         error: function() {
-                            $('#orderIdFeedback')
-                                .removeClass('d-none alert-success')
-                                .addClass('alert-danger')
-                                .text('An error occurred while checking the Order ID.');
+                            $('#orderIdFeedback').text('An error occurred while checking the Order ID.').css({'color': 'red' });
                         }
                     });
                 } else {
-                    $('#orderIdFeedback').addClass('d-none').text('');
+                    $('#orderIdFeedback').html(errorText)
                 }
             });
-
             $('#verifyButton').on('click', function(){
+
                 let warehouseId = $('#warehouseId').val();
+
+                if (!warehouseId > 0) {
+                    toastr.error('Enter or scan warehouse, please');
+                    return false;
+                }
+
                 let orderId = $('#id').val();
                 var targetTab = $(this).data('nexttab');
-                console.log(targetTab);
+
                 $.ajax({
                     url: '{{ route('verify.warehouse.id') }}',
                     method: 'POST',
@@ -379,12 +442,16 @@
                         orderId: orderId
                     },
                     success: function(response){
+
                         if (response.status == true) {
+                            console.log('verify htmlscanner',htmlscanner);
+                            if (htmlscanner) {
+                                htmlscanner.clear();
+                            }
                             toastr.success(response.message);
                             $('#currentDateTime').val(response.data.current_date_time);
                             $('#timeDiff').text(response.data.time_difference);
                             $('#' + targetTab).tab('show');
-
                         }
 
                         if (response.status == false) {
@@ -397,11 +464,10 @@
                     }
                 });
             });
-
             $('#CarrierForm').on('submit', function(e) {
                 e.preventDefault();
                 var targetTab = $('#btn-carrier-submit').data('nexttab');
-                console.log(targetTab);
+
                 $.ajax({
                     url: $(this).attr('action'),
                     method: 'POST',
@@ -417,7 +483,7 @@
                     success: function(response) {
                         if (response.status==true) {
                             toastr.success(response.message);
-                            $('.btn-submit').text('Submit');
+                            $('.btn-submit').text('>Checked In');
                             $(".btn-submit").prop("disabled", false);
                             $('#' + targetTab).tab('show');
                         }
@@ -426,23 +492,21 @@
                         }
                     },
                     complete: function(data) {
-                        $(".btn-submit").html("Submit");
+                        $(".btn-submit").html(">Checked In");
                         $(".btn-submit").prop("disabled", false);
                     },
                     error: function() {
                         // toastr.error('something went wrong');
-                        $('.btn-submit').text('Submit');
+                        $('.btn-submit').text('>Checked In');
                         $(".btn-submit").prop("disabled", false);
                     }
                 });
 
             });
-
             $('.nexttab').click(function() {
                 var targetTab = $(this).data('nexttab');
                 $('#' + targetTab).tab('show');
             });
-
             $('.previestab').click(function() {
                 var previousTab = $(this).data('previous');
                 $('#' + previousTab).tab('show');
@@ -450,7 +514,43 @@
 
 
         });
+
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            function domReady(fn) {
+                if (
+                    document.readyState === "complete" ||
+                    document.readyState === "interactive"
+                ) {
+                    setTimeout(fn, 1000);
+                } else {
+                    document.addEventListener("DOMContentLoaded", fn);
+                }
+            }
+
+            domReady(function () {
+
+                // If found you qr code
+                function onScanSuccess(decodeText, decodeResult) {
+                    qrInputElement.value = decodeText;
+                    console.log('stopScannerButton',stopScannerButton);
+                    console.log('verifyButton',verifyButton);
+                    verifyButton.click();
+                }
+
+                startScannerButton.addEventListener('click', function () {
+                    scanSection.style.display = 'block';
+                    startScannerButton.style.display = 'none';
+                    htmlscanner = new Html5QrcodeScanner(
+                        "my-qr-reader",
+                        { fps: 10, qrbos: 250 }
+                    );
+                    htmlscanner.render(onScanSuccess);
+                });
+
+            });
+        });
     </script>
-
-
-@endsection
+    @endsection

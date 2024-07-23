@@ -10,6 +10,8 @@ use App\Repositries\appSettings\AppSettingsInterface;
 use App\Repositries\appSettings\AppSettingsRepositry;
 use App\Repositries\carriers\CarriersInterface;
 use App\Repositries\carriers\CarriersRepositry;
+use App\Repositries\checkIn\CheckInInterface;
+use App\Repositries\checkIn\CheckInRepositry;
 use App\Repositries\companies\CompaniesInterface;
 use App\Repositries\companies\CompaniesRepositry;
 use App\Repositries\customer\CustomerInterface;
@@ -18,10 +20,30 @@ use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\customField\CustomFieldRepositry;
 use App\Repositries\dock\DockInterface;
 use App\Repositries\dock\DockRepositry;
+use App\Repositries\inventory\InventoryInterface;
+use App\Repositries\inventory\InventoryRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
+
+use App\Repositries\media\MediaInterface;
+use App\Repositries\media\MediaRepositry;
+use App\Repositries\offLoading\OffLoadingInterface;
+use App\Repositries\offLoading\OffLoadingRepositry;
+
+
+use App\Repositries\notification\NotificationInterface;
+use App\Repositries\notification\NotificationRepositry;
+
+
+use App\Repositries\orderContact\OrderContactInterface;
+use App\Repositries\orderContact\OrderContactRepositry;
+
+use App\Repositries\packagingList\PackagingListInterface;
+use App\Repositries\packagingList\PackagingListRepositry;
 use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
+use App\Repositries\putaway\PutAwayInterface;
+use App\Repositries\putaway\PutawayRepositry;
 use App\Repositries\roles\RoleInterface;
 use App\Repositries\roles\RoleRepositry;
 use App\Repositries\user\UserInterface;
@@ -59,6 +81,18 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(DockInterface::class,DockRepositry::class);
         $this->app->bind(AppointmentInterface::class,AppointmentRepositry::class);
+        $this->app->bind(NotificationInterface::class,NotificationRepositry::class);
+
+        $this->app->bind(OrderContactInterface::class,OrderContactRepositry::class);
+        $this->app->bind(CheckInInterface::class,CheckInRepositry::class);
+        $this->app->bind(OffLoadingInterface::class,OffLoadingRepositry::class);
+
+        $this->app->bind(PackagingListInterface::class,PackagingListRepositry::class);
+
+        $this->app->bind(PutAwayInterface::class,PutawayRepositry::class);
+        $this->app->bind(InventoryInterface::class,InventoryRepositry::class);
+        $this->app->bind(MediaInterface::class,MediaRepositry::class);
+
 
 
     }

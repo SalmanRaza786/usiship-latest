@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class WhAssignedField extends Model
 {
     use HasFactory;
-    protected $fillable=['wh_id','field_id','status'];
+    protected $fillable=['wh_id','field_id','status','order_by'];
 
     public function wh()
     {

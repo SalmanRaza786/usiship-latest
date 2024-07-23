@@ -2,7 +2,11 @@
 
 namespace App\Http\Helpers;
 
+use App\Events\ClientNotificationEvent;
+use App\Events\NotificationEvent;
+use App\Models\Admin;
 use App\Models\Attempt;
+use App\Models\FileContent;
 use App\Models\OperationalHour;
 use App\Models\OrderBookedSlot;
 use App\Models\Question;
@@ -17,17 +21,28 @@ use App\Repositries\config\PracticeConfigRepositry;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\exam\ExamRepositry;
 use App\Repositries\language\LanguageRepositry;
+use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\qBank\QuestionsRepositry;
 use App\Repositries\student\StudentRepositry;
 use App\Repositries\studentLecture\StudentLectureRepositry;
 use App\Repositries\user\UserRepositry;
+use App\Services\FireBaseNotificationTriggerService;
+use App\Traits\HandleFiles;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
+use Spatie\Permission\Models\Permission;
 
 class Helper
 {
+    use HandleFiles;
+
     public static function sendError($message, $errors = [], $code = 401)
     {
         $response = ['success' => false, 'message' => $message];
@@ -44,16 +59,22 @@ class Helper
             $result['success'] = false;
             $result['code'] = $code;
             $result['message'] = $message;
+            $result['data'] = $content;
         } else {
             $result['success'] = true;
             $result['code'] = $code;
+            $result['message'] = $message;
+
             if ($content == null) {
-                $result['message'] = $message;
+
+                $result['data'] = [];
             } else {
                 $result['data'] = $content;
+
             }
         }
-        return $result;
+        return response()->json($result,$code);
+
     }
 
     // below functions created by Ahsan
@@ -276,4 +297,239 @@ class Helper
     {
       OrderBookedSlot::where('order_id',$orderId)->delete();
     }
+
+
+    public static function createNotificationHelper($content,$url,$orderId)
+    {
+        $notification=new NotificationRepositry();
+        $notification->createNotification($content,$url,$orderId);
+    }
+
+    public static function createEndUserNotificationHelper($notifyContent,$url,$endUserId,$model,$orderId)
+    {
+        $notification=new NotificationRepositry();
+        $notification->createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId);
+    }
+
+    public static function uploadMultipleMedia($imageSets,$fileableId,$fileableType,$path)
+    {
+        try {
+                foreach ($imageSets as $fieldName => $images) {
+                    if (!is_array($images)) {
+                        $images = [];
+                    }
+                        foreach ($images as $image) {
+                            $files = self::handleFiles($image, $path);
+                            $media = Helper::mediaUpload(
+                                $fileName = $files['filename'],
+                                $fileType = 'image',
+                                $fileableId,
+                                $fileableType,
+                                $formId = null,
+                                $fieldName,
+                                $thumbnail = $files['thumbnail'],
+                            );
+                        }
+
+                }
+            return $media;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public static function createOrUpdateSingleMedia($imageFile,$fileableId,$fileableType,$path,$fileId,$fieldName)
+    {
+        try {
+
+            $files = self::handleFiles($imageFile, $path);
+
+                    $media = FileContent::updateOrCreate(
+                        [
+                            'id' => $fileId
+                        ],
+                    [
+                    'file_name' => $files['filename'],
+                    'file_thumbnail' =>  $files['thumbnail'],
+                    'file_type' => 'Image',
+                    'fileable_id' => $fileableId,
+                    'fileable_type' => $fileableType,
+                    'form_id' => null,
+                    'field_name' => $fieldName,
+                ]);
+
+
+            return $media;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+    public static function mediaUpload($fileName=null,$fileType=null,$fileableId,$fileableType=null,$formId=null,$fieldName=null,$thumbnail=null)
+    {
+        try {
+
+            if($formId != null)
+            {
+                $data =[
+                    'fileable_id' => $fileableId,
+                    'form_id' => $formId,
+                ];
+            }else{
+                $data =[
+                    'fileable_id' => 0
+                ];
+            }
+
+            $media = FileContent::updateOrCreate(
+                $data,
+                [
+                    'file_name' => $fileName,
+                    'file_thumbnail' => $thumbnail,
+                    'file_type' => $fileType,
+                    'fileable_id' => $fileableId,
+                    'fileable_type' => $fileableType,
+                    'form_id' => $formId,
+                    'field_name' => $fieldName,
+                ]);
+
+            return $media;
+
+        } catch (\Exception $e) {
+            throw $e;
+
+
+        }
+
+    }
+
+    public static function handleFiles( $file, $path )
+    {
+
+        if ($file)  {
+            $uniqueid = uniqid();
+            $thumbnailpath = $path.'thumbnails/';
+            $extension = $file->getClientOriginalExtension();
+            $filename = $path.$uniqueid.'.'.$extension;
+            self::ensureDirectoryExists(public_path('storage/uploads/'.$path));
+            self::ensureDirectoryExists(public_path('storage/uploads/'.$thumbnailpath));
+            if (getimagesize($file)) {
+                $thumbnailFilename = $thumbnailpath . $uniqueid . '_thumb.' . $extension;
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+                $image->scale(width: 300);
+                $image->resize(150, 150);
+                $image->toPng()->save(public_path('storage/uploads/' . $thumbnailFilename));
+
+                $file->move(public_path('storage/uploads/' . $path), $filename);
+                return [
+                    'filename' => $filename,
+                    'thumbnail' => $thumbnailFilename,
+                ];
+            }else{
+                $file->move(public_path('storage/uploads/' . $path), $filename);
+                return [
+                    'filename' => $filename,
+                    'thumbnail' => null,
+                ];
+            }
+
+
+        }
+
+
+    }
+
+    public static function ensureDirectoryExists($path)
+    {
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
+    }
+
+
+    public static function notificationTriggerHelper($type,$totifiableId)
+    {
+        $notification=new NotificationRepositry();
+
+        if($type==1){
+            $permission = Permission::where('name', 'admin-notification-view')->first();
+            $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
+            if ($hasPermissions->count() > 0) {
+
+                foreach ($hasPermissions as $row) {
+                    $users=Admin::where('role_id',$row->role_id)->get();
+                    foreach ($users as $user){
+                        $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$user->id));
+                        $res= NotificationEvent::dispatch($notifiData);
+                        $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
+                    }
+
+                }
+            }
+
+        }
+        if($type==2){
+            $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
+             $res= ClientNotificationEvent::dispatch($notifiData);
+            $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
+        }
+    }
+
+
+    public function numberToWords($number)
+    {
+        $words = [
+            1 => 'one', 2 => 'two', 3 => 'three', 4 => 'four', 5 => 'five', 6 => 'six', 7 => 'seven', 8 => 'eight', 9 => 'nine', 10 => 'ten',
+            11 => 'eleven', 12 => 'twelve', 13 => 'thirteen', 14 => 'fourteen', 15 => 'fifteen', 16 => 'sixteen', 17 => 'seventeen', 18 => 'eighteen', 19 => 'nineteen', 20 => 'twenty',
+            30 => 'thirty', 40 => 'forty', 50 => 'fifty', 60 => 'sixty', 70 => 'seventy', 80 => 'eighty', 90 => 'ninety'
+        ];
+
+        if ($number <= 20) {
+            return $words[$number];
+        } elseif ($number < 100) {
+            $tens = (int)($number / 10) * 10;
+            $units = $number % 10;
+            return $units ? $words[$tens] . '-' . $words[$units] : $words[$tens];
+        } elseif ($number == 100) {
+            return 'one hundred';
+        }
+    }
+
+    public static function runQueueWorkCommand()
+    {
+        Artisan::call('queue:work');
+        $output = Artisan::output();
+        return response()->json([
+            'message' => 'Queue worker started',
+           'output' => $output
+        ]);
+
+    }
+
+   public static function getMimeType($fileName)
+    {
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            // Add other mime types as needed
+        ];
+
+        return $mimeTypes[$extension] ?? 'application/octet-stream';
+    }
+
+    public static function fireBaseNotificationTriggerHelper($type,$notifiableId)
+    {
+        $fb=new FireBaseNotificationTriggerService();
+        return   $response=$fb->fireBaseTrigger($type,$notifiableId);
+    }
+
+
+
 }

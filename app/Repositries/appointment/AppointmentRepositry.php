@@ -33,15 +33,18 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use DataTables;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Permission;
 
 
 class AppointmentRepositry implements AppointmentInterface {
     protected $orderFilePath = 'order-media/';
     protected $packgingImageFilePath = 'packaging-images/';
+
     protected $packgingListFilePath = 'packaging-list/';
     protected $orderFileName = "";
     protected $packagingImageFileName = "";
     protected $packagingListFileName = "";
+
     use HandleFiles;
     public function getAppointmentList($request)
     {
@@ -56,6 +59,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     $q->where('title', 'LIKE', "%{$name}%");
                 });
             });
+
             $qry=$qry->when($request->status, function ($query, $status) {
                 return $query->where('status_id',$status);
             });
@@ -124,15 +128,17 @@ class AppointmentRepositry implements AppointmentInterface {
                 'guard' =>$request->guard,
             );
 
+
             //Create booked time slots
             $this->createBookedSlots($orderId);
 
             //create order log
             $this->createOrderLog($logData);
 
+            //1 for admin 2 for user
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
 
-
-            $this->sendNotificationViaEmail($orderId,$request->customer_id,$request->order_status,1);
 
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
@@ -197,6 +203,7 @@ class AppointmentRepositry implements AppointmentInterface {
     {
 
         try {
+
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'file.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -320,6 +327,12 @@ class AppointmentRepositry implements AppointmentInterface {
             Helper::deleteBookedSlotsAccordingOrders($order->id);
             $this->createBookedSlots($order->id);
 
+
+            //1 for admin 2 for user
+            $this->sendNotification($id,$order->customer_id,15,1);
+            $this->sendNotification($id,$order->customer_id,15,2);
+
+
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
             return Helper::success($order,$message);
@@ -379,7 +392,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
 
             $qry= Order::query();
-            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company');
+            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
@@ -468,6 +481,7 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
             $qry= OrderStatus::query();
+            $qry =$qry->where('order_by','<',100);
             $data =$qry->get();
             return Helper::success($data, $message="Status found");
 
@@ -484,28 +498,26 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
 
-            $order= Order::find($orderId);
-            $order->status_id=$orderStatus;
-            $order->save();
+           if( $order= Order::find($orderId)) {
+               $order->status_id = $orderStatus;
+               $order->save();
 
-            $logData=array(
-                'orderId' => $orderId,
-                'statusId' =>$orderStatus,
-                'createdBy' =>Auth::id(),
-                'guard' =>'admin',
-            );
+               $logData = array(
+                   'orderId' => $orderId,
+                   'statusId' => $orderStatus,
+                   'createdBy' => Auth::id(),
+                   'guard' => 'admin',
+               );
 
-            //create order log
-            $this->bookedSlotsMakedFree($orderId,$orderStatus);
-            $this->createOrderLog($logData);
-            if($orderStatus==1 AND OrderBookedSlot::where('order_id',$orderId)->count()==0){
-                $this->createBookedSlots($orderId);
-            }
+               //create order log
+               $this->bookedSlotsMakedFree($orderId, $orderStatus);
+               $this->createOrderLog($logData);
+               if ($orderStatus == 1 and OrderBookedSlot::where('order_id', $orderId)->count() == 0) {
+                   $this->createBookedSlots($orderId);
+               }
 
-
-            $this->sendNotificationViaEmail($orderId,$order->customer_id,$orderStatus,1);
-
-         return Helper::success($order,'Status updated');
+               return Helper::success($order, 'Status updated');
+           }
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
@@ -630,9 +642,10 @@ class AppointmentRepositry implements AppointmentInterface {
     public function checkOrderId($request)
     {
         try {
+            $id = $request->query('id');
             $orderId = $request->query('order_id');
-            $res = Order::where('order_id', $orderId)->exists();
-            return Helper::success($res, $message='Record found');
+            return  $res = Order::where('id', $id)->where('order_id', $orderId)->count();
+             Helper::success($res, $message='Record found');
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }
@@ -695,53 +708,6 @@ class AppointmentRepositry implements AppointmentInterface {
 
     }
 
-
-    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$userType=null)
-    {
-        try {
-//            $userType 1 for admin and 2 for customer
-
-            $mailContent = NotificationTemplate::where('status_id', $statusId)->first();
-            if (!$mailContent) {
-                return Helper::error('mail content not exist');
-            }
-
-            $mailData = [
-                'subject' => 'Order Requested',
-                'greeting' => 'Hello',
-                'content' => $mailContent->mail_content,
-                'actionText' => 'View Your Order Details',
-                'actionUrl' => url('/get-order-detail/' . ($orderId)),
-                'orderId' => $orderId,
-                'statusId' => $statusId,
-            ];
-
-
-            if (!$customer = User::find($customerId)) {
-                return Helper::error('customer not exist');
-            }
-            // $res=$customer->notify(new OrderNotification($mailData));
-
-
-            event(new SendEmailEvent($mailData, $customer));
-
-            $log = NotificationLog::updateOrCreate(
-                [
-                    'id' => 0,
-                ],
-                [
-                    'order_id' => $orderId,
-                    'status_id' => $statusId,
-                    'content' => $mailContent->mail_content,
-                    'notification_type' => 1,
-                ]
-            );
-
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(), []);
-        }
-    }
-
     public function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null)
     {
         try {
@@ -778,6 +744,142 @@ class AppointmentRepositry implements AppointmentInterface {
         }
 
     }
+
+
+    public function sendNotification($orderId,$customerId,$statusId,$notificationFor)
+    {
+        try {
+
+            //$userType 1 for admin and 2 for customer,3 for both
+            $notifyContent = NotificationTemplate::where('status_id', $statusId)->first();
+            if (!$notifyContent) {
+                return Helper::error('notification not configured');
+            }
+            if ($notificationFor == 1 ) {
+                Helper::createNotificationHelper($notifyContent, 'admin.orders.detail',$orderId);
+            }
+
+            if ($notificationFor == 2 ) {
+                Helper::createEndUserNotificationHelper($notifyContent, 'user.orders.detail', $customerId, 'App\Models\User',$orderId);
+            }
+
+            $this->sendNotificationViaEmail($orderId, $customerId, $statusId, $notifyContent);
+            return Helper::success([],'Notification created successfully');
+        }
+        catch (\Exception $e) {
+                throw $e;
+            }
+
+    }
+
+    public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent)
+    {
+        try {
+        if($status=OrderStatus::find($statusId)){
+            $statusTitle= $status->status_title;
+        }
+
+            $mailData = [
+                'subject' => 'Order'. $statusTitle,
+                'greeting' => 'Hello',
+                'content' => $notifyContent->mail_content,
+                'actionText' => 'View Your Order Details',
+                'actionUrl' => url('/get-order-detail/' . ($orderId)),
+                'orderId' => $orderId,
+                'statusId' => $statusId,
+            ];
+
+            if (!$customer = User::find($customerId)) {
+                return Helper::error('customer not exist');
+            }
+             $res=$customer->notify(new OrderNotification($mailData));
+
+            if($statusId==6){
+                $mailData = [
+                    'subject' => 'Carrier Onboard',
+                    'greeting' => 'Hello',
+                    'content' =>"Click bellow button for upload carrier documents",
+                    'actionText' => 'Carrier Onboard',
+                    'actionUrl' => url('/carrier-onboard/' . (encrypt($orderId))),
+                    'orderId' => $orderId,
+                    'statusId' => $statusId,
+                ];
+
+                $res=$customer->notify(new OrderNotification($mailData));
+            }
+            //event(new SendEmailEvent($mailData, $customer));
+
+            $log = NotificationLog::updateOrCreate(
+                [
+                    'id' => 0,
+                ],
+                [
+                    'order_id' => $orderId,
+                    'status_id' => $statusId,
+                    'content' => $notifyContent->mail_content,
+                    'notification_type' => 1,
+                ]
+            );
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function getTransactionsList($request)
+    {
+
+        try {
+            $data['totalRecords'] = Order::count();
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer');
+
+
+            $qry = $qry->when($request->s_name, function ($query, $name) {
+                return $query->whereHas('warehouse', function ($q) use ($name) {
+                    $q->where('title', 'LIKE', "%{$name}%");
+                });
+            });
+
+            $qry=$qry->when($request->status, function ($query, $status) {
+                return $query->where('status_id',$status);
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) ) {
+                $data['totalRecords']=$qry->count();
+            }
+            return Helper::success($data, $message=__('translation.record_found'));
+
+
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
+    public function getMyAppointmentsForApi($customerId,$limit=null)
+    {
+
+        try {
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status');
+            $qry=$qry->where('customer_id',$customerId);
+            ($limit!=null)?$qry=$qry->limit($limit):'';
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message=__('translation.record_found'));
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
+
+
+
 
 }
 

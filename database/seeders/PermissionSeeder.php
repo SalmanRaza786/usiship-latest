@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Language;
 use App\Models\PermissionModule;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class PermissionSeeder extends Seeder
@@ -25,15 +23,15 @@ class PermissionSeeder extends Seeder
         $wh_module = PermissionModule::updateOrCreate(['title' => 'Warehouse'], ['title' =>'Warehouse']);
         $customer_module = PermissionModule::updateOrCreate(['title' => 'Customer'], ['title' =>'Customer']);
         $custom_fields_module = PermissionModule::updateOrCreate(['title' => 'Custom Fields'], ['title' =>'Custom Fields']);
-
         $cumpanies_module = PermissionModule::updateOrCreate(['title' => 'Companies'], ['title' =>'Companies']);
         $carriers_module = PermissionModule::updateOrCreate(['title' => 'Carriers'], ['title' =>'Carriers']);
-<<<<<<< HEAD
-=======
         $order = PermissionModule::updateOrCreate(['title' => 'Orders'], ['title' =>'Orders']);
->>>>>>> 1b7ffc7666a4670468613413cf6603bebb506bd8
+        $notification = PermissionModule::updateOrCreate(['title' => 'Notifications'], ['title' =>'Notifications']);
+        $CheckIn = PermissionModule::updateOrCreate(['title' => 'Check-In'], ['title' =>'Check-In']);
+        $OffLoading = PermissionModule::updateOrCreate(['title' => 'Off Loading'], ['title' =>'Off Loading']);
+        $itemPutAway = PermissionModule::updateOrCreate(['title' => 'Item Put Away'], ['title' =>'Item Put Away']);
 
-
+        $notification_template = PermissionModule::updateOrCreate(['title' => 'Notification Template'], ['title' =>'Notification Template']);
 
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
 
@@ -101,14 +99,35 @@ class PermissionSeeder extends Seeder
             ['name' => 'admin-carriers-delete', 'module_id' =>$carriers_module->id, 'guard_name' => 'admin'],
 
 
-<<<<<<< HEAD
-=======
+
             //Orders
             ['name' => 'admin-order-view', 'module_id' =>$order->id, 'guard_name' => 'admin'],
 
+            //Notifications
+            ['name' => 'admin-notification-view', 'module_id' =>$notification->id, 'guard_name' => 'admin'],
 
+            //Checkin Away
+            ['name' => 'admin-checkin-view', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-checkin-create', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-checkin-edit', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-checkin-delete', 'module_id' =>$CheckIn->id, 'guard_name' => 'admin'],
 
->>>>>>> 1b7ffc7666a4670468613413cf6603bebb506bd8
+            //Off Loading Away
+            ['name' => 'admin-offloading-view', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-offloading-create', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-offloading-edit', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-offloading-delete', 'module_id' =>$OffLoading->id, 'guard_name' => 'admin'],
+
+            //Item Put Away
+            ['name' => 'admin-putaway-view', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-putaway-create', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-putaway-edit', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-putaway-delete', 'module_id' =>$itemPutAway->id, 'guard_name' => 'admin'],
+
+            //Notifications Templates
+            ['name' => 'admin-notification-template-view', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-notification-template-create', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
+
 
 
             //Miscellaneous

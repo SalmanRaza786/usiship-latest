@@ -88,8 +88,8 @@ class CustomFieldController extends Controller
     //
     public function getWhFields(Request $request){
         try {
-            $whId=$request->wh_id;
-            $res=$this->customfield->getFieldsAccordingWareHouse($whId);
+            $whId=1;//$request->wh_id;
+          return  $res=$this->customfield->getFieldsAccordingWareHouse($whId);
             return Helper::success($res['data'],'fields list');
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

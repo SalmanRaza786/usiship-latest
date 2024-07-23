@@ -18,7 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->statefulApi();
+        $middleware->alias([
+            'isUser' => \App\Http\Middleware\CheckGuardMiddleare::class,
+            'isUser' => \Illuminate\Auth\Middleware\Authenticate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

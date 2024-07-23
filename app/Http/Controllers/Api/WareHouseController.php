@@ -28,11 +28,12 @@ class WareHouseController extends Controller
     }
     public function wareHouseList(Request $request){
         try {
+
             $res = $this->wh->getWareHousesWithOperationHour($request);
             if($res->get('status')){
-                return Helper::success($res->get('data'),'Warehouse List');
+                return  Helper::createAPIResponce(false,200,'Warehouse List',$res->get('data'));
             }else{
-                return Helper::error('Warehouse list empty',[]);
+                return  Helper::createAPIResponce(false,200,'Warehouse list empty',$res->get('data'));
             }
 
         } catch (\Exception $e) {
@@ -42,8 +43,13 @@ class WareHouseController extends Controller
     }
     public function getLoadTypes(Request $request){
         try {
-            return $res=$this->load->getGeneralLoadTypes($request);
-            return Helper::success($res['data'],'Warehouse List');
+             $res=$this->load->getGeneralLoadTypes($request);
+            if($res->get('status')){
+                return  Helper::createAPIResponce(false,200,'Load type list',$res['data']['data']);
+            }else{
+                return  Helper::createAPIResponce(false,200,'Load type list empty',$res['data']['data']);
+            }
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -53,8 +59,21 @@ class WareHouseController extends Controller
     //getWhDayTimes
     public function getWhDayTimes(Request $request){
         try {
+
+            $validator = Validator::make($request->all(), [
+                'wh_id' => 'required|integer',
+            ]);
+
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
+            if(!WareHouse::find($request->wh_id)){
+                return  Helper::createAPIResponce(true,400,'Invalid wh id',[]);
+            }
+
             $whId=$request->wh_id;
-            $workingHors=$this->wh->getWhDayWiseOperationalHours($whId);
+             $workingHors=$this->wh->getWhDayWiseOperationalHours($whId);
             $dayData=collect([]);
             foreach($workingHors as $row){
                 $workingHourFrom=OperationalHour::find($row->first_from_wh_id);
@@ -66,11 +85,37 @@ class WareHouseController extends Controller
                 );
                 $dayData->push($dayArray);
             }
-            return Helper::success($dayData,'Day wise operational hour');
+            return  Helper::createAPIResponce(false,200,'Day wise operational hour',$dayData);
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+
         }
 
+    }
+
+    public function getDoorsByWhId(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'wh_id' =>'required',
+            ]);
+
+            if ($validator->fails())
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+
+            if(!WareHouse::find($request->wh_id)){
+                return  Helper::createAPIResponce(true,400,'invalid warehouse id',[]);
+            }
+
+            $res = $this->wh->getDoorsByWhId($request->wh_id);
+            if ($res->get('status')) {
+                return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
+            } else {
+                return  Helper::createAPIResponce(true,400,$res->get('message'),[]);
+            }
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
     }
 
     public function dockOperationalHour(Request $request){
@@ -80,20 +125,18 @@ class WareHouseController extends Controller
             $validator = Validator::make($request->all(), [
                 'dockId' =>'required',
                 'loadTypeId' => 'required',
-
             ]);
 
             if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
 
             if(!WhDock::find($request->dockId)){
-                return Helper::error('invalid dock id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid dock id',[]);
             }
             $whHours=$this->wh->getDockWiseOperationalHour($request);
-            return Helper::success($whHours,'data found');
-
+            return  Helper::createAPIResponce(false,200,'data found',$whHours);
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }
@@ -106,15 +149,16 @@ class WareHouseController extends Controller
                 'whId'=> 'required',
             ]);
 
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
 
-            if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
-            return  $res = $this->dock->getDockListByLoadtype($request->loadtype,$request->whId);
+              $res = $this->dock->getDockListByLoadtype($request->loadtype,$request->whId);
+              return  Helper::createAPIResponce(false,200,'load wise docks found',$res->get('data'));
 
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
-
     }
 
     //getWhLoadTypes
@@ -127,17 +171,18 @@ class WareHouseController extends Controller
             ]);
 
             if ($validator->fails())
-                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+            return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
 
             if(!WareHouse::find($request->wh_id)){
-                return Helper::error('invalid warehouse id',[]);
+                return  Helper::createAPIResponce(true,400,'invalid warehouse id',[]);
             }
 
             $res=$this->load->getloadList($request,$request->wh_id);
-            return  Helper::success($res['data']['data'],'Load Type List');
+            return  Helper::createAPIResponce(false,200,'Load Type List',$res['data']['data']);
+
 
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }
