@@ -460,8 +460,8 @@ class Helper
                     $users=Admin::where('role_id',$row->role_id)->get();
                     foreach ($users as $user){
                         $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$user->id));
-                      //  $response =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
                         $res= NotificationEvent::dispatch($notifiData);
+                        $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
                     }
 
                 }
@@ -470,8 +470,8 @@ class Helper
         }
         if($type==2){
             $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
-            //$response =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
              $res= ClientNotificationEvent::dispatch($notifiData);
+            $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
         }
     }
 

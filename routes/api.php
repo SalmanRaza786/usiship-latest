@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\OffLoadingController;
 use App\Http\Controllers\Api\PutAwayController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ProfileController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -69,10 +70,16 @@ use App\Http\Controllers\Api\HomeController;
     Route::get('/get-unread-notification', [NotificationController::class, 'getUnreadNotifications']);
     Route::get('/read-notification', [NotificationController::class, 'readNotification']);
 
+        //Logout
+        Route::any('/api-logout', [AuthController::class, 'logout']);
+
+    //Profile
+    Route::any('/update-profile', [ProfileController::class, 'updateProfile']);
+
 
   });
 
-Route::any('/app-setting', [HomeController::class, 'appSetting']);
+    Route::any('/app-setting', [HomeController::class, 'appSetting']);
 
 
     Route::any('/api-login', [AuthController::class, 'login']);

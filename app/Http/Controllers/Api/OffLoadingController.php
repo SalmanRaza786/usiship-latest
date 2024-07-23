@@ -78,6 +78,11 @@ class OffLoadingController extends Controller
     public function saveOffLoadingImages(Request $request)
     {
         try {
+             $request->all();
+
+             if(!OrderOffLoading::find($request->offloadingId)){
+                 return  Helper::createAPIResponce(true,400,'Invalid offloading Id',[]);
+             }
             $roleUpdateOrCreate = $this->offloaing->offLoadingImagesSave($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));

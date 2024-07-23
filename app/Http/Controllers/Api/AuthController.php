@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Http\Resources\UserResource;
 use App\Models\Admin;
+use App\Models\DeviceToken;
 use App\Models\Student;
 use App\Models\User;
 use App\Repositries\customer\CustomerInterface;
@@ -63,10 +64,11 @@ class AuthController extends Controller
             }
 
                 $data['user']=Admin::where('email',$request->email)->with('role')->first();
-                $data['user']->device_id=$request->device_id;
-                $data['user']->save();
+
                 $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
+
                 $data['userType']='employees';
+                 $this->deviceTokenCreateOrUpdate($data['accessToken'],$data['user']->id,'App\Models\Admin',$request->device_id);
 
             return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
 
@@ -85,10 +87,10 @@ class AuthController extends Controller
             }
 
             $data['user']=User::where('email',$request->email)->first();
-            $data['user']->device_id=$request->device_id;
-            $data['user']->save();
+
             $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
             $data['userType']='customer';
+            $this->deviceTokenCreateOrUpdate($data['accessToken'],$data['user']->id,'App\Models\User',$request->device_id);
             return  Helper::createAPIResponce(false,200,'Logged in successfully',$data);
 
         } catch (\Exception $e) {
@@ -126,6 +128,55 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => $e], 400);
 
+        }
+    }
+    public function deviceTokenCreateOrUpdate($accessToken,$authId,$authType,$deviceToken)
+    {
+        try {
+
+            $deviceToken = DeviceToken::updateOrCreate(
+                [
+                    'access_token' => $accessToken
+                ],
+                [
+                    'auth_id'=> $authId,
+                    'auth_type'=> $authType,
+                    'device_token' =>$deviceToken,
+                    'access_token' => $accessToken,
+                ]
+        );
+
+            return $deviceToken;
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 400);
+        }
+    }
+
+
+    public function logout(Request $request)
+    {
+        try {
+
+            if(!$request->user()){
+                return  Helper::createAPIResponce(true,400,'invalid access token',[]);
+            }
+
+              $authorizationHeader = $request->header('Authorization');
+            if ($authorizationHeader) {
+                $parts = explode(' ', $authorizationHeader);
+                if (count($parts) === 2 && $parts[0] === 'Bearer') {
+                      $token = $parts[1];
+                }
+            }
+
+            $res=DeviceToken::where('access_token',$token)->delete();
+            $request->user()->currentAccessToken()->delete();
+
+            return  Helper::createAPIResponce(false,200,'Logged out successfully',[]);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 400);
         }
     }
 
