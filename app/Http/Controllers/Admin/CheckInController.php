@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\OrderCheckIn;
 use App\Models\OrderContacts;
 use App\Models\User;
 use App\Notifications\CloseArrivalNotification;
@@ -37,7 +38,12 @@ class CheckInController extends Controller
     public function checkinView($orderContactId){
         try {
 
-         $checkInData=Helper::fetchOnlyData($this->checkin->findCheckIn($orderContactId));
+            $checkIn=OrderCheckIn::where('order_contact_id',$orderContactId)->first();
+            if(!$checkIn){
+                return redirect()->back()->with('error','Invalid order contact or check in id');
+            }
+
+         $checkInData=Helper::fetchOnlyData($this->checkin->findCheckIn($checkIn->id));
 
 
             $data['orderContacts']=array(
