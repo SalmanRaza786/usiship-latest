@@ -527,7 +527,7 @@ class Helper
     public static function fireBaseNotificationTriggerHelper($type,$notifiableId)
     {
         $fb=new FireBaseNotificationTriggerService();
-        return   $response=$fb->fireBaseTrigger($type,$notifiableId);
+           $response=$fb->fireBaseTrigger($type,$notifiableId);
     }
 
 
