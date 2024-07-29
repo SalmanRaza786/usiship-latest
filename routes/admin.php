@@ -30,6 +30,8 @@ use App\Http\Controllers\Admin\PackagingListController;
 use App\Http\Controllers\Admin\PutAwayController;
 use App\Http\Controllers\Admin\MediaController;
 
+use App\Http\Controllers\Outbounds\WorkOrderController;
+
 
 
 
@@ -189,6 +191,13 @@ use App\Http\Controllers\Admin\MediaController;
 
         //Media Controller
         Route::any('/delete-media/{id}', [MediaController::class, 'deleteMedia'])->name('delete.media');
+
+
+
+        //Outbounds
+        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index');
+        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list');
+        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign');
 
 
     });
