@@ -11,22 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('work_order_pickers', function (Blueprint $table) {
+        Schema::create('missed_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('work_order_id');
             $table->foreign('work_order_id')->references('id')->on('work_orders')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('picker_id');
-            $table->foreign('picker_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('status_id');
-            $table->foreign('status_id')->references('id')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
-            $table->dateTime('start_time')->nullable()->default(null);
-            $table->dateTime('end_time')->nullable()->default(null);
+            $table->unsignedBigInteger('status_code');
+            $table->foreign('status_code')->references('order_by')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->unsignedBigInteger('auth_id');
             $table->foreign('auth_id')->references('id')->on('admins')->onDelete('cascade')->onUpdate('cascade');
+
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_order_pickers');
+        Schema::dropIfExists('missed_items');
     }
 };

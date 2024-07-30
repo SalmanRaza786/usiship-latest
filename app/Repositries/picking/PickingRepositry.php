@@ -19,6 +19,7 @@ class PickingRepositry implements PickingInterface
             $data['totalRecords'] = WorkOrderPicker::count();
             $qry= WorkOrderPicker::query();
             $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
