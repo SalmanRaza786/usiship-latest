@@ -38,10 +38,14 @@ use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\orderContact\OrderContactInterface;
 use App\Repositries\orderContact\OrderContactRepositry;
 
+use App\Repositries\orderStatus\OrderStatusInterface;
+use App\Repositries\orderStatus\OrderStatusRepositry;
 use App\Repositries\packagingList\PackagingListInterface;
 use App\Repositries\packagingList\PackagingListRepositry;
 use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
+use App\Repositries\picking\PickingInterface;
+use App\Repositries\picking\PickingRepositry;
 use App\Repositries\putaway\PutAwayInterface;
 use App\Repositries\putaway\PutawayRepositry;
 use App\Repositries\roles\RoleInterface;
@@ -95,6 +99,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(InventoryInterface::class,InventoryRepositry::class);
         $this->app->bind(MediaInterface::class,MediaRepositry::class);
         $this->app->bind(WorkOrderInterface::class,WorkOrderRepositry::class);
+        $this->app->bind(OrderStatusInterface::class,OrderStatusRepositry::class);
+        $this->app->bind(PickingInterface::class,PickingRepositry::class);
 
 
 

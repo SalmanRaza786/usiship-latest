@@ -1,11 +1,11 @@
 @extends('layouts.master')
-@section('title') Work Orders @endsection
+@section('title') Picking List @endsection
 
 @section('content')
     @component('components.breadcrumb')
-        @slot('li_1') {{__('translation.settings')}} @endslot
+        @slot('li_1') Dashboard @endslot
         @slot('routeUrl') {{url('/')}} @endslot
-        @slot('title') Work Orders @endslot
+        @slot('title') Picking List @endslot
     @endcomponent
     @include('components.common-error')
     <div class="row">
@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0">Work Order List</h4>
+                        <h4 class="card-title mb-0"> Picking List </h4>
                     </div>
                     @canany('admin-role-create')
                     <div class="col-auto justify-content-sm-end">
@@ -63,10 +63,10 @@
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
                                 <th class="sort">Customer Name</th>
-                                <th class="sort">Order Date</th>
-                                <th class="sort">Shipping Method</th>
+                                <th class="sort">Direction</th>
+                                <th class="sort">Load Type</th>
                                 <th class="sort">Order Ref</th>
-                                <th class="sort">Shipping Time</th>
+                                <th class="sort">Carrier</th>
                                 <th class="sort">Status</th>
                                 <th class="sort">Action</th>
                             </tr>
@@ -99,7 +99,7 @@
             bLengthChange: false,
             order: [[ 0, "desc" ]],
             ajax: {
-                url: "work-orders-list",
+                url: "picker-list",
 
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),
@@ -107,14 +107,18 @@
 
                 },
 
+                // dataSrc: function(response) {
+                //     console.log('response',response.data[0].work_order.load_type);
+                // }
+
             },
 
             columns: [
-                { data: 'client.name' },
-                { data: 'order_date' },
-                { data: 'ship_method' },
-                { data: 'order_reference' },
-                { data: 'ship_date' },
+                { data: 'work_order.client.name' },
+                { data: 'work_order.load_type.direction.value' },
+                { data: 'work_order.load_type.eq_type.value' },
+                { data: 'work_order.order_reference' },
+                { data: 'work_order.carrier.carrier_company_name' },
                 { data: 'status.status_title' },
                 { data: null, orderable: false },
             ],
@@ -125,16 +129,9 @@
                     targets: 6,
                     render: function(data, type, row, meta) {
 
-                        var btnAssign = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
-                        var btnUploadDoc = ' @canany('admin-role-edit')<a href="#" type="button" class="btn btn-primary btn-check-in"  data-bs-toggle="modal" data-bs-target="#checkInModal">Upload Bol Document</a>@endcanany';
-                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-check-in"  data-bs-toggle="modal" data-bs-target="#checkInModal">Schedule Now</a>@endcanany';
-                        var btnGroup='';
-                        if(row.status.order_by==201){
-                             btnGroup=  btnAssign;
-                        }
-                        if(row.status.order_by==202){
-                             btnGroup=  btnUploadDoc+ ' ' + btnScheduleNow;
-                        }
+                        var StartPicking = ' @canany('admin-permission-view')<a href="{{url('admin/start-picking')}}"  class="btn btn-primary btn-assign" >Start Picking </a>@endcanany';
+                        var btnGroup=StartPicking;
+
                         return btnGroup;
                     }
                 }

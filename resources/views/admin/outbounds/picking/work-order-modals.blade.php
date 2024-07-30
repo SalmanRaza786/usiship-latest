@@ -18,12 +18,12 @@
                     <input type="hidden" name="w_order_id"  value="0">
 
                     <div class="row gy-4">
-                        <select name="status_code" id="" class="form-select d-none">
+                        <select name="status_id" id="" class="form-select d-none">
                             <option value="">Choose One</option>
                             @isset($data['status'])
                                 @foreach($data['status'] as $row)
-                                    <option value="{{$row->order_by}}"
-                                    @if($row->order_by==205)
+                                    <option value="{{$row->id}}"
+                                    @if($row->order_by==202)
                                         {{'selected'}}
                                         @endif
                                     >{{$row->status_title}}</option>

@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\PutAwayController;
 use App\Http\Controllers\Admin\MediaController;
 
 use App\Http\Controllers\Outbounds\WorkOrderController;
+use App\Http\Controllers\Outbounds\PickingController;
 
 
 
@@ -198,6 +199,11 @@ use App\Http\Controllers\Outbounds\WorkOrderController;
         Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index');
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list');
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign');
+
+        //Picking
+        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
+        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
+        Route::any('/start-picking', [PickingController::class, 'startPicking'])->name('picking.start');
 
 
     });
