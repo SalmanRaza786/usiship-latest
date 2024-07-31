@@ -38,10 +38,14 @@ use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\orderContact\OrderContactInterface;
 use App\Repositries\orderContact\OrderContactRepositry;
 
+use App\Repositries\orderStatus\OrderStatusInterface;
+use App\Repositries\orderStatus\OrderStatusRepositry;
 use App\Repositries\packagingList\PackagingListInterface;
 use App\Repositries\packagingList\PackagingListRepositry;
 use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
+use App\Repositries\picking\PickingInterface;
+use App\Repositries\picking\PickingRepositry;
 use App\Repositries\putaway\PutAwayInterface;
 use App\Repositries\putaway\PutawayRepositry;
 use App\Repositries\roles\RoleInterface;
@@ -50,6 +54,8 @@ use App\Repositries\user\UserInterface;
 use App\Repositries\user\UserRepositry;
 use App\Repositries\wh\WhInterface;
 use App\Repositries\wh\WhRepositry;
+use App\Repositries\workOrder\WorkOrderInterface;
+use App\Repositries\workOrder\WorkOrderRepositry;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -92,6 +98,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PutAwayInterface::class,PutawayRepositry::class);
         $this->app->bind(InventoryInterface::class,InventoryRepositry::class);
         $this->app->bind(MediaInterface::class,MediaRepositry::class);
+        $this->app->bind(WorkOrderInterface::class,WorkOrderRepositry::class);
+        $this->app->bind(OrderStatusInterface::class,OrderStatusRepositry::class);
+        $this->app->bind(PickingInterface::class,PickingRepositry::class);
 
 
 

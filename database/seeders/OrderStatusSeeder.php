@@ -129,6 +129,41 @@ class OrderStatusSeeder extends Seeder
                 'color_code' =>'#F06549',
                 'text_class' =>'text-success',
             ],
+            [
+                'status_title' => 'Open ',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 201,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
+            ],
+            [
+                'status_title' => 'Assign ',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 202,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
+            ],
+            [
+                'status_title' => 'Processing ',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 203,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
+            ],
+            [
+                'status_title' => 'Processed ',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 204,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
+            ],
+            [
+                'status_title' => 'Pending ',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 205,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
+            ],
         ];
         foreach ($orderStatuses as $status){
             OrderStatus::updateOrCreate(

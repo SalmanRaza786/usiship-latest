@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('work_order_items', function (Blueprint $table) {
+        Schema::create('picked_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('work_order_id');
-            $table->foreign('work_order_id')->references('id')->on('work_orders')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('picker_table_id');
+            $table->foreign('picker_table_id')->references('id')->on('work_order_pickers')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('inventory_id');
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('loc_id');
             $table->foreign('loc_id')->references('id')->on('wh_locations')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('qty');
-            $table->unsignedBigInteger('shipped_qty')->default(0);
-            $table->string('pallet_number');
-            $table->unsignedBigInteger('auth_id');
-            $table->foreign('auth_id')->references('id')->on('admins')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('order_qty');
+            $table->unsignedBigInteger('picked_loc_id')->nullable()->default(null);
+            $table->foreign('picked_loc_id')->references('id')->on('wh_locations')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('picked_qty')->nullable()->default(null);
 
             $table->timestamps();
         });
@@ -34,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_order_items');
+        Schema::dropIfExists('picked_items');
     }
 };

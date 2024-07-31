@@ -30,6 +30,9 @@ use App\Http\Controllers\Admin\PackagingListController;
 use App\Http\Controllers\Admin\PutAwayController;
 use App\Http\Controllers\Admin\MediaController;
 
+use App\Http\Controllers\Outbounds\WorkOrderController;
+use App\Http\Controllers\Outbounds\PickingController;
+
 
 
 
@@ -189,6 +192,22 @@ use App\Http\Controllers\Admin\MediaController;
 
         //Media Controller
         Route::any('/delete-media/{id}', [MediaController::class, 'deleteMedia'])->name('delete.media');
+
+
+
+        //Outbounds
+        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index');
+        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list');
+        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign');
+
+        //Picking
+        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
+        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
+        Route::any('/start-picking/{id}', [PickingController::class, 'startPicking'])->name('picking.start');
+        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
+        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+
+
 
 
     });
