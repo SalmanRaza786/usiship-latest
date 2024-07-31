@@ -61,7 +61,7 @@ class WorkOrderController extends Controller
             if ($res->get('status')) {
                 return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
             }else{
-                return Helper::ajaxError($res->get('message'));
+                return Helper::error($res->get('message'));
             }
 
         } catch (\Exception $e) {

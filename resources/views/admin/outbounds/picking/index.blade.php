@@ -104,13 +104,7 @@
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),
                         d.s_status = $('select[name=s_status]').val()
-
                 },
-
-                // dataSrc: function(response) {
-                //     console.log('response',response.data[0].work_order.load_type);
-                // }
-
             },
 
             columns: [
@@ -128,8 +122,8 @@
                 {
                     targets: 6,
                     render: function(data, type, row, meta) {
-
-                        var StartPicking = ' @canany('admin-permission-view')<a href="{{url('admin/start-picking')}}"  class="btn btn-primary btn-assign" >Start Picking </a>@endcanany';
+                        var url = "{{ route('admin.picking.start', ':id') }}";
+                        var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Start Picking </a>@endcanany';
                         var btnGroup=StartPicking;
 
                         return btnGroup;

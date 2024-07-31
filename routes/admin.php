@@ -203,7 +203,11 @@ use App\Http\Controllers\Outbounds\PickingController;
         //Picking
         Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
         Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
-        Route::any('/start-picking', [PickingController::class, 'startPicking'])->name('picking.start');
+        Route::any('/start-picking/{id}', [PickingController::class, 'startPicking'])->name('picking.start');
+        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
+        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+
+
 
 
     });

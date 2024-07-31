@@ -3,8 +3,11 @@
 namespace App\Repositries\workOrder;
 
 use App\Http\Helpers\Helper;
+use App\Models\PickedItem;
 use App\Models\WorkOrder;
+use App\Models\WorkOrderItem;
 use App\Models\WorkOrderPicker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -42,16 +45,38 @@ class WorkOrderRepositry implements WorkOrderInterface
                 [
                     'work_order_id' => $request->w_order_id,
                     'picker_id' => $request->staff_id,
-                    'status_code' => $request->status_code
+                    'status_code' => $request->status_code,
+                    'auth_id' =>Auth::user()->id,
                 ]
             );
+
+
+            $items=WorkOrderItem::where('work_order_id',$request->w_order_id)->get();
+            if($items->count() > 0){
+                foreach ($items as $row){
+
+                    $pickedItems= PickedItem::updateOrCreate(
+                        [
+                            'id' =>0,
+                        ],
+                        [
+                            'picker_table_id' =>$workOrderPicker->id,
+                            'w_order_item_id' =>$row->id,
+                            'inventory_id' =>$row->inventory_id,
+                            'loc_id' =>$row->loc_id,
+                            'order_qty' =>$row->qty,
+                        ]
+                    );
+                }
+            }
 
             $workOrder=WorkOrder::find($request->w_order_id);
             $workOrder->status_code=202;
             $workOrder->save();
 
+
             DB::commit();
-            return Helper::success($workOrderPicker,'Record created');
+            return Helper::success($workOrderPicker,'Job assigned successfully');
 
         } catch (\Exception $e) {
             DB::rollBack();

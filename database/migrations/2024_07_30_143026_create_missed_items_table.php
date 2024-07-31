@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreign('work_order_id')->references('id')->on('work_orders')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('status_code');
             $table->foreign('status_code')->references('order_by')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->dateTime('start_time')->nullable()->default(null);
+            $table->dateTime('end_time')->nullable()->default(null);;
             $table->unsignedBigInteger('auth_id');
             $table->foreign('auth_id')->references('id')->on('admins')->onDelete('cascade')->onUpdate('cascade');
 

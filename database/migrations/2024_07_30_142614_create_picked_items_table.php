@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('loc_id');
             $table->foreign('loc_id')->references('id')->on('wh_locations')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('order_qty');
-            $table->unsignedBigInteger('picked_loc_id');
+            $table->unsignedBigInteger('picked_loc_id')->nullable()->default(null);
             $table->foreign('picked_loc_id')->references('id')->on('wh_locations')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('picked_qty')->nullable()->default(null);
 

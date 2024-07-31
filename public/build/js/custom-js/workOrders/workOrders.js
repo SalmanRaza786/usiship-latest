@@ -29,14 +29,14 @@ $(document).ready(function(){
                 $('.btn-submit').text('Processing...');
                 $(".btn-submit").prop("disabled", true);
             },
-            success: function(data) {
+            success: function(response) {
 
-                if (data.status==true) {
+                if (response.status==true) {
                     $('#roleTable').DataTable().ajax.reload();
-                    toastr.success(data.message);
+                    toastr.success(response.message);
                     $('.btn-close').click();
                 }
-                if (data.status==false) {
+                if (response.status==false) {
                     toastr.error(response.message);
                 }
             },
@@ -46,7 +46,7 @@ $(document).ready(function(){
                 $(".btn-submit").prop("disabled", false);
             },
 
-            error: function() {;
+            error: function() {
                 $('.btn-submit').text('Assign Picker');
                 $(".btn-submit").prop("disabled", false);
             }
