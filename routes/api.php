@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\PutAwayController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\WorkOrderController;
+use App\Http\Controllers\Api\PickingController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -75,6 +77,22 @@ use App\Http\Controllers\Api\ProfileController;
 
     //Profile
     Route::any('/update-profile', [ProfileController::class, 'updateProfile']);
+
+
+    //Outbounds Order
+        Route::get('/get-all-staff', [WorkOrderController::class, 'getAllStaff']);
+        Route::get('/get-outbound-all-status', [WorkOrderController::class, 'getAllStatus']);
+        Route::get('/outbound-orders-list', [WorkOrderController::class, 'workOrdersList']);
+        Route::post('/picker-assign', [WorkOrderController::class, 'pickerAssign']);
+
+
+        //Picking
+
+        Route::get('/picking-list', [PickingController::class, 'pickerList']);
+        Route::get('/get-all-locations', [PickingController::class, 'getAllLocations']);
+        Route::get('/picking-detail', [PickingController::class, 'startPicking']);
+        Route::get('/start-close-picking', [PickingController::class, 'updateStartPicking']);
+        Route::post('/save-picked-items', [PickingController::class, 'savePickedItems']);
 
 
   });

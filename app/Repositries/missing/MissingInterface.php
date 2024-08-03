@@ -1,11 +1,10 @@
 <?php
 
 
-namespace App\Repositries\picking;
-interface PickingInterface
+namespace App\Repositries\missing;
+interface MissingInterface
 {
-    public function getAllPickers($request);
-    public function getAllPickersForApi();
+    public function getAllMissing($request);
     public function getPickerInfo($id);
     public function updateStartPicking($request);
     public function getPickingItems($pickerId);

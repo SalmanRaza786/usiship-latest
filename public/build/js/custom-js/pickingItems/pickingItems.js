@@ -77,6 +77,7 @@ $(document).ready(function(){
             success: function(response) {
 
                 if (response.status==true) {
+                    toastr.success(response.message);
                     window.location.href = route('admin.picking.index');
                 }
                 if (response.status==false) {

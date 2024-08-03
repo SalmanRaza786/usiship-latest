@@ -57,7 +57,7 @@ class WorkOrderRepositry implements WorkOrderInterface
 
                     $pickedItems= PickedItem::updateOrCreate(
                         [
-                            'id' =>0,
+                            'w_order_item_id' =>$row->id,
                         ],
                         [
                             'picker_table_id' =>$workOrderPicker->id,
@@ -80,6 +80,21 @@ class WorkOrderRepositry implements WorkOrderInterface
 
         } catch (\Exception $e) {
             DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+    public function getAllWorkOrderList()
+    {
+        try {
+
+            $qry= WorkOrder::query();
+            $qry= $qry->with('client:id,name','status:id,status_title,order_by');
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Out bound orders list");
+
+        } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
