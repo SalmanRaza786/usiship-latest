@@ -9,4 +9,14 @@ class MissedItem extends Model
 {
     use HasFactory;
     protected $fillable=['picker_table_id','work_order_id','status_code','start_time','end_time','auth_id'];
+
+    public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class, 'status_code', 'order_by');
+    }
 }

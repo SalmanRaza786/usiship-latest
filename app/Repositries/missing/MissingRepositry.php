@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositries\picking;
+namespace App\Repositries\missing;
 
 use App\Http\Helpers\Helper;
 use App\Models\MissedItem;
@@ -15,17 +15,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
-class PickingRepositry implements PickingInterface
+class MissingRepositry implements MissingInterface
 {
 
     protected $pickedItemFilePath = 'picked-item-media/';
 
-    public function getAllPickers($request)
+    public function getAllMissing($request)
     {
         try {
-            $data['totalRecords'] = WorkOrderPicker::count();
-            $qry= WorkOrderPicker::query();
-            $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $data['totalRecords'] = MissedItem::count();
+            $qry= MissedItem::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
             $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
@@ -167,7 +167,6 @@ class PickingRepositry implements PickingInterface
 
             $workOrderPicker=WorkOrderPicker::find($pickedItem->picker_table_id);
             $workOrderPicker->status_code=204;
-            $workOrderPicker->end_time=Carbon::now();
             $workOrderPicker->save();
 
             $message = __('translation.record_created');
@@ -179,22 +178,6 @@ class PickingRepositry implements PickingInterface
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);
         }
-    }
-
-    public function getAllPickersForApi()
-    {
-        try {
-
-            $qry= WorkOrderPicker::query();
-            $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
-            $data=$qry->orderByDesc('id')->get();
-            return Helper::success($data, $message="Record found");
-
-        } catch (\Exception $e) {
-            return Helper::errorWithData($e->getMessage(),[]);
-        }
-
     }
 
 

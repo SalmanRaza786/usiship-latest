@@ -17,7 +17,7 @@ class PickingController extends Controller
     private $picking;
     private $wh;
     protected $pickedItemFilePath = 'picked-item-media/';
-    public function __construct(WorkOrderInterface $workOrder,PickingInterface $picking,WhInterface $wh,) {
+    public function __construct(WorkOrderInterface $workOrder,PickingInterface $picking,WhInterface $wh) {
         $this->workOrder =$workOrder;
         $this->picking =$picking;
         $this->wh =$wh;

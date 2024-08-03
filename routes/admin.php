@@ -32,6 +32,8 @@ use App\Http\Controllers\Admin\MediaController;
 
 use App\Http\Controllers\Outbounds\WorkOrderController;
 use App\Http\Controllers\Outbounds\PickingController;
+use App\Http\Controllers\Outbounds\MissingController;
+
 
 
 
@@ -206,6 +208,11 @@ use App\Http\Controllers\Outbounds\PickingController;
         Route::any('/start-picking/{id}', [PickingController::class, 'startPicking'])->name('picking.start');
         Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
         Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+
+        //Missing
+        Route::any('/missing', [MissingController::class, 'index'])->name('missing.index');
+        Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list');
+        Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail');
 
 
 

@@ -1,11 +1,11 @@
 @extends('layouts.master')
-@section('title') Picking List @endsection
+@section('title') Missing List @endsection
 
 @section('content')
     @component('components.breadcrumb')
         @slot('li_1') Dashboard @endslot
         @slot('routeUrl') {{url('/')}} @endslot
-        @slot('title') Picking List @endslot
+        @slot('title') Missing List @endslot
     @endcomponent
     @include('components.common-error')
     <div class="row">
@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0"> Picking List </h4>
+                        <h4 class="card-title mb-0"> Missing List </h4>
                     </div>
 
                 </div><!-- end card header -->
@@ -61,7 +61,7 @@
                                 <th class="sort">Direction</th>
                                 <th class="sort">Load Type</th>
                                 <th class="sort">Order Ref</th>
-                                <th class="sort">Carrier</th>
+
                                 <th class="sort">Status</th>
                                 <th class="sort">Action</th>
                             </tr>
@@ -94,7 +94,7 @@
             bLengthChange: false,
             order: [[ 0, "desc" ]],
             ajax: {
-                url: "picker-list",
+                url: "missing-list",
 
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),
@@ -107,7 +107,6 @@
                 { data: 'work_order.load_type.direction.value' },
                 { data: 'work_order.load_type.eq_type.value' },
                 { data: 'work_order.order_reference' },
-                { data: 'work_order.carrier.carrier_company_name' },
                 { data: 'status.status_title' },
                 { data: null, orderable: false },
             ],
@@ -115,10 +114,10 @@
             columnDefs: [
 
                 {
-                    targets: 6,
+                    targets: 5,
                     render: function(data, type, row, meta) {
-                        var url = "{{ route('admin.picking.start', ':id') }}";
-                        var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Start Picking </a>@endcanany';
+                        var url = "{{ route('admin.missing.detail', ':id') }}";
+                        var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Missing Detail</a>@endcanany';
                         var btnGroup=StartPicking;
 
                         return btnGroup;

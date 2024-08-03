@@ -117,9 +117,9 @@ class UserRepositry implements UserInterface {
     {
         try {
 
-            $qry = User::query();
+            $qry = Admin::query();
             $data=$qry->orderByDesc('id')->get();
-            return Helper::success($data, $message=__('translation.record_found'));
+            return Helper::success($data,'Staff list');
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

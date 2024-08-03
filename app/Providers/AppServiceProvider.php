@@ -27,6 +27,8 @@ use App\Repositries\loadType\loadTypeRepositry;
 
 use App\Repositries\media\MediaInterface;
 use App\Repositries\media\MediaRepositry;
+use App\Repositries\missing\MissingInterface;
+use App\Repositries\missing\MissingRepositry;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\offLoading\OffLoadingRepositry;
 
@@ -101,6 +103,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(WorkOrderInterface::class,WorkOrderRepositry::class);
         $this->app->bind(OrderStatusInterface::class,OrderStatusRepositry::class);
         $this->app->bind(PickingInterface::class,PickingRepositry::class);
+        $this->app->bind(MissingInterface::class,MissingRepositry::class);
+
 
 
 
