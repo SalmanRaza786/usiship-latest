@@ -78,6 +78,14 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="live-preview">
+                            <form action="{{route('admin.save.resolve')}}" method="post" enctype="multipart/form-data" id="CloseResolveForm">
+                                @csrf
+                                <input type="hidden" name="w_order_id" value="{{$data['orderInfo']->workOrder->id}}">
+                                <input type="hidden" name="staff_id" value="{{$data['orderInfo']->orderPicker->picker_id}}">
+                                <input type="hidden" name="missed_id" value="{{$data['orderInfo']->id }}">
+                                <input type="hidden" name="status_code" value="205">
+
+
                        <table class="invoice-table table table-borderless table-nowrap mb-0">
                                     <thead class="align-middle">
                                     <tr class="table-active">
@@ -93,15 +101,13 @@
 
                                     </tr>
                                     </thead>
-                           <tbody id="clonedSection">
-                                    <form action="{{route('admin.save-picked.items')}}" method="post" enctype="multipart/form-data" id="ClosePickingForm">
-                                        @csrf
 
+                           <tbody id="clonedSection">
 
                                         <tr>
-                                            <td scope="row" class="product-id align-middle">1</td>
-                                        <td scope="row" class="product-id align-middle">
-                                            <select name="newLocId[]" id="" class="form-control" required>
+                                            <td>1</td>
+                                        <td>
+                                            <select name="itemId[]" id="" class="form-control" required>
                                                 <option value="">Choose SKU</option>
                                                 @isset($data['missedItems'])
                                                     @foreach($data['missedItems'] as $row)
@@ -111,9 +117,7 @@
                                             </select>
                                         </td>
 
-{{--                                        <th scope="row" class="product-id align-middle">{{$row->pickedItem->order_qty}}</th>--}}
-{{--                                        <th scope="row" class="product-id align-middle">{{$row->pickedItem->wOrderItems->pallet_number}}</th>--}}
-{{--                                        <th scope="row" class="product-id align-middle">{{$row->pickedItem->location->loc_title}}</th>--}}
+
                                         <td><input class="form-control bg-light border-0" name="resolveQty[]" type="number" placeholder="Resolve Qty" value="0"></td>
                                         <td class="text-start" style="width: 150px;">
                                                 <div class="mb-2">
@@ -144,7 +148,7 @@
                                             </td>
                                          <td class="text-start" style="width: 150px;">
                                                 <div class="mb-2">
-                                                    <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="resolveItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
+                                                    <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="newLocationItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
                                                 </div>
                                                 {{--                                                @isset($row->putAwayMedia)--}}
                                                 {{--                                                    <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview" id="sealImagesPreview">--}}
@@ -169,9 +173,9 @@
 
 
 
-                                    </form>
 
                                     </tbody>
+
                            <tr>
                                <td colspan="5">
                                    @canany('admin-putaway-create')
@@ -181,6 +185,7 @@
                            </tr>
 
                                 </table>
+                            </form>
                         </div>
                     </div>
                 </div>

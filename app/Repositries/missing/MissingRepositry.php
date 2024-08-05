@@ -43,7 +43,7 @@ class MissingRepositry implements MissingInterface
         try {
 
             $qry= MissedItem::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType');
+            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType','orderPicker');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
 
@@ -90,68 +90,55 @@ class MissingRepositry implements MissingInterface
     //savePickedItems
 
 
-    public function savePickedItems($request)
+    public function saveResolveItems($request)
     {
 
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
-                'pickedLocId.*' => 'required',
+                'itemId.*' => 'required',
             ]);
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
 
+            $workOrderPicker= WorkOrderPicker::updateOrCreate(
+                [
+                    'work_order_id' =>0,
+                ],
+                [
+                    'work_order_id' => $request->w_order_id,
+                    'picker_id' => $request->staff_id,
+                    'status_code' => $request->status_code,
+                    'auth_id' =>Auth::user()->id,
+                ]
+            );
 
-            foreach ($request->hidden_id as $key => $val) {
+            foreach ($request->itemId as $key => $val) {
 
-                $pickedItem = PickedItem::find($request->hidden_id[$key]);
-                $newPickedQty = $pickedItem->order_qty - $request->missedQty[$key];
-
-                $item = PickedItem::updateOrCreate(
-                    [
-                        'id' =>$request->hidden_id[$key]
-                    ],
-                    [
-                        'picked_loc_id' =>$request->pickedLocId[$key],
-                        'picked_qty' =>$newPickedQty
-                    ]
-                );
-
-                if($request->missedQty[$key] > 0){
-                    $missedItem = MissedItem::updateOrCreate(
+                    $pickedItems= PickedItem::updateOrCreate(
                         [
-                            'picker_table_id' =>$pickedItem->picker_table_id,
+                            'id' =>0
                         ],
                         [
-                            'picker_table_id' =>$pickedItem->picker_table_id,
-                            'work_order_id' =>$pickedItem->picker_table_id,
-                            'auth_id' =>Auth::user()->id,
-                            'status_code' =>205
+                            'picker_table_id' =>$workOrderPicker->id,
+                            'w_order_item_id' =>$request->itemId[$key],
+                            'inventory_id' =>$request->itemId[$key],
+                            'loc_id' =>$request->newLocId[$key],
+                            'order_qty' =>$request->resolveQty[$key],
                         ]
                     );
 
 
-                    $missedItemDetail = MissedItemDetail::updateOrCreate(
-                        [
-                            'missed_items_parent_id' =>$missedItem->id,
-                            'picked_item_table_id' =>$item->id,
-                        ],
-                        [
-                            'missed_items_parent_id' =>$missedItem->id,
-                            'picked_item_table_id' =>$item->id,
-                            'inventory_id' =>$item->inventory_id,
-                            'missed_qty' =>$request->missedQty[$key]
-                        ]
-                    );
-                }
 
-                if ($item) {
-                    $fileableId = $item->id;
+
+                if ($pickedItems) {
+                    $fileableId = $pickedItems->id;
                     $fileableType = 'App\Models\PickedItem';
 
                     // Handle multiple file uploads for each row
                     if ($request->hasFile("pickedItemImages.$key")) {
+
                         $uploadedFiles = $request->file("pickedItemImages.$key");
 
                         $imageSets = [
@@ -162,18 +149,32 @@ class MissingRepositry implements MissingInterface
                             $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
                         }
                     }
+
+                    if ($request->hasFile("newLocationItemImages.$key")) {
+
+                        $uploadedFiles = $request->file("newLocationItemImages.$key");
+
+                        $imageSets = [
+                            'newLocationItemImages' => $uploadedFiles
+                        ];
+
+                        if (!empty($imageSets['newLocationItemImages'])) {
+                            $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
+                        }
+                    }
                 }
             }
 
-            $workOrderPicker=WorkOrderPicker::find($pickedItem->picker_table_id);
-            $workOrderPicker->status_code=204;
-            $workOrderPicker->save();
+            $missedTable=MissedItem::find($request->missed_id);
+            $missedTable->end_time=Carbon::now();
+            $missedTable->status_code=22;
+            $missedTable->save();
 
             $message = __('translation.record_created');
             DB::commit();
 
 
-            return Helper::success($item,$message);
+            return Helper::success($workOrderPicker,$message);
         }  catch (\Exception $e) {
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);

@@ -26,4 +26,9 @@ class PickedItem extends Model
         return $this->belongsTo(WorkOrderItem::class, 'w_order_item_id','id');
     }
 
+    public function pickerTable()
+    {
+        return $this->belongsTo(WorkOrderPicker::class, 'picker_table_id','id');
+    }
+
 }

@@ -46,7 +46,6 @@ class MissingController extends Controller
             $data['orderInfo']=Helper::fetchOnlyData($this->missed->getMissedInfo($id));
             $data['missedItems']=Helper::fetchOnlyData($this->missed->getMissedItems($id));
             $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
-
             return view('admin.outbounds.missing.missing-detail')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
@@ -61,6 +60,17 @@ class MissingController extends Controller
         try {
             return  $res=$this->missed->updateStartResolve($request);
 
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    //saveResolve
+    public function saveResolve(Request $request)
+    {
+        try {
+         $request->all();
+            return  $res=$this->missed->saveResolveItems($request);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

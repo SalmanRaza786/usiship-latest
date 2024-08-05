@@ -17,7 +17,7 @@ $(document).ready(function(){
         $('#clonedSection').append(clonedRow);
 
         // Update the row numbers and input names
-       // updateRowNumbers();
+        updateRowNumbers();
     });
 
     function updateRowNumbers() {
@@ -31,18 +31,10 @@ $(document).ready(function(){
                 var name = $(this).attr('name');
                 if (name) {
                     // Update the name for putawayImages
-                    if (name.includes('putawayImages')) {
-                        $(this).attr('name', 'putawayImages[' + index + '][]');
-                    } else if (name.includes('inventory_id')) {
-                        $(this).attr('name', 'inventory_id[' + index + ']');
-                    } else if (name.includes('qty')) {
-                        $(this).attr('name', 'qty[' + index + ']');
-                    } else if (name.includes('pallet_number')) {
-                        $(this).attr('name', 'pallet_number[' + index + ']');
-                    } else if (name.includes('loc_id')) {
-                        $(this).attr('name', 'loc_id[' + index + ']');
-                    } else if (name.includes('putAwayId')) {
-                        $(this).attr('name', 'putAwayId[' + index + ']');
+                    if (name.includes('resolveQtyImages')) {
+                        $(this).attr('name', 'resolveQtyImages[' + index + '][]');
+                    } else if (name.includes('newLocationItemImages')) {
+                        $(this).attr('name', 'newLocationItemImages[' + index + ']');
                     }
                 }
             });
@@ -113,7 +105,7 @@ $(document).ready(function(){
         }
     }
 
-    $('#ClosePickingForm').on('submit', function(e) {
+    $('#CloseResolveForm').on('submit', function(e) {
         e.preventDefault();
 
         $.ajax({
@@ -132,7 +124,7 @@ $(document).ready(function(){
 
                 if (response.status==true) {
                     toastr.success(response.message);
-                    window.location.href = route('admin.picking.index');
+                    window.location.href = route('admin.missing.index');
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
@@ -140,20 +132,20 @@ $(document).ready(function(){
             },
 
             complete: function(data) {
-                $(".btn-close-picking").html("Close Picking");
-                $(".btn-close-picking").prop("disabled", false);
+                $(".btn-close-resolve").html("Close Picking");
+                $(".btn-close-resolve").prop("disabled", false);
             },
 
             error: function() {
-                $('.btn-close-picking').text('Close Picking');
-                $(".btn-close-picking").prop("disabled", false);
+                $('.btn-close-resolve').text('Close Picking');
+                $(".btn-close-resolve").prop("disabled", false);
             }
         });
     });
 
-    $('.btn-close-picking').on('click', function() {
+    $('.btn-close-resolve').on('click', function() {
 
-        $('#ClosePickingForm').submit();
+        $('#CloseResolveForm').submit();
 
     });
 });

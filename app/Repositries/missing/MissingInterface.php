@@ -8,6 +8,6 @@ interface MissingInterface
     public function getMissedInfo($id);
     public function updateStartResolve($request);
     public function getMissedItems($missedId);
-    public function savePickedItems($request);
+    public function saveResolveItems($request);
 
 }
