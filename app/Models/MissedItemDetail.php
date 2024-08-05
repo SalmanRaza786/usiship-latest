@@ -9,4 +9,9 @@ class MissedItemDetail extends Model
 {
     use HasFactory;
     protected $fillable=['missed_items_parent_id','picked_item_table_id','inventory_id','missed_qty'];
+
+    public function pickedItem()
+    {
+        return $this->belongsTo(PickedItem::class, 'picked_item_table_id', 'id');
+    }
 }

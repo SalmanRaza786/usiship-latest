@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-//        Schema::table('work_order_pickers', function (Blueprint $table) {
-//            $table->dropForeign('work_order_pickers_picker_id_foreign');
-//            $table->dropColumn('picker_id');
-//        });
+        Schema::table('work_order_pickers', function (Blueprint $table) {
+            $table->dropForeign('work_order_pickers_picker_id_foreign');
+            $table->dropColumn('picker_id');
+        });
 
         Schema::table('work_order_pickers', function (Blueprint $table) {
             $table->unsignedBigInteger('picker_id')->nullable();
