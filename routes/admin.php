@@ -213,6 +213,7 @@ use App\Http\Controllers\Outbounds\MissingController;
         Route::any('/missing', [MissingController::class, 'index'])->name('missing.index');
         Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list');
         Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail');
+        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update');
 
 
 

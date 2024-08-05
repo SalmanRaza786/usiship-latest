@@ -38,11 +38,11 @@ class MissingRepositry implements MissingInterface
 
     }
 
-    public function getPickerInfo($id)
+    public function getMissedInfo($id)
     {
         try {
 
-            $qry= WorkOrderPicker::query();
+            $qry= MissedItem::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.eqType');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
@@ -52,13 +52,13 @@ class MissingRepositry implements MissingInterface
         }
 
     }
-    public function updateStartPicking($request)
+    public function updateStartResolve($request)
     {
         try {
 
-            $qry= WorkOrderPicker::find($request->pickerId);
+            $qry= MissedItem::find($request->missedId);
             if(!$qry){
-                return Helper::error('Invalid picker id');
+                return Helper::error('Invalid missing id');
             }
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             $qry->save();
@@ -70,13 +70,13 @@ class MissingRepositry implements MissingInterface
         }
 
     }
-    public function getPickingItems($pickerId)
+    public function getMissedItems($missedId)
     {
         try {
 
-            $qry= PickedItem::query();
-            $qry= $qry->with('inventory','location','wOrderItems');
-            $qry =$qry->where('picker_table_id', $pickerId);
+            $qry= MissedItemDetail::query();
+            $qry= $qry->with('pickedItem.inventory','pickedItem.location');
+            $qry =$qry->where('missed_items_parent_id', $missedId);
             $data =$qry->get();
 
             return Helper::success($data, $message="Record found");

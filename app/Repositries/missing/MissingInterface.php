@@ -5,9 +5,9 @@ namespace App\Repositries\missing;
 interface MissingInterface
 {
     public function getAllMissing($request);
-    public function getPickerInfo($id);
-    public function updateStartPicking($request);
-    public function getPickingItems($pickerId);
+    public function getMissedInfo($id);
+    public function updateStartResolve($request);
+    public function getMissedItems($missedId);
     public function savePickedItems($request);
 
 }
