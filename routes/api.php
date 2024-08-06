@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\WorkOrderController;
 use App\Http\Controllers\Api\PickingController;
+use App\Http\Controllers\Api\MissingController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -93,6 +94,15 @@ use App\Http\Controllers\Api\PickingController;
         Route::get('/picking-detail', [PickingController::class, 'startPicking']);
         Route::get('/start-close-picking', [PickingController::class, 'updateStartPicking']);
         Route::post('/save-picked-items', [PickingController::class, 'savePickedItems']);
+
+        //Missing
+        Route::get('/missing-list', [MissingController::class, 'missingList']);
+        Route::any('/missing-detail', [MissingController::class, 'missedDetail']);
+        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve']);
+        Route::any('/save-resolve-item', [MissingController::class, 'saveResolve']);
+
+
+
 
 
   });
