@@ -63,7 +63,7 @@ class MissingRepositry implements MissingInterface
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             $qry->save();
 
-            return Helper::success($qry, ($request->updateType==1)?"Picking start success fully":"Picking end success fully");
+            return Helper::success($qry, ($request->updateType==1)?"Missing resolve start success fully":"Missing resolve end success fully");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
@@ -88,8 +88,6 @@ class MissingRepositry implements MissingInterface
     }
 
     //savePickedItems
-
-
     public function saveResolveItems($request)
     {
 
@@ -170,7 +168,7 @@ class MissingRepositry implements MissingInterface
             $missedTable->status_code=22;
             $missedTable->save();
 
-            $message = __('translation.record_created');
+            $message = __('Missing item resolve successfully');
             DB::commit();
 
 
@@ -179,6 +177,22 @@ class MissingRepositry implements MissingInterface
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);
         }
+    }
+
+    public function getAllMissingForApi()
+    {
+        try {
+
+            $qry= MissedItem::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->where('status_code',205);
+            $data['data'] =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
     }
 
 

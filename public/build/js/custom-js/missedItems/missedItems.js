@@ -57,7 +57,7 @@ $(document).ready(function(){
 
     function  updatePickingTime(updateType){
         var missedId=$('input[name=missedId]').val();
-        alert(missedId);
+
         $.ajax({
             url: route('admin.missed.update'),
             type: 'POST',

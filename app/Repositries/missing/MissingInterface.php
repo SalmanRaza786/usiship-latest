@@ -9,5 +9,6 @@ interface MissingInterface
     public function updateStartResolve($request);
     public function getMissedItems($missedId);
     public function saveResolveItems($request);
+    public function getAllMissingForApi();
 
 }
