@@ -114,14 +114,20 @@ class MissingRepositry implements MissingInterface
 
             foreach ($request->itemId as $key => $val) {
 
+                $values = explode(',', $val);
+
+//                    $inventoryId= $values[0];
+//                    $wOrderItemId= $values[1];
+
+
                     $pickedItems= PickedItem::updateOrCreate(
                         [
                             'id' =>0
                         ],
                         [
                             'picker_table_id' =>$workOrderPicker->id,
-                            'w_order_item_id' =>$request->itemId[$key],
-                            'inventory_id' =>$request->itemId[$key],
+                            'w_order_item_id' =>$values[1],
+                            'inventory_id' =>$values[0],
                             'loc_id' =>$request->newLocId[$key],
                             'order_qty' =>$request->resolveQty[$key],
                         ]

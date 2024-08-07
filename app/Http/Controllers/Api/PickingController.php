@@ -81,6 +81,10 @@ class PickingController extends Controller
                 return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
 
+            if(!$qry= WorkOrder::find($request->workOrderId)){
+                return Helper::error('Invalid Order id');
+            }
+
               $res=$this->picking->updateStartPicking($request);
              return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
 

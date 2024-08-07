@@ -158,6 +158,15 @@
                     </li>
                 @endcanany
 
+
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}" href="{{route('admin.qc.index')}}" >
+                            <i class="ri-file-excel-2-fill"></i> <span>QC</span>
+                        </a>
+                    </li>
+                @endcanany
+
                  <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.roles.index' OR Route::currentRouteName()=='admin.language.index' OR Route::currentRouteName()=='admin.app-settings.index')?'active':''}}" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                             <i class="ri-settings-2-line"></i> <span>@lang('translation.settings')</span>

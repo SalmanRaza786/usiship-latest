@@ -69,7 +69,7 @@ class MissingController extends Controller
     public function saveResolve(Request $request)
     {
         try {
-         $request->all();
+            $request->all();
             return  $res=$this->missed->saveResolveItems($request);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

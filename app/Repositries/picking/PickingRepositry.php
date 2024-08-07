@@ -56,6 +56,8 @@ class PickingRepositry implements PickingInterface
     {
         try {
 
+            DB::beginTransaction();
+
             $qry= WorkOrderPicker::find($request->pickerId);
             if(!$qry){
                 return Helper::error('Invalid picker id');
@@ -63,9 +65,15 @@ class PickingRepositry implements PickingInterface
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             $qry->save();
 
+            if($request->updateType==2) {
+                Helper::saveQcItems($request);
+            }
+
+            DB::commit();
             return Helper::success($qry, ($request->updateType==1)?"Picking start success fully":"Picking end success fully");
 
         } catch (\Exception $e) {
+            DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
@@ -125,7 +133,7 @@ class PickingRepositry implements PickingInterface
                         ],
                         [
                             'picker_table_id' =>$pickedItem->picker_table_id,
-                            'work_order_id' =>$pickedItem->picker_table_id,
+                            'work_order_id' =>$request->work_order_id,
                             'auth_id' =>Auth::user()->id,
                             'status_code' =>205
                         ]

@@ -23,6 +23,7 @@ use App\Repositries\exam\ExamRepositry;
 use App\Repositries\language\LanguageRepositry;
 use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\qBank\QuestionsRepositry;
+use App\Repositries\qc\QcRepositry;
 use App\Repositries\student\StudentRepositry;
 use App\Repositries\studentLecture\StudentLectureRepositry;
 use App\Repositries\user\UserRepositry;
@@ -528,6 +529,13 @@ class Helper
     {
         $fb=new FireBaseNotificationTriggerService();
            $response=$fb->fireBaseTrigger($type,$notifiableId);
+    }
+
+
+    public static function saveQcItems($request)
+    {
+        $qc=new QcRepositry();
+        $qc->saveQcItems($request);
     }
 
 
