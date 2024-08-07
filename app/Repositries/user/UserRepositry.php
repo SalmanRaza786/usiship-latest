@@ -4,6 +4,7 @@ namespace App\Repositries\user;
 use App\Http\Helpers\Helper;
 
 use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -110,6 +111,20 @@ class UserRepositry implements UserInterface {
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }
+    }
+
+    public function getAllUser()
+    {
+        try {
+
+            $qry = Admin::query();
+            $data=$qry->orderByDesc('id')->get();
+            return Helper::success($data,'Staff list');
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
     }
 
 }

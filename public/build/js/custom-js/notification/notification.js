@@ -138,4 +138,10 @@ $(document).ready(function(){
         }
 
     });
+
+
+
+    $('.btn-nofify').on('click', function() {
+        getUnreadNotifications();
+    });
 });

@@ -836,10 +836,12 @@ class WhRepositry implements WhInterface {
         }
     }
 
-    public function getWhLocations($whId)
+    public function getWhLocations($whId=null)
     {
         try {
-        $data=WhLocation::where('wh_id',$whId)->get();
+            $qry=WhLocation::query();
+            ($whId > 0)?$qry=$qry-> where('wh_id',$whId):'';
+            $data=$qry->get();
         return Helper::success($data,'Wh Locations');
         }catch (Exception $e){
             throw $e;
