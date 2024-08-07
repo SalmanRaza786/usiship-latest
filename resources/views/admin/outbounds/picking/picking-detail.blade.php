@@ -11,6 +11,7 @@
     <div class="container-fluid">
 
         <input type="hidden" name="pickerId" value="{{$data['orderInfo']->id}}">
+
         <input type="hidden" name="isStartPicking" value="{{$data['orderInfo']->start_time!=null?1:0}}">
 
         <div class="row">
@@ -75,6 +76,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="live-preview">
+
+
                        <table class="invoice-table table table-borderless table-nowrap mb-0">
                                     <thead class="align-middle">
                                     <tr class="table-active">
@@ -96,6 +99,7 @@
                                     </thead>
                                     <tbody>
                                     <form action="{{route('admin.save-picked.items')}}" method="post" enctype="multipart/form-data" id="ClosePickingForm">
+                                        <input type="hidden" name="work_order_id" value="{{$data['orderInfo']->work_order_id}}">
                                         @csrf
                                     @isset($data['pickingItems'])
                                         @foreach($data['pickingItems'] as $key=>$row)

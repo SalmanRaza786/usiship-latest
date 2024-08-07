@@ -94,7 +94,7 @@
             bLengthChange: false,
             order: [[ 0, "desc" ]],
             ajax: {
-                url: "missing-list",
+                url: "qc-list",
 
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),

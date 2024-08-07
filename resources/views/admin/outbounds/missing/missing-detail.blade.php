@@ -111,7 +111,7 @@
                                                 <option value="">Choose SKU</option>
                                                 @isset($data['missedItems'])
                                                     @foreach($data['missedItems'] as $row)
-                                                        <option value="{{$row->id}}">{{$row->pickedItem->inventory->item_name}} - {{$row->pickedItem->inventory->sku}} ({{$row->missed_qty}})</option>
+                                                        <option value="{{$row->pickedItem->inventory->id}},{{$row->pickedItem->w_order_item_id}}">{{$row->pickedItem->inventory->item_name}} - {{$row->pickedItem->inventory->sku}} ({{$row->missed_qty}})</option>
                                                     @endforeach
                                                 @endisset
                                             </select>

@@ -4,10 +4,16 @@ namespace App\Http\Controllers\Outbounds;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\PickedItem;
+use App\Models\QcDetailWorkOrder;
+use App\Models\QcWorkOrder;
+use App\Models\WorkOrderPicker;
 use App\Repositries\picking\PickingInterface;
 use App\Repositries\wh\WhInterface;
 use App\Repositries\workOrder\WorkOrderInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\TextUI\Help;
 
 class PickingController extends Controller
@@ -66,7 +72,7 @@ class PickingController extends Controller
     {
 
         try {
-          return  $res=$this->picking->updateStartPicking($request);
+             return  $res=$this->picking->updateStartPicking($request);
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
