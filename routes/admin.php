@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Outbounds\WorkOrderController;
 use App\Http\Controllers\Outbounds\PickingController;
 use App\Http\Controllers\Outbounds\MissingController;
+use App\Http\Controllers\Outbounds\QcController;
 
 
 
@@ -215,6 +216,14 @@ use App\Http\Controllers\Outbounds\MissingController;
         Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail');
         Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update');
         Route::any('/save-resolve', [MissingController::class, 'saveResolve'])->name('save.resolve');
+
+
+        //QC
+        Route::any('/qc', [QcController::class, 'index'])->name('qc.index');
+        Route::any('/qc-list', [QcController::class, 'missedList'])->name('qc.list');
+        Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail');
+        Route::any('/update-start-qc', [QcController::class, 'updateStartResolve'])->name('qc.update');
+        Route::any('/save-qc', [QcController::class, 'saveResolve'])->name('save.qc');
 
 
 
