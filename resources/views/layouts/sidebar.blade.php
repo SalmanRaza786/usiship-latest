@@ -162,7 +162,7 @@
                 @canany('admin-order-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}" href="{{route('admin.qc.index')}}" >
-                            <i class="ri-file-excel-2-fill"></i> <span>QC</span>
+                            <i class="ri-book-3-fill"></i> <span>QC</span>
                         </a>
                     </li>
                 @endcanany

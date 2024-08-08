@@ -10,7 +10,7 @@
     @include('components.common-error')
     <div class="container-fluid">
 
-        <input type="hidden" name="missedId" value="{{$data['orderInfo']->id}}">
+        <input type="hidden" name="qcId" value="{{$data['orderInfo']->id}}">
         <input type="hidden" name="isStartPicking" value="{{$data['orderInfo']->start_time!=null?1:0}}">
 
         <div class="row">
@@ -24,10 +24,10 @@
                         <div class="col-auto justify-content-sm-end">
 
 {{--                            <button type="button" class="btn btn-warning add-btn me-2"><i class="ri-eye-line align-bottom me-1"></i> Report Missing</button>--}}
-                            <button type="button" class="btn btn-success btn-close-resolve me-2"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
+                            <button type="button" class="btn btn-success btn-close-qc me-2"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
 
 
-                            <button type="submit" class="btn btn-success btn-start-resolve" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
+                            <button type="button" class="btn btn-success btn-start-qc" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
 
                         </div>
 
@@ -78,12 +78,11 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="live-preview">
-                            <form action="{{route('admin.save.qc')}}" method="post" enctype="multipart/form-data" id="CloseQCForm">
+                            <form action="{{route('admin.update.qc')}}" method="post" enctype="multipart/form-data" id="CloseQCForm">
                                 @csrf
                                 <input type="hidden" name="w_order_id" value="{{$data['orderInfo']->workOrder->id}}">
-                                <input type="hidden" name="staff_id" value="{{$data['orderInfo']->orderPicker->picker_id}}">
-                                <input type="hidden" name="qc_id" value="{{$data['orderInfo']->id }}">
-                                <input type="hidden" name="status_code" value="205">
+
+
 
 
                                 <table class="invoice-table table table-borderless table-nowrap mb-0">
@@ -105,8 +104,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <form action="{{route('admin.save-picked.items')}}" method="post" enctype="multipart/form-data" id="ClosePickingForm">
+                                    <form action="{{route('admin.update.qc')}}" method="post" enctype="multipart/form-data" id="CloseQcForm">
                                         <input type="hidden" name="work_order_id" value="{{$data['orderInfo']->work_order_id}}">
+                                        <input type="hidden" name="qc_id" value="{{$data['orderInfo']->id }}">
+                                        <input type="hidden" name="status_code" value="22">
+                                        <input type="hidden" name="updateType" value="2">
 
                                         @csrf
                                         @isset($data['qcItems'])
@@ -139,7 +141,6 @@
                                             @endforeach
                                         @endisset
 
-                                        <button type="submit">Save</button>
                                     </form>
 
                                     </tbody>
@@ -155,7 +156,7 @@
     </div>
 @endsection
     @section('script')
-    <script src="{{ URL::asset('build/js/custom-js/missedItems/missedItems.js') }}"></script>
+    <script src="{{ URL::asset('build/js/custom-js/qc/qc.js') }}"></script>
     @endsection
 
 

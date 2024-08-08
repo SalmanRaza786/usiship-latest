@@ -222,8 +222,9 @@ use App\Http\Controllers\Outbounds\QcController;
         Route::any('/qc', [QcController::class, 'index'])->name('qc.index');
         Route::any('/qc-list', [QcController::class, 'QcList'])->name('qc.list');
         Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail');
-        Route::any('/update-start-qc', [QcController::class, 'updateStartResolve'])->name('qc.update');
+        Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start');
         Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc');
+        Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc');
 
 
 
