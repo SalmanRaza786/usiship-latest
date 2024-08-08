@@ -139,14 +139,14 @@ class QcRepositry implements QcInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
-    public function getAllMissingForApi()
+    public function getAllQcForApi()
     {
         try {
 
-            $qry= MissedItem::query();
+            $qry= QcWorkOrder::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
             $qry= $qry->where('status_code',205);
-            $data['data'] =$qry->orderByDesc('id')->get();
+            $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
 
         } catch (\Exception $e) {

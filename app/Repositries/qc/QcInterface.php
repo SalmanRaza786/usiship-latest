@@ -9,7 +9,7 @@ interface QcInterface
     public function updateStartQc($request);
     public function getQcItems($qcId);
     public function createQcItems($request);
-    public function getAllMissingForApi();
+    public function getAllQcForApi();
     public function updateQcItems($request);
 
 }
