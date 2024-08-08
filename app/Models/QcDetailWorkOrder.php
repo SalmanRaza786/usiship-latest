@@ -9,7 +9,7 @@ class QcDetailWorkOrder extends Model
 {
     use HasFactory;
 
-    protected $fillable=['qc_parent_id','w_order_item_id','picked_qty'];
+    protected $fillable=['qc_parent_id','w_order_item_id','picked_qty','qc_picked_qty'];
 
     public function workOrderItem()
     {

@@ -21,7 +21,6 @@ class QcRepositry implements QcInterface
 {
 
     protected $pickedItemFilePath = 'picked-item-media/';
-
     public function getQcList($request)
     {
         try {
@@ -39,13 +38,12 @@ class QcRepositry implements QcInterface
         }
 
     }
-
-    public function getMissedInfo($id)
+    public function getQcInfo($id)
     {
         try {
 
-            $qry= MissedItem::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType','orderPicker');
+            $qry= QcWorkOrder::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
 
@@ -54,18 +52,19 @@ class QcRepositry implements QcInterface
         }
 
     }
-    public function updateStartResolve($request)
+    public function updateStartQc($request)
     {
         try {
 
-            $qry= MissedItem::find($request->missedId);
+            $qry= QcWorkOrder::find($request->qc_id);
             if(!$qry){
-                return Helper::error('Invalid missing id');
+                return Helper::error('Invalid qc id');
             }
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
+            ($request->updateType==2)?$qry->status_code=$request->status_code:'';
             $qry->save();
 
-            return Helper::success($qry, ($request->updateType==1)?"Missing resolve start success fully":"Missing resolve end success fully");
+            return Helper::success($qry, ($request->updateType==1)?"qc start success fully":"qc close success fully");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
@@ -88,9 +87,8 @@ class QcRepositry implements QcInterface
         }
 
     }
-
     //savePickedItems
-    public function saveQcItems($request)
+    public function createQcItems($request)
     {
 
         try {
@@ -141,7 +139,6 @@ class QcRepositry implements QcInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
-
     public function getAllMissingForApi()
     {
         try {
@@ -156,6 +153,40 @@ class QcRepositry implements QcInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+    public function updateQcItems($request)
+    {
+        try {
+            foreach ($request->hidden_id as $key=>$val){
+                $qcDetail = QcDetailWorkOrder::class::updateOrCreate(
+                        [
+                            'id' => $request->hidden_id[$key],
+                        ],
+                        [
+                            'qc_picked_qty' => $request->qcQty[$key],
+                        ]
+                    );
+                if ($qcDetail) {
+                    $fileableId = $qcDetail->id;
+                    $fileableType = 'App\Models\QcDetailWorkOrder';
+
+                    // Handle multiple file uploads for each row
+                    if ($request->hasFile("qcItemImages.$key")) {
+                        $uploadedFiles = $request->file("qcItemImages.$key");
+                        $imageSets = [
+                            'qcItemImages' => $uploadedFiles
+                        ];
+                        if (!empty($imageSets['qcItemImages'])) {
+                            $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
+                        }
+                    }
+
+                }
+                }
+            return Helper::success($qcDetail,'Qc updated successfully');
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
 
 

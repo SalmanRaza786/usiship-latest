@@ -33,7 +33,7 @@ class QcController extends Controller
     {
         try {
 
-            $data['orderInfo']=Helper::fetchOnlyData($this->qc->getMissedInfo($id));
+            $data['orderInfo']=Helper::fetchOnlyData($this->qc->getQcInfo($id));
             $data['qcItems']=Helper::fetchOnlyData($this->qc->getQcItems($id));
             $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
             return view('admin.outbounds.qc.qc-detail')->with(compact('data'));
@@ -59,7 +59,33 @@ class QcController extends Controller
 
         try {
             $request->all();
-            return $res=$this->qc->saveQcItems($request);
+            return $res=$this->qc->createQcItems($request);
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function updateQcItem(Request $request)
+    {
+
+        try {
+              $request->all();
+             $res=$this->qc->updateQcItems($request);
+             if($res->get('status')){
+                $response= $this->qc->updateStartQc($request);
+             }
+             return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function updateStartQc(Request $request)
+    {
+
+        try {
+            return  $res=$this->qc->updateStartQc($request);
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
