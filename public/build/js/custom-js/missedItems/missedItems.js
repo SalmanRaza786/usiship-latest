@@ -142,9 +142,7 @@ $(document).ready(function(){
             }
         });
     });
-
     $('.btn-close-resolve').on('click', function() {
-
         $('#CloseResolveForm').submit();
 
     });

@@ -10,6 +10,7 @@ use App\Models\PickedItem;
 use App\Models\QcDetailWorkOrder;
 use App\Models\QcWorkOrder;
 use App\Models\WorkOrder;
+use App\Models\WorkOrderItem;
 use App\Models\WorkOrderPicker;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class QcRepositry implements QcInterface
             $data['totalRecords'] = QcWorkOrder::count();
             $qry= QcWorkOrder::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
+//            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -98,36 +99,43 @@ class QcRepositry implements QcInterface
               $workOrderId=$request->workOrderId;
                 $pickerId=WorkOrderPicker::where('work_order_id',$workOrderId)->pluck('id');
 
-            $pickedItems = PickedItem::whereIn('picker_table_id', $pickerId)
-                ->selectRaw('inventory_id, w_order_item_id, SUM(picked_qty) as total_picked_qty')
-                ->groupBy('inventory_id', 'w_order_item_id')
-                ->where('picked_qty','>',0)
-                ->get();
+//            $pickedItems = PickedItem::whereIn('picker_table_id', $pickerId)
+//                ->selectRaw('inventory_id, w_order_item_id, SUM(picked_qty) as total_picked_qty')
+//                ->groupBy('inventory_id', 'w_order_item_id')
+//                ->where('picked_qty','>',0)
+//                ->get();
 
-            if($pickedItems->count() > 0) {
 
+
+            $workOrderItem=WorkOrderItem::where('work_order_id',$workOrderId)->get();
+            if($workOrderItem->count() > 0) {
 
                 $qcWorkOrder = QcWorkOrder::updateOrCreate(
                     [
                         'work_order_id' => $workOrderId,
                     ],
                     [
-                        'work_order_id ' => $workOrderId,
+                        'work_order_id' => $workOrderId,
                         'status_code' => 205,
                         'auth_id' => Auth::user()->id,
                     ]
                 );
 
-                    foreach ($pickedItems as $row){
+                    foreach ($workOrderItem as $row){
+
+                        $totalPickedQty = PickedItem::whereIn('picker_table_id', $pickerId)
+                            ->where('inventory_id', $row->inventory_id)
+                            ->sum('picked_qty');
+
                     $qcDetail = QcDetailWorkOrder::class::updateOrCreate(
                         [
                             'qc_parent_id' => $qcWorkOrder->id,
-                            'w_order_item_id' => $row->w_order_item_id,
+                            'w_order_item_id' => $row->id,
                         ],
                         [
                             'qc_parent_id' => $qcWorkOrder->id,
-                            'w_order_item_id' => $row->w_order_item_id,
-                            'picked_qty' => $row->total_picked_qty,
+                            'w_order_item_id' => $row->id,
+                            'picked_qty' => $totalPickedQty,
                         ]
                     );
                 }

@@ -36,7 +36,7 @@ $(document).ready(function(){
                     checkIsPickingStart();
                     $('.btn-modal-close').click();
                     if(updateType==2){
-                       // window.location.href = route('admin.picking.index');
+                        window.location.href = route('admin.picking.index');
                     }
                 }else{
                     toastr.error(response.message)
