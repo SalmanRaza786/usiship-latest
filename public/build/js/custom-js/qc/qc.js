@@ -10,14 +10,15 @@ $(document).ready(function(){
     });
 
     function  updateQcTime(updateType){
-        var qcId=$('input[name=qcId]').val();
+        var qc_id=$('input[name=qc_id]').val();
+   
 
         $.ajax({
             url: route('admin.qc.start'),
             type: 'POST',
             async: false,
             dataType: 'json',
-            data: { updateType: updateType,qcId:qcId },
+            data: { updateType: updateType,qc_id:qc_id },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },

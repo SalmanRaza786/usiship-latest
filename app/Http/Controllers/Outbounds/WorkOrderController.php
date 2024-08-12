@@ -9,6 +9,7 @@ use App\Repositries\orderStatus\OrderStatusInterface;
 use App\Repositries\user\UserInterface;
 use App\Repositries\workOrder\WorkOrderInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class WorkOrderController extends Controller
 {
@@ -54,6 +55,15 @@ class WorkOrderController extends Controller
 
         try {
              $request->all();
+
+            $validator = Validator::make($request->all(), [
+                'staff_id' => 'required',
+            ]);
+
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
             if(!$workOrder=WorkOrder::find($request->w_order_id)){
                 return Helper::error('Invalid Order Id');
             }

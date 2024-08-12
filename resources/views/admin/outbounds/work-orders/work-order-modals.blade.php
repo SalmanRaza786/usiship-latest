@@ -33,7 +33,7 @@
 
                         <div class="col-md-12">
                             <label for="status-field" class="form-label" data-choice>Assign Picker</label>
-                            <select name="staff_id" id="" class="form-select">
+                            <select name="staff_id" id="" class="form-select" required>
                                 <option value="">Choose One</option>
                                 @isset($data['staff'])
                                     @foreach($data['staff'] as $row)

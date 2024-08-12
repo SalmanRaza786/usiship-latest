@@ -206,9 +206,12 @@ use App\Http\Controllers\Outbounds\QcController;
         //Picking
         Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
         Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
-        Route::any('/start-picking/{id}', [PickingController::class, 'startPicking'])->name('picking.start');
+        Route::any('/picking-detail/{id}', [PickingController::class, 'pickingDetail'])->name('picking.start');
         Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
         Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+
+        //File
+        Route::any('/file-remove', [PickingController::class, 'fileRemove'])->name('file.remove');
 
         //Missing
         Route::any('/missing', [MissingController::class, 'index'])->name('missing.index');

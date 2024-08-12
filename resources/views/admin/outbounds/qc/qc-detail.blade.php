@@ -10,7 +10,6 @@
     @include('components.common-error')
     <div class="container-fluid">
 
-        <input type="hidden" name="qcId" value="{{$data['orderInfo']->id}}">
         <input type="hidden" name="isStartPicking" value="{{$data['orderInfo']->start_time!=null?1:0}}">
 
         <div class="row">

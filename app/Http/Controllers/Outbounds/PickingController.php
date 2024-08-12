@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Outbounds;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\FileContent;
 use App\Models\PickedItem;
 use App\Models\QcDetailWorkOrder;
 use App\Models\QcWorkOrder;
@@ -41,7 +42,7 @@ class PickingController extends Controller
     }
 
     //startPicking
-    public function startPicking($id)
+    public function pickingDetail($id)
     {
         try {
             $data['orderInfo']=Helper::fetchOnlyData($this->picking->getPickerInfo($id));
@@ -72,6 +73,7 @@ class PickingController extends Controller
     {
 
         try {
+
              return  $res=$this->picking->updateStartPicking($request);
 
         } catch (\Exception $e) {
@@ -86,6 +88,22 @@ class PickingController extends Controller
         try {
              $request->all();
         return $res=$this->picking->savePickedItems($request);
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    //fileRemove
+    public function fileRemove(Request $request)
+    {
+
+        try {
+         if(!$file=FileContent::find($request->fileId)){
+             return Helper::error('Invalid file id');
+         }
+          $file->delete();
+         return Helper::ajaxSuccess([],'File remove successfully');
 
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());

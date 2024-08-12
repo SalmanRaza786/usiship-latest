@@ -95,12 +95,13 @@ class QcRepositry implements QcInterface
 
             DB::beginTransaction();
 
-            $workOrderId=1;
-            $pickerId=WorkOrderPicker::where('work_order_id',$workOrderId)->pluck('id');
+              $workOrderId=$request->workOrderId;
+                $pickerId=WorkOrderPicker::where('work_order_id',$workOrderId)->pluck('id');
 
             $pickedItems = PickedItem::whereIn('picker_table_id', $pickerId)
                 ->selectRaw('inventory_id, w_order_item_id, SUM(picked_qty) as total_picked_qty')
                 ->groupBy('inventory_id', 'w_order_item_id')
+                ->where('picked_qty','>',0)
                 ->get();
 
             if($pickedItems->count() > 0) {

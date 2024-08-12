@@ -535,7 +535,7 @@ class Helper
     public static function saveQcItems($request)
     {
         $qc=new QcRepositry();
-        $qc->saveQcItems($request);
+      return $res= $qc->createQcItems($request);
     }
 
 
