@@ -71,9 +71,9 @@ class QcController extends Controller
         try {
               $request->all();
              $res=$this->qc->updateQcItems($request);
-             if($res->get('status')){
-                $response= $this->qc->updateStartQc($request);
-             }
+//             if($res->get('status')){
+//                $response= $this->qc->updateStartQc($request);
+//             }
              return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
 
         } catch (\Exception $e) {

@@ -22,7 +22,7 @@ class MissingController extends Controller
     public function missingList()
     {
         try {
-            $res=$this->missing->getAllMissingForApi();
+            $res=$this->missed->getAllMissingForApi();
             return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
         } catch (\Exception $e) {
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);

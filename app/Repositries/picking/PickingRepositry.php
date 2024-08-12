@@ -26,7 +26,7 @@ class PickingRepositry implements PickingInterface
             $data['totalRecords'] = WorkOrderPicker::count();
             $qry= WorkOrderPicker::query();
             $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
+//            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -62,15 +62,17 @@ class PickingRepositry implements PickingInterface
             if(!$qry){
                 return Helper::error('Invalid picker id');
             }
+            ($request->updateType==2)?$qry->status_code=204:$qry->status_code=203;
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
-            $qry->save();
+            $data['workOrder']=$qry->save();
+
 
             if($request->updateType==2) {
-                Helper::saveQcItems($request);
+             $data['qc']=Helper::saveQcItems($request);
             }
 
             DB::commit();
-            return Helper::success($qry, ($request->updateType==1)?"Picking start success fully":"Picking end success fully");
+            return Helper::success($data, ($request->updateType==1)?"Picking start success fully":"Picking close success fully");
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -83,7 +85,7 @@ class PickingRepositry implements PickingInterface
         try {
 
             $qry= PickedItem::query();
-            $qry= $qry->with('inventory','location','wOrderItems');
+            $qry= $qry->with('media','missedItem','inventory','location','wOrderItems');
             $qry =$qry->where('picker_table_id', $pickerId);
             $data =$qry->get();
 
@@ -173,10 +175,7 @@ class PickingRepositry implements PickingInterface
                 }
             }
 
-            $workOrderPicker=WorkOrderPicker::find($pickedItem->picker_table_id);
-            $workOrderPicker->status_code=204;
-            $workOrderPicker->end_time=Carbon::now();
-            $workOrderPicker->save();
+
 
             $message = __('translation.record_created');
             DB::commit();

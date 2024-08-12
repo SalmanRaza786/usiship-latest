@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanySeeder::class);
         $this->call(WhDoorSeeder::class);
         $this->call(WhLocationSeeder::class);
+        $this->call(WorkOrderSeeder::class);
     }
 }

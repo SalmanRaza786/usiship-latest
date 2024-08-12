@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class WorkOrderPicker extends Model
 {
     use HasFactory;
-    protected $fillable=['work_order_id','picker_id','status_code','auth_id'];
+    protected $fillable=['work_order_id','picker_id','status_code','auth_id','start_time','end_time','status_code'];
     public function workOrder()
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');

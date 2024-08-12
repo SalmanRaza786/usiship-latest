@@ -81,6 +81,7 @@ $(document).ready(function(){
             }
         });
     });
+
     $('#roleTable').on('click', '.btn-delete', function() {
         var id = $(this).attr('data');
         $('.confirm-delete').val(id);

@@ -10,20 +10,27 @@ $(document).ready(function(){
     });
 
     function  updateQcTime(updateType){
-        var qcId=$('input[name=qcId]').val();
+        var qc_id=$('input[name=qc_id]').val();
+        var status_code=$('input[name=status_code]').val();
+
 
         $.ajax({
             url: route('admin.qc.start'),
             type: 'POST',
             async: false,
             dataType: 'json',
-            data: { updateType: updateType,qcId:qcId },
+            data: { updateType: updateType,qc_id:qc_id,status_code:status_code },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             beforeSend: function() {
-                $('.btn-start-picking').text('Processing...');
-                $(".btn-start-picking").prop("disabled", true);
+                if(updateType==1) {
+                    $('.btn-start-qc').text('Processing...');
+                    $(".btn-start-qc").prop("disabled", true);
+                }else{
+                    $('.btn-close-qc').text('Processing...');
+                    $(".btn-close-qc").prop("disabled", true);
+                }
             },
             success: function(response) {
                 console.log('response',response);
@@ -39,8 +46,13 @@ $(document).ready(function(){
 
             },
             complete: function(data) {
-                $(".btn-start-picking").html("Start Picking Now");
-                $(".btn-start-picking").prop("disabled", false);
+                if(updateType==1) {
+                    $('.btn-start-qc').text('Start Q/C');
+                    $(".btn-start-qc").prop("disabled", false);
+                }else{
+                    $('.btn-close-qc').text('Close Q/C');
+                    $(".btn-close-qc").prop("disabled", false);
+                }
             },
             error: function(xhr, status, error) {
                 toastr.error(error);
@@ -54,9 +66,11 @@ $(document).ready(function(){
         if(isStartPicking==1){
             $('.pick-item-section').removeClass('d-none');
             $('.btn-start-qc').addClass('d-none');
+            $('.btn-close-qc').removeClass('d-none');
         }else{
             $('.pick-item-section').addClass('d-none');
             $('.btn-start-qc').removeClass('d-none');
+            $('.btn-close-qc').addClass('d-none');
         }
     }
 
@@ -100,8 +114,61 @@ $(document).ready(function(){
     });
 
     $('.btn-close-qc ').on('click', function() {
+        updateQcTime(2);
+    });
 
-        $('#CloseQCForm').submit();
+
+
+    $('#qcTable').on('click', '.btn-save-row', function() {
+
+        var row = $(this).closest('tr');
+        var formData = new FormData();
+        var work_order_id=$('input[name=work_order_id]').val();
+
+
+        formData.append('hidden_id[]', $(this).attr('data'));
+        formData.append('qcQty[]', row.find('.qcQty').val());
+        formData.append('work_order_id',work_order_id);
+
+
+        var fileInput = row.find('input[type="file"]')[0];
+        var selectedFiles = fileInput.files;
+        for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('qcItemImages[' + 0 + '][]', selectedFiles[i]);
+        }
+
+
+        $.ajax({
+            url: route('admin.update.qc'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {
+                row.find('.btn-save-row').text('...');
+                row.find('.btn-save-row').prop("disabled", true);
+            },
+            success: function(response) {
+                console.log('response',response);
+                if(response.status){
+                    toastr.success(response.message);
+                    // window.location.reload();
+                }else{
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+
+                row.find('.btn-save-row').html('<i class="ri-save-2-fill fs-1"></i>');
+                row.find('.btn-save-row').prop("disabled", false);
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error);
+            }
+        });
 
     });
 });

@@ -10,7 +10,6 @@
     @include('components.common-error')
     <div class="container-fluid">
 
-        <input type="hidden" name="qcId" value="{{$data['orderInfo']->id}}">
         <input type="hidden" name="isStartPicking" value="{{$data['orderInfo']->start_time!=null?1:0}}">
 
         <div class="row">
@@ -22,12 +21,12 @@
 
                         </div>
                         <div class="col-auto justify-content-sm-end">
+                            @if($data['orderInfo']->end_time==NULL)
+                            <button type="button" class="btn btn-success btn-close-qc me-2 d-none"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
+                            @endif
 
-{{--                            <button type="button" class="btn btn-warning add-btn me-2"><i class="ri-eye-line align-bottom me-1"></i> Report Missing</button>--}}
-                            <button type="button" class="btn btn-success btn-close-qc me-2"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
 
-
-                            <button type="button" class="btn btn-success btn-start-qc" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
+                            <button type="button" class="btn btn-success btn-start-qc d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
 
                         </div>
 
@@ -80,9 +79,6 @@
                         <div class="live-preview">
                             <form action="{{route('admin.update.qc')}}" method="post" enctype="multipart/form-data" id="CloseQCForm">
                                 @csrf
-                                <input type="hidden" name="w_order_id" value="{{$data['orderInfo']->workOrder->id}}">
-
-
 
 
                                 <table class="invoice-table table table-borderless table-nowrap mb-0">
@@ -98,12 +94,14 @@
                                         </th>
                                         <th scope="col" style="">Pallet Number</th>
                                         <th scope="col" style="">Pick From</th>
-                                        <th scope="col" style="">Q/C Qty
-                                        </th>
-                                        <th scope="col" class="text-end" style="width: 105px;"></th>
+                                        <th scope="col" style="">Picked Qty</th>
+                                        <th scope="col" style="">Q/C Qty</th>
+
+                                        <th scope="col" class="text-start" style="width: 105px;">Image</th>
+                                        <th scope="col" class="text-end" style="width: 105px;">Action</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="qcTable">
                                     <form action="{{route('admin.update.qc')}}" method="post" enctype="multipart/form-data" id="CloseQcForm">
                                         <input type="hidden" name="work_order_id" value="{{$data['orderInfo']->work_order_id}}">
                                         <input type="hidden" name="qc_id" value="{{$data['orderInfo']->id }}">
@@ -121,10 +119,11 @@
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->qty}}</th>
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->pallet_number}}</th>
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->location->loc_title}}</th>
+                                                    <th scope="row" class="product-id align-middle">{{$row->picked_qty}}</th>
 
 
                                                     <td>
-                                                        <input class="form-control bg-light border-0" name="qcQty[]" type="number" placeholder="Qty" value="0" required>
+                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="0" required>
                                                     </td>
 
 
@@ -135,6 +134,7 @@
                                                         </div>
 
                                                     </td>
+                                                    <td class="text-end  cursor-pointer text-success btn-save-row" title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i></td>
                                                 </tr>
 
 

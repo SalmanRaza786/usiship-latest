@@ -117,7 +117,7 @@
                     targets: 5,
                     render: function(data, type, row, meta) {
                         var url = "{{ route('admin.qc.detail', ':id') }}";
-                        var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >QC Detail</a>@endcanany';
+                        var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Q/C Detail</a>@endcanany';
                         var btnGroup=StartPicking;
 
                         return btnGroup;

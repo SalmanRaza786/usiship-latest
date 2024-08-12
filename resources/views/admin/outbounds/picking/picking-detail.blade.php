@@ -24,11 +24,12 @@
                         </div>
                         <div class="col-auto justify-content-sm-end">
 
-                            <button type="button" class="btn btn-warning add-btn me-2"><i class="ri-eye-line align-bottom me-1"></i> Report Missing</button>
-                            <button type="button" class="btn btn-success btn-close-picking me-2"><i class="ri-eye-line align-bottom me-1"></i> Close Picking</button>
+{{--                            <button type="button" class="btn btn-warning add-btn me-2"><i class="ri-eye-line align-bottom me-1"></i> Report Missing</button>--}}
+                            @if($data['orderInfo']->end_time==NULL)
+                            <button type="button" class="btn btn-success btn-close-picking me-2 d-none" data-bs-toggle="modal" data-bs-target="#confirmCloseModal"><i class="ri-eye-line align-bottom me-1"></i> Close Picking</button>
+@endif
 
-
-                            <button type="submit" class="btn btn-success btn-start-picking" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start Picking Now</button>
+                            <button type="submit" class="btn btn-success btn-start-picking d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start Picking</button>
 
                         </div>
 
@@ -94,10 +95,11 @@
                                         <th scope="col" style="">Missing Qty
                                         </th>
                                         <th scope="col" class="text-end" style="width: 150px;">Picked Location</th>
-                                        <th scope="col" class="text-end" style="width: 105px;"></th>
+                                        <th scope="col" class="text-end" style="width: 105px;">Images</th>
+                                        <th scope="col" class="text-end" style="width: 105px;">Action</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="pickingDetailTable">
                                     <form action="{{route('admin.save-picked.items')}}" method="post" enctype="multipart/form-data" id="ClosePickingForm">
                                         <input type="hidden" name="work_order_id" value="{{$data['orderInfo']->work_order_id}}">
                                         @csrf
@@ -114,14 +116,18 @@
 
 
                                         <td>
-                                            <input class="form-control bg-light border-0" name="missedQty[]" type="number" placeholder="Qty" value="0">
+                                            <input class="form-control bg-light border-0 miss-qty" name="missedQty[]" type="number" placeholder="Qty" value="{{isset($row->missedItem)?$row->missedItem->missed_qty:0}}">
                                         </td>
                                         <td class="text-end">
-                                            <select name="pickedLocId[]" id="" class="form-select" required>
+                                            <select name="pickedLocId[]" id="" class="form-select loc-id" required>
                                                 <option value="">Choose One</option>
                                                 @isset($data['pickingItems'])
                                                     @foreach($data['locations'] as $loc)
-                                                        <option value="{{$loc->id}}">{{$loc->loc_title}}</option>
+                                                        <option value="{{$loc->id}}"
+                                                        @if($loc->id==$row->picked_loc_id)
+                                                            {{"selected"}}
+                                                            @endif
+                                                        >{{$loc->loc_title}}</option>
                                                     @endforeach
                                                 @endisset
                                             </select>
@@ -133,18 +139,22 @@
                                                 <div class="mb-2">
                                                     <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
                                                 </div>
-{{--                                                @isset($row->putAwayMedia)--}}
-{{--                                                    <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview" id="sealImagesPreview">--}}
-{{--                                                        @foreach($row->putAwayMedia as $image)--}}
-{{--                                                            @if($image->field_name == 'putawayImages')--}}
-{{--                                                                <div class="preview">--}}
-{{--                                                                    <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">--}}
-{{--                                                                </div>--}}
-{{--                                                            @endif--}}
-{{--                                                        @endforeach--}}
-{{--                                                    </div>--}}
-{{--                                                @endisset--}}
+                                                @isset($row->media)
+                                                    <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview">
+                                                        @foreach($row->media as $image)
+                                                            @if($image->field_name == 'pickedItemImages')
+                                                                <i class="ri ri-close-fill text-danger fs-2 cursor-pointer btn-delete-file" data="{{$image->id}}" data-bs-toggle="modal" data-bs-target="#deleteRecordModal"></i>
+                                                                <div class="preview">
+                                                                    <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                                </div>
+
+
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endisset
                                             </td>
+                                            <td class="text-end  cursor-pointer text-success btn-save-row" title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i></td>
                                     </tr>
 
 
@@ -162,6 +172,8 @@
 
         </div>
     </div>
+    @include('admin.components.comon-modals.common-modal')
+    @include('admin.outbounds.picking.picking-modals')
 @endsection
     @section('script')
     <script src="{{ URL::asset('build/js/custom-js/pickingItems/pickingItems.js') }}"></script>

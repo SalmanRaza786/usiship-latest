@@ -31,4 +31,14 @@ class PickedItem extends Model
         return $this->belongsTo(WorkOrderPicker::class, 'picker_table_id','id');
     }
 
+    public function media()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
+
+    public function missedItem()
+    {
+        return $this->hasOne(MissedItemDetail::class, 'picked_item_table_id','id');
+    }
+
 }
