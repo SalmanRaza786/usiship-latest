@@ -139,7 +139,7 @@
                                                 <div class="mb-2">
                                                     <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
                                                 </div>
-                                                @isset($row->media)
+                                                    @isset($row->media)
                                                     <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview">
                                                         @foreach($row->media as $image)
                                                             @if($image->field_name == 'pickedItemImages')
@@ -152,7 +152,7 @@
                                                             @endif
                                                         @endforeach
                                                     </div>
-                                                @endisset
+                                                   @endisset
                                             </td>
                                             <td class="text-end  cursor-pointer text-success btn-save-row" title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i></td>
                                     </tr>

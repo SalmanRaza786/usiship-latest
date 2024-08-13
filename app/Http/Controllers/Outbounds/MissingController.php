@@ -45,6 +45,7 @@ class MissingController extends Controller
 
             $data['orderInfo']=Helper::fetchOnlyData($this->missed->getMissedInfo($id));
             $data['missedItems']=Helper::fetchOnlyData($this->missed->getMissedItems($id));
+            $data['resolveItems']=Helper::fetchOnlyData($this->missed->getResolveItems($id));
             $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
             return view('admin.outbounds.missing.missing-detail')->with(compact('data'));
         }catch (\Exception $e) {

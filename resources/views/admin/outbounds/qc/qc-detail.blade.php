@@ -123,16 +123,30 @@
 
 
                                                     <td>
-                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="0" required>
+                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="{{isset($row->picked_qty)?$row->picked_qty:0}}" required>
                                                     </td>
+
 
 
 
                                                     <td class="text-start" style="width: 150px;">
                                                         <div class="mb-2">
-                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="qcItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
+                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
                                                         </div>
+                                                        @isset($row->media)
+                                                            <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview">
+                                                                @foreach($row->media as $image)
+                                                                    @if($image->field_name == 'qcItemImages')
+                                                                        <i class="ri ri-close-fill text-danger fs-2 cursor-pointer btn-delete-file" data="{{$image->id}}" data-bs-toggle="modal" data-bs-target="#deleteRecordModal"></i>
+                                                                        <div class="preview">
+                                                                            <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
+                                                                        </div>
 
+
+                                                                    @endif
+                                                                @endforeach
+                                                            </div>
+                                                        @endisset
                                                     </td>
                                                     <td class="text-end  cursor-pointer text-success btn-save-row" title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i></td>
                                                 </tr>
@@ -154,6 +168,7 @@
 
         </div>
     </div>
+    @include('admin.components.comon-modals.common-modal')
 @endsection
     @section('script')
     <script src="{{ URL::asset('build/js/custom-js/qc/qc.js') }}"></script>

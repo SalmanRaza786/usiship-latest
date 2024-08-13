@@ -16,5 +16,10 @@ class QcDetailWorkOrder extends Model
         return $this->belongsTo(WorkOrderItem::class, 'w_order_item_id', 'id');
     }
 
+    public function media()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
+
 
 }
