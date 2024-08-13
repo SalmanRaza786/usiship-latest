@@ -39,6 +39,8 @@ $(document).ready(function(){
                     $('input[name=start_pick_time]').val(response.data.start_time);
                     toastr.success(response.message)
                     checkIsPickingStart();
+
+                    window.location.href = route('admin.qc.index');
                 }else{
                     toastr.error(response.message)
                 }
@@ -116,9 +118,6 @@ $(document).ready(function(){
     $('.btn-close-qc ').on('click', function() {
         updateQcTime(2);
     });
-
-
-
     $('#qcTable').on('click', '.btn-save-row', function() {
 
         var row = $(this).closest('tr');
@@ -170,6 +169,37 @@ $(document).ready(function(){
             }
         });
 
+    });
+
+
+    $('#qcTable').on('click', '.btn-delete-file', function() {
+        var id = $(this).attr('data');
+        console.log('id',id);
+        $('.confirm-delete').val(id);
+    });
+
+
+
+    $('.confirm-delete').click(function() {
+        var id = $(this).val();
+        console.log('deleted file id',id);
+        $.ajax({
+            url: route('admin.file.remove'),
+            type: 'get',
+            async: false,
+            dataType: 'json',
+            data: { fileId: id },
+            success: function(response) {
+                $('#pickingDetailTable').DataTable().ajax.reload();
+                $('.btn-close').click();
+                toastr.success(response.message);
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                var errors = xhr.responseJSON.errors;
+                toastr.success(error);
+            }
+        });
     });
 });
 

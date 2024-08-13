@@ -77,7 +77,7 @@ class QcRepositry implements QcInterface
         try {
 
             $qry= QcDetailWorkOrder::query();
-            $qry= $qry->with('workOrderItem.inventory','workOrderItem.location');
+            $qry= $qry->with('workOrderItem.inventory','workOrderItem.location','media');
             $qry =$qry->where('qc_parent_id',$qcId);
             $data =$qry->get();
 

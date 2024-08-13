@@ -56,6 +56,7 @@ $(document).ready(function(){
     });
 
     function  updatePickingTime(updateType){
+
         var missedId=$('input[name=missedId]').val();
 
         $.ajax({
@@ -77,6 +78,11 @@ $(document).ready(function(){
                     $('input[name=start_pick_time]').val(response.data.start_time);
                     toastr.success(response.message)
                     checkIsPickingStart();
+                    if(updateType==2){
+                        $('.btn-modal-close').click();
+                        window.location.href = route('admin.missing.index');
+                    }
+
                 }else{
                     toastr.error(response.message)
                 }
@@ -99,9 +105,11 @@ $(document).ready(function(){
         if(isStartPicking==1){
             $('.pick-item-section').removeClass('d-none');
             $('.btn-start-resolve').addClass('d-none');
+            $('.btn-close-resolve ').removeClass('d-none');
         }else{
             $('.pick-item-section').addClass('d-none');
             $('.btn-start-resolve').removeClass('d-none');
+            $('.btn-close-resolve ').addClass('d-none');
         }
     }
 
@@ -142,9 +150,105 @@ $(document).ready(function(){
             }
         });
     });
-    $('.btn-close-resolve').on('click', function() {
-        $('#CloseResolveForm').submit();
+    $('.confirm-close-resolve').on('click', function() {
+        updatePickingTime(2);
+    });
 
+
+    $('#clonedSection').on('click', '.btn-save-row', function() {
+
+        var row = $(this).closest('tr');
+        var formData = new FormData();
+        var w_order_id=$('input[name=w_order_id]').val();
+        var itemId=row.find('.item-id').val();
+
+
+        var splitValues = itemId.split(',');
+
+
+        formData.append('missed_detail_parent_id',splitValues[2]);
+        formData.append('resolveId',$('input[name=hidden_resolve_id]').val());
+        formData.append('itemId[]', itemId);
+        formData.append('resolveQty[]', row.find('.resolve-qty').val());
+        formData.append('newLocId[]', row.find('.new-loc-id').val());
+
+        formData.append('w_order_id',w_order_id);
+        formData.append('staff_id',$('input[name=staff_id]').val());
+        formData.append('missed_id',$('input[name=missed_id]').val());
+        formData.append('status_code',$('input[name=status_code]').val());
+
+
+        var fileInput = row.find('input[type="file"]')[0];
+        var selectedFiles = fileInput.files;
+        for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('resolveItemImages[' + 0 + '][]', selectedFiles[i]);
+        }
+
+        var fileInput = row.find('input[type="file"]')[1];
+        var selectedFiles = fileInput.files;
+        for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('newLocationItemImages[' + 0 + '][]', selectedFiles[i]);
+        }
+
+
+        $.ajax({
+            url: route('admin.save.resolve'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {
+                row.find('.btn-save-row').text('...');
+                row.find('.btn-save-row').prop("disabled", true);
+            },
+            success: function(response) {
+                if(response.status){
+                    toastr.success(response.message);
+                    window.location.reload();
+                }else{
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+
+                row.find('.btn-save-row').html('<i class="ri-save-2-fill fs-1"></i>');
+                row.find('.btn-save-row').prop("disabled", false);
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error);
+            }
+        });
+
+    });
+
+    $('#clonedSection').on('click', '.btn-delete-file', function() {
+        var id = $(this).attr('data');
+        $('.confirm-delete').val(id);
+    });
+
+
+    $('.confirm-delete').click(function() {
+        var id = $(this).val();
+        $.ajax({
+            url: route('admin.file.remove'),
+            type: 'get',
+            async: false,
+            dataType: 'json',
+            data: { fileId: id },
+            success: function(response) {
+                $('#pickingDetailTable').DataTable().ajax.reload();
+                $('.btn-close').click();
+                toastr.success(response.message);
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                var errors = xhr.responseJSON.errors;
+                toastr.success(error);
+            }
+        });
     });
 });
 

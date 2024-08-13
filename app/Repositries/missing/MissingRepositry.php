@@ -7,6 +7,7 @@ use App\Models\MissedItem;
 use App\Models\MissedItemDetail;
 use App\Models\OrderItemPutAway;
 use App\Models\PickedItem;
+use App\Models\ResolvedMissedItem;
 use App\Models\WorkOrder;
 use App\Models\WorkOrderPicker;
 use Illuminate\Support\Carbon;
@@ -26,7 +27,7 @@ class MissingRepositry implements MissingInterface
             $data['totalRecords'] = MissedItem::count();
             $qry= MissedItem::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
+//            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -60,6 +61,7 @@ class MissingRepositry implements MissingInterface
             if(!$qry){
                 return Helper::error('Invalid missing id');
             }
+            ($request->updateType==1)?$qry->status_code=203:$qry->status_code=204;
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             $qry->save();
 
@@ -100,6 +102,7 @@ class MissingRepositry implements MissingInterface
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
 
+
             $workOrderPicker= WorkOrderPicker::updateOrCreate(
                 [
                     'work_order_id' =>0,
@@ -114,11 +117,18 @@ class MissingRepositry implements MissingInterface
 
             foreach ($request->itemId as $key => $val) {
 
+                $resolve= ResolvedMissedItem::updateOrCreate(
+                    [
+                        'id' =>$request->resolveId,
+                    ],
+                    [
+                        'missed_detail_parent_id' =>$request->missed_detail_parent_id,
+                        'new_loc_id' =>$request->newLocId[$key],
+                        'resolve_qty' =>$request->resolveQty[$key],
+                    ]
+                );
+
                 $values = explode(',', $val);
-
-//                    $inventoryId= $values[0];
-//                    $wOrderItemId= $values[1];
-
 
                     $pickedItems= PickedItem::updateOrCreate(
                         [
@@ -136,20 +146,20 @@ class MissingRepositry implements MissingInterface
 
 
 
-                if ($pickedItems) {
-                    $fileableId = $pickedItems->id;
-                    $fileableType = 'App\Models\PickedItem';
+                if ($resolve) {
+                    $fileableId = $resolve->id;
+                    $fileableType = 'App\Models\ResolvedMissedItem';
 
                     // Handle multiple file uploads for each row
-                    if ($request->hasFile("pickedItemImages.$key")) {
+                    if ($request->hasFile("resolveItemImages.$key")) {
 
-                        $uploadedFiles = $request->file("pickedItemImages.$key");
+                        $uploadedFiles = $request->file("resolveItemImages.$key");
 
                         $imageSets = [
-                            'pickedItemImages' => $uploadedFiles
+                            'resolveItemImages' => $uploadedFiles
                         ];
 
-                        if (!empty($imageSets['pickedItemImages'])) {
+                        if (!empty($imageSets['resolveItemImages'])) {
                             $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
                         }
                     }
@@ -169,10 +179,10 @@ class MissingRepositry implements MissingInterface
                 }
             }
 
-            $missedTable=MissedItem::find($request->missed_id);
-            $missedTable->end_time=Carbon::now();
-            $missedTable->status_code=22;
-            $missedTable->save();
+//            $missedTable=MissedItem::find($request->missed_id);
+//            $missedTable->end_time=Carbon::now();
+//            $missedTable->status_code=22;
+//            $missedTable->save();
 
             $message = __('Missing item resolve successfully');
             DB::commit();
@@ -193,6 +203,21 @@ class MissingRepositry implements MissingInterface
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
             $qry= $qry->where('status_code',205);
             $data['data'] =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+    public function getResolveItems($missedId)
+    {
+        try {
+
+            $qry= ResolvedMissedItem::query();
+            $qry= $qry->with('media');
+            $data =$qry->get();
             return Helper::success($data, $message="Record found");
 
         } catch (\Exception $e) {
