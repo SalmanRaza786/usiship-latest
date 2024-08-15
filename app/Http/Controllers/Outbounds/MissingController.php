@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Outbounds;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\MissedItem;
 use App\Repositries\missing\MissingInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
@@ -42,7 +43,9 @@ class MissingController extends Controller
     public function missedDetail($id)
     {
         try {
-
+            if(!$missing=MissedItem::find($id)){
+                return redirect()->back()->with('error','Invalid Missed id');
+            }
             $data['orderInfo']=Helper::fetchOnlyData($this->missed->getMissedInfo($id));
             $data['missedItems']=Helper::fetchOnlyData($this->missed->getMissedItems($id));
             $data['resolveItems']=Helper::fetchOnlyData($this->missed->getResolveItems($id));

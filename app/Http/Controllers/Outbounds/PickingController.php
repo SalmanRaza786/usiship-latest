@@ -45,6 +45,9 @@ class PickingController extends Controller
     public function pickingDetail($id)
     {
         try {
+        if(!$picker=WorkOrderPicker::find($id)){
+            return redirect()->back()->with('error','Invalid id');
+        }
             $data['orderInfo']=Helper::fetchOnlyData($this->picking->getPickerInfo($id));
             $data['pickingItems']=Helper::fetchOnlyData($this->picking->getPickingItems($id));
             $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
