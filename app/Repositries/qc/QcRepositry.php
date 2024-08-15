@@ -25,9 +25,10 @@ class QcRepositry implements QcInterface
     public function getQcList($request)
     {
         try {
-            $data['totalRecords'] = QcWorkOrder::count();
+            $data['totalRecords'] = QcWorkOrder::publish()->count();
             $qry= QcWorkOrder::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
@@ -154,7 +155,8 @@ class QcRepositry implements QcInterface
 
             $qry= QcWorkOrder::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
+//            $qry= $qry->where('status_code',205);
+            $qry= $qry->publish();
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
 

@@ -7,6 +7,7 @@ use App\Events\NotificationEvent;
 use App\Models\Admin;
 use App\Models\Attempt;
 use App\Models\FileContent;
+use App\Models\MissedItem;
 use App\Models\OperationalHour;
 use App\Models\OrderBookedSlot;
 use App\Models\Question;
@@ -537,6 +538,9 @@ class Helper
         $qc=new QcRepositry();
       return $res= $qc->createQcItems($request);
     }
+
+
+
 
 
 

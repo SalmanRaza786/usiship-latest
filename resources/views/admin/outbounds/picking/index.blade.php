@@ -108,12 +108,22 @@
                 { data: 'work_order.load_type.eq_type.value' },
                 { data: 'work_order.order_reference' },
                 { data: 'work_order.carrier.carrier_company_name' },
-                { data: 'status.status_title' },
+                { data: null },
                 { data: null, orderable: false },
             ],
 
             columnDefs: [
 
+                {
+                    targets: 5,
+                    render: function(data, type, row, meta) {
+                        if (data.status_code == 204) {
+                            return '<span class="badge badge-soft-success text-uppercase">'+data.status.status_title+'</span>';
+                        } else  {
+                            return '<span class="badge badge-soft-danger text-uppercase">'+data.status.status_title+'</span>';
+                        }
+                    }
+                },
                 {
                     targets: 6,
                     render: function(data, type, row, meta) {

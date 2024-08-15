@@ -20,4 +20,9 @@ class QcWorkOrder extends Model
         return $this->belongsTo(OrderStatus::class, 'status_code', 'order_by');
     }
 
+    public function scopePublish($query)
+    {
+        return $query->where('is_publish',1);
+    }
+
 }

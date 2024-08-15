@@ -23,9 +23,10 @@ class PickingRepositry implements PickingInterface
     public function getAllPickers($request)
     {
         try {
-            $data['totalRecords'] = WorkOrderPicker::count();
+            $data['totalRecords'] = WorkOrderPicker::publish()->count();
             $qry= WorkOrderPicker::query();
             $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
@@ -69,6 +70,7 @@ class PickingRepositry implements PickingInterface
 
             if($request->updateType==2) {
              $data['qc']=Helper::saveQcItems($request);
+             MissedItem::where('picker_table_id',$request->pickerId)->update(['is_publish'=>1]);
             }
 
             DB::commit();
@@ -137,6 +139,7 @@ class PickingRepositry implements PickingInterface
                             'picker_table_id' =>$pickedItem->picker_table_id,
                             'work_order_id' =>$request->work_order_id,
                             'auth_id' =>Auth::user()->id,
+                            'is_publish' =>2,
                             'status_code' =>205
                         ]
                     );
@@ -194,7 +197,8 @@ class PickingRepositry implements PickingInterface
 
             $qry= WorkOrderPicker::query();
             $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
+            $qry= $qry->publish();
+//            $qry= $qry->where('status_code',205);
             $data=$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
 

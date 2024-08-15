@@ -24,10 +24,12 @@ class MissingRepositry implements MissingInterface
     public function getAllMissing($request)
     {
         try {
-            $data['totalRecords'] = MissedItem::count();
+            $data['totalRecords'] = MissedItem::publish()->count();
             $qry= MissedItem::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
+
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -64,6 +66,9 @@ class MissingRepositry implements MissingInterface
             ($request->updateType==1)?$qry->status_code=203:$qry->status_code=204;
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             $qry->save();
+            if($request->updateType==2){
+                WorkOrderPicker::where('missed_table_id',$request->missedId)->update(['is_publish'=>1]);
+            }
 
             return Helper::success($qry, ($request->updateType==1)?"Missing resolve start success fully":"Missing resolve end success fully");
 
@@ -105,12 +110,13 @@ class MissingRepositry implements MissingInterface
 
             $workOrderPicker= WorkOrderPicker::updateOrCreate(
                 [
-                    'work_order_id' =>0,
+                    'missed_table_id' => $request->missed_id,
                 ],
                 [
                     'work_order_id' => $request->w_order_id,
                     'picker_id' => $request->staff_id,
                     'status_code' => $request->status_code,
+                    'is_publish' => 2,
                     'auth_id' =>Auth::user()->id,
                 ]
             );
@@ -119,12 +125,14 @@ class MissingRepositry implements MissingInterface
 
                 $resolve= ResolvedMissedItem::updateOrCreate(
                     [
-                        'id' =>$request->resolveId,
+                        'missed_detail_parent_id' =>$request->missed_detail_parent_id,
+                        'new_loc_id' =>$request->newLocId[$key],
                     ],
                     [
                         'missed_detail_parent_id' =>$request->missed_detail_parent_id,
                         'new_loc_id' =>$request->newLocId[$key],
                         'resolve_qty' =>$request->resolveQty[$key],
+                        'missed_table_id' =>$request->missed_id,
                     ]
                 );
 
@@ -132,7 +140,10 @@ class MissingRepositry implements MissingInterface
 
                     $pickedItems= PickedItem::updateOrCreate(
                         [
-                            'id' =>0
+                            'picker_table_id' =>$workOrderPicker->id,
+                            'w_order_item_id' =>$values[1],
+                            'inventory_id' =>$values[0],
+                            'loc_id' =>$request->newLocId[$key],
                         ],
                         [
                             'picker_table_id' =>$workOrderPicker->id,
@@ -201,7 +212,9 @@ class MissingRepositry implements MissingInterface
 
             $qry= MissedItem::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
-            $qry= $qry->where('status_code',205);
+            $qry= $qry->where('is_publish',1);
+            $qry= $qry->publish();
+           // $qry= $qry->where('status_code',205);
             $data['data'] =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
 
@@ -217,6 +230,7 @@ class MissingRepositry implements MissingInterface
 
             $qry= ResolvedMissedItem::query();
             $qry= $qry->with('media');
+            $qry= $qry->where('missed_table_id',$missedId);
             $data =$qry->get();
             return Helper::success($data, $message="Record found");
 
