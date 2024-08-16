@@ -95,11 +95,11 @@ class MissingRepositry implements MissingInterface
     }
 
     //savePickedItems
-    public function saveResolveItems($request)
+    public function saveResolveItems($request,$guard=null)
     {
 
-        try {
-            DB::beginTransaction();
+//        try {
+//            DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'itemId.*' => 'required',
             ]);
@@ -136,19 +136,21 @@ class MissingRepositry implements MissingInterface
                     ]
                 );
 
-                $values = explode(',', $val);
+                if($guard !='api') {
+                    $values = explode(',', $val);
+                }
 
                     $pickedItems= PickedItem::updateOrCreate(
                         [
                             'picker_table_id' =>$workOrderPicker->id,
-                            'w_order_item_id' =>$values[1],
-                            'inventory_id' =>$values[0],
+                            'w_order_item_id' =>($guard=='api')?$request->w_order_item_id:$values[1],
+                            'inventory_id' =>($guard=='api')?$request->itemId[$key]:$values[0],
                             'loc_id' =>$request->newLocId[$key],
                         ],
                         [
                             'picker_table_id' =>$workOrderPicker->id,
-                            'w_order_item_id' =>$values[1],
-                            'inventory_id' =>$values[0],
+                            'w_order_item_id' =>($guard=='api')?$request->w_order_item_id:$values[1],
+                            'inventory_id' =>($guard=='api')?$request->itemId[$key]:$values[0],
                             'loc_id' =>$request->newLocId[$key],
                             'order_qty' =>$request->resolveQty[$key],
                         ]
@@ -200,10 +202,10 @@ class MissingRepositry implements MissingInterface
 
 
             return Helper::success($workOrderPicker,$message);
-        }  catch (\Exception $e) {
-            DB::rollBack();
-            return Helper::errorWithData($e->getMessage(),[]);
-        }
+//        }  catch (\Exception $e) {
+//            DB::rollBack();
+//            return Helper::errorWithData($e->getMessage(),[]);
+//        }
     }
 
     public function getAllMissingForApi()
