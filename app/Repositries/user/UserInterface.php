@@ -10,6 +10,7 @@ interface UserInterface
     public function editUser($id);
     public function deleteUser($id);
     public function userSave($request,$id);
+    public function getAllUser();
 
 
 

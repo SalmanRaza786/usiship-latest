@@ -122,7 +122,7 @@
                 @canany('admin-order-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.orders.list')?'active':''}}" href="{{route('admin.orders.list')}}" >
-                            <i class=" ri-gift-2-line"></i> <span>Orders Scheduling</span>
+                            <i class=" ri-crop-line"></i> <span>Orders Scheduling</span>
                         </a>
                     </li>
                 @endcanany
@@ -134,6 +134,38 @@
                     </li>
                 @endcanany
 
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.work.orders.index')?'active':''}}" href="{{route('admin.work.orders.index')}}" >
+                            <i class="ri-briefcase-4-line"></i> <span>Work Orders</span>
+                        </a>
+                    </li>
+                @endcanany
+
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.picking.index')?'active':''}}" href="{{route('admin.picking.index')}}" >
+                            <i class="ri-file-ppt-2-line"></i> <span>Picking</span>
+                        </a>
+                    </li>
+                @endcanany
+
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.missing.index')?'active':''}}" href="{{route('admin.missing.index')}}" >
+                            <i class="ri-file-excel-2-fill"></i> <span>Missing</span>
+                        </a>
+                    </li>
+                @endcanany
+
+
+                @canany('admin-order-view')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}" href="{{route('admin.qc.index')}}" >
+                            <i class="ri-book-3-fill"></i> <span>QC</span>
+                        </a>
+                    </li>
+                @endcanany
 
                  <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.roles.index' OR Route::currentRouteName()=='admin.language.index' OR Route::currentRouteName()=='admin.app-settings.index')?'active':''}}" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">

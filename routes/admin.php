@@ -30,6 +30,12 @@ use App\Http\Controllers\Admin\PackagingListController;
 use App\Http\Controllers\Admin\PutAwayController;
 use App\Http\Controllers\Admin\MediaController;
 
+use App\Http\Controllers\Outbounds\WorkOrderController;
+use App\Http\Controllers\Outbounds\PickingController;
+use App\Http\Controllers\Outbounds\MissingController;
+use App\Http\Controllers\Outbounds\QcController;
+
+
 
 
 
@@ -189,6 +195,41 @@ use App\Http\Controllers\Admin\MediaController;
 
         //Media Controller
         Route::any('/delete-media/{id}', [MediaController::class, 'deleteMedia'])->name('delete.media');
+
+
+
+        //Outbounds
+        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index');
+        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list');
+        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign');
+
+        //Picking
+        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
+        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
+        Route::any('/picking-detail/{id}', [PickingController::class, 'pickingDetail'])->name('picking.start');
+        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
+        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+
+        //File
+        Route::any('/file-remove', [PickingController::class, 'fileRemove'])->name('file.remove');
+
+        //Missing
+        Route::any('/missing', [MissingController::class, 'index'])->name('missing.index');
+        Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list');
+        Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail');
+        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update');
+        Route::any('/save-resolve', [MissingController::class, 'saveResolve'])->name('save.resolve');
+
+
+        //QC
+        Route::any('/qc', [QcController::class, 'index'])->name('qc.index');
+        Route::any('/qc-list', [QcController::class, 'QcList'])->name('qc.list');
+        Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail');
+        Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start');
+        Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc');
+        Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc');
+
+
 
 
     });

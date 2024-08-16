@@ -6,7 +6,7 @@
     <button type="button" class="btn btn-success add-btn right ms-auto" data-bs-toggle="modal" id="create-btn" data-bs-target="#dockModal"><i class="ri-add-line align-bottom me-1"></i> Add Dock Info</button>
 </div>
 
-<table class="table align-middle table-nowrap table-striped-columns mb-0">
+<table class="table align-middle table-striped-columns mb-0">
     <thead class="table-light">
     <tr>
         <th scope="col">Load Type</th>

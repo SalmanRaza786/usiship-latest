@@ -5,7 +5,7 @@ $(document).ready(function(){
     $('.notificationCounter').text(0);
 
     window.Echo.channel("clientNotificationChannel").listen("ClientNotificationEvent", (e) => {
-        console.log(e.notificationData);
+
 
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
@@ -124,7 +124,7 @@ $(document).ready(function(){
     });
     var channel = pusher.subscribe('clientNotificationChannel');
     channel.bind('App\\Events\\ClientNotificationEvent', function(e) {
-        console.log('e.notificationData',e.notificationData);
+
         if(e.notificationData[0].notifiType==2 && e.notificationData[0].notifiableId == customerId){
         if(e.notificationData.length > 0){
             $('empty-notification-elem').addClass('d-none');
@@ -136,4 +136,11 @@ $(document).ready(function(){
         }
 
     });
+
+
+    $('.btn-nofify').on('click', function() {
+        getUnreadNotifications();
+    });
+
+
 });
