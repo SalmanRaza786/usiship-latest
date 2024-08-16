@@ -63,7 +63,7 @@ class AuthController extends Controller
                 return  Helper::createAPIResponce(true,400,'Invalid credentials',$request->all());
             }
 
-                $data['user']=Admin::where('email',$request->email)->with('role')->first();
+                $data['user']=Admin::where('email',$request->email)->with('role.permissions')->first();
 
                 $data['accessToken']=$data['user']->createToken('auth_token')->plainTextToken;
 
