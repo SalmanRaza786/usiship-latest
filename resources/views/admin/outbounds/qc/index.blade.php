@@ -116,7 +116,7 @@
                 {
                     targets: 4,
                     render: function(data, type, row, meta) {
-                        if (data.status_code == 204) {
+                        if (data.status_code == 22) {
                             return '<span class="badge badge-soft-success text-uppercase">'+data.status.status_title+'</span>';
                         } else  {
                             return '<span class="badge badge-soft-danger text-uppercase">'+data.status.status_title+'</span>';

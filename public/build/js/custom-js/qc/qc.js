@@ -39,8 +39,9 @@ $(document).ready(function(){
                     $('input[name=start_pick_time]').val(response.data.start_time);
                     toastr.success(response.message)
                     checkIsPickingStart();
-
-                    window.location.href = route('admin.qc.index');
+                    if(updateType==2) {
+                        window.location.href = route('admin.qc.index');
+                    }
                 }else{
                     toastr.error(response.message)
                 }
