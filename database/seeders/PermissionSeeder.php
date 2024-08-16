@@ -33,7 +33,13 @@ class PermissionSeeder extends Seeder
 
         $notification_template = PermissionModule::updateOrCreate(['title' => 'Notification Template'], ['title' =>'Notification Template']);
 
+        $w_orders = PermissionModule::updateOrCreate(['title' => 'Work Orders'], ['title' =>'Work Orders']);
+        $picking = PermissionModule::updateOrCreate(['title' => 'Picking'], ['title' =>'Picking']);
+        $missing = PermissionModule::updateOrCreate(['title' => 'Missing'], ['title' =>'Missing']);
+        $qc = PermissionModule::updateOrCreate(['title' => 'QC'], ['title' =>'QC']);
+
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
+
 
         Permission::upsert([
 
@@ -127,6 +133,33 @@ class PermissionSeeder extends Seeder
             //Notifications Templates
             ['name' => 'admin-notification-template-view', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
             ['name' => 'admin-notification-template-create', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
+
+
+            //work orders
+            ['name' => 'admin-w-order-view', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-w-order-create', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-w-order-edit', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-w-order-delete', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+
+
+            //Picking
+            ['name' => 'admin-picking-view', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-picking-create', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-picking-edit', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-picking-delete', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+
+
+            //Missing
+            ['name' => 'admin-missing-view', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-missing-create', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-missing-edit', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-missing-delete', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+
+            //QC
+            ['name' => 'admin-qc-view', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-qc-create', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-qc-edit', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-qc-delete', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
 
 
 

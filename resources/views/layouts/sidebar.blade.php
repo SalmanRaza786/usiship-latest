@@ -134,7 +134,7 @@
                     </li>
                 @endcanany
 
-                @canany('admin-order-view')
+                @canany('admin-w-order-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.work.orders.index')?'active':''}}" href="{{route('admin.work.orders.index')}}" >
                             <i class="ri-briefcase-4-line"></i> <span>Work Orders</span>
@@ -142,7 +142,7 @@
                     </li>
                 @endcanany
 
-                @canany('admin-order-view')
+                @canany('admin-picking-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.picking.index')?'active':''}}" href="{{route('admin.picking.index')}}" >
                             <i class="ri-file-ppt-2-line"></i> <span>Picking</span>
@@ -150,7 +150,7 @@
                     </li>
                 @endcanany
 
-                @canany('admin-order-view')
+                @canany('admin-missing-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.missing.index')?'active':''}}" href="{{route('admin.missing.index')}}" >
                             <i class="ri-file-excel-2-fill"></i> <span>Missing</span>
@@ -159,7 +159,7 @@
                 @endcanany
 
 
-                @canany('admin-order-view')
+                @canany('admin-qc-view')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}" href="{{route('admin.qc.index')}}" >
                             <i class="ri-book-3-fill"></i> <span>QC</span>

@@ -199,35 +199,35 @@ use App\Http\Controllers\Outbounds\QcController;
 
 
         //Outbounds
-        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index');
-        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list');
-        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign');
+        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index')->middleware(['can:admin-w-order-view']);
+        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
+        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
 
         //Picking
-        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
-        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
-        Route::any('/picking-detail/{id}', [PickingController::class, 'pickingDetail'])->name('picking.start');
-        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
-        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index')->middleware(['can:admin-picking-view']);
+        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list')->middleware(['can:admin-picking-view']);
+        Route::any('/picking-detail/{id}', [PickingController::class, 'pickingDetail'])->name('picking.start')->middleware(['can:admin-picking-view']);
+        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update')->middleware(['can:admin-picking-create']);
+        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items')->middleware(['can:admin-w-order-create']);
 
         //File
         Route::any('/file-remove', [PickingController::class, 'fileRemove'])->name('file.remove');
 
         //Missing
-        Route::any('/missing', [MissingController::class, 'index'])->name('missing.index');
-        Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list');
-        Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail');
-        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update');
-        Route::any('/save-resolve', [MissingController::class, 'saveResolve'])->name('save.resolve');
+        Route::any('/missing', [MissingController::class, 'index'])->name('missing.index')->middleware(['can:admin-missing-view']);
+        Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list')->middleware(['can:admin-missing-view']);
+        Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail')->middleware(['can:admin-missing-view']);
+        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update')->middleware(['can:admin-missing-create']);
+        Route::any('/save-resolve', [MissingController::class, 'saveResolve'])->name('save.resolve')->middleware(['can:admin-missing-create']);
 
 
         //QC
-        Route::any('/qc', [QcController::class, 'index'])->name('qc.index');
-        Route::any('/qc-list', [QcController::class, 'QcList'])->name('qc.list');
-        Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail');
-        Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start');
-        Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc');
-        Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc');
+        Route::any('/qc', [QcController::class, 'index'])->name('qc.index')->middleware(['can:admin-qc-view']);
+        Route::any('/qc-list', [QcController::class, 'QcList'])->name('qc.list')->middleware(['can:admin-qc-view']);
+        Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail')->middleware(['can:admin-qc-view']);
+        Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start')->middleware(['can:admin-qc-create']);
+        Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc')->middleware(['can:admin-qc-create']);
+        Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc')->middleware(['can:admin-qc-create']);
 
 
 
