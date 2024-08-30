@@ -16,9 +16,7 @@
 
                     <div class="mb-3">
                         <input type="number" name="id" value="0" style="display:none">
-{{--                        @dd($data);--}}
                         <label for="company_id">Company ID</label>
-{{--                        <select id="company-dropdown" class="form-control"></select>--}}
                         <select  class="form-select"  required  name="company_id" id="company-dropdown">
                             <option value="">Choose One</option>
                             @isset($data['companies'])
@@ -29,12 +27,6 @@
                                 @endforeach
                             @endisset
                         </select>
-{{--                        <select name="company_id" id="company_id" class="form-control">--}}
-{{--                            <option value="">Select Company</option>--}}
-{{--                            @foreach ($var as $company)--}}
-{{--                                <option {{($company->id == 1)?"selected":""}} value="{{ $company->id }}">{{ $company->company_title }}</option>--}}
-{{--                            @endforeach--}}
-{{--                        </select>--}}
                     </div>
 
                     <div class="mb-3">

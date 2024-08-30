@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Customer  @endsection
+@section('title') Customer Companies @endsection
 @section('css')
 
 @endsection
@@ -7,19 +7,19 @@
     @component('components.breadcrumb')
         @slot('routeUrl') {{url('/')}} @endslot
         @slot('li_1') Dashboard @endslot
-        @slot('title') Customers @endslot
+        @slot('title') Customer Companies @endslot
     @endcomponent
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0">Customer</h4>
+                        <h4 class="card-title mb-0">Customer Companies</h4>
 
                     </div>
                     @canany('admin-user-create')
                     <div class="col-auto justify-content-sm-end">
-                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Add Customer</button>
+                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Add Customer Companies</button>
                     </div>
                     @endcanany
 
@@ -35,7 +35,18 @@
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
                             </div>
-
+                            <!--end col-->
+                            <div class="col-xxl-3 col-sm-4">
+                                <div>
+                                    <select class="form-control"  name="s_status">
+                                        <option value="">Status</option>
+                                        <option value="" selected>{{__('translation.all')}}</option>
+                                        <option value="1">Active</option>
+                                        <option value="2">In-Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--end col-->
 
                             <div class="col-xxl-2 col-sm-4">
                                 <div>
@@ -54,10 +65,11 @@
                         <table class="table table-nowrap align-middle" id="roleTable">
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
-                                <th class="sort" data-sort="customer_name">name</th>
-                                <th class="sort" data-sort="company_name">Company Title</th>
-                                <th class="sort" data-sort="email">Email</th>
-                                <th class="sort" data-sort="status">Status</th>
+                                <th class="sort" data-sort="id">Company Title</th>
+                                <th class="sort" data-sort="id">Email</th>
+                                <th class="sort" data-sort="id">Contact No.</th>
+                                <th class="sort" data-sort="id">Address</th>
+{{--                                <th class="sort" data-sort="product_name">@lang('translation.status')</th>--}}
                                 <th class="sort" data-sort="date">@lang('translation.action')</th>
 
                             </tr>
@@ -71,11 +83,13 @@
     </div>
     <!--end row-->
 
-    @include('admin.customer.customer-modals')
+    @include('admin.customer-companies.companies-modals')
     @include('admin.components.comon-modals.common-modal')
+
+
 @endsection
 @section('script')
-    <script src="{{ URL::asset('build/js/custom-js/customer/customer.js') }}"></script>
+    <script src="{{ URL::asset('build/js/custom-js/customer-companies/companies.js') }}"></script>
     <script>
         $(document).ready(function(){
             $('#roleTable').DataTable({
@@ -88,9 +102,11 @@
                 bLengthChange: false,
                 order: [[ 0, "desc" ]],
                 ajax: {
-                    url: "customer-list",
+                    url: "customer-companies-list",
                     data: function (d) {
-                        d.s_name = $('input[name=s_name]').val()
+                        d.name = $('input[name=s_name]').val()
+                            // d.status = $('select[name=s_status]').val()
+
                     },
                     // dataSrc: function(response) {
                     //     console.log('response',response);
@@ -99,30 +115,20 @@
                 },
 
                 columns: [
-
-                    { data: 'name' },
-                    { data: 'company' },
+                    { data: 'title' },
                     { data: 'email' },
-                    { data: 'status' },
-                    { data: null, orderable: false }
-
+                    { data: 'contact' },
+                    { data: 'address' },
+                    { data: null, orderable: false },
                 ],
                 columnDefs: [
-                    {
-                        targets: 1,
-                        render: function(data, type, row, meta) {
-                            const title = data;
-                            return (title?title.title:"-");
-
-                        }
-                    },
                     {
                         targets: 4,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
 
-                            return `<a href="{{ route('admin.customer.edit', '') }}/${rowId}" class="btn-edit" data="${rowId}" data-bs-toggle="modal" data-bs-target="#showModal"><i class="ri-pencil-fill text-primary fs-4"></i></a>
-                                <a href="{{ route('admin.customer.delete', '') }}/${rowId}" class="btn-delete"  data="${rowId}"  data-bs-toggle="modal" data-bs-target="#deleteRecordModal"><i class="ri-delete-bin-fill text-danger fs-4"></i></a>`;
+                            return `@canany('admin-companies-edit')<a href="{{ route('admin.customer-companies.edit', '') }}/${rowId}" class="btn-edit" data="${rowId}" data-bs-toggle="modal" data-bs-target="#showModal"><i class="ri-pencil-fill text-primary fs-4"></i></a>@endcanany
+                                    @canany('admin-companies-delete')<a href="{{ route('admin.customer-companies.delete','') }}" class="btn-delete"  data="${rowId}"  data-bs-toggle="modal" data-bs-target="#deleteRecordModal"><i class="ri-delete-bin-fill text-danger fs-4"></i></a>@endcanany`;
 
 
                         }

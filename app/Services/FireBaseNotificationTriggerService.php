@@ -85,10 +85,15 @@ public function fireBaseTrigger($type,$notifiableId)
         ],
     ];
 
-    $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
+
+
+
+        $response = $client->post('https://fcm.googleapis.com/v1/projects/usi-ship/messages:send', [
         'headers' => $headers,
         'json' => $body,
     ]);
+
+
 
     //echo $response->getBody();
     }

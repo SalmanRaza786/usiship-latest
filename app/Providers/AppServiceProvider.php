@@ -24,6 +24,8 @@ use App\Repositries\inventory\InventoryInterface;
 use App\Repositries\inventory\InventoryRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\customerCompanies\CustomerCompaniesRepositry;
+use App\Repositries\customerCompanies\CustomerCompaniesInterface;
 
 use App\Repositries\media\MediaInterface;
 use App\Repositries\media\MediaRepositry;
@@ -87,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CustomFieldInterface::class,CustomFieldRepositry::class);
 
         $this->app->bind(CompaniesInterface::class,CompaniesRepositry::class);
+        $this->app->bind(CustomerCompaniesInterface::class,CustomerCompaniesRepositry::class);
         $this->app->bind(CarriersInterface::class,CarriersRepositry::class);
 
         $this->app->bind(DockInterface::class,DockRepositry::class);

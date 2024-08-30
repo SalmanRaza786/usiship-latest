@@ -481,6 +481,7 @@
                         $(".btn-submit").prop("disabled", true);
                     },
                     success: function(response) {
+
                         if (response.status==true) {
                             toastr.success(response.message);
                             $('.btn-submit').text('>Checked In');
@@ -496,7 +497,7 @@
                         $(".btn-submit").prop("disabled", false);
                     },
                     error: function() {
-                        // toastr.error('something went wrong');
+                        toastr.error('something went wrong');
                         $('.btn-submit').text('>Checked In');
                         $(".btn-submit").prop("disabled", false);
                     }

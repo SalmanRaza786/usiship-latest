@@ -54,6 +54,26 @@ class AuthController extends Controller
 
         }
     }
+    public function forgetPassword(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+            ]);
+
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
+//            return $request->all();
+            return  Helper::createAPIResponce(false,200,'Valid email',$request->all());
+
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+
+        }
+    }
     public function adminLogin(Request $request)
     {
         try {

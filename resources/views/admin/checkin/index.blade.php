@@ -36,7 +36,7 @@
                                     <select class="form-control"  name="s_status">
                                         <option value="">Choose One</option>
                                         <option value="" selected>All</option>
-                                        <option  value="9">Pending</option>
+                                        <option selected  value="9">Pending</option>
                                         <option value="12">Completed</option>
                                     </select>
                                 </div>

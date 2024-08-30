@@ -103,13 +103,10 @@ use App\Http\Controllers\Api\QcController;
         Route::any('/save-resolve-item', [MissingController::class, 'saveResolve']);
 
         //QC
-
         Route::any('/qc-list', [QcController::class, 'QcList']);
         Route::any('/qc-detail', [QcController::class, 'qcDetail']);
         Route::any('/update-start-qc', [QcController::class, 'updateStartQc']);
         Route::any('/update-qc', [QcController::class, 'updateQcItem']);
-
-
 
 
 
@@ -119,6 +116,7 @@ use App\Http\Controllers\Api\QcController;
 
 
     Route::any('/api-login', [AuthController::class, 'login']);
+    Route::any('/api-forget-password', [AuthController::class, 'forgetPassword']);
     Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
     Route::any('/upload-file', [OrderController::class, 'uploadFile']);
 

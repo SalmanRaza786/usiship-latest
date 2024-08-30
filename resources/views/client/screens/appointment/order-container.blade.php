@@ -17,7 +17,7 @@
                             @endforeach
                         </select>
                         <input type="text" name="created_by" class="d-none" value="{{$data['createdBy']}}">
-                        <input type="text" name="guard" class="d-none" value="{{$data['guard']}}">
+                        <input type="text" name="guard" class="d-none" id="authGuard" value="{{$data['guard']}}">
 
                         <ul class="nav nav-pills nav-justified custom-nav" role="tablist">
                             <li class="nav-item disabled" role="presentation">

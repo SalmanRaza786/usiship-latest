@@ -45,13 +45,13 @@
                         <div class="invalid-feedback">Please enter a Address.</div>
                     </div>
 
-                    <div class="modal-footer">
-                        <div class="hstack gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
-                            <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Save</button>
-                            <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none">{{__('translation.btn_update')}}</button>
-                        </div>
+                <div class="modal-footer">
+                    <div class="hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
+                        <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Add Companies</button>
+                        <button type="submit" class="btn btn-success btn-submit " id="add-btn" style="display: none">{{__('translation.btn_update')}}</button>
                     </div>
+                </div>
                 </div>
             </form>
         </div>

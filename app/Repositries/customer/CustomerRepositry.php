@@ -19,7 +19,7 @@ class CustomerRepositry implements CustomerInterface {
     {
         try {
             $data['totalRecords'] = User::count();
-            $qry= User::query();
+            $qry= User::with('company');
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->where('name', 'LIKE', "%{$name}%")
@@ -51,6 +51,8 @@ class CustomerRepositry implements CustomerInterface {
 
             $validator = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'max:255'],
+                'company_id' => 'required',
+                'status' => 'required',
                 'email' => 'required|string|email|max:255|unique:users,email,'. $id,
 
             ]);
@@ -67,6 +69,8 @@ class CustomerRepositry implements CustomerInterface {
             $customerData = [
                 'name' => $request->name,
                 'email' => $request->email,
+                'company_id' => $request->company_id,
+                'status' => $request->status,
             ];
 
             if ($request->filled('password')) {
@@ -83,8 +87,9 @@ class CustomerRepositry implements CustomerInterface {
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
 
+            $customer = User::with('company')->find($load->id);
 
-            return Helper::success($load, $message);
+            return Helper::success($customer, $message);
         } catch (ValidationException $validationException) {
             DB::rollBack();
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());

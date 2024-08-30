@@ -22,7 +22,7 @@ $(document).ready(function(){
                     $('.btn-close').click();
                     $('#roleTable').DataTable().ajax.reload();
                     toastr.success(response.message);
-                    $('#addForm')[0].reset();
+                    $('#addFrom')[0].reset();
 
 
                 }
@@ -128,7 +128,7 @@ $(document).ready(function(){
         $('.btn-add').css('display', 'block');
         $('.add-lang-title').css('display', 'block');
         $('.edit-lang-title').css('display', 'none');
-        // $('#WhAddForm')[0].reset();
+        $('#addFrom')[0].reset();
     }
     function editElement(){
         $('.add-lang-title').css('display', 'none');

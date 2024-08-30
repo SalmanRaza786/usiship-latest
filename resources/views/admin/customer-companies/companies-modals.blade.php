@@ -4,13 +4,13 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
-                <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Add Companies</h5>
-                <h5 class="modal-title edit-lang-title" id="exampleModalLabel" style="display: none">Edit Companies</h5>
+                <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Add Customer Companies</h5>
+                <h5 class="modal-title edit-lang-title" id="exampleModalLabel" style="display: none">Edit Customer Companies</h5>
                 <button type="button" class="btn-close btn-modal-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
             </div>
             <div>
             </div>
-            <form method="post" class=" g-3 needs-validation" action="{{route('admin.companies.store')}}" autocomplete="off" id="addFrom"  >
+            <form method="post" class="g-3 needs-validation" action="{{route('admin.customer-companies.store')}}" autocomplete="off" id="addFrom"  >
                 @csrf
                 <div class="modal-body">
 
@@ -31,7 +31,7 @@
                         <div class="invalid-feedback">Please enter a Email.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="validationCustom01" class="form-label">Contact</label>
+                        <label for="validationCustom01" class="form-label">Contact No.</label>
                         <input type="text" class="form-control" name="contact" id="contact" placeholder="Enter Company Contact "  required>
                         <div class="valid-feedback">
                         </div>

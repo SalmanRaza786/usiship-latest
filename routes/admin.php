@@ -34,6 +34,7 @@ use App\Http\Controllers\Outbounds\WorkOrderController;
 use App\Http\Controllers\Outbounds\PickingController;
 use App\Http\Controllers\Outbounds\MissingController;
 use App\Http\Controllers\Outbounds\QcController;
+use App\Http\Controllers\Admin\CustomerCompanyController;
 
 
 
@@ -228,6 +229,14 @@ use App\Http\Controllers\Outbounds\QcController;
         Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start')->middleware(['can:admin-qc-create']);
         Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc')->middleware(['can:admin-qc-create']);
         Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc')->middleware(['can:admin-qc-create']);
+
+        //Customer-Companies
+        Route::any('/customer-companies', [CustomerCompanyController::class, 'index'])->name('customer-companies.index')->middleware(['can:admin-customer-companies-view']);
+        Route::any('/customer-companies-list', [CustomerCompanyController::class, 'companiesList'])->name('customer-companies.List')->middleware(['can:admin-customer-companies-view']);
+        Route::any('/customer-companies-create', [CustomerCompanyController::class, 'companiesCreate'])->name('customer-companies.create')->middleware(['can:admin-customer-companies-create']);
+        Route::any('/save-update-customer-companies', [CustomerCompanyController::class, 'companiesCreateOrUpdate'])->name('customer-companies.store')->middleware(['can:admin-customer-companies-create']);
+        Route::any('/edit-customer-companies/{id}', [CustomerCompanyController::class, 'edit'])->name('customer-companies.edit')->middleware(['can:admin-customer-companies-edit']);
+        Route::any('/delete-customer-companies/{id}', [CustomerCompanyController::class, 'destroy'])->name('customer-companies.delete')->middleware(['can:admin-customer-companies-delete']);
 
 
 

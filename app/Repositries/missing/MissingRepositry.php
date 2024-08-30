@@ -98,8 +98,8 @@ class MissingRepositry implements MissingInterface
     public function saveResolveItems($request,$guard=null)
     {
 
-//        try {
-//            DB::beginTransaction();
+        try {
+            DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'itemId.*' => 'required',
             ]);
@@ -202,10 +202,10 @@ class MissingRepositry implements MissingInterface
 
 
             return Helper::success($workOrderPicker,$message);
-//        }  catch (\Exception $e) {
-//            DB::rollBack();
-//            return Helper::errorWithData($e->getMessage(),[]);
-//        }
+        }  catch (\Exception $e) {
+            DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
 
     public function getAllMissingForApi()

@@ -72,7 +72,7 @@ class MissingController extends Controller
 
     public function saveResolve(Request $request)
     {
-//        try {
+        try {
             $request->all();
 //            $validator = Validator::make($request->all(), [
 //                'work_order_id' => 'required',
@@ -84,8 +84,8 @@ class MissingController extends Controller
 //            }
               $res=$this->missed->saveResolveItems($request,'api');
             return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
-//        } catch (\Exception $e) {
-//            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
-//        }
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
     }
 }

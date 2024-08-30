@@ -96,15 +96,12 @@ class CarriersController extends Controller
                 if ($request->from == 0) {
                     $order = $this->order->changeOrderStatus($request->order_id, 9);
                     if ($order->get('status')) {
-
                         $orderData = $order->get('data');
                         $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
                         $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
                         if ($notification->get('status')) {
                             Helper::notificationTriggerHelper(1, null);
                             Helper::notificationTriggerHelper(2, $orderData->customer_id);
-
-
                         }
                     }
 

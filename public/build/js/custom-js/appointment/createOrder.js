@@ -492,19 +492,28 @@ $('#OrderForm').on('submit', function(e) {
         success: function(response) {
                     var html = " ";
 
-
+            var authGuard = $('#authGuard').val();
             if (response.status==true) {
                 toastr.success(response.message);
                 $('#OrderForm')[0].reset();
-                html +='<div class="text-center py-5">'+
-                    '<div className="mb-4">'+
-                    '<lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#0ab39c,secondary:#405189" style="width:120px;height:120px"></lord-icon>'+
-                '</div>'+
-                '<h5>Thank you ! Your Order is Completed !</h5>'+
-                '<p className="text-muted">You will receive an order confirmation email with details of your order.</p>'+
-                '<h3 className="fw-semibold">Order ID: <a  className="text-decoration-underline">'+response.data.order_id+'</a></h3>'+
-                    '<button type="button" class="btn btn-primary btn-upload"   data="'+response.data.id+'" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button> '+
-                    '</div>';
+                var html = '<div class="text-center py-5">' +
+                    '<div class="mb-4">' +
+                    '<lord-icon src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop" colors="primary:#0ab39c,secondary:#405189" style="width:120px;height:120px"></lord-icon>' +
+                    '</div>' +
+                    '<h5>Thank you! Your Order is Completed!</h5>' +
+                    '<p class="text-muted">You will receive an order confirmation email with details of your order.</p>' +
+                    '<h3 class="fw-semibold">Order ID: <a class="text-decoration-underline" >' + response.data.order_id + '</h3>';
+
+                if (authGuard === 'web') {
+                    html += '<button type="button" class="btn btn-primary btn-upload" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button>';
+                }
+                if (authGuard === 'admin') {
+                    html += '<a href="/' + authGuard + '/get-order-detail/' + response.data.id + '" class="btn btn-primary">View Order Detail</a>';
+
+                }
+
+                html += '</div>';
+
                 $('#congratsMessege').html(html);
                 $('.btn-back').addClass('d-none');
 

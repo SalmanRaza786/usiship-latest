@@ -1,10 +1,9 @@
 
-$(document).ready(function(){
+
 
 
     $('#addFrom').on('submit', function(e) {
         e.preventDefault();
-
         $.ajax({
             url: $(this).attr('action'),
             method: 'POST',
@@ -14,43 +13,39 @@ $(document).ready(function(){
             cache: false,
             processData: false,
             beforeSend: function() {
-                $('.btn-submit').text('Saving...');
+                $('.btn-submit').text('Processing...');
                 $(".btn-submit").prop("disabled", true);
             },
             success: function(response) {
 
-
                 if (response.status==true) {
-                    $('#roleTable').DataTable().ajax.reload();
                     toastr.success(response.message);
-                    $('#addFrom')[0].reset();
                     $('.btn-close').click();
+                    $('#roleTable').DataTable().ajax.reload();
                     $('.btn-submit').text('Save');
                     $(".btn-submit").prop("disabled", false);
-
+                    $('#addForm')[0].reset();
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
                     $('.btn-submit').text('Save');
                     $(".btn-submit").prop("disabled", false);
                 }
-            },
 
+            },
             complete: function(data) {
                 $(".btn-submit").html("Save");
                 $(".btn-submit").prop("disabled", false);
             },
 
-            error: function(xhr, status, error) {
-
-                if(xhr.responseText){
-                    toastr.error(xhr.responseText);
-                }
-                if(xhr.responseJSON.message){
-                    toastr.error(xhr.responseJSON.message);
-                }
+            error: function() {
+                // toastr.error('something went wrong');
+                $('.btn-submit').text('Save');
+                $(".btn-submit").prop("disabled", false);
             }
         });
+
+
     });
 
 
@@ -63,31 +58,20 @@ $(document).ready(function(){
         editElement();
         var id = $(this).attr('data');
         $.ajax({
-            url: 'edit-customer/'+id,
+            url: 'edit-customer-companies/'+id,
             type: 'GET',
             async: false,
             dataType: 'json',
             data: { id: id },
             success: function(response) {
-               console.log(response.data);
+
                 if(response.status==true){
-                    $('input[name=id]').val(response.data.load.id);
-                    $('input[name=name]').val(response.data.load.name);
+                    $('input[name=id]').val(id);
+                    $('input[name=company_title]').val(response.data.load.title);
                     $('input[name=email]').val(response.data.load.email);
+                    $('input[name=contact]').val(response.data.load.contact);
+                    $('input[name=address]').val(response.data.load.address);
 
-                    $('select[name="company_id"]').empty();
-                    $('select[name="company_id"]').append(`<option value="">Choose One</option>`);
-
-                    $.each(response.data.companies.data.data, function(key, row) {
-                        $('select[name="company_id"]').append(`<option value="${row.id}" ${row.id == response.data.load.company_id ? 'selected' : ''}>${row.title}</option>`);
-                    });
-
-                    $('select[name="status"]')
-                        .html(
-                            `<option value="">Choose One</option>`+
-                            `<option value="1" ${response.data.load.status == 'Active' ? 'selected' : ''}>Active</option>`+
-                            `<option value="2" ${response.data.load.status== 'In-Active' ? 'selected' : ''}>In-Active</option>`
-                        )
                 }else{
                     toastr.error(response.message)
                 }
@@ -103,13 +87,14 @@ $(document).ready(function(){
 
     $('#roleTable').on('click', '.btn-delete', function() {
         var id = $(this).attr('data');
-        // alert(id);
         $('.confirm-delete').val(id);
     });
+
     $('.confirm-delete').click(function() {
         var id = $(this).val();
+
         $.ajax({
-            url: 'delete-customer/'+id,
+            url: 'delete-customer-companies/'+id,
             type: 'get',
             async: false,
             dataType: 'json',
@@ -131,6 +116,7 @@ $(document).ready(function(){
         addElement();
     });
     function addElement(){
+
         $('.btn-save-changes').css('display', 'none');
         $('.btn-add').css('display', 'block');
         $('.add-lang-title').css('display', 'block');
@@ -142,58 +128,13 @@ $(document).ready(function(){
         $('.edit-lang-title').css('display', 'block');
         $('.btn-save-changes').css('display', 'block');
         $('.btn-add').css('display', 'none');
-
     }
 
     $('#showModal').modal({
         backdrop: 'static',
         keyboard: false
-    })
-
-
-    $('#syncLectures').on('click', function() {
-
-        $.ajax({
-            url: route('admin.lectures.sync'),
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            },
-            dataType: 'JSON',
-            contentType: false,
-            cache: false,
-            processData: false,
-            beforeSend: function() {
-                $('#syncLectures').text('Processing...');
-                $("#syncLectures").prop("disabled", true);
-            },
-            success: function(response) {
-                if (response==1){
-                    toastr.success('Lectures synced successfully');
-                }
-            },
-
-            complete: function(data) {
-                $("#syncLectures").html("Sync Lectures");
-                $("#syncLectures").prop("disabled", false);
-            },
-
-            error: function(xhr, status, error) {
-
-                if(xhr.responseText){
-                    toastr.error(xhr.responseText);
-                }
-                if(xhr.responseJSON.message){
-                    toastr.error(xhr.responseJSON.message);
-                }
-            }
-        });
-
-
     });
 
 
-
-});
 
 

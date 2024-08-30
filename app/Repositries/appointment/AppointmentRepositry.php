@@ -764,6 +764,7 @@ class AppointmentRepositry implements AppointmentInterface {
             }
 
             $this->sendNotificationViaEmail($orderId, $customerId, $statusId, $notifyContent);
+
             return Helper::success([],'Notification created successfully');
         }
         catch (\Exception $e) {
