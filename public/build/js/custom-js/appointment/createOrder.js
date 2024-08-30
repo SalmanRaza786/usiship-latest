@@ -507,6 +507,7 @@ $('#OrderForm').on('submit', function(e) {
                 if (authGuard === 'web') {
                     html += '<button type="button" class="btn btn-primary btn-upload" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button>';
                 }
+                
                 if (authGuard === 'admin') {
                     html += '<a href="/' + authGuard + '/get-order-detail/' + response.data.id + '" class="btn btn-primary">View Order Detail</a>';
 
