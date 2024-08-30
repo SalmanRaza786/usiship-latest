@@ -185,6 +185,7 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
         Route::any('/store-put-away', [PutAwayController::class, 'storePutAway'])->name('put-away.store')->middleware(['can:admin-putaway-create']);
         Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-putaway-delete']);
         Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
+        Route::get('/export-order-items/{orderId}', [PutAwayController::class, 'export'])->name('put-away.export')->middleware(['can:admin-putaway-create']);
 
         //Notificationss
         Route::any('/trigger-notification/{type}/{totifiableId}', [OrderController::class, 'notificationTrigger']);

@@ -50,9 +50,10 @@ class AppointmentRepositry implements AppointmentInterface {
     {
 
         try {
+
             $data['totalRecords'] = Order::count();
             $qry = Order::with('warehouse','dock.dock','operationalHour','status');
-            $qry=$qry->where('customer_id',Auth::id());
+            $qry=$qry->where('company_id',Auth::user()->company_id);
 
             $qry = $qry->when($request->s_name, function ($query, $name) {
                 return $query->whereHas('warehouse', function ($q) use ($name) {
@@ -98,12 +99,22 @@ class AppointmentRepositry implements AppointmentInterface {
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
+
+            if (!$user = User::find($request->customer_id)) {
+                return Helper::errorWithData("Customer Not Found",[]);
+            }
+
+            if($user->company_id == null){
+                return Helper::errorWithData("Customer is not Associated with any Company",[]);
+            }
+
             $order = Order::updateOrCreate(
                 [
                     'id' => $id
                 ],
                 [
                     'customer_id' =>$request->customer_id,
+                    'company_id' =>$user?$user->company_id:null,
                     'wh_id' => $request->wh_id,
                     'dock_id' => $request->dock_id,
                     'load_type_id' => $request->load_type_id,
@@ -392,7 +403,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
 
             $qry= Order::query();
-            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages');
+            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages','itemPutAway.inventory','itemPutAway.location','itemPutAway.putAwayMedia');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {

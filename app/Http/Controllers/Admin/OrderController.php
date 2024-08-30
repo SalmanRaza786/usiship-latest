@@ -90,7 +90,6 @@ class OrderController extends Controller
         try {
             if (!Order::find($id)) {
                 return back()->with('error','Invalid order id');
-
             }
             $data['orderDetail']=$this->getOrderInfo($id);
             return view('admin.order.order-detail')->with(compact('data'));
@@ -160,8 +159,9 @@ class OrderController extends Controller
                 'orderLogs'=>$res->orderLogs,
                 'warehouse'=>$res->warehouse,
                 'orderForm'=>$res->orderForm,
-                'packagingList'=>$res->packgingList?$res->packgingList:[],
-                'orderContacts'=>$res->orderContacts?$res->orderContacts:[],
+                'packagingList'=>$res->packgingList ?? [],
+                'orderContacts'=>$res->orderContacts ?? [],
+                'itemPutAway'=>$res->itemPutAway ?? [],
             );
             return Helper::success($data,'Order Info');
 
@@ -173,7 +173,6 @@ class OrderController extends Controller
     public function createNewOrder(Request $request)
     {
         try {
-
             $data['customerId']=$request->customer_id;
             $data['status']=OrderStatus::get();
             $data['selectStatus']=$request->order_status;

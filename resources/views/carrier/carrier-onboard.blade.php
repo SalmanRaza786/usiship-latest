@@ -484,7 +484,7 @@
 
                         if (response.status==true) {
                             toastr.success(response.message);
-                            $('.btn-submit').text('>Checked In');
+                            $('.btn-submit').text('Checked In');
                             $(".btn-submit").prop("disabled", false);
                             $('#' + targetTab).tab('show');
                         }
@@ -493,12 +493,12 @@
                         }
                     },
                     complete: function(data) {
-                        $(".btn-submit").html(">Checked In");
+                        $(".btn-submit").html("Checked In");
                         $(".btn-submit").prop("disabled", false);
                     },
-                    error: function() {
-                        toastr.error('something went wrong');
-                        $('.btn-submit').text('>Checked In');
+                    error: function(error) {
+                        toastr.error( error.responseJSON.message);
+                        $('.btn-submit').text('Checked In');
                         $(".btn-submit").prop("disabled", false);
                     }
                 });
