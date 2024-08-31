@@ -12,6 +12,7 @@ use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\wh\WhInterface;
+use App\Services\DataService;
 use App\Services\FireBaseNotificationTriggerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -25,12 +26,14 @@ class WareHouseController extends Controller
     private $wh;
     private $customField;
     private $order;
+    private $dataService;
 
-    public function __construct(WhInterface $wh, CustomFieldInterface $customField,AppointmentInterface $order)
+    public function __construct(WhInterface $wh, CustomFieldInterface $customField,AppointmentInterface $order,DataService $dataService)
     {
         $this->wh = $wh;
         $this->customField = $customField;
         $this->order = $order;
+        $this->dataService = $dataService;
 
     }
 
@@ -330,6 +333,22 @@ class WareHouseController extends Controller
     {
         return view('scan');
     }
+
+
+
+    public function fetchData($whId=1)
+    {
+        $endpoint = 'warehouses/'.$whId.'/locations';
+
+        try {
+            $data = $this->dataService->fetchAllData($endpoint);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
 
 
 }

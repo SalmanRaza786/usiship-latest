@@ -62,6 +62,7 @@ use App\Repositries\wh\WhInterface;
 use App\Repositries\wh\WhRepositry;
 use App\Repositries\workOrder\WorkOrderInterface;
 use App\Repositries\workOrder\WorkOrderRepositry;
+use App\Services\DataService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -71,7 +72,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(DataService::class, function ($app) {
+            return new DataService();
+        });
     }
 
     /**

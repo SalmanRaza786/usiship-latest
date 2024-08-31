@@ -239,7 +239,8 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
         Route::any('/edit-customer-companies/{id}', [CustomerCompanyController::class, 'edit'])->name('customer-companies.edit')->middleware(['can:admin-customer-companies-edit']);
         Route::any('/delete-customer-companies/{id}', [CustomerCompanyController::class, 'destroy'])->name('customer-companies.delete')->middleware(['can:admin-customer-companies-delete']);
 
-
+        //Import Locations from WHMS
+        Route::any('/import-locations', [WareHouseController::class, 'fetchData'])->name('import.locations');
 
 
     });
