@@ -507,10 +507,9 @@ $('#OrderForm').on('submit', function(e) {
                 if (authGuard === 'web') {
                     html += '<button type="button" class="btn btn-primary btn-upload" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button>';
                 }
-                
+
                 if (authGuard === 'admin') {
                     html += '<a href="/' + authGuard + '/get-order-detail/' + response.data.id + '" class="btn btn-primary">View Order Detail</a>';
-
                 }
 
                 html += '</div>';
@@ -530,8 +529,8 @@ $('#OrderForm').on('submit', function(e) {
             $(".btn-submit").prop("disabled", false);
         },
 
-        error: function () {
-            // toastr.error('something went wrong');
+        error: function (error) {
+            toastr.error( error.responseJSON.message);
             $('.btn-submit').text('Confirm Appointment');
             $(".btn-submit").prop("disabled", false);
         }

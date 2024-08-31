@@ -116,8 +116,9 @@ $(document).ready(function(){
             complete: function(data) {
                 row.find('.save-row').prop('disabled', false);
             },
-            error: function() {
-                 toastr.error('something went wrong');
+            error: function(error) {
+
+                 //toastr.error(error.);
                 row.find('.save-row').prop('disabled', false);
             }
         });

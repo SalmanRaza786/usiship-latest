@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\OrderItemPutAwayExport;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Models\OrderItemPutAway;
@@ -12,6 +13,7 @@ use App\Repositries\packagingList\PackagingListInterface;
 use App\Repositries\putaway\PutAwayInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
+use Excel;
 
 class PutAwayController extends Controller
 {
@@ -45,6 +47,15 @@ class PutAwayController extends Controller
              $data['inventory']=count($data['offLoadingInfo']->order->packgingList)?$data['offLoadingInfo']->order->packgingList:[];
              $data['putAwayItems']=Helper::fetchOnlyData($this->putAway->getPutAwayItemsAccordingOffLoading($offLoadingId));
             return view('admin.putaway.create')->with(compact('data'));
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+        }
+    }
+
+    public function export($orderId)
+    {
+        try {
+           return Excel::download(new OrderItemPutAwayExport($orderId), 'order_item_put_away.xlsx');
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }

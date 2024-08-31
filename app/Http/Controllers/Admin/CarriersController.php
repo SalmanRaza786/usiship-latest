@@ -86,7 +86,7 @@ class CarriersController extends Controller
     public function saveCarrierInfo(Request $request)
     {
         try {
-            $request->all();
+
             if (Order::where('id', $request->order_id)->where('order_id', $request->order_no)->count() == 0) {
                 return Helper::error('Invalid order id or reference no');
             }
@@ -100,8 +100,8 @@ class CarriersController extends Controller
                         $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
                         $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
                         if ($notification->get('status')) {
-                            Helper::notificationTriggerHelper(1, null);
-                            Helper::notificationTriggerHelper(2, $orderData->customer_id);
+//                            Helper::notificationTriggerHelper(1, null);
+//                            Helper::notificationTriggerHelper(2, $orderData->customer_id);
                         }
                     }
 

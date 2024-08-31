@@ -19,10 +19,19 @@ class OrderItemPutAway extends Model
     {
         return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
     }
+    public function location()
+    {
+        return $this->belongsTo(WhLocation::class, 'location_id', 'id');
+    }
 
     public function putAwayMedia()
     {
         return $this->morphMany(FileContent::class, 'fileable');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
     protected static function boot()

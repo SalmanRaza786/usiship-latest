@@ -117,6 +117,8 @@ use App\Http\Controllers\Api\QcController;
 
     Route::any('/api-login', [AuthController::class, 'login']);
     Route::any('/api-forget-password', [AuthController::class, 'forgetPassword']);
+    Route::any('/api-reset-password', [AuthController::class, 'reset']);
+    Route::any('/api-verify-otp', [AuthController::class, 'verifyOTP']);
     Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
     Route::any('/upload-file', [OrderController::class, 'uploadFile']);
 

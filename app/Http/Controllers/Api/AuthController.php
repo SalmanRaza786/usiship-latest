@@ -9,11 +9,16 @@ use App\Models\Admin;
 use App\Models\DeviceToken;
 use App\Models\Student;
 use App\Models\User;
+use App\Notifications\OrderNotification;
 use App\Repositries\customer\CustomerInterface;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use function Symfony\Component\Translation\t;
 
 class AuthController extends Controller
 {
@@ -59,21 +64,83 @@ class AuthController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
+                'email' => 'required|email|exists:users,email',
             ]);
 
             if ($validator->fails()){
                 return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
 
-//            return $request->all();
-            return  Helper::createAPIResponce(false,200,'Valid email',$request->all());
-
+            $user = User::where('email', $request->email)->first();
+            $otp = rand(100000, 999999);
+            $user->otp = $otp;
+            $user->save();
+            $mailData = [
+                'subject' => 'Reset Password Notification',
+                'greeting' => 'Hello '.$user->name,
+                'content' => "Your OTP for password reset is: " . $otp . " .If you did not request a password reset, no further action is required.",
+                'actionText' => 'Visit Our Website',
+                'actionUrl' => url('/'),
+                'orderId' =>1,
+                'statusId' => 1,
+            ];
+            $res=$user->notify(new OrderNotification($mailData));
+            return Helper::createAPIResponce(false,200,'We have emailed your password reset OTP.',$user->email);
         } catch (\Exception $e) {
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
-
         }
     }
+
+    public function verifyOTP(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|exists:users,email',
+                'otp' => 'required|string|min:6|max:6',
+            ]);
+
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if ($request->otp === $user->otp) {
+                return Helper::createAPIResponce(false,200,'OTP is valid. You can now reset your password.',$user->email);
+            } else {
+                return Helper::createAPIResponce(true,400,'Invalid OTP.',$user->email);
+            }
+
+        }catch (\Exception $e)
+        {
+            return Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+
+    }
+
+    public function reset(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|exists:users,email',
+                'password' => 'required|min:8|confirmed',
+            ]);
+
+            if ($validator->fails()){
+                return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+            $user = User::where('email', $request->email)->first();
+            $user->password = Hash::make( $request->password);
+            $user->save();
+
+            return Helper::createAPIResponce(false,200,'Password reset successfully',$user->email);
+        }catch (\Exception $e)
+        {
+            return Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+    }
+
+
     public function adminLogin(Request $request)
     {
         try {

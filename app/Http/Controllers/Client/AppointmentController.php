@@ -151,7 +151,7 @@ class AppointmentController extends Controller
                     $data=$order->get('data');
                     $notification= $this->appointment->sendNotification($data->id,$data->customer_id,11,1);
                     if($notification->get('status')){
-                        Helper::notificationTriggerHelper(1,0);
+//                        Helper::notificationTriggerHelper(1,null);
 
                     }
                 }
