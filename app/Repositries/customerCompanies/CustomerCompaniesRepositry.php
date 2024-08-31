@@ -21,16 +21,13 @@ class CustomerCompaniesRepositry implements CustomerCompaniesInterface
     public function companiesList($request)
     {
         try {
-            $data['totalRecords'] = Company::count();
+            $data['totalRecords'] = CustomerCompany::count();
 
             $qry = CustomerCompany::query();
             $qry = $qry->when($request->name, function ($query, $name) {
                 return $query->where('title', $name);
             });
 
-//            $qry = $qry->when($request->status, function ($query, $status) {
-//                return $query->where('status', $status);
-//            });
             $qry = $qry->when($request->start, fn($q) => $q->offset($request->start));
             $qry = $qry->when($request->length, fn($q) => $q->limit($request->length));
             $data['data'] = $qry->orderByDesc('id')->get();
