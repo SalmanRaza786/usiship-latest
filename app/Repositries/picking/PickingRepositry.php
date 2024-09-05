@@ -68,6 +68,19 @@ class PickingRepositry implements PickingInterface
             $data['workOrder']=$qry->save();
 
 
+                if(!$request->stagedLoc)
+                {
+                    return Helper::error("Staged Location field require");
+                }
+                $wk = WorkOrder::find($request->workOrderId);
+                if(!$wk)
+                {
+                    return Helper::error("Work Order Not Found");
+                }
+                $wk->staged_location = $request->stagedLoc;
+                $wk->save();
+
+
             if($request->updateType==2) {
              $data['qc']=Helper::saveQcItems($request);
              MissedItem::where('picker_table_id',$request->pickerId)->update(['is_publish'=>1]);
@@ -164,14 +177,16 @@ class PickingRepositry implements PickingInterface
                     $fileableType = 'App\Models\PickedItem';
 
                     // Handle multiple file uploads for each row
-                    if ($request->hasFile("pickedItemImages.$key")) {
+                    if ($request->hasFile("pickedItemImages.$key") || $request->hasFile("pickedStagedLocImages.$key")) {
                         $uploadedFiles = $request->file("pickedItemImages.$key");
+                        $uploadedFilesLoc = $request->file("pickedStagedLocImages.$key");
 
                         $imageSets = [
-                            'pickedItemImages' => $uploadedFiles
+                            'pickedItemImages' => $uploadedFiles,
+                            'pickedStagedLocImages' => $uploadedFilesLoc,
                         ];
 
-                        if (!empty($imageSets['pickedItemImages'])) {
+                        if (!empty($imageSets['pickedItemImages']) || !empty($imageSets['pickedStagedLocImages'])) {
                             $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
                         }
                     }

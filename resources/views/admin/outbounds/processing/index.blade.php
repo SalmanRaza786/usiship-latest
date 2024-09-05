@@ -1,11 +1,11 @@
 @extends('layouts.master')
-@section('title') Work Orders @endsection
+@section('title') Processing List @endsection
 
 @section('content')
     @component('components.breadcrumb')
-        @slot('li_1') {{__('translation.settings')}} @endslot
+        @slot('li_1') Dashboard @endslot
         @slot('routeUrl') {{url('/')}} @endslot
-        @slot('title') Work Orders @endslot
+        @slot('title') Processing List @endslot
     @endcomponent
     @include('components.common-error')
     <div class="row">
@@ -13,14 +13,9 @@
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0">Work Order List</h4>
+                        <h4 class="card-title mb-0"> Processing List </h4>
                     </div>
-                    @canany('admin-role-create')
-                    <div class="col-auto justify-content-sm-end">
 
-                        <button type="button" class="btn btn-success btn-import"><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
-                    </div>
-                        @endcanany
                 </div><!-- end card header -->
                 <div class="card-body border border-dashed border-end-0 border-start-0">
 
@@ -63,10 +58,10 @@
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
                                 <th class="sort">Customer Name</th>
-                                <th class="sort">Order Date</th>
-                                <th class="sort">Shipping Method</th>
+                                <th class="sort">Direction</th>
+                                <th class="sort">Load Type</th>
                                 <th class="sort">Order Ref</th>
-                                <th class="sort">Shipping Time</th>
+
                                 <th class="sort">Status</th>
                                 <th class="sort">Action</th>
                             </tr>
@@ -78,7 +73,7 @@
 
     </div>
 
-    @include('admin.outbounds.work-orders.work-order-modals')
+    @include('admin.outbounds.processing.processing-modals')
 
 
 @endsection
@@ -86,7 +81,7 @@
 @section('script')
 
 
-    <script src="{{ URL::asset('build/js/custom-js/workOrders/workOrders.js') }}"></script>
+    <script src="{{ URL::asset('build/js/custom-js/processing/processing.js') }}"></script>
 <script>
     $(document).ready(function(){
         $('#roleTable').DataTable({
@@ -99,42 +94,43 @@
             bLengthChange: false,
             order: [[ 0, "desc" ]],
             ajax: {
-                url: "work-orders-list",
+                url: "processing-list",
 
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),
                         d.s_status = $('select[name=s_status]').val()
-
                 },
-
             },
 
             columns: [
-                { data: 'client.name' },
-                { data: 'order_date' },
-                { data: 'ship_method' },
-                { data: 'order_reference' },
-                { data: 'ship_date' },
-                { data: 'status.status_title' },
+                { data: 'work_order.client.name' },
+                { data: 'work_order.load_type.direction.value' },
+                { data: 'work_order.load_type.eq_type.value' },
+                { data: 'work_order.order_reference' },
+                { data: null },
                 { data: null, orderable: false },
             ],
 
             columnDefs: [
 
                 {
-                    targets: 6,
+                    targets: 4,
                     render: function(data, type, row, meta) {
+                        if (data.status_code == 22) {
+                            return '<span class="badge badge-soft-success text-uppercase">'+data.status.status_title+'</span>';
+                        } else  {
+                            return '<span class="badge badge-soft-danger text-uppercase">'+data.status.status_title+'</span>';
+                        }
+                    }
+                },
 
-                        var btnAssign = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
-                        var btnUploadDoc = ' @canany('admin-role-edit')<a href="#" type="button" class="btn btn-primary btn-check-in"  data-bs-toggle="modal" data-bs-target="#checkInModal">Upload Bol Document</a>@endcanany';
-                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-check-in"  data-bs-toggle="modal" data-bs-target="#checkInModal">Schedule Now</a>@endcanany';
-                        var btnGroup='';
-                        if(row.status.order_by==201){
-                             btnGroup=  btnAssign;
-                        }
-                        if(row.status.order_by==202){
-                             btnGroup=  btnUploadDoc+ ' ' + btnScheduleNow;
-                        }
+                {
+                    targets: 5,
+                    render: function(data, type, row, meta) {
+                        var url = "{{ route('admin.process.detail', ':id') }}";
+                        var StartPicking = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-start-processing" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Start Processing</a>@endcanany';
+                        var btnGroup=StartPicking;
+
                         return btnGroup;
                     }
                 }

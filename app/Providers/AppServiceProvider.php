@@ -50,6 +50,8 @@ use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
 use App\Repositries\picking\PickingInterface;
 use App\Repositries\picking\PickingRepositry;
+use App\Repositries\processing\ProcessingInterface;
+use App\Repositries\processing\ProcessingRepositry;
 use App\Repositries\putaway\PutAwayInterface;
 use App\Repositries\putaway\PutawayRepositry;
 use App\Repositries\qc\QcInterface;
@@ -113,6 +115,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PickingInterface::class,PickingRepositry::class);
         $this->app->bind(MissingInterface::class,MissingRepositry::class);
         $this->app->bind(QcInterface::class,QcRepositry::class);
+        $this->app->bind(ProcessingInterface::class,ProcessingRepositry::class);
 
 
 

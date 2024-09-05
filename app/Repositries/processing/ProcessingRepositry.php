@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositries\qc;
+namespace App\Repositries\processing;
 
 use App\Http\Helpers\Helper;
 use App\Models\MissedItem;
@@ -19,15 +19,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
-class QcRepositry implements QcInterface
+class ProcessingRepositry implements ProcessingInterface
 {
 
     protected $pickedItemFilePath = 'picked-item-media/';
-    public function getQcList($request)
+    public function getProcessList($request)
     {
         try {
-            $data['totalRecords'] = QcWorkOrder::publish()->count();
-            $qry= QcWorkOrder::query();
+            $data['totalRecords'] = OrderProcessing::publish()->count();
+            $qry= OrderProcessing::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
             $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
@@ -41,12 +41,12 @@ class QcRepositry implements QcInterface
         }
 
     }
-    public function getQcInfo($id)
+    public function getProcessInfo($id)
     {
         try {
 
-            $qry= QcWorkOrder::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType');
+            $qry= OrderProcessing::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType','qcWorkOrder');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
 
@@ -55,7 +55,7 @@ class QcRepositry implements QcInterface
         }
 
     }
-    public function updateStartQc($request)
+    public function updateStartProcess($request)
     {
         try {
 
@@ -66,30 +66,15 @@ class QcRepositry implements QcInterface
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             ($request->updateType==2)?$qry->status_code=$request->status_code:'';
             $qry->save();
-            if($request->updateType == 2)
-            {
-                $wokr_order_process = OrderProcessing::updateOrCreate(
-                    [
-                        'work_order_id' =>$qry->work_order_id,
-                    ],
-                    [
-                        'work_order_id' =>$qry->work_order_id,
-                        'qc_work_order_id' =>$qry->id,
-                        'auth_id' =>Auth::user()->id,
-                        'is_publish' =>2,
-                        'status_code' =>205
-                    ]
-                );
-            }
 
-            return Helper::success($qry, ($request->updateType==1)?"qc start successfully":"qc close successfully");
+            return Helper::success($qry, ($request->updateType==1)?"qc start success fully":"qc close success fully");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
     }
-    public function getQcItems($qcId)
+    public function getProcessItems($qcId)
     {
         try {
 
@@ -106,7 +91,7 @@ class QcRepositry implements QcInterface
 
     }
     //savePickedItems
-    public function createQcItems($request)
+    public function createProcessItems($request)
     {
 
         try {
@@ -165,7 +150,7 @@ class QcRepositry implements QcInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
-    public function getAllQcForApi()
+    public function getAllProcessForApi()
     {
         try {
 
@@ -181,7 +166,7 @@ class QcRepositry implements QcInterface
         }
 
     }
-    public function updateQcItems($request)
+    public function updateProcessItems($request)
     {
         try {
             foreach ($request->hidden_id as $key=>$val){

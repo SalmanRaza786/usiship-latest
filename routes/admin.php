@@ -36,6 +36,8 @@ use App\Http\Controllers\Outbounds\MissingController;
 use App\Http\Controllers\Outbounds\QcController;
 use App\Http\Controllers\Admin\CustomerCompanyController;
 
+use App\Http\Controllers\Outbounds\ProcessingController;
+
 
 
 
@@ -201,6 +203,7 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
 
 
         //Outbounds
+        Route::any('/import-work-orders', [WorkOrderController::class, 'fetchOrdersData'])->name('work.orders.import')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
@@ -230,6 +233,15 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
         Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start')->middleware(['can:admin-qc-create']);
         Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc')->middleware(['can:admin-qc-create']);
         Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc')->middleware(['can:admin-qc-create']);
+
+        //Processing
+        Route::any('/processing', [ProcessingController::class, 'index'])->name('process.index')->middleware(['can:admin-qc-view']);
+        Route::any('/processing-list', [ProcessingController::class, 'ProcessList'])->name('process.list')->middleware(['can:admin-qc-view']);
+        Route::any('/processing-detail/{id}', [ProcessingController::class, 'processDetail'])->name('process.detail')->middleware(['can:admin-qc-view']);
+        Route::any('/get-work-order-processing/{id}', [ProcessingController::class, 'getProcess'])->name('process.get')->middleware(['can:admin-qc-view']);
+        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcess'])->name('process.start')->middleware(['can:admin-qc-create']);
+        Route::any('/save-processing', [ProcessingController::class, 'saveProcess'])->name('save.process')->middleware(['can:admin-qc-create']);
+        Route::any('/update-processing', [ProcessingController::class, 'updateProcessItem'])->name('update.process')->middleware(['can:admin-qc-create']);
 
         //Customer-Companies
         Route::any('/customer-companies', [CustomerCompanyController::class, 'index'])->name('customer-companies.index')->middleware(['can:admin-customer-companies-view']);

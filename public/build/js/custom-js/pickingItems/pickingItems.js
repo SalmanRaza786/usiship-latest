@@ -12,6 +12,7 @@ $(document).ready(function(){
     function  updatePickingTime(updateType){
         var pickerId=$('input[name=pickerId]').val();
         var workOrderId=$('input[name=work_order_id]').val();
+        var stagedLoc=$('input[name=staged_loc]').val();
 
 
         $.ajax({
@@ -19,7 +20,7 @@ $(document).ready(function(){
             type: 'POST',
             async: false,
             dataType: 'json',
-            data: { updateType: updateType,pickerId:pickerId,workOrderId:workOrderId },
+            data: { updateType: updateType,pickerId:pickerId,workOrderId:workOrderId,stagedLoc:stagedLoc },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -130,6 +131,12 @@ $(document).ready(function(){
         var selectedFiles = fileInput.files;
         for (var i = 0; i < selectedFiles.length; i++) {
             formData.append('pickedItemImages[' + 0 + '][]', selectedFiles[i]);
+        }
+
+        var fileInput = row.find('input[type="file"]')[1];
+        var selectedFiles = fileInput.files;
+        for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('pickedStagedLocImages[' + 0 + '][]', selectedFiles[i]);
         }
 
 

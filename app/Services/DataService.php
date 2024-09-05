@@ -23,9 +23,15 @@ class DataService
      */
     public function getData(string $endpoint, ?string $pageToken = null): array
     {
-        $response = Http::get($this->baseUrl . $endpoint, [
-            'page_token' => $pageToken
-        ]);
+        $params = [];
+
+        if ($pageToken !== null) {
+            $params['page_token'] = $pageToken;
+            $response = Http::get($this->baseUrl . $endpoint, $params);
+        }else{
+            $response = Http::get($this->baseUrl . $endpoint);
+        }
+
 
         if ($response->failed()) {
             throw new \Exception('Failed to fetch data from URL.');
@@ -48,7 +54,6 @@ class DataService
 
         do {
             $response = $this->getData($endpoint, $pageToken);
-
             if (isset($response['data'])) {
                 $allData = array_merge($allData, $response['data']);
             }

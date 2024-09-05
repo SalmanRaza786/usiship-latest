@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\LoadType;
 use App\Models\User;
 use App\Models\WhDock;
+use App\Models\WhLocation;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\notification\NotificationRepositry;
@@ -15,6 +16,7 @@ use App\Repositries\wh\WhInterface;
 use App\Services\DataService;
 use App\Services\FireBaseNotificationTriggerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use App\Mail\ExampleMail;
 use Illuminate\Support\Facades\Mail;
@@ -338,13 +340,32 @@ class WareHouseController extends Controller
 
     public function fetchData($whId=1)
     {
-        $endpoint = 'warehouses/'.$whId.'/locations';
+        $endpoint = 'raw/warehouses/'.$whId.'/locations';
 
         try {
-            $data = $this->dataService->fetchAllData($endpoint);
-            return response()->json($data);
+            $batchSize = 1000;
+            $wmsLocations = $this->dataService->fetchAllData($endpoint);
+
+            foreach (array_chunk($wmsLocations, $batchSize) as $batch) {
+                foreach ($batch as $loc) {
+                    $datetime = Carbon::parse($loc['updated_date'])->format('Y-m-d H:i:s');
+                    $location = WhLocation::updateOrCreate(
+                        ['wms_location_id' => $loc['id']],
+                        [
+                            'wms_location_id' => $loc['id'],
+                            'loc_title' => $loc['name'],
+                            'wms_warehouse_id' => $loc['warehouse_id'],
+                            'type' => $loc['type'],
+                            'wh_id' => $loc['warehouse_id'],
+                            'wms_updated_date' => $datetime,
+                        ]);
+                }
+            }
+
+
+            return Helper::ajaxSuccess([], "All Locations imported from WHMS");
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Helper::ajaxError($e->getMessage());
         }
     }
 
