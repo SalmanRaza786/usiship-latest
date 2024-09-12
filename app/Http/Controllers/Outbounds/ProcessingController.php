@@ -103,7 +103,6 @@ class ProcessingController extends Controller
 
         try {
             return  $res=$this->qc->updateStartProcess($request);
-
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

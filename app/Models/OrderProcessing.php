@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderProcessing extends Model
 {
     use HasFactory;
-    protected  $fillable=['work_order_id','start_time','end_time','status_code','auth_id','qc_work_order_id'];
+    protected  $fillable=['work_order_id','start_time','end_time','status_code','auth_id','qc_work_order_id','carton_label_req','pallet_label_req','other_require'];
 
     public function workOrder()
     {

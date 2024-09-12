@@ -10,7 +10,7 @@ $(document).ready(function(){
     });
 
     function  updateQcTime(updateType){
-        var qc_id=$('input[name=qc_id]').val();
+        var process_id=$('input[name=process_id]').val();
         var status_code=$('input[name=status_code]').val();
 
 
@@ -19,7 +19,7 @@ $(document).ready(function(){
             type: 'POST',
             async: false,
             dataType: 'json',
-            data: { updateType: updateType,qc_id:qc_id,status_code:status_code },
+            data: { updateType: updateType,process_id:process_id,status_code:status_code },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -112,6 +112,47 @@ $(document).ready(function(){
             error: function() {
                 $('.btn-close-qc').text('Close Picking');
                 $(".btn-close-qc").prop("disabled", false);
+            }
+        });
+    });
+
+    $('#ProcessStart').on('submit', function(e) {
+
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-start').text('Processing...');
+                $(".btn-start").prop("disabled", true);
+            },
+            success: function(response) {
+
+                if (response.status==true) {
+                    toastr.success(response.message);
+                    $('#roleTable').DataTable().ajax.reload();
+                    $('#ProcessStart')[0].reset();
+                    $('.btn-close').click();
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+
+            complete: function(data) {
+                $(".btn-start").html("Start Processing");
+                $(".btn-start").prop("disabled", false);
+            },
+
+            error: function() {
+                $('.btn-start').text('Start Processing');
+                $(".btn-start").prop("disabled", false);
             }
         });
     });
@@ -214,11 +255,11 @@ $(document).ready(function(){
             success: function(response) {
                 console.log(response);
                 if(response.status==true){
-                    $('input[name=id]').val(response.data.id);
+                    $('input[name=process_id]').val(response.data.id);
                     $('input[name=order_ref]').val(response.data.work_order.order_reference);
                     $('input[name=customer_name]').val(response.data.work_order.client.name);
                     $('input[name=qc_start_time]').val(response.data.qc_work_order.start_time);
-                    $('input[name=staged_location]').val(response.data.id);
+                    $('input[name=staged_location]').val(response.data.work_order.staged_location);
 
 
                 }else{
@@ -234,6 +275,114 @@ $(document).ready(function(){
     });
 
 
+    $('.btn-add-row').on('click', function() {
+
+        var clonedRow = $('#clonedSection tr:first').clone();
+
+
+        clonedRow.find('input').val('');
+        clonedRow.find('select').val('');
+        clonedRow.find('.sealImagesPreview').html('');
+
+        // Append the cloned row to the table
+        $('#clonedSection').append(clonedRow);
+
+        // Update the row numbers and input names
+        updateRowNumbers();
+    });
+
+    function updateRowNumbers() {
+        // Loop through each row to update the row numbers and input names
+        $('#clonedSection tr').each(function(index) {
+            // Update the row number
+            $(this).find('th').text(index + 1);
+
+            // Update the name attributes of the inputs
+            $(this).find('input, select').each(function() {
+                var name = $(this).attr('name');
+                if (name) {
+                    // Update the name for putawayImages
+                    if (name.includes('resolveQtyImages')) {
+                        $(this).attr('name', 'resolveQtyImages[' + index + '][]');
+                    } else if (name.includes('newLocationItemImages')) {
+                        $(this).attr('name', 'newLocationItemImages[' + index + ']');
+                    }
+                }
+            });
+        });
+    }
+
+    $('#clonedSection').on('click', '.delete-row', function() {
+
+        var $rowToDelete = $(this).closest('tr');
+        $rowToDelete.remove();
+
+    });
+
+    $('#clonedSection').on('click', '.btn-save-row', function() {
+
+        var row = $(this).closest('tr');
+        var formData = new FormData();
+        var w_order_id=$('input[name=w_order_id]').val();
+        var itemId=row.find('.item-id').val();
+
+
+        var splitValues = itemId.split(',');
+
+
+        formData.append('missed_detail_parent_id',splitValues[2]);
+        formData.append('resolveId',$('input[name=hidden_process_id]').val());
+        formData.append('itemId[]', itemId);
+        formData.append('resolveQty[]', row.find('.resolve-qty').val());
+        formData.append('newLocId[]', row.find('.new-loc-id').val());
+
+        formData.append('w_order_id',w_order_id);
+        formData.append('staff_id',$('input[name=staff_id]').val());
+        formData.append('missed_id',$('input[name=missed_id]').val());
+        formData.append('status_code',$('input[name=status_code]').val());
+
+
+        var fileInput = row.find('input[type="file"]')[0];
+        var selectedFiles = fileInput.files;
+        for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('resolveItemImages[' + 0 + '][]', selectedFiles[i]);
+        }
+
+
+
+
+        $.ajax({
+            url: route('admin.save.resolve'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {
+                row.find('.btn-save-row').text('...');
+                row.find('.btn-save-row').prop("disabled", true);
+            },
+            success: function(response) {
+                if(response.status){
+                    toastr.success(response.message);
+                    window.location.reload();
+                }else{
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+
+                row.find('.btn-save-row').html('<i class="ri-save-2-fill fs-1"></i>');
+                row.find('.btn-save-row').prop("disabled", false);
+            },
+            error: function(xhr, status, error) {
+                toastr.error(error);
+            }
+        });
+
+    });
 
 });
 

@@ -22,11 +22,10 @@
                         </div>
                         <div class="col-auto justify-content-sm-end">
                             @if($data['orderInfo']->end_time==NULL)
-                            <button type="button" class="btn btn-success btn-close-qc me-2 d-none"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
+                            <button type="button" class="btn btn-success btn-close-qc me-2 d-none"><i class="ri-eye-line align-bottom me-1"></i> Close Processing Now</button>
                             @endif
 
-
-                            <button type="button" class="btn btn-success btn-start-qc d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
+{{--                            <button type="button" class="btn btn-success btn-start-qc d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>--}}
 
                         </div>
 
@@ -71,93 +70,255 @@
         </div>
         <div class="row d-none pick-item-section">
             @php
-            $key=0;
+                $key=0;
             @endphp
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="live-preview">
-                            <form action="{{route('admin.update.qc')}}" method="post" enctype="multipart/form-data" id="CloseQCForm">
+                            <form action="{{route('admin.save.resolve')}}" method="post" enctype="multipart/form-data"
+                                  id="CloseResolveForm">
                                 @csrf
+{{--                                <input type="hidden" name="w_order_id" value="{{$data['orderInfo']->workOrder->id}}">--}}
+{{--                                <input type="hidden" name="staff_id"--}}
+{{--                                       value="{{$data['orderInfo']->orderPicker->picker_id}}">--}}
+{{--                                <input type="hidden" name="missed_id" value="{{$data['orderInfo']->id }}">--}}
+{{--                                <input type="hidden" name="status_code" value="205">--}}
 
 
                                 <table class="invoice-table table table-borderless table-nowrap mb-0">
                                     <thead class="align-middle">
                                     <tr class="table-active">
                                         <th scope="col" style="width: 50px;">#</th>
-                                        <th scope="col">
-                                            Product SKU
-                                        </th>
-                                        <th scope="col" style="">
-                                            <div class="d-flex currency-select input-light align-items-center">Order Qty
-                                            </div>
-                                        </th>
-                                        <th scope="col" style="">Pallet Number</th>
-                                        <th scope="col" style="">Pick From</th>
-                                        <th scope="col" style="">Picked Qty</th>
-                                        <th scope="col" style="">Q/C Qty</th>
+                                        <th scope="col">Tasks</th>
+                                        <th scope="col" style="">Qty (if any)</th>
+                                        <th scope="col" class=>Other comments (if any) </th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Photos</th>
+                                        <th scope="col"></th>
+                                        <th scope="col">Action</th>
 
-                                        <th scope="col" class="text-start" style="width: 105px;">Image</th>
-                                        <th scope="col" class="text-end" style="width: 105px;">Action</th>
                                     </tr>
                                     </thead>
-                                    <tbody id="qcTable">
-                                    <form action="{{route('admin.update.qc')}}" method="post" enctype="multipart/form-data" id="CloseQcForm">
-                                        <input type="hidden" name="work_order_id" value="{{$data['orderInfo']->work_order_id}}">
-                                        <input type="hidden" name="qc_id" value="{{$data['orderInfo']->id }}">
-                                        <input type="hidden" name="status_code" value="22">
-                                        <input type="hidden" name="updateType" value="2">
 
-                                        @csrf
-                                        @isset($data['qcItems'])
-                                            @foreach($data['qcItems'] as $key=>$row)
-                                                <input type="hidden" name="hidden_id[]" value="{{$row->id}}">
+                                    <tbody id="clonedSection">
 
-                                                <tr>
-                                                    <th scope="row" class="product-id align-middle">{{$key + 1}}</th>
-                                                    <th scope="row" class="product-id align-middle">{{$row->workOrderItem->inventory->item_name}} - {{$row->workOrderItem->inventory->sku}}</th>
-                                                    <th scope="row" class="product-id align-middle">{{$row->workOrderItem->qty}}</th>
-                                                    <th scope="row" class="product-id align-middle">{{$row->workOrderItem->pallet_number}}</th>
-                                                    <th scope="row" class="product-id align-middle">{{$row->workOrderItem->location->loc_title}}</th>
-                                                    <th scope="row" class="product-id align-middle">{{$row->picked_qty}}</th>
+{{--                                    @if($data['resolveItems']->count() > 0)--}}
+{{--                                        @foreach($data['resolveItems'] as $key=>$resolve)--}}
+{{--                                            <input type="hidden" name="hidden_resolve_id" class="resolve-id"--}}
+{{--                                                   value="{{$resolve->id}}">--}}
 
-
-                                                    <td>
-                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="{{isset($row->picked_qty)?$row->picked_qty:0}}" required>
-                                                    </td>
-
-
-
-
-                                                    <td class="text-start" style="width: 150px;">
-                                                        <div class="mb-2">
-                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
-                                                        </div>
-                                                        @isset($row->media)
-                                                            <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview">
-                                                                @foreach($row->media as $image)
-                                                                    @if($image->field_name == 'qcItemImages')
-                                                                        <i class="ri ri-close-fill text-danger fs-2 cursor-pointer btn-delete-file" data="{{$image->id}}" data-bs-toggle="modal" data-bs-target="#deleteRecordModal"></i>
-                                                                        <div class="preview">
-                                                                            <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="Image Preview" class="avatar-sm rounded object-fit-cover">
-                                                                        </div>
+{{--                                            <tr>--}}
+{{--                                                <td>{{$key+1}}</td>--}}
+{{--                                                <td>--}}
+{{--                                                    <select name="itemId[]" id=""--}}
+{{--                                                            class="form-control js-example-basic-single item-id"--}}
+{{--                                                            required>--}}
+{{--                                                        <option value="">Choose SKU</option>--}}
+{{--                                                        @isset($data['missedItems'])--}}
+{{--                                                            @foreach($data['missedItems'] as $row)--}}
+{{--                                                                <option--}}
+{{--                                                                    @if($resolve->missed_detail_parent_id==$row->id)--}}
+{{--                                                                        {{"selected"}}--}}
+{{--                                                                    @endif--}}
+{{--                                                                    value="{{$row->pickedItem->inventory->id}},{{$row->pickedItem->w_order_item_id}},{{$row->id}}">{{$row->pickedItem->inventory->item_name}}--}}
+{{--                                                                    - {{$row->pickedItem->inventory->sku}}--}}
+{{--                                                                    ({{$row->missed_qty}})--}}
+{{--                                                                </option>--}}
+{{--                                                            @endforeach--}}
+{{--                                                        @endisset--}}
+{{--                                                    </select>--}}
+{{--                                                </td>--}}
 
 
-                                                                    @endif
-                                                                @endforeach
-                                                            </div>
-                                                        @endisset
-                                                    </td>
-                                                    <td class="text-end  cursor-pointer text-success btn-save-row" title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i></td>
-                                                </tr>
+{{--                                                <td><input class="form-control bg-light border-0 resolve-qty"--}}
+{{--                                                           name="resolveQty[]" type="number" placeholder="Resolve Qty"--}}
+{{--                                                           value="{{$resolve->resolve_qty}}"></td>--}}
+{{--                                                <td class="text-start" style="width: 150px;">--}}
+{{--                                                    <div class="mb-2">--}}
+{{--                                                        <input class="form-control bg-light border-0"--}}
+{{--                                                               style="width: 170px;" type="file"--}}
+{{--                                                               name="pickedItemImages[{{$key}}][]" placeholder="Damage"--}}
+{{--                                                               multiple accept="image/*">--}}
+{{--                                                    </div>--}}
+
+{{--                                                    @isset($resolve->media)--}}
+{{--                                                        <div--}}
+{{--                                                            class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview"--}}
+{{--                                                            id="sealImagesPreview">--}}
+{{--                                                            @foreach($resolve->media as $image)--}}
+{{--                                                                @if($image->field_name == 'resolveItemImages')--}}
+{{--                                                                    <i class="ri ri-close-fill text-danger fs-2 cursor-pointer btn-delete-file"--}}
+{{--                                                                       data="{{$image->id}}" data-bs-toggle="modal"--}}
+{{--                                                                       data-bs-target="#deleteRecordModal"></i>--}}
+{{--                                                                    <div class="preview">--}}
+{{--                                                                        <img--}}
+{{--                                                                            src="{{asset('storage/uploads/'.$image->file_name)}}"--}}
+{{--                                                                            alt="Image Preview"--}}
+{{--                                                                            class="avatar-sm rounded object-fit-cover">--}}
+{{--                                                                    </div>--}}
+{{--                                                                @endif--}}
+{{--                                                            @endforeach--}}
+{{--                                                        </div>--}}
+{{--                                                    @endisset--}}
+{{--                                                </td>--}}
+
+{{--                                                <td class="text-end">--}}
+{{--                                                    <select name="newLocId[]" id=""--}}
+{{--                                                            class="form-select js-example-basic-single new-loc-id"--}}
+{{--                                                            required>--}}
+{{--                                                        <option value="">Choose One</option>--}}
+{{--                                                        @isset($data['missedItems'])--}}
+{{--                                                            @foreach($data['locations'] as $loc)--}}
+{{--                                                                <option value="{{$loc->id}}"--}}
+{{--                                                                @if($resolve->new_loc_id==$loc->id)--}}
+{{--                                                                    {{"selected"}}--}}
+{{--                                                                    @endif--}}
+{{--                                                                >{{$loc->loc_title}}</option>--}}
+{{--                                                            @endforeach--}}
+{{--                                                        @endisset--}}
+{{--                                                    </select>--}}
+{{--                                                </td>--}}
+{{--                                                <td class="text-start" style="width: 150px;">--}}
+{{--                                                    <div class="mb-2">--}}
+{{--                                                        <input class="form-control bg-light border-0"--}}
+{{--                                                               style="width: 170px;" type="file"--}}
+{{--                                                               name="newLocationItemImages[{{$key}}][]"--}}
+{{--                                                               placeholder="Damage" multiple accept="image/*">--}}
+{{--                                                    </div>--}}
+
+{{--                                                    @isset($resolve->media)--}}
+{{--                                                        <div--}}
+{{--                                                            class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview"--}}
+{{--                                                            id="sealImagesPreview">--}}
+{{--                                                            @foreach($resolve->media as $image)--}}
+{{--                                                                @if($image->field_name == 'newLocationItemImages')--}}
+{{--                                                                    <i class="ri ri-close-fill text-danger fs-2 cursor-pointer btn-delete-file"--}}
+{{--                                                                       data="{{$image->id}}" data-bs-toggle="modal"--}}
+{{--                                                                       data-bs-target="#deleteRecordModal"></i>--}}
+{{--                                                                    <div class="preview">--}}
+{{--                                                                        <img--}}
+{{--                                                                            src="{{asset('storage/uploads/'.$image->file_name)}}"--}}
+{{--                                                                            alt="Image Preview"--}}
+{{--                                                                            class="avatar-sm rounded object-fit-cover">--}}
+{{--                                                                    </div>--}}
+{{--                                                                @endif--}}
+{{--                                                            @endforeach--}}
+{{--                                                        </div>--}}
+{{--                                                    @endisset--}}
+{{--                                                </td>--}}
+{{--                                                <td>--}}
+{{--                                                    @canany('admin-putaway-delete')--}}
+{{--                                                        <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2"--}}
+{{--                                                           title="Remove" data="{{$row->id}}"></i>--}}
+{{--                                                    @endcanany--}}
+
+{{--                                                </td>--}}
+
+{{--                                                <td class="text-end  cursor-pointer text-success btn-save-row"--}}
+{{--                                                    title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i>--}}
+{{--                                                </td>--}}
+
+{{--                                            </tr>--}}
+{{--                                        @endforeach--}}
+{{--                                    @else--}}
+                                        <tr>
+                                            <input type="hidden" name="hidden_process_id" class="process-id" value="0">
+                                            <td>1</td>
+                                            <td>
+                                                <select name="itemId[]" id="" class="form-control js-example-basic-single item-id" required>
+                                                    <option value="">Select Your Task</option>
+                                                    <option value="">Task A</option>
+                                                    <option value="">Task B</option>
+{{--                                                    @isset($data['missedItems'])--}}
+{{--                                                        @foreach($data['missedItems'] as $row)--}}
+{{--                                                            <option--}}
+
+{{--                                                                value="{{$row->pickedItem->inventory->id}},{{$row->pickedItem->w_order_item_id}},{{$row->id}}">{{$row->pickedItem->inventory->item_name}}--}}
+{{--                                                                - {{$row->pickedItem->inventory->sku}}--}}
+{{--                                                                ({{$row->missed_qty}})--}}
+{{--                                                            </option>--}}
+{{--                                                        @endforeach--}}
+{{--                                                    @endisset--}}
+                                                </select>
+                                            </td>
 
 
-                                            @endforeach
-                                        @endisset
+                                            <td><input class="form-control bg-light border-0 qty"
+                                                       name="Qty[]" type="number" placeholder="Qty"
+                                                       value=""></td>
+                                            <td class="text-start" style="width: 150px;">
+                                                <div class="mb-2">
+{{--                                                    <input class="form-control bg-light border-0" style="width: 170px;"--}}
+{{--                                                           type="file" name="resolveItemImages"--}}
+{{--                                                           placeholder="Damage" multiple accept="image/*">--}}
+                                                    <textarea rows="4" cols="30" name="comments"></textarea>
+                                                </div>
 
-                                    </form>
+                                            </td>
+
+                                            <td class="text-end">
+                                                <select name="status[]" id="" class="form-select js-example-basic-single new-loc-id" required>
+                                                    <option value="">Choose Status</option>
+                                                    <option value="">Pending</option>
+                                                    <option value="">InProgress</option>
+                                                    <option value="">Complete</option>
+                                                </select>
+                                            </td>
+                                            <td class="text-start" style="width: 150px;">
+                                                <div class="mb-2">
+                                                    <input class="form-control bg-light border-0" style="width: 170px;"
+                                                           type="file" name="processingItemImages[{{$key}}][]"
+                                                           placeholder="Damage" multiple accept="image/*">
+                                                </div>
+                                                @isset($row->media)
+                                                    <div
+                                                        class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview"
+                                                        id="sealImagesPreview">
+                                                        @foreach($row->media as $image)
+                                                            @if($image->field_name == 'resolveItemImages')
+                                                                <div class="preview">
+                                                                    <img
+                                                                        src="{{asset('storage/uploads/'.$image->file_name)}}"
+                                                                        alt="Image Preview"
+                                                                        class="avatar-sm rounded object-fit-cover">
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @endisset
+
+                                            </td>
+                                            <td>
+                                                @canany('admin-putaway-delete')
+                                                    <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2"
+                                                       title="Remove" data="1"></i>
+                                                @endcanany
+
+                                            </td>
+
+                                            <td class="text-start  cursor-pointer text-success btn-save-row" title="Save"
+                                                data="1"><i class="ri-save-2-fill fs-1"></i></td>
+
+                                        </tr>
+{{--                                    @endif--}}
+
 
                                     </tbody>
+
+                                    <tr>
+                                        <td colspan="5">
+                                            @canany('admin-putaway-create')
+{{--                                                @if($data['orderInfo']->end_time==NULL)--}}
+                                                    <button type="button" class="btn btn-outline-success btn-add-row"
+                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                            title="Add New Row"><i
+                                                            class="ri-add-fill me-1 align-bottom"></i>New Row
+                                                    </button>
+{{--                                                @endif--}}
+                                            @endcanany
+                                        </td>
+                                    </tr>
 
                                 </table>
                             </form>

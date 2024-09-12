@@ -59,15 +59,20 @@ class ProcessingRepositry implements ProcessingInterface
     {
         try {
 
-            $qry= QcWorkOrder::find($request->qc_id);
+            $qry= OrderProcessing::find($request->process_id);
             if(!$qry){
-                return Helper::error('Invalid qc id');
+                return Helper::error('Invalid Processing Id');
             }
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             ($request->updateType==2)?$qry->status_code=$request->status_code:'';
+            if($request->updateType ==1)
+            {
+                ($request->carton_label_req)?$qry->carton_label_req=1:$qry->carton_label_req=2;
+                ($request->pallet_label_req)?$qry->pallet_label_req=1:$qry->pallet_label_req=2;
+                ($request->other_reqs)?$qry->other_require=$request->other_reqs:null;
+            }
             $qry->save();
-
-            return Helper::success($qry, ($request->updateType==1)?"qc start success fully":"qc close success fully");
+            return Helper::success($qry, ($request->updateType==1)?"Processing start successfully":"Processing close successfully");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

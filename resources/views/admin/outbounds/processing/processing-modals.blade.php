@@ -11,11 +11,12 @@
             </div>
 
 
-            <form method="post" class=" g-3 needs-validation" action="{{route('admin.picker.assign')}}" autocomplete="off" id="AssignForm" enctype="multipart/form-data">
+            <form method="post" class=" g-3 needs-validation" action="{{route('admin.process.start')}}" autocomplete="off" id="ProcessStart" enctype="multipart/form-data">
 
                @csrf
                 <div class="modal-body">
-                    <input type="hidden" name="id">
+                    <input type="hidden" name="process_id">
+                    <input type="hidden" name="updateType" value="1"/>
                     <div class="row gy-4">
                         <div class="col-md-6">
                             <div>
@@ -64,7 +65,7 @@
                 <div class="modal-footer">
                     <div class="hstack gap-2 justify-content-end">
                         <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn" style="display: block;">Start Processing Now</button>
+                        <button type="submit" class="btn btn-success btn-submit btn-start" id="add-btn" style="display: block;">Start Processing Now</button>
                         <button type="submit" class="btn btn-success btn-submit btn-save-changes" id="add-btn" style="display: none;">Assign Picker Now</button>
                     </div>
                 </div>
