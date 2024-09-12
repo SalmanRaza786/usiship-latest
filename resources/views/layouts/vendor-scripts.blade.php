@@ -7,7 +7,10 @@
     <script src="{{ URL::asset('build/libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ URL::asset('build/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
     <script type="text/javascript" src="{{ asset('build/data-table/js/jquery.dataTables.js') }}"></script>
+
+{{--    <script src="{{ URL::asset('build/libs/choices.js/public/assets/scripts/choices.min.js')}}"></script>--}}
     <script src="{{ URL::asset('build/libs/choices.js/public/assets/scripts/choices.min.js')}}"></script>
+
     <script src="{{ URL::asset('build/libs/fullcalendar/main.min.js')}}"></script>
     <script src="{{ URL::asset('build/js/plugins.js') }}"></script>
     <script src="{{ URL::asset('build/libs/sweetalert2/sweetalert2.min.js') }}"></script>
@@ -27,7 +30,11 @@
 
     <script src="{{ URL::asset('build/js/pages/profile-setting.init.js') }}"></script>
 
+{{--    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>--}}
+
+
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
     <script src="{{ URL::asset('build/js/pages/select2.init.js') }}"></script>
 

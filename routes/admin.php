@@ -188,7 +188,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-putaway-delete']);
         Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
         Route::get('/export-order-items/{orderId}', [PutAwayController::class, 'export'])->name('put-away.export')->middleware(['can:admin-putaway-create']);
-
+        Route::get('/locations/search', [WareHouseController::class, 'search'])->name('locations.search');
         //Notificationss
         Route::any('/trigger-notification/{type}/{totifiableId}', [OrderController::class, 'notificationTrigger']);
 

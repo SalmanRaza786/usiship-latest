@@ -156,7 +156,7 @@ $(document).ready(function(){
             success: function(response) {
                 if(response.status){
                     toastr.success(response.message);
-                    window.location.reload();
+                    // window.location.reload();
                 }else{
                     toastr.error(response.message);
                 }

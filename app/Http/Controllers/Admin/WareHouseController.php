@@ -50,6 +50,20 @@ class WareHouseController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+        // Search for locations based on the query
+        $query = $request->input('query');
+
+        // Find locations that match the query, limit to a reasonable number like 10 or 20
+        $locations = WhLocation::where('loc_title', 'like', "%{$query}%")
+            ->limit(20)
+            ->get();
+
+        // Return the results as JSON
+        return response()->json($locations);
+    }
+
     public function whList(Request $request)
     {
         try {

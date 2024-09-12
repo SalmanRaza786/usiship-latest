@@ -427,7 +427,7 @@
                                     <h5 class="card-title flex-grow-1 mb-0">Packaging List</h5>
                                     <div class="flex-shrink-0">
                                         <a href="{{route('appointment.download-list')}}" type="button"  class="btn btn-primary" title="Download Packaging List Sample file"><i class="ri-download-2-fill me-1 align-bottom"></i>Download Packaging List Sample</a>
-                                        @if($data['orderDetail']['data']['status_id'] >= 9 )
+                                        @if($data['orderDetail']['data']['status_id'] <= 9 )
                                         <button type="button"  class="btn btn-primary" id="btn-upload_pack_list" data="{{$data['orderDetail']['data']['id']}}" data-bs-toggle="modal" data-bs-target="#showModalUpoad" title="Upload Packaging List"><i class="ri-upload-2-fill me-1 align-bottom"></i>Upload Packaging List</button>
                                         @endif
                                     </div>

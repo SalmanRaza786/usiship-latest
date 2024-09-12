@@ -4,17 +4,50 @@ $(document).ready(function() {
 
         var clonedRow = $('#clonedSection tr:first').clone();
 
-
         clonedRow.find('input').val('');
         clonedRow.find('select').val('');
         clonedRow.find('.sealImagesPreview').html('');
 
+        // Remove existing Select2 containers and reset the select element
+        clonedRow.find('.select2').remove(); // Remove the Select2 container
+        clonedRow.find('select.location-dropdown').removeClass('select2-hidden-accessible'); // Remove hidden select2 classes
+
+
         // Append the cloned row to the table
         $('#clonedSection').append(clonedRow);
 
-        // Update the row numbers and input names
+        // Reinitialize Select2 for the 'location-dropdown' in the cloned row
+        initializeSelect2(clonedRow.find('select.location-dropdown'));
+
+        // Update the row numbers or input names (optional, if needed)
         updateRowNumbers();
     });
+    function initializeSelect2(element) {
+        element.select2({
+            placeholder: 'Search for location',  // Customize this placeholder
+            ajax: {
+                url: route('admin.locations.search'),   // Use your backend route for location search
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        query: params.term // search term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.loc_title
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
+        });
+    }
 
     function updateRowNumbers() {
         // Loop through each row to update the row numbers and input names

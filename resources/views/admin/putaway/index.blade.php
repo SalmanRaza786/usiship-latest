@@ -137,5 +137,6 @@
         });
     </script>
     <script src="{{ URL::asset('build/js/custom-js/roles/roles.js') }}"></script>
+
 @endsection
 

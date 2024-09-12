@@ -51,22 +51,23 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if(!$user=User::where('email',$input['email'])->first()){
-            $data='Invalid email';
-            return view('auth.login')->with(compact('data'));
-
-        }
-
-
-
-
-        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
-            return redirect()->route('user.index');
+        if ($user = User::where('email', $input['email'])->first()) {
+            if ($user->status == "Active") {
+                if (auth()->attempt(['email' => $input['email'], 'password' => $input['password']])) {
+                    return redirect()->route('user.index');
+                } else {
+                    $data = 'Invalid credentials!';
+                    return view('auth.login')->with(compact('data'));
+                }
+            } else {
+                $data = 'Your account is inactive. Please contact support.';
+                return view('auth.login')->with(compact('data'));
+            }
         } else {
-            $data='Invalid credentials!';
+            $data = 'Email not found!';
             return view('auth.login')->with(compact('data'));
-
         }
+
     }
 
 

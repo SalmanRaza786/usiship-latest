@@ -138,7 +138,7 @@
                                 return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary "  >Off Loading In-Progress</a>@endcanany`;
                             }else if(status.id == 10)
                             {
-                                return `@canany('admin-offloading-create')<a href="#" type="button" class="btn btn-primary"  >Off Loading Completed</a>@endcanany`;
+                                return `@canany('admin-offloading-create')<a  href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary"  >Off Loading Completed</a>@endcanany`;
                             }else {
                                 return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Start Off Loading Now</a>@endcanany`;
                             }
