@@ -83,9 +83,10 @@ $(document).ready(function(){
                 $(".btn-import").prop("disabled", false);
             },
 
-            error: function() {
+            error: function(a,b,error) {
                 $('.btn-import').text('Import WMS Orders');
                 $(".btn-import").prop("disabled", false);
+                toastr.error(error);
             }
         });
     })

@@ -35,8 +35,7 @@ class ProcessingController extends Controller
         try {
 
             $data['orderInfo']=Helper::fetchOnlyData($this->qc->getProcessInfo($id));
-            $data['qcItems']=Helper::fetchOnlyData($this->qc->getProcessItems($id));
-            $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
+            $data['processItems']=Helper::fetchOnlyData($this->qc->getProcessItems($id));
             return view('admin.outbounds.processing.processing-detail')->with(compact('data'));
         }catch (\Exception $e) {
             return    $e->getMessage();

@@ -849,6 +849,19 @@ class WhRepositry implements WhInterface {
     }
 
 
+    public function searchWhLocations($request)
+    {
+        try {
+            $searchTerm = $request->input('q');
+
+            $locations = WhLocation::where('loc_title', 'LIKE', "%{$searchTerm}%")
+                ->limit(10)
+                ->get();
+            return Helper::success($locations, $message='Record found');
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
 }
 
 

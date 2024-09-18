@@ -100,7 +100,7 @@ class PickingRepositry implements PickingInterface
         try {
 
             $qry= PickedItem::query();
-            $qry= $qry->with('media','missedItem','inventory','location','wOrderItems');
+            $qry= $qry->with('media','missedItem','inventory','location','wOrderItems','pickedlocation');
             $qry =$qry->where('picker_table_id', $pickerId);
             $data =$qry->get();
 

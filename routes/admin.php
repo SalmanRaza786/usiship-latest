@@ -52,7 +52,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
     Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
 
 
-
+    Route::get('/locations/search', [WareHouseController::class, 'search'])->name('locations.search');
     Route::get('dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
     Route::get('/app-settings', [AppSettingsController::class, 'index'])->name('app-settings.index')->middleware(['can:admin-settings-edit']);
     Route::post('/update-app-settings', [AppSettingsController::class, 'update'])->name('app-settings.update')->middleware(['can:admin-settings-edit']);

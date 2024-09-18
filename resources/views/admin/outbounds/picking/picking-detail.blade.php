@@ -143,18 +143,21 @@
                                                    @endisset
                                             </td>
                                             <td class="text-end">
-                                                <select name="pickedLocId[]" id="" class=" form-select js-example-basic-single loc-id" required>
-                                                    <option value="">Choose One</option>
-                                                    @isset($data['pickingItems'])
-                                                        @foreach($data['locations'] as $loc)
-                                                            <option value="{{$loc->id}}"
-                                                            @if($loc->id==$row->location->id)
-                                                                {{"selected"}}
-                                                                @endif
-                                                            >{{$loc->loc_title}}</option>
-                                                        @endforeach
-                                                    @endisset
-                                                </select>
+                                                <input type="hidden" class="defaultLocationId" value="{{ $row->pickedlocation->id ?? '' }}">
+                                                <input type="hidden" class="defaultLocationName" value="{{ $row->pickedlocation->loc_title ?? '' }}">
+                                                <select class="location-select form-control loc-id" name="pickedLocId[]" required></select>
+{{--                                                <select name="pickedLocId[]" id="" class=" form-select js-example-basic-single loc-id" required>--}}
+{{--                                                    <option value="">Choose One</option>--}}
+{{--                                                    @isset($data['pickingItems'])--}}
+{{--                                                        @foreach($data['locations'] as $loc)--}}
+{{--                                                            <option value="{{$loc->id}}"--}}
+{{--                                                            @if($loc->id==$row->location->id)--}}
+{{--                                                                {{"selected"}}--}}
+{{--                                                                @endif--}}
+{{--                                                            >{{$loc->loc_title}}</option>--}}
+{{--                                                        @endforeach--}}
+{{--                                                    @endisset--}}
+{{--                                                </select>--}}
                                             </td>
 
                                             <td class="text-start" style="width: 150px;">
@@ -201,14 +204,7 @@
     @section('script')
     <script src="{{ URL::asset('build/js/custom-js/pickingItems/pickingItems.js') }}"></script>
     <script>
-    // $(document).ready(function(){
-    //         $(".js-example-data-array").select2({
-    //             data:[
-    //         {id:0,text:"enhancement"},{id:1,text:"bug"},
-    //         {id:2,text:"duplicate"},{id:3,text:"invalid"},
-    //         {id:4,text:"wontfix"}]
-    //         })
-    // });
+
     </script>
     @endsection
 

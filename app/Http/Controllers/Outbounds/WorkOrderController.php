@@ -87,7 +87,7 @@ class WorkOrderController extends Controller
     public function fetchOrdersData()
     {
 //        2024-09-05T00:00:00Z
-        $Orderendpoint = 'orders?created_date[gte]=2024-09-11T00:00:00Z';
+        $Orderendpoint = 'orders?created_date[gte]=2024-09-17T00:00:00Z';
 
         try {
             $batchSize = 1000;

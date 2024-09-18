@@ -8,6 +8,7 @@ use App\Models\MissedItemDetail;
 use App\Models\OrderItemPutAway;
 use App\Models\OrderProcessing;
 use App\Models\PickedItem;
+use App\Models\ProcessingDetail;
 use App\Models\QcDetailWorkOrder;
 use App\Models\QcWorkOrder;
 use App\Models\WorkOrder;
@@ -83,9 +84,9 @@ class ProcessingRepositry implements ProcessingInterface
     {
         try {
 
-            $qry= QcDetailWorkOrder::query();
-            $qry= $qry->with('workOrderItem.inventory','workOrderItem.location','media');
-            $qry =$qry->where('qc_parent_id',$qcId);
+            $qry= ProcessingDetail::query();
+            $qry= $qry->with('media');
+            $qry =$qry->where('processing_id',$qcId);
             $data =$qry->get();
 
             return Helper::success($data, $message="Record found");
