@@ -96,6 +96,9 @@
                                 @canany('admin-qc-view')
                                     <a href="{{route('admin.qc.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}">Quality Check (QC)</a>
                                 @endcanany
+                                    @canany('admin-qc-view')
+                                        <a href="{{route('admin.process.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.process.index')?'active':''}}">Processing</a>
+                                    @endcanany
 
                             </li>
                         </ul>

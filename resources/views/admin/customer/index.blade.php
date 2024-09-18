@@ -55,8 +55,9 @@
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
                                 <th class="sort" data-sort="customer_name">name</th>
-                                <th class="sort" data-sort="company_name">Company Title</th>
+                                <th class="sort" data-sort="company_name">Assigned Company Title</th>
                                 <th class="sort" data-sort="email">Email</th>
+                                <th class="sort" data-sort="com">Company Name Input Field</th>
                                 <th class="sort" data-sort="status">Status</th>
                                 <th class="sort" data-sort="date">@lang('translation.action')</th>
 
@@ -103,6 +104,7 @@
                     { data: 'name' },
                     { data: 'company' },
                     { data: 'email' },
+                    { data: 'company_name' },
                     { data: 'status' },
                     { data: null, orderable: false }
 
@@ -117,7 +119,7 @@
                         }
                     },
                     {
-                        targets: 4,
+                        targets: 5,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
 

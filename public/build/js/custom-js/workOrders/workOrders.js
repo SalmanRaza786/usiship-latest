@@ -53,6 +53,44 @@ $(document).ready(function(){
         });
     });
 
+    $('.btn-import').click(function() {
+
+        $.ajax({
+            url: 'import-work-orders',
+            method: 'GET',
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-import').text('Importing Order From WHMS wait...');
+                $(".btn-import").prop("disabled", true);
+            },
+            success: function(response) {
+
+                if (response.status==true) {
+                    $('#roleTable').DataTable().ajax.reload();
+                    toastr.success(response.message);
+
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+
+            complete: function(data) {
+                $(".btn-import").html("Import WMS Orders");
+                $(".btn-import").prop("disabled", false);
+            },
+
+            error: function(a,b,error) {
+                $('.btn-import').text('Import WMS Orders');
+                $(".btn-import").prop("disabled", false);
+                toastr.error(error);
+            }
+        });
+    })
+
 
 
 

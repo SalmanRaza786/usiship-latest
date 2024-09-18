@@ -36,6 +36,8 @@ use App\Http\Controllers\Outbounds\MissingController;
 use App\Http\Controllers\Outbounds\QcController;
 use App\Http\Controllers\Admin\CustomerCompanyController;
 
+use App\Http\Controllers\Outbounds\ProcessingController;
+
 
 
 
@@ -50,7 +52,7 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
     Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
 
 
-
+    Route::get('/locations/search', [WareHouseController::class, 'search'])->name('locations.search');
     Route::get('dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
     Route::get('/app-settings', [AppSettingsController::class, 'index'])->name('app-settings.index')->middleware(['can:admin-settings-edit']);
     Route::post('/update-app-settings', [AppSettingsController::class, 'update'])->name('app-settings.update')->middleware(['can:admin-settings-edit']);
@@ -186,7 +188,7 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
         Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-putaway-delete']);
         Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
         Route::get('/export-order-items/{orderId}', [PutAwayController::class, 'export'])->name('put-away.export')->middleware(['can:admin-putaway-create']);
-
+        Route::get('/locations/search', [WareHouseController::class, 'search'])->name('locations.search');
         //Notificationss
         Route::any('/trigger-notification/{type}/{totifiableId}', [OrderController::class, 'notificationTrigger']);
 
@@ -201,6 +203,7 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
 
 
         //Outbounds
+        Route::any('/import-work-orders', [WorkOrderController::class, 'fetchOrdersData'])->name('work.orders.import')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
@@ -231,6 +234,15 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
         Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc')->middleware(['can:admin-qc-create']);
         Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc')->middleware(['can:admin-qc-create']);
 
+        //Processing
+        Route::any('/processing', [ProcessingController::class, 'index'])->name('process.index')->middleware(['can:admin-qc-view']);
+        Route::any('/processing-list', [ProcessingController::class, 'ProcessList'])->name('process.list')->middleware(['can:admin-qc-view']);
+        Route::any('/processing-detail/{id}', [ProcessingController::class, 'processDetail'])->name('process.detail')->middleware(['can:admin-qc-view']);
+        Route::any('/get-work-order-processing/{id}', [ProcessingController::class, 'getProcess'])->name('process.get')->middleware(['can:admin-qc-view']);
+        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcess'])->name('process.start')->middleware(['can:admin-qc-create']);
+        Route::any('/save-processing', [ProcessingController::class, 'saveProcess'])->name('save.process')->middleware(['can:admin-qc-create']);
+        Route::any('/update-processing', [ProcessingController::class, 'updateProcessItem'])->name('update.process')->middleware(['can:admin-qc-create']);
+
         //Customer-Companies
         Route::any('/customer-companies', [CustomerCompanyController::class, 'index'])->name('customer-companies.index')->middleware(['can:admin-customer-companies-view']);
         Route::any('/customer-companies-list', [CustomerCompanyController::class, 'companiesList'])->name('customer-companies.List')->middleware(['can:admin-customer-companies-view']);
@@ -239,7 +251,8 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
         Route::any('/edit-customer-companies/{id}', [CustomerCompanyController::class, 'edit'])->name('customer-companies.edit')->middleware(['can:admin-customer-companies-edit']);
         Route::any('/delete-customer-companies/{id}', [CustomerCompanyController::class, 'destroy'])->name('customer-companies.delete')->middleware(['can:admin-customer-companies-delete']);
 
-
+        //Import Locations from WHMS
+        Route::any('/import-locations', [WareHouseController::class, 'fetchData'])->name('import.locations');
 
 
     });

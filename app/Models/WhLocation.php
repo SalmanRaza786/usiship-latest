@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class WhLocation extends Model
 {
     use HasFactory;
-    protected $fillable=['loc_title','load_type_id','title','slot','cancel_before','schedule_limit','status'];
+    protected $fillable=['loc_title','status','wms_location_id','wms_warehouse_id','type','wms_updated_date','wh_id'];
 }

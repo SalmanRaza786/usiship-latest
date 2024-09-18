@@ -190,6 +190,10 @@ $(document).ready(function(){
             formData.append('newLocationItemImages[' + 0 + '][]', selectedFiles[i]);
         }
 
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
+
 
         $.ajax({
             url: route('admin.save.resolve'),

@@ -103,8 +103,8 @@
                                             @foreach($data['inventory'] as  $inventory)
                                                 {{$inventory}}
                                                 <option value="{{ $inventory->inventory->id }}"
-                                                @if($row->inventory_id==$inventory->id)
-                                                    {{ "selected"}}
+                                                @if($row->inventory_id==$inventory->inventory->id)
+                                                    {{"selected"}}
                                                     @endif
                                                     >{{ $inventory->inventory->item_name .'('.$inventory->inventory->sku.')' }}</option>
                                             @endforeach
@@ -118,7 +118,7 @@
                                     <input class="form-control" type="number" step="0.01" placeholder="Pallet #" name="pallet_number[]" required value="{{$row->pallet_number}}">
                                 </td>
                                 <td>
-                                    <select name="loc_id[]" class="form-control" required>
+                                    <select name="loc_id[]" class="form-control" data-choices required>
                                         <option value="">Choose Location</option>
                                         @foreach($data['locations'] as  $loc)
                                             <option value="{{ $loc->id }}"

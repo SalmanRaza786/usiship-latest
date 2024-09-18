@@ -66,9 +66,15 @@
                                                     <label for="password" class="form-label">{{__('translation.password')}}</label>
                                                     <input type="password" class="form-control" name="password" id="password" placeholder=Password" required>
                                                 </div>
-                                                <div class="mb-5">
+                                                <div class="mb-3">
                                                     <label for="c_password" class="form-label">{{__('translation.retype_password')}}</label>
                                                     <input type="password" class="form-control" name="password_confirmation" id="c_password" placeholder="{{__('translation.enter_password')}}" required>
+                                                </div>
+                                                <div class="mb-5">
+                                                    <label class="form-label" for="company_name">Company Name</label>
+                                                    <div class="position-relative auth-pass-input group">
+                                                        <input type="text" class="form-control"   placeholder="Company Name" value=""  name="company_name"  id="company_name" >
+                                                    </div>
                                                 </div>
                                                 <div class="mt-4">
                                                     <button class="btn btn-success w-100 btn-submit" type="button" >{{__('translation.sign_up')}}</button>

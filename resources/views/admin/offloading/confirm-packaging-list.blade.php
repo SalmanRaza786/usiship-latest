@@ -30,6 +30,7 @@
                         <div class="col">
                             <h4 class="card-title mb-0">Packaging List Confirmation - {{$data->order->order_id ?? '-'}}</h4>
                         </div>
+                        @if($data->status_id != 10)
                         <div class="col-auto justify-content-sm-end">
                             <button type="button" id="alertButton" style="display:none;" class="btn btn-warning me-2">
                                 <i class="ri-alert-line align-bottom me-1"></i> Report Exception/Damages
@@ -44,6 +45,7 @@
                                 @canany('admin-offloading-create')<button type="submit" class="btn btn-success btn-submit"  style=""> <i class="ri-save-line align-bottom me-1"></i> Save/Close Packing List</button>@endcanany
                             </form>
                         </div>
+                        @endif
                     </div>
                     <div class="card-body">
                         <div class="live-preview">
@@ -151,10 +153,12 @@
                                                         <td class="product-id align-middle">{{$list->inventory->sku ?? "-"}}</td>
                                                         <td class="product-id align-middle">{{$list->qty ?? "-"}}<input type="hidden" name="qty" value="{{$list->qty??0}}"/> </td>
                                                         <td class="product-id align-middle">
+                                                            @if($data->status_id != 10)
                                                             <div class="hstack gap-3">
                                                                 <a href="javascript:void(0);" data-row-id="{{ $key }}" class="link-success fs-15 edit-row"><i class="ri-edit-2-line fs-24"></i></a>
                                                                 <a href="javascript:void(0);" data-row-id="{{ $key }}" data-id ="{{$list->id}}" class="link-danger fs-15 save-row" style="display:none;"><i class="ri-save-line fs-24"></i></a>
                                                             </div>
+                                                            @endif
                                                         </td>
                                                         <td class="text-start">
                                                             <div class="mb-2"><input class="form-control bg-light border-0" type="text" style="width: 150px;" name="cartons_qty" value="{{$list->qty_received_cartons ?? ""}}"  placeholder="Cartons Qty" disabled></div>

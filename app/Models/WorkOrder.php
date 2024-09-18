@@ -10,6 +10,17 @@ class WorkOrder extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'client_id',
+        'ship_method',
+        'order_date',
+        'ship_date',
+        'load_type_id',
+        'carrier_id',
+        'order_reference',
+        'status_code',
+    ];
+
     public function client()
     {
         return $this->belongsTo(User::class, 'client_id', 'id');

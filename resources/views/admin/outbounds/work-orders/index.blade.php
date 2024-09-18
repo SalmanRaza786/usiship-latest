@@ -18,7 +18,7 @@
                     @canany('admin-role-create')
                     <div class="col-auto justify-content-sm-end">
 
-                        <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#loadTypeModal"><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
+                        <button type="button" class="btn btn-success btn-import"><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
                     </div>
                         @endcanany
                 </div><!-- end card header -->

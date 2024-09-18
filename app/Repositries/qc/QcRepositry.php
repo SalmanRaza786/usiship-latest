@@ -6,6 +6,7 @@ use App\Http\Helpers\Helper;
 use App\Models\MissedItem;
 use App\Models\MissedItemDetail;
 use App\Models\OrderItemPutAway;
+use App\Models\OrderProcessing;
 use App\Models\PickedItem;
 use App\Models\QcDetailWorkOrder;
 use App\Models\QcWorkOrder;
@@ -65,8 +66,23 @@ class QcRepositry implements QcInterface
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             ($request->updateType==2)?$qry->status_code=$request->status_code:'';
             $qry->save();
+            if($request->updateType == 2)
+            {
+                $wokr_order_process = OrderProcessing::updateOrCreate(
+                    [
+                        'work_order_id' =>$qry->work_order_id,
+                    ],
+                    [
+                        'work_order_id' =>$qry->work_order_id,
+                        'qc_work_order_id' =>$qry->id,
+                        'auth_id' =>Auth::user()->id,
+                        'is_publish' =>2,
+                        'status_code' =>205
+                    ]
+                );
+            }
 
-            return Helper::success($qry, ($request->updateType==1)?"qc start success fully":"qc close success fully");
+            return Helper::success($qry, ($request->updateType==1)?"qc start successfully":"qc close successfully");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

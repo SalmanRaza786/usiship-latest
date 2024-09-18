@@ -8,12 +8,15 @@ use App\Models\Admin;
 use App\Models\LoadType;
 use App\Models\User;
 use App\Models\WhDock;
+use App\Models\WhLocation;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\notification\NotificationRepositry;
 use App\Repositries\wh\WhInterface;
+use App\Services\DataService;
 use App\Services\FireBaseNotificationTriggerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use App\Mail\ExampleMail;
 use Illuminate\Support\Facades\Mail;
@@ -25,12 +28,14 @@ class WareHouseController extends Controller
     private $wh;
     private $customField;
     private $order;
+    private $dataService;
 
-    public function __construct(WhInterface $wh, CustomFieldInterface $customField,AppointmentInterface $order)
+    public function __construct(WhInterface $wh, CustomFieldInterface $customField,AppointmentInterface $order,DataService $dataService)
     {
         $this->wh = $wh;
         $this->customField = $customField;
         $this->order = $order;
+        $this->dataService = $dataService;
 
     }
 
@@ -42,6 +47,20 @@ class WareHouseController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
 
+        }
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $res = $this->wh->searchWhLocations($request);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            } else {
+                return Helper::error($res->get('message'), []);
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
         }
     }
 
@@ -330,6 +349,41 @@ class WareHouseController extends Controller
     {
         return view('scan');
     }
+
+
+
+    public function fetchData($whId=1)
+    {
+        $endpoint = 'raw/warehouses/'.$whId.'/locations';
+
+        try {
+            $batchSize = 1000;
+            $wmsLocations = $this->dataService->fetchAllData($endpoint);
+
+            foreach (array_chunk($wmsLocations, $batchSize) as $batch) {
+                foreach ($batch as $loc) {
+                    $datetime = Carbon::parse($loc['updated_date'])->format('Y-m-d H:i:s');
+                    $location = WhLocation::updateOrCreate(
+                        ['wms_location_id' => $loc['id']],
+                        [
+                            'wms_location_id' => $loc['id'],
+                            'loc_title' => $loc['name'],
+                            'wms_warehouse_id' => $loc['warehouse_id'],
+                            'type' => $loc['type'],
+                            'wh_id' => $loc['warehouse_id'],
+                            'wms_updated_date' => $datetime,
+                        ]);
+                }
+            }
+
+
+            return Helper::ajaxSuccess([], "All Locations imported from WHMS");
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+
 
 
 }

@@ -78,7 +78,6 @@ class PickingController extends Controller
         try {
              $request->all();
              return  $res=$this->picking->updateStartPicking($request);
-
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

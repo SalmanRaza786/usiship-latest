@@ -2,6 +2,7 @@
 namespace App\Repositries\appointment;
 
 use App\Events\SendEmailEvent;
+use App\Exceptions\ImportException;
 use App\Http\Helpers\Helper;
 
 use App\Imports\ImportPackagingList;
@@ -316,10 +317,10 @@ class AppointmentRepositry implements AppointmentInterface {
             $message ="Packaging List Uploaded";
             DB::commit();
             return Helper::success(1,$message);
-        } catch (ValidationException $validationException) {
+        }catch (ImportException $e) {
             DB::rollBack();
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
-        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(), []);
+        }catch (\Exception $e) {
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);
         }

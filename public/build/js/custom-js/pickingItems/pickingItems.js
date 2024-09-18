@@ -1,17 +1,18 @@
 
 
-$(document).ready(function(){
+$(document).ready(function() {
 
 
-
-    $('.btn-start-picking').on('click', function() {
+    $('.btn-start-picking').on('click', function () {
 
         var updateType = $(this).attr('updateType');
         updatePickingTime(updateType);
     });
-    function  updatePickingTime(updateType){
-        var pickerId=$('input[name=pickerId]').val();
-        var workOrderId=$('input[name=work_order_id]').val();
+
+    function updatePickingTime(updateType) {
+        var pickerId = $('input[name=pickerId]').val();
+        var workOrderId = $('input[name=work_order_id]').val();
+        var stagedLoc = $('input[name=staged_loc]').val();
 
 
         $.ajax({
@@ -19,59 +20,62 @@ $(document).ready(function(){
             type: 'POST',
             async: false,
             dataType: 'json',
-            data: { updateType: updateType,pickerId:pickerId,workOrderId:workOrderId },
+            data: {updateType: updateType, pickerId: pickerId, workOrderId: workOrderId, stagedLoc: stagedLoc},
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 $('.btn-start-close').text('Processing...');
                 $(".btn-start-close").prop("disabled", true);
             },
-            success: function(response) {
-                    console.log('response',response);
-                if(response.status==true){
+            success: function (response) {
+                console.log('response', response);
+                if (response.status == true) {
                     $('input[name=isStartPicking]').val(1);
                     $('input[name=start_pick_time]').val(response.data.start_time);
                     toastr.success(response.message)
                     checkIsPickingStart();
                     $('.btn-modal-close').click();
-                    if(updateType==2){
+                    if (updateType == 2) {
                         window.location.href = route('admin.picking.index');
                     }
-                }else{
+                } else {
                     toastr.error(response.message)
                 }
 
 
             },
-            complete: function(data) {
-                if(updateType==1){
+            complete: function (data) {
+                if (updateType == 1) {
                     $(".btn-start-picking").html("Start Picking");
-                }else{
+                } else {
                     $(".btn-close-picking").html("Close Picking");
                 }
 
                 $(".btn-start-close").prop("disabled", false);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 toastr.error(error);
             }
         });
     }
+
     checkIsPickingStart();
-    function checkIsPickingStart(){
-        var isStartPicking=$('input[name=isStartPicking]').val();
-        if(isStartPicking==1){
+
+    function checkIsPickingStart() {
+        var isStartPicking = $('input[name=isStartPicking]').val();
+        if (isStartPicking == 1) {
             $('.pick-item-section').removeClass('d-none');
             $('.btn-start-picking').addClass('d-none');
             $('.btn-close-picking').removeClass('d-none');
-        }else{
+        } else {
             $('.btn-close-picking').addClass('d-none');
             $('.pick-item-section').addClass('d-none');
             $('.btn-start-picking').removeClass('d-none');
         }
     }
-    $('#ClosePickingForm').on('submit', function(e) {
+
+    $('#ClosePickingForm').on('submit', function (e) {
         e.preventDefault();
 
         $.ajax({
@@ -82,54 +86,60 @@ $(document).ready(function(){
             contentType: false,
             cache: false,
             processData: false,
-            beforeSend: function() {
+            beforeSend: function () {
                 $('.btn-close-picking').text('Processing...');
                 $(".btn-close-picking").prop("disabled", true);
             },
-            success: function(response) {
+            success: function (response) {
 
-                if (response.status==true) {
+                if (response.status == true) {
                     toastr.success(response.message);
                     window.location.href = route('admin.picking.index');
                 }
-                if (response.status==false) {
+                if (response.status == false) {
                     toastr.error(response.message);
                 }
             },
 
-            complete: function(data) {
+            complete: function (data) {
                 $(".btn-close-picking").html("Close Picking");
                 $(".btn-close-picking").prop("disabled", false);
             },
 
-            error: function() {
+            error: function () {
                 $('.btn-close-picking').text('Close Picking');
                 $(".btn-close-picking").prop("disabled", false);
             }
         });
     });
 
-    $('.confirm-close-picking').on('click', function() {
+    $('.confirm-close-picking').on('click', function () {
         updatePickingTime(2);
 
     });
 
-    $('#pickingDetailTable').on('click', '.btn-save-row', function() {
+    $('#pickingDetailTable').on('click', '.btn-save-row', function () {
 
         var row = $(this).closest('tr');
         var formData = new FormData();
-        var work_order_id=$('input[name=work_order_id]').val();
+        var work_order_id = $('input[name=work_order_id]').val();
 
         formData.append('pickedLocId[]', row.find('.loc-id').val());
         formData.append('missedQty[]', row.find('.miss-qty').val());
         formData.append('hidden_id[]', $(this).attr('data'));
-        formData.append('work_order_id',work_order_id);
+        formData.append('work_order_id', work_order_id);
 
 
         var fileInput = row.find('input[type="file"]')[0];
         var selectedFiles = fileInput.files;
         for (var i = 0; i < selectedFiles.length; i++) {
             formData.append('pickedItemImages[' + 0 + '][]', selectedFiles[i]);
+        }
+
+        var fileInput = row.find('input[type="file"]')[1];
+        var selectedFiles = fileInput.files;
+        for (var i = 0; i < selectedFiles.length; i++) {
+            formData.append('pickedStagedLocImages[' + 0 + '][]', selectedFiles[i]);
         }
 
 
@@ -140,26 +150,26 @@ $(document).ready(function(){
             processData: false,
             contentType: false,
             headers: {
-                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                beforeSend: function() {
-                    row.find('.btn-save-row').text('...');
-                    row.find('.btn-save-row').prop("disabled", true);
-                },
-            success: function(response) {
-                if(response.status){
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function () {
+                row.find('.btn-save-row').text('...');
+                row.find('.btn-save-row').prop("disabled", true);
+            },
+            success: function (response) {
+                if (response.status) {
                     toastr.success(response.message);
-                    window.location.reload();
-                }else{
+                    // window.location.reload();
+                } else {
                     toastr.error(response.message);
                 }
             },
-                complete: function(data) {
+            complete: function (data) {
 
-                    row.find('.btn-save-row').html('<i class="ri-save-2-fill fs-1"></i>');
-                    row.find('.btn-save-row').prop("disabled", false);
-                },
-            error: function(xhr, status, error) {
+                row.find('.btn-save-row').html('<i class="ri-save-2-fill fs-1"></i>');
+                row.find('.btn-save-row').prop("disabled", false);
+            },
+            error: function (xhr, status, error) {
                 toastr.error(error);
             }
         });
@@ -167,32 +177,112 @@ $(document).ready(function(){
     });
 
 
-    $('#pickingDetailTable').on('click', '.btn-delete-file', function() {
+    $('#pickingDetailTable').on('click', '.btn-delete-file', function () {
         var id = $(this).attr('data');
         $('.confirm-delete').val(id);
     });
 
 
-    $('.confirm-delete').click(function() {
+    $('.confirm-delete').click(function () {
         var id = $(this).val();
         $.ajax({
             url: route('admin.file.remove'),
             type: 'get',
             async: false,
             dataType: 'json',
-            data: { fileId: id },
-            success: function(response) {
+            data: {fileId: id},
+            success: function (response) {
                 $('#pickingDetailTable').DataTable().ajax.reload();
                 $('.btn-close').click();
                 toastr.success(response.message);
                 window.location.reload();
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 var errors = xhr.responseJSON.errors;
-                toastr.success(error);
+                toastr.error(error);
             }
         });
     });
+
+
+    $('.location-select1').select2({
+        placeholder: 'Select a location',
+        ajax: {
+            url: route('admin.locations.search'),
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term
+                }
+            },
+            processResults: function (data) {
+                if (data.status != false) {
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                id: item.id,
+                                text: item.loc_title
+                            }
+                        })
+                    };
+                } else {
+                    toastr.error(data.message);
+                }
+
+            },
+            cache: true
+        },
+        minimumInputLength: 2,
+        error: function (xhr, status, error) {
+            console.log('error');
+            toastr.error(error);
+        }
+    });
+
+
+
+        $('.location-select').each(function () {
+
+            var $select = $(this); // Current select element
+            var defaultLocationId = $select.siblings('.defaultLocationId').val();
+            var defaultLocationName = $select.siblings('.defaultLocationName').val();
+
+            // Initialize Select2 for the current select element
+            $select.select2({
+                placeholder: 'Select a location',
+                ajax: {
+                    url: route('admin.locations.search'),
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term // Search term sent to the server
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.loc_title
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 2,
+            });
+
+            if (defaultLocationId && defaultLocationName) {
+                var option = new Option(defaultLocationName, defaultLocationId, true, true);
+                $select.append(option).trigger('change');
+            }
+        });
+
+
+
 });
 
 

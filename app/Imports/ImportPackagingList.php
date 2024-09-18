@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 
+use App\Exceptions\ImportException;
 use App\Models\Inventory;
 use App\Models\PackgingList;
 use Carbon\Carbon;
@@ -24,48 +25,64 @@ class ImportPackagingList implements ToModel,WithHeadingRow,WithValidation
     public function model(array $row)
     {
 
+        try {
 
-        if ($this->order_id) {
-            $cer = Inventory::updateOrCreate(
-                [
-                    'sku' => $row['sku'],
-                ],
-                [
-                    'item_name' => $row['item_name'],
-                    'sku' => $row['sku'],
-                ]
-            );
+            if ($this->order_id) {
 
-            $list = PackgingList::updateOrCreate(
-                [
-                    'order_id' => $this->order_id,
-                    'inventory_id' => $cer->id,
-                ],
-                [
-                    'order_id' => $this->order_id,
-                    'inventory_id' => $cer->id,
-                    'qty' => $row['qty_per_packing_slip'],
-                    'hi' => $row['hi'],
-                    'ti' => $row['ti'],
-                    'qty_received_cartons' => $row['quantity_received_cartons'],
-                    'qty_received_each' => $row['quantity_received_eaches'],
-                    'exception_qty' => $row['exceptions'],
-                    'total_pallets' => $row['total_pallets'],
-                    'lot_3' => $row['lot'],
-                    'serial_number' => $row['serial'],
-                    'upc_label' => $row['upc_label'],
-                    'expiry_date' =>Carbon::parse($row['expiration_date'])->format('Y-m-d'),
-                    'length' => $row['length'],
-                    'width' => $row['width'],
-                    'height' => $row['height'],
-                    'weight' => $row['weight'],
-                    'custom_field_1' => $row['custom_field1'],
-                    'custom_field_2' => $row['custom_field2'],
-                    'custom_field_3' => $row['custom_field3'],
-                    'custom_field_4' => $row['custom_field4'],
-                ]
-            );
+                if($row['sku'] && $row['item_name'] && $row['qty_per_packing_slip']){
+
+                    $cer = Inventory::updateOrCreate(
+                        [
+                            'sku' => $row['sku'],
+                        ],
+                        [
+                            'item_name' => $row['item_name'],
+                            'sku' => $row['sku'],
+                        ]
+                    );
+
+                    $list = PackgingList::updateOrCreate(
+                        [
+                            'order_id' => $this->order_id,
+                            'inventory_id' => $cer->id,
+                        ],
+                        [
+                            'order_id' => $this->order_id,
+                            'inventory_id' => $cer->id,
+                            'qty' => $row['qty_per_packing_slip'],
+                            'hi' => $row['hi'],
+                            'ti' => $row['ti'],
+                            'qty_received_cartons' => $row['quantity_received_cartons'],
+                            'qty_received_each' => $row['quantity_received_eaches'],
+                            'exception_qty' => $row['exceptions'],
+                            'total_pallets' => $row['total_pallets'],
+                            'lot_3' => $row['lot'],
+                            'serial_number' => $row['serial'],
+                            'upc_label' => $row['upc_label'],
+                            'expiry_date' =>$row['expiration_date']?Carbon::parse($row['expiration_date'])->format('Y-m-d'):null,
+                            'length' => $row['length'],
+                            'width' => $row['width'],
+                            'height' => $row['height'],
+                            'weight' => $row['weight'],
+                            'custom_field_1' => $row['custom_field1'],
+                            'custom_field_2' => $row['custom_field2'],
+                            'custom_field_3' => $row['custom_field3'],
+                            'custom_field_4' => $row['custom_field4'],
+                        ]
+                    );
+
+                }else{
+                    throw new ImportException("Missing required data: sku, item_name, qty_per_packing_slip");
+                }
+
+            }else{
+                throw new ImportException("Order Not Found");
+            }
+
+        }  catch (\Exception $e) {
+            throw new ImportException("Error: " . $e->getMessage());
         }
+
     }
     public function rules(): array
     {
