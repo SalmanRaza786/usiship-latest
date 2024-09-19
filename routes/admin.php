@@ -241,7 +241,10 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::any('/get-work-order-processing/{id}', [ProcessingController::class, 'getProcess'])->name('process.get')->middleware(['can:admin-qc-view']);
         Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcess'])->name('process.start')->middleware(['can:admin-qc-create']);
         Route::any('/save-processing', [ProcessingController::class, 'saveProcess'])->name('save.process')->middleware(['can:admin-qc-create']);
+        Route::any('/save-processing-detail', [ProcessingController::class, 'saveProcessDetail'])->name('save.process-detail')->middleware(['can:admin-qc-create']);
         Route::any('/update-processing', [ProcessingController::class, 'updateProcessItem'])->name('update.process')->middleware(['can:admin-qc-create']);
+        Route::any('/close-processing', [ProcessingController::class, 'closeProcess'])->name('update.process')->middleware(['can:admin-qc-create']);
+        Route::any('/delete-processing/{id}', [ProcessingController::class, 'deleteProcessItem'])->name('process-item.delete')->middleware(['can:admin-qc-create']);
 
         //Customer-Companies
         Route::any('/customer-companies', [CustomerCompanyController::class, 'index'])->name('customer-companies.index')->middleware(['can:admin-customer-companies-view']);

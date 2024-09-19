@@ -33,6 +33,12 @@
                                 <input type="text" class="form-control" placeholder="Name" value="" name="name" >
                             </div>
                         </div>
+                    <div class="mb-3">
+                            <label class="form-label" for="std_name">Company Name</label>
+                            <div class="position-relative auth-pass-input group">
+                                <input type="text" class="form-control" placeholder="Company Name" value="" name="company_name" >
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label" for="std_name">Email</label>
                             <div class="position-relative auth-pass-inputgroup">

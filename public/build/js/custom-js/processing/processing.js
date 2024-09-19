@@ -15,7 +15,7 @@ $(document).ready(function(){
 
 
         $.ajax({
-            url: route('admin.qc.start'),
+            url: route('admin.process.start'),
             type: 'POST',
             async: false,
             dataType: 'json',
@@ -40,7 +40,7 @@ $(document).ready(function(){
                     toastr.success(response.message)
                     checkIsPickingStart();
                     if(updateType==2) {
-                        window.location.href = route('admin.qc.index');
+                        window.location.href = route('admin.process.index');
                     }
                 }else{
                     toastr.error(response.message)
@@ -77,7 +77,7 @@ $(document).ready(function(){
         }
     }
 
-    $('#CloseQCForm').on('submit', function(e) {
+    $('#CloseProcessingForm').on('submit', function(e) {
 
         e.preventDefault();
 
@@ -97,10 +97,11 @@ $(document).ready(function(){
 
                 if (response.status==true) {
                     toastr.success(response.message);
-                    window.location.href = route('admin.qc.index');
+
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
+                    alert(response.message);
                 }
             },
 
@@ -246,7 +247,6 @@ $(document).ready(function(){
 
     $('#roleTable').on('click', '.btn-start-processing', function() {
         var id = $(this).attr('data');
-        console.log(id);
         $.ajax({
             url: route('admin.process.get', { id: id }),
             type: 'GET',
@@ -282,6 +282,9 @@ $(document).ready(function(){
 
         clonedRow.find('input').val('');
         clonedRow.find('select').val('');
+        clonedRow.find('textarea').val('');
+        clonedRow.find('.btn-save-row').attr('data',0);
+        clonedRow.find('.delete-row').attr('data',0);
         clonedRow.find('.sealImagesPreview').html('');
 
         // Append the cloned row to the table
@@ -315,7 +318,32 @@ $(document).ready(function(){
     $('#clonedSection').on('click', '.delete-row', function() {
 
         var $rowToDelete = $(this).closest('tr');
-        $rowToDelete.remove();
+        var id = $(this).attr('data');
+
+        if(id !== '0')
+        {
+            $.ajax({
+                url: route('admin.process-item.delete',{ id: id }),
+                type: 'get',
+                async: false,
+                dataType: 'json',
+                data: { id: id },
+                success: function(response) {
+                    toastr.success(response.message);
+                    $rowToDelete.remove();
+                    window.location.reload();
+
+                },
+                error: function(xhr, status, error) {
+                    var errors = xhr.responseJSON.errors;
+                    toastr.success(error);
+                }
+            });
+        }else {
+            $rowToDelete.remove();
+        }
+
+
 
     });
 
@@ -324,35 +352,34 @@ $(document).ready(function(){
         var row = $(this).closest('tr');
         var formData = new FormData();
         var w_order_id=$('input[name=w_order_id]').val();
-        var itemId=row.find('.item-id').val();
+        var processId=$('input[name=process_id]').val();
+        var id = $(this).attr('data');
 
 
-        var splitValues = itemId.split(',');
-
-
-        formData.append('missed_detail_parent_id',splitValues[2]);
-        formData.append('resolveId',$('input[name=hidden_process_id]').val());
-        formData.append('itemId[]', itemId);
-        formData.append('resolveQty[]', row.find('.resolve-qty').val());
-        formData.append('newLocId[]', row.find('.new-loc-id').val());
-
-        formData.append('w_order_id',w_order_id);
-        formData.append('staff_id',$('input[name=staff_id]').val());
-        formData.append('missed_id',$('input[name=missed_id]').val());
-        formData.append('status_code',$('input[name=status_code]').val());
+        formData.append('processDetailId',id);
+        // formData.append('processDetailId',row.find('.process-id').val());
+        formData.append('work_order_id', w_order_id);
+        formData.append('itemId', row.find('.item-id').val());
+        formData.append('processId', processId);
+        formData.append('qty', row.find('.qty').val());
+        formData.append('comments', row.find('.comments').val());
+        formData.append('status_code', row.find('.status').val());
 
 
         var fileInput = row.find('input[type="file"]')[0];
         var selectedFiles = fileInput.files;
         for (var i = 0; i < selectedFiles.length; i++) {
-            formData.append('resolveItemImages[' + 0 + '][]', selectedFiles[i]);
+            formData.append('processingItemImages[]', selectedFiles[i]);
+        }
+
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
         }
 
 
 
-
         $.ajax({
-            url: route('admin.save.resolve'),
+            url: route('admin.save.process-detail'),
             type: 'POST',
             data: formData,
             processData: false,
@@ -365,6 +392,7 @@ $(document).ready(function(){
                 row.find('.btn-save-row').prop("disabled", true);
             },
             success: function(response) {
+                console.log(response);
                 if(response.status){
                     toastr.success(response.message);
                     window.location.reload();

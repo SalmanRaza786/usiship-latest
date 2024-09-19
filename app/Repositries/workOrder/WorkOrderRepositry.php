@@ -3,8 +3,10 @@
 namespace App\Repositries\workOrder;
 
 use App\Http\Helpers\Helper;
+use App\Models\CustomerCompany;
 use App\Models\Inventory;
 use App\Models\PickedItem;
+use App\Models\User;
 use App\Models\WhLocation;
 use App\Models\WorkOrder;
 use App\Models\WorkOrderItem;
@@ -94,6 +96,28 @@ class WorkOrderRepositry implements WorkOrderInterface
             DB::beginTransaction();
             foreach($orders as $order){
                 $datetime = Carbon::parse($order['created_date'])->format('Y-m-d H:i:s');
+                $company = CustomerCompany::updateOrCreate(
+                    [
+                        'title'=>$order['customer']['name'],
+                    ],
+                    [
+                        'title'=>$order['customer']['name'],
+                        'email'=>$company->email??'abc@gmail.com',
+                    ]);
+
+                $client = User::updateOrCreate(
+                    [
+                        'id' => 0
+                    ],
+                   [
+                       'name' => $order['customer']['name'],
+                       'email' => $company->email,
+                       'company_id' => $company->id,
+                       'company_name' => $company->title,
+                       'status' => $request->status??2,
+                   ]
+                );
+
                 $workOrder = WorkOrder::updateOrCreate(
                     ['order_reference' => $order['reference_id']],
                     [

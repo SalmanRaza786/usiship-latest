@@ -11,5 +11,6 @@ interface ProcessingInterface
     public function createProcessItems($request);
     public function getAllProcessForApi();
     public function updateProcessItems($request);
+    public function deleteProcessItems($request);
 
 }

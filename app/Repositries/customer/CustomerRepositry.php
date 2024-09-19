@@ -69,8 +69,9 @@ class CustomerRepositry implements CustomerInterface {
             $customerData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'company_id' => $request->company_id,
-                'status' => $request->status,
+                'company_id' => $request->company_id??null,
+                'company_name' => $request->company_name,
+                'status' => $request->status??2,
             ];
 
             if ($request->filled('password')) {
