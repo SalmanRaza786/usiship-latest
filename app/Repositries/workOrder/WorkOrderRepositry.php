@@ -27,7 +27,7 @@ class WorkOrderRepositry implements WorkOrderInterface
         try {
             $data['totalRecords'] = WorkOrder::count();
             $qry= WorkOrder::query();
-            $qry= $qry->with('client:id,name','status:id,status_title,order_by');
+            $qry= $qry->with('client:id,title','status:id,status_title,order_by');
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -99,31 +99,18 @@ class WorkOrderRepositry implements WorkOrderInterface
                 $datetime = Carbon::parse($order['created_date'])->format('Y-m-d H:i:s');
                 $company = CustomerCompany::updateOrCreate(
                     [
-                        'title'=>$order['customer']['name'],
+                        'wms_customer_id'=>$order['customer']['id'],
                     ],
                     [
                         'title'=>$order['customer']['name'],
-                        'email'=>$company->email ?? 'abc@gmail.com',
+                        'email'=>$company->email ?? $order['customer']['name'].'@gmail.com',
                     ]);
 
-                $client = User::updateOrCreate(
-                    [
-                        'name' =>  $company->title,
-                    ],
-                   [
-                       'name' => $company->title,
-                       'email' => $company->email,
-                       'password' => Hash::make('iub12345678'),
-                       'company_id' => $company->id,
-                       'company_name' => $company->title,
-                       'status' => 2,
-                   ]
-                );
 
                 $workOrder = WorkOrder::updateOrCreate(
                     ['order_reference' => $order['reference_id']],
                     [
-                        'client_id' =>$client->id,
+                        'client_id' =>$company->id,
                         'ship_method' => $order['shipping_method'],
                         'order_date' =>$datetime,
                         'ship_date' =>$datetime,
@@ -152,7 +139,7 @@ class WorkOrderRepositry implements WorkOrderInterface
                             $myloc = WhLocation::where('wms_location_id',$location['location_id'])->first();
 
                             $workOrderItem = WorkOrderItem::updateOrCreate(
-                                ['id' => 0],
+                                [ 'work_order_id' => $workOrder->id],
                                 [
                                     'work_order_id' => $workOrder->id,
                                     'inventory_id' => $inventory->id,

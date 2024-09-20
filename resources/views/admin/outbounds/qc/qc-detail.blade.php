@@ -47,7 +47,7 @@
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label for="labelInput" class="form-label">Customer Name</label>
-                                        <input type="text" class="form-control" id="labelInput" value="{{$data['orderInfo']->workOrder->client->name}}" disabled="">
+                                        <input type="text" class="form-control" id="labelInput" value="{{$data['orderInfo']->workOrder->client->title}}" disabled="">
                                     </div>
                                 </div>
                                 <!--end col-->

@@ -10,5 +10,5 @@ class CustomerCompany extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable=['title','email','contact','address'];
+    protected $fillable=['wms_customer_id','title','email','contact','address'];
 }
