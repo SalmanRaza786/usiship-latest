@@ -33,7 +33,7 @@
                                 <input type="text" class="form-control" placeholder="Name" value="" name="name" >
                             </div>
                         </div>
-                    <div class="mb-3">
+                        <div class="mb-3">
                             <label class="form-label" for="std_name">Company Name</label>
                             <div class="position-relative auth-pass-input group">
                                 <input type="text" class="form-control" placeholder="Company Name" value="" name="company_name" >
@@ -53,6 +53,11 @@
                             <label for="c_password" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" name="password_confirmation" id="c_password" placeholder="Enter password" >
                         </div>
+                    <div class="mb-3">
+                        <label for="phone_no" class="form-label">Phone No.</label>
+                        <input type="text" class="form-control" name="phone_no" id="phone_no" placeholder="Enter phone no" >
+                    </div>
+
                     <div class="mb-3">
                         <label for="status-field" class="form-label">{{__('translation.status')}}</label>
                         <select  class="form-select" id="status_field" required data-trigger name="status" >

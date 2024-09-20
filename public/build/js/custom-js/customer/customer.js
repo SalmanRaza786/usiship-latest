@@ -74,6 +74,7 @@ $(document).ready(function(){
                     $('input[name=id]').val(response.data.load.id);
                     $('input[name=name]').val(response.data.load.name);
                     $('input[name=company_name]').val(response.data.load.company_name);
+                    $('input[name=phone_no]').val(response.data.load.phone_no);
                     $('input[name=email]').val(response.data.load.email);
 
                     $('select[name="company_id"]').empty();
