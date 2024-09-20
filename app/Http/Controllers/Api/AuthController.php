@@ -194,7 +194,9 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'email' => 'required|email',
-                'password' => 'required'
+                'password' => 'required',
+                'company_name' => 'required',
+                'phone_no' => 'required'
             ]);
 
             if ($validator->fails()){
@@ -206,10 +208,10 @@ class AuthController extends Controller
             }
 
               $customer = $this->customer->customerSave($request,$request->id);
-            if($customer['status']){
+            if($customer->get('status')){
                 return  Helper::createAPIResponce(false,200,'Account created successfully!',Helper::fetchOnlyData($customer));
             }else{
-                return  Helper::createAPIResponce(true,400,$customer['message'],[]);
+                return  Helper::createAPIResponce(true,400,$customer->get('message'),[]);
             }
 
         } catch (\Exception $e) {

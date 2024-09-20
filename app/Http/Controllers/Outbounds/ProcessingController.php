@@ -33,7 +33,6 @@ class ProcessingController extends Controller
     public function processDetail($id)
     {
         try {
-
             $data['orderInfo']=Helper::fetchOnlyData($this->qc->getProcessInfo($id));
             $data['processItems']=Helper::fetchOnlyData($this->qc->getProcessItems($id));
             return view('admin.outbounds.processing.processing-detail')->with(compact('data'));
@@ -81,6 +80,16 @@ class ProcessingController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
+    public function saveProcessDetail(Request $request)
+    {
+
+        try {
+             $request->all();
+            return $res=$this->qc->createProcessItems($request);
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
     public function updateProcessItem(Request $request)
     {
 
@@ -92,6 +101,16 @@ class ProcessingController extends Controller
 //             }
             return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
 
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+    public function deleteProcessItem(Request $request)
+    {
+        try {
+            $request->all();
+            $res=$this->qc->deleteProcessItems($request);
+            return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

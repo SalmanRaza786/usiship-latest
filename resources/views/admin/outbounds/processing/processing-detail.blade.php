@@ -76,14 +76,15 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="live-preview">
-                            <form action="{{route('admin.save.resolve')}}" method="post" enctype="multipart/form-data"
-                                  id="CloseResolveForm">
+                            <form action="{{route('admin.process.start')}}" method="post" enctype="multipart/form-data"
+                                  id="CloseProcessingForm">
                                 @csrf
-{{--                                <input type="hidden" name="w_order_id" value="{{$data['orderInfo']->workOrder->id}}">--}}
+                                <input type="hidden" name="w_order_id" value="{{$data['orderInfo']->workOrder->id}}">
+                                <input type="hidden" name="process_id" value="{{$data['orderInfo']->id}}">
 {{--                                <input type="hidden" name="staff_id"--}}
 {{--                                       value="{{$data['orderInfo']->orderPicker->picker_id}}">--}}
 {{--                                <input type="hidden" name="missed_id" value="{{$data['orderInfo']->id }}">--}}
-{{--                                <input type="hidden" name="status_code" value="205">--}}
+                                <input type="hidden" name="status_code" value="204">
 
 
                                 <table class="invoice-table table table-borderless table-nowrap mb-0">
@@ -105,35 +106,19 @@
 
                                     @if($data['processItems']->count() > 0)
                                         @foreach($data['processItems'] as $key=>$resolve)
-                                            <input type="hidden" name="process_detail_id" class="resolve-id"
+                                            <input type="hidden" name="process_detail_id" class="process-id"
                                                    value="{{$resolve->id}}">
 
                                             <tr>
                                                 <td>{{$key+1}}</td>
                                                 <td>
-{{--                                                    <select name="itemId[]" id=""--}}
-{{--                                                            class="form-control js-example-basic-single item-id"--}}
-{{--                                                            required>--}}
-{{--                                                        <option value="">Choose SKU</option>--}}
-                                                        <select name="itemId[]" id="" class="form-control js-example-basic-single item-id" required>
+                                                        <select name="itemId[]" id="" class="form-control item-id" required>
                                                             <option value="">Select Your Task</option>
-                                                            <option   value="1,1,{{$row->id}}">Task A</option>
-                                                            <option value="2">Task B</option>
-{{--                                                        @isset($data['missedItems'])--}}
-{{--                                                            @foreach($data['missedItems'] as $row)--}}
-{{--                                                                <option--}}
-{{--                                                                    @if($resolve->missed_detail_parent_id==$row->id)--}}
-{{--                                                                        {{"selected"}}--}}
-{{--                                                                    @endif--}}
-{{--                                                                    value="{{$row->pickedItem->inventory->id}},{{$row->pickedItem->w_order_item_id}},{{$row->id}}">{{$row->pickedItem->inventory->item_name}}--}}
-{{--                                                                    - {{$row->pickedItem->inventory->sku}}--}}
-{{--                                                                    ({{$row->missed_qty}})--}}
-{{--                                                                </option>--}}
-{{--                                                            @endforeach--}}
-{{--                                                        @endisset--}}
+                                                            <option value="1" {{$resolve->task_id =='1'? "selected":""}}>Task A</option>
+                                                            <option value="2" {{$resolve->task_id =='2'? "selected":""}}>Task B</option>
+
                                                     </select>
                                                 </td>
-
 
                                                 <td>
                                                     <input class="form-control bg-light border-0 qty"
@@ -142,22 +127,16 @@
                                                 </td>
                                                 <td class="text-start" style="width: 150px;">
                                                     <div class="mb-2">
-{{--                                                        <input class="form-control bg-light border-0"--}}
-{{--                                                               style="width: 170px;" type="file"--}}
-{{--                                                               name="pickedItemImages[{{$key}}][]" placeholder="Damage"--}}
-{{--                                                               multiple accept="image/*">--}}
-
+                                                        <textarea rows="4" cols="30" class="form-control comments" value="{{$resolve->comment}}" name="comments">{{$resolve->comment}}</textarea>
                                                     </div>
 
-                                                    <textarea rows="4" cols="30" name="comments"></textarea>
                                                 </td>
-
                                                 <td class="text-end">
-                                                    <select name="status[]" id="" class="form-select js-example-basic-single new-loc-id" required>
+                                                    <select name="status[]" id="" class="form-select status" required>
                                                         <option value="">Choose Status</option>
-                                                        <option value="">Pending</option>
-                                                        <option value="">InProgress</option>
-                                                        <option value="">Complete</option>
+                                                        <option value="205" {{$resolve->status_code =='205'? "selected":""}}>Pending</option>
+                                                        <option value="203" {{$resolve->status_code =='203'? "selected":""}}>InProgress</option>
+                                                        <option value="204" {{$resolve->status_code =='204'? "selected":""}}>Processed</option>
                                                     </select>
                                                 </td>
                                                 <td class="text-start" style="width: 150px;">
@@ -166,12 +145,12 @@
                                                                type="file" name="processingItemImages[{{$key}}][]"
                                                                placeholder="Damage" multiple accept="image/*">
                                                     </div>
-                                                    @isset($row->media)
+                                                    @isset($resolve->media)
                                                         <div
                                                             class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview"
                                                             id="sealImagesPreview">
-                                                            @foreach($row->media as $image)
-                                                                @if($image->field_name == 'resolveItemImages')
+                                                            @foreach($resolve->media as $image)
+                                                                @if($image->field_name == 'processingItemImages')
                                                                     <div class="preview">
                                                                         <img
                                                                             src="{{asset('storage/uploads/'.$image->file_name)}}"
@@ -186,36 +165,26 @@
                                                 <td>
                                                     @canany('admin-putaway-delete')
                                                         <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2"
-                                                           title="Remove" data="{{$row->id}}"></i>
+                                                           title="Remove" data="{{$resolve->id}}"></i>
                                                     @endcanany
 
                                                 </td>
 
                                                 <td class="text-end  cursor-pointer text-success btn-save-row"
-                                                    title="Save" data="{{$row->id}}"><i class="ri-save-2-fill fs-1"></i>
+                                                    title="Save" data="{{$resolve->id}}"><i class="ri-save-2-fill fs-1"></i>
                                                 </td>
 
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr>
-                                            <input type="hidden" name="hidden_process_id" class="process-id" value="0">
+                                            <input type="hidden" name="hidden_process_detail_id" class="process-id" value="0">
                                             <td>1</td>
                                             <td>
-                                                <select name="itemId[]" id="" class="form-control js-example-basic-single item-id" required>
+                                                <select name="itemId[]" id="" class="form-control item-id" required>
                                                     <option value="">Select Your Task</option>
                                                     <option value="1">Task A</option>
                                                     <option value="2">Task B</option>
-{{--                                                    @isset($data['missedItems'])--}}
-{{--                                                        @foreach($data['missedItems'] as $row)--}}
-{{--                                                            <option--}}
-
-{{--                                                                value="{{$row->pickedItem->inventory->id}},{{$row->pickedItem->w_order_item_id}},{{$row->id}}">{{$row->pickedItem->inventory->item_name}}--}}
-{{--                                                                - {{$row->pickedItem->inventory->sku}}--}}
-{{--                                                                ({{$row->missed_qty}})--}}
-{{--                                                            </option>--}}
-{{--                                                        @endforeach--}}
-{{--                                                    @endisset--}}
                                                 </select>
                                             </td>
 
@@ -225,20 +194,15 @@
                                                        value=""></td>
                                             <td class="text-start" style="width: 150px;">
                                                 <div class="mb-2">
-{{--                                                    <input class="form-control bg-light border-0" style="width: 170px;"--}}
-{{--                                                           type="file" name="resolveItemImages"--}}
-{{--                                                           placeholder="Damage" multiple accept="image/*">--}}
-                                                    <textarea rows="4" cols="30" name="comments"></textarea>
+                                                    <textarea rows="4" class="form-control comments" cols="30" name="comments"></textarea>
                                                 </div>
-
                                             </td>
-
                                             <td class="text-end">
-                                                <select name="status[]" id="" class="form-select js-example-basic-single new-loc-id" required>
+                                                <select name="status[]" id="" class="form-select status" required>
                                                     <option value="">Choose Status</option>
-                                                    <option value="">Pending</option>
-                                                    <option value="">InProgress</option>
-                                                    <option value="">Complete</option>
+                                                    <option value="205">Pending</option>
+                                                    <option value="203">InProgress</option>
+                                                    <option value="204">Processed</option>
                                                 </select>
                                             </td>
                                             <td class="text-start" style="width: 150px;">
@@ -268,13 +232,13 @@
                                             <td>
                                                 @canany('admin-putaway-delete')
                                                     <i class="ri-delete-bin-6-line align-bottom delete-row text-danger cursor-pointer fs-2"
-                                                       title="Remove" data="1"></i>
+                                                       title="Remove" data="0"></i>
                                                 @endcanany
 
                                             </td>
 
                                             <td class="text-start  cursor-pointer text-success btn-save-row" title="Save"
-                                                data="1"><i class="ri-save-2-fill fs-1"></i></td>
+                                                data="0"><i class="ri-save-2-fill fs-1"></i></td>
 
                                         </tr>
                                     @endif
@@ -285,13 +249,13 @@
                                     <tr>
                                         <td colspan="5">
                                             @canany('admin-putaway-create')
-{{--                                                @if($data['orderInfo']->end_time==NULL)--}}
+                                                @if($data['orderInfo']->end_time==NULL)
                                                     <button type="button" class="btn btn-outline-success btn-add-row"
                                                             data-bs-toggle="tooltip" data-bs-placement="bottom"
                                                             title="Add New Row"><i
                                                             class="ri-add-fill me-1 align-bottom"></i>New Row
                                                     </button>
-{{--                                                @endif--}}
+                                                @endif
                                             @endcanany
                                         </td>
                                     </tr>

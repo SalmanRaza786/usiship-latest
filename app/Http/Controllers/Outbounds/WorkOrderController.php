@@ -87,7 +87,7 @@ class WorkOrderController extends Controller
     public function fetchOrdersData()
     {
 //        2024-09-05T00:00:00Z
-        $Orderendpoint = 'orders?created_date[gte]=2024-09-17T00:00:00Z';
+        $Orderendpoint = 'orders?created_date[gte]=2024-09-20T00:00:00Z';
 
         try {
             $batchSize = 1000;
@@ -95,6 +95,9 @@ class WorkOrderController extends Controller
             $allData = [];
             foreach (array_chunk($wmsOrders, $batchSize) as $batch) {
                 foreach ($batch as &$order) {
+                    $Customerendpoint = 'warehouse-customers/' . $order['warehouse_customer_id'];
+                    $customer = $this->dataService->fetchAllData($Customerendpoint);
+                    $order['customer'] = $customer;
 
                     foreach ($order['line_items'] as &$item) {
                         $Inventoryendpoint = 'inventory?warehouse_customer_id=' . $order['warehouse_customer_id'] . '&sku=' . $item['sku'];

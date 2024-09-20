@@ -3,8 +3,10 @@
 namespace App\Repositries\workOrder;
 
 use App\Http\Helpers\Helper;
+use App\Models\CustomerCompany;
 use App\Models\Inventory;
 use App\Models\PickedItem;
+use App\Models\User;
 use App\Models\WhLocation;
 use App\Models\WorkOrder;
 use App\Models\WorkOrderItem;
@@ -12,6 +14,7 @@ use App\Models\WorkOrderPicker;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 
 class WorkOrderRepositry implements WorkOrderInterface
@@ -94,10 +97,33 @@ class WorkOrderRepositry implements WorkOrderInterface
             DB::beginTransaction();
             foreach($orders as $order){
                 $datetime = Carbon::parse($order['created_date'])->format('Y-m-d H:i:s');
+                $company = CustomerCompany::updateOrCreate(
+                    [
+                        'title'=>$order['customer']['name'],
+                    ],
+                    [
+                        'title'=>$order['customer']['name'],
+                        'email'=>$company->email ?? 'abc@gmail.com',
+                    ]);
+
+                $client = User::updateOrCreate(
+                    [
+                        'name' =>  $company->title,
+                    ],
+                   [
+                       'name' => $company->title,
+                       'email' => $company->email,
+                       'password' => Hash::make('iub12345678'),
+                       'company_id' => $company->id,
+                       'company_name' => $company->title,
+                       'status' => 2,
+                   ]
+                );
+
                 $workOrder = WorkOrder::updateOrCreate(
                     ['order_reference' => $order['reference_id']],
                     [
-                        'client_id' =>1,
+                        'client_id' =>$client->id,
                         'ship_method' => $order['shipping_method'],
                         'order_date' =>$datetime,
                         'ship_date' =>$datetime,

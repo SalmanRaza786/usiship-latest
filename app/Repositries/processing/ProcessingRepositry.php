@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Validator;
 class ProcessingRepositry implements ProcessingInterface
 {
 
-    protected $pickedItemFilePath = 'picked-item-media/';
+    protected $pickedItemFilePath = 'processing-detail-media/';
     public function getProcessList($request)
     {
         try {
@@ -85,7 +85,7 @@ class ProcessingRepositry implements ProcessingInterface
         try {
 
             $qry= ProcessingDetail::query();
-            $qry= $qry->with('media');
+            $qry = $qry->with('media');
             $qry =$qry->where('processing_id',$qcId);
             $data =$qry->get();
 
@@ -104,53 +104,43 @@ class ProcessingRepositry implements ProcessingInterface
 
             DB::beginTransaction();
 
-              $workOrderId=$request->workOrderId;
-                $pickerId=WorkOrderPicker::where('work_order_id',$workOrderId)->pluck('id');
-
-//            $pickedItems = PickedItem::whereIn('picker_table_id', $pickerId)
-//                ->selectRaw('inventory_id, w_order_item_id, SUM(picked_qty) as total_picked_qty')
-//                ->groupBy('inventory_id', 'w_order_item_id')
-//                ->where('picked_qty','>',0)
-//                ->get();
 
 
-
-            $workOrderItem=WorkOrderItem::where('work_order_id',$workOrderId)->get();
-            if($workOrderItem->count() > 0) {
-
-                $qcWorkOrder = QcWorkOrder::updateOrCreate(
+                $prcessingItem = ProcessingDetail::updateOrCreate(
                     [
-                        'work_order_id' => $workOrderId,
+                        'work_order_id' => $request->work_order_id,
+                        'id' => $request->processDetailId,
                     ],
                     [
-                        'work_order_id' => $workOrderId,
-                        'status_code' => 205,
+                        'work_order_id' => $request->work_order_id,
+                        'comment' => $request->comments,
+                        'qty' => $request->qty,
+                        'processing_id' =>$request->processId,
+                        'task_id' => $request->itemId,
+                        'status_code' => $request->status_code,
                         'auth_id' => Auth::user()->id,
                     ]
                 );
 
-                    foreach ($workOrderItem as $row){
+            if ($prcessingItem) {
+                $fileableId = $prcessingItem->id;
+                $fileableType = 'App\Models\ProcessingDetail';
 
-                        $totalPickedQty = PickedItem::whereIn('picker_table_id', $pickerId)
-                            ->where('inventory_id', $row->inventory_id)
-                            ->sum('picked_qty');
-
-                    $qcDetail = QcDetailWorkOrder::class::updateOrCreate(
-                        [
-                            'qc_parent_id' => $qcWorkOrder->id,
-                            'w_order_item_id' => $row->id,
-                        ],
-                        [
-                            'qc_parent_id' => $qcWorkOrder->id,
-                            'w_order_item_id' => $row->id,
-                            'picked_qty' => $totalPickedQty,
-                        ]
-                    );
+                // Handle multiple file uploads for each row
+                if ($request->hasFile("processingItemImages")) {
+                    $uploadedFiles = $request->file('processingItemImages', []);
+                    $imageSets = [
+                        'processingItemImages' => $uploadedFiles
+                    ];
+                    if (!empty($imageSets['processingItemImages'])) {
+                        $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
+                    }
                 }
+
             }
 
             DB::commit();
-            return Helper::success($qcDetail,'Qc created successfully');
+            return Helper::success($prcessingItem,'Processing Item updated successfully');
         }  catch (\Exception $e) {
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);
@@ -208,4 +198,15 @@ class ProcessingRepositry implements ProcessingInterface
     }
 
 
+    public function deleteProcessItems($request)
+    {
+        try {
+                $pdetail = ProcessingDetail::find($request->id);
+                $pdetail->delete();
+
+                return Helper::success($pdetail,'Items removed successfully');
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
 }

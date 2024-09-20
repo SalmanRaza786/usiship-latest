@@ -73,6 +73,7 @@ $(document).ready(function(){
                 if(response.status==true){
                     $('input[name=id]').val(response.data.load.id);
                     $('input[name=name]').val(response.data.load.name);
+                    $('input[name=company_name]').val(response.data.load.company_name);
                     $('input[name=email]').val(response.data.load.email);
 
                     $('select[name="company_id"]').empty();

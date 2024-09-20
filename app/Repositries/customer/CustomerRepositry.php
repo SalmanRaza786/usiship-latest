@@ -53,6 +53,7 @@ class CustomerRepositry implements CustomerInterface {
                 'name' => ['required', 'string', 'max:255'],
                 'company_id' => 'required',
                 'status' => 'required',
+                'phone_no' => 'required',
                 'email' => 'required|string|email|max:255|unique:users,email,'. $id,
 
             ]);
@@ -69,8 +70,10 @@ class CustomerRepositry implements CustomerInterface {
             $customerData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'company_id' => $request->company_id,
-                'status' => $request->status,
+                'company_id' => $request->company_id??null,
+                'company_name' => $request->company_name,
+                'phone_no' => $request->phone_no,
+                'status' => $request->status??2,
             ];
 
             if ($request->filled('password')) {
