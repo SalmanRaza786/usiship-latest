@@ -106,30 +106,30 @@ class CheckInRepositry implements CheckInInterface {
                 $fileableId = $checkin->id;
                 $fileableType = 'App\Models\OrderCheckIn';
 
-//                $imageSets = [
-//                    'containerImages' => $request->file('containerImages', []),
-//                    'sealImages' => $request->file('sealImages', []),
-//                    'do_signatureImages' => $request->file('do_signatureImages', []),
-//                    'other_docImages' => $request->file('other_docImages', []),
-//                ];
-//                $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->checkInFilePath);
+                $imageSets = [
+                    'containerImages' => $request->file('containerImages', []),
+                    'sealImages' => $request->file('sealImages', []),
+                    'do_signatureImages' => $request->file('do_signatureImages', []),
+                    'other_docImages' => $request->file('other_docImages', []),
+                ];
+                $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->checkInFilePath);
 
 
-                if($request->file('containerImages')){
-                    $media = Helper::createOrUpdateSingleMedia($request->file('containerImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->containerFileId,'containerImages');
-                }
-
-                if($request->file('sealImages')){
-                    $media = Helper::createOrUpdateSingleMedia($request->file('sealImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->sealFileId,'sealImages');
-                }
-
-                if($request->file('do_signatureImages')){
-                    $media = Helper::createOrUpdateSingleMedia($request->file('do_signatureImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->doFileId,'do_signatureImages');
-                }
-
-                if($request->file('other_docImages')){
-                    $media = Helper::createOrUpdateSingleMedia($request->file('other_docImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->otherFileId,'other_docImages');
-                }
+//                if($request->file('containerImages')){
+//                    $media = Helper::createOrUpdateSingleMedia($request->file('containerImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->containerFileId,'containerImages');
+//                }
+//
+//                if($request->file('sealImages')){
+//                    $media = Helper::createOrUpdateSingleMedia($request->file('sealImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->sealFileId,'sealImages');
+//                }
+//
+//                if($request->file('do_signatureImages')){
+//                    $media = Helper::createOrUpdateSingleMedia($request->file('do_signatureImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->doFileId,'do_signatureImages');
+//                }
+//
+//                if($request->file('other_docImages')){
+//                    $media = Helper::createOrUpdateSingleMedia($request->file('other_docImages'), $fileableId, $fileableType, $this->checkInFilePath,$request->otherFileId,'other_docImages');
+//                }
 
                 $orderContact = new OrderContactRepositry();
                 $orderContact->changeStatus($checkin->order_contact_id, 12);
