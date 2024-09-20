@@ -139,7 +139,9 @@ class WorkOrderRepositry implements WorkOrderInterface
                             $myloc = WhLocation::where('wms_location_id',$location['location_id'])->first();
 
                             $workOrderItem = WorkOrderItem::updateOrCreate(
-                                [ 'work_order_id' => $workOrder->id],
+                                [ 'work_order_id' => $workOrder->id,
+                                    'loc_id' => $myloc->id,
+                                ],
                                 [
                                     'work_order_id' => $workOrder->id,
                                     'inventory_id' => $inventory->id,
