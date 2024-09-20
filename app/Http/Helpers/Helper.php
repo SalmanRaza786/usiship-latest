@@ -343,22 +343,26 @@ class Helper
     public static function createOrUpdateSingleMedia($imageFile,$fileableId,$fileableType,$path,$fileId,$fieldName)
     {
         try {
+            if (!is_array($imageFile)) {
+                $imageFile = [];
+            } else{
 
-            $files = self::handleFiles($imageFile, $path);
+                $files = self::handleFiles($imageFile, $path);
 
-                    $media = FileContent::updateOrCreate(
-                        [
-                            'id' => $fileId
-                        ],
-                    [
+            $media = FileContent::updateOrCreate(
+                [
+                    'id' => $fileId
+                ],
+                [
                     'file_name' => $files['filename'],
-                    'file_thumbnail' =>  $files['thumbnail'],
+                    'file_thumbnail' => $files['thumbnail'],
                     'file_type' => 'Image',
                     'fileable_id' => $fileableId,
                     'fileable_type' => $fileableType,
                     'form_id' => null,
                     'field_name' => $fieldName,
                 ]);
+        }
 
 
             return $media;

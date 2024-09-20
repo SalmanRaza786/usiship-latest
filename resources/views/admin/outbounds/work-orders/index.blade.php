@@ -110,7 +110,7 @@
             },
 
             columns: [
-                { data: 'client.name' },
+                { data: 'client.title' },
                 { data: 'order_date' },
                 { data: 'ship_method' },
                 { data: 'order_reference' },

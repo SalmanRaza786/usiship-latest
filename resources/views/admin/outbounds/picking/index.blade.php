@@ -103,7 +103,7 @@
             },
 
             columns: [
-                { data: 'work_order.client.name' },
+                { data: 'work_order.client.title' },
                 { data: 'work_order.load_type.direction.value' },
                 { data: 'work_order.load_type.eq_type.value' },
                 { data: 'work_order.order_reference' },

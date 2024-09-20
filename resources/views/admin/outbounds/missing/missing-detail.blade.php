@@ -64,7 +64,7 @@
                                     <div>
                                         <label for="labelInput" class="form-label">Customer Name</label>
                                         <input type="text" class="form-control" id="labelInput"
-                                               value="{{$data['orderInfo']->workOrder->client->name}}" disabled="">
+                                               value="{{$data['orderInfo']->workOrder->client->title}}" disabled="">
                                     </div>
                                 </div>
                                 <!--end col-->
