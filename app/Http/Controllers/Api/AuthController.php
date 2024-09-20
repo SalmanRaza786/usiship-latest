@@ -195,7 +195,8 @@ class AuthController extends Controller
                 'name' => 'required',
                 'email' => 'required|email',
                 'password' => 'required',
-                'company_name' => 'required'
+                'company_name' => 'required',
+                'phone_no' => 'required'
             ]);
 
             if ($validator->fails()){

@@ -14,6 +14,7 @@ use App\Models\WorkOrderPicker;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 
 class WorkOrderRepositry implements WorkOrderInterface
@@ -102,26 +103,27 @@ class WorkOrderRepositry implements WorkOrderInterface
                     ],
                     [
                         'title'=>$order['customer']['name'],
-                        'email'=>$company->email??'abc@gmail.com',
+                        'email'=>$company->email ?? 'abc@gmail.com',
                     ]);
 
                 $client = User::updateOrCreate(
                     [
-                        'id' => 0
+                        'name' =>  $company->title,
                     ],
                    [
-                       'name' => $order['customer']['name'],
+                       'name' => $company->title,
                        'email' => $company->email,
+                       'password' => Hash::make('iub12345678'),
                        'company_id' => $company->id,
                        'company_name' => $company->title,
-                       'status' => $request->status??2,
+                       'status' => 2,
                    ]
                 );
 
                 $workOrder = WorkOrder::updateOrCreate(
                     ['order_reference' => $order['reference_id']],
                     [
-                        'client_id' =>1,
+                        'client_id' =>$client->id,
                         'ship_method' => $order['shipping_method'],
                         'order_date' =>$datetime,
                         'ship_date' =>$datetime,

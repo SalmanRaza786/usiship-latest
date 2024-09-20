@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('work_order_id')->references('id')->on('work_orders')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('task_id')->nullable()->default(null);
             $table->unsignedBigInteger('qty')->nullable()->default(null);
-            $table->text('comment')->nullable()->default(null);;
+            $table->text('comment')->nullable()->default(null);
             $table->unsignedBigInteger('status_code');
             $table->foreign('status_code')->references('order_by')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('auth_id');

@@ -25,6 +25,7 @@ use Illuminate\Notifications\Notifiable;
         'email',
         'password',
         'company_id',
+        'phone_no',
         'status',
     ];
 
