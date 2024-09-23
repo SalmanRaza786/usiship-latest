@@ -38,6 +38,8 @@ $(document).ready(function() {
                     $('.btn-modal-close').click();
                     if (updateType == 2) {
                         window.location.href = route('admin.picking.index');
+                    }else {
+                        window.location.reload();
                     }
                 } else {
                     toastr.error(response.message)

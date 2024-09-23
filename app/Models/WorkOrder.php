@@ -12,6 +12,7 @@ class WorkOrder extends Model
 
     protected $fillable = [
         'client_id',
+        'wms_transaction_id',
         'ship_method',
         'order_date',
         'ship_date',

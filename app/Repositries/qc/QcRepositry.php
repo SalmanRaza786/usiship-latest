@@ -28,7 +28,7 @@ class QcRepositry implements QcInterface
         try {
             $data['totalRecords'] = QcWorkOrder::publish()->count();
             $qry= QcWorkOrder::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','workOrder.carrier','status');
             $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));

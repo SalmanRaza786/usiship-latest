@@ -26,7 +26,7 @@ class MissingRepositry implements MissingInterface
         try {
             $data['totalRecords'] = MissedItem::publish()->count();
             $qry= MissedItem::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','workOrder.carrier','status');
             $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
 

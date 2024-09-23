@@ -62,11 +62,11 @@
                         <table class="table table-nowrap align-middle" id="roleTable">
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
+                                <th class="sort">Transaction No.</th>
+                                <th class="sort">Order Reference</th>
                                 <th class="sort">Customer Name</th>
-                                <th class="sort">Order Date</th>
                                 <th class="sort">Carrier</th>
-                                <th class="sort">Order Ref</th>
-                                <th class="sort">Shipping Time</th>
+                                <th class="sort">Order Date</th>
                                 <th class="sort">Status</th>
                                 <th class="sort">Action</th>
                             </tr>
@@ -110,16 +110,26 @@
             },
 
             columns: [
-                { data: 'client.title' },
-                { data: 'order_date' },
-                { data: 'ship_method' },
+                { data: 'wms_transaction_id' },
                 { data: 'order_reference' },
-                { data: 'ship_date' },
-                { data: 'status.status_title' },
+                { data: 'client.title' },
+                { data: 'carrier.carrier_company_name' },
+                { data: 'order_date' },
+                { data: null },
                 { data: null, orderable: false },
             ],
 
             columnDefs: [
+                {
+                    targets: 5,
+                    render: function(data, type, row, meta) {
+                        if (data.status_code == 204) {
+                            return '<span class="badge badge-soft-success text-uppercase">'+data.status.status_title+'</span>';
+                        } else  {
+                            return '<span class="badge badge-soft-danger text-uppercase">'+data.status.status_title+'</span>';
+                        }
+                    }
+                },
 
                 {
                     targets: 6,
@@ -132,7 +142,7 @@
                         if(row.status.order_by==201){
                              btnGroup=  btnAssign;
                         }
-                        if(row.status.order_by==202){
+                        if(row.status.order_by==204){
                              btnGroup=  btnUploadDoc+ ' ' + btnScheduleNow;
                         }
                         return btnGroup;

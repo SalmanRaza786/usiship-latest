@@ -57,10 +57,10 @@
                         <table class="table table-nowrap align-middle" id="roleTable">
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
+                                <th class="sort">Transaction No.</th>
+                                <th class="sort">Order Reference</th>
                                 <th class="sort">Customer Name</th>
-                                <th class="sort">Direction</th>
-                                <th class="sort">Load Type</th>
-                                <th class="sort">Order Ref</th>
+                                <th class="sort">Carrier</th>
 
                                 <th class="sort">Status</th>
                                 <th class="sort">Action</th>
@@ -103,10 +103,10 @@
             },
 
             columns: [
-                { data: 'work_order.client.title' },
-                { data: 'work_order.load_type.direction.value' },
-                { data: 'work_order.load_type.eq_type.value' },
+                { data: 'work_order.wms_transaction_id' },
                 { data: 'work_order.order_reference' },
+                { data: 'work_order.client.title' },
+                { data: 'work_order.carrier.carrier_company_name' },
                 { data: null },
                 { data: null, orderable: false },
             ],

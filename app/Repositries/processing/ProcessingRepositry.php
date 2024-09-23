@@ -9,6 +9,7 @@ use App\Models\OrderItemPutAway;
 use App\Models\OrderProcessing;
 use App\Models\PickedItem;
 use App\Models\ProcessingDetail;
+use App\Models\ProcessingTask;
 use App\Models\QcDetailWorkOrder;
 use App\Models\QcWorkOrder;
 use App\Models\WorkOrder;
@@ -29,7 +30,7 @@ class ProcessingRepositry implements ProcessingInterface
         try {
             $data['totalRecords'] = OrderProcessing::publish()->count();
             $qry= OrderProcessing::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','workOrder.carrier','status');
             $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
@@ -73,6 +74,12 @@ class ProcessingRepositry implements ProcessingInterface
                 ($request->other_reqs)?$qry->other_require=$request->other_reqs:null;
             }
             $qry->save();
+            if($request->updateType == 2 && $qry)
+            {
+                $work_order = WorkOrder::find($qry->work_order_id);
+                $work_order->status_code= 204;
+                $work_order->save();
+            }
             return Helper::success($qry, ($request->updateType==1)?"Processing start successfully":"Processing close successfully");
 
         } catch (\Exception $e) {
@@ -91,6 +98,17 @@ class ProcessingRepositry implements ProcessingInterface
 
             return Helper::success($data, $message="Record found");
 
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function getProcessTasks()
+    {
+        try {
+            $qry= ProcessingTask::where('status',1);
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
