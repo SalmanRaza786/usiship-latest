@@ -64,7 +64,7 @@
                             <tr class="text-uppercase">
                                 <th class="sort">Customer Name</th>
                                 <th class="sort">Order Date</th>
-                                <th class="sort">Shipping Method</th>
+                                <th class="sort">Carrier</th>
                                 <th class="sort">Order Ref</th>
                                 <th class="sort">Shipping Time</th>
                                 <th class="sort">Status</th>

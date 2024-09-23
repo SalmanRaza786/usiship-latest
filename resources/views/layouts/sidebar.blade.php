@@ -85,7 +85,7 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 @canany('admin-w-order-view')
-                                    <a href="{{route('admin.work.orders.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.work.orders.index')?'active':''}}">Work Orders</a>
+                                    <a href="{{route('admin.work.orders.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.work.orders.index')?'active':''}}">Orders</a>
                                 @endcanany
                                 @canany('admin-picking-view')
                                     <a href="{{route('admin.picking.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.picking.index')?'active':''}}">Picking</a>
