@@ -114,8 +114,11 @@
                                                 <td>
                                                         <select name="itemId[]" id="" class="form-control item-id" required>
                                                             <option value="">Select Your Task</option>
-                                                            <option value="1" {{$resolve->task_id =='1'? "selected":""}}>Task A</option>
-                                                            <option value="2" {{$resolve->task_id =='2'? "selected":""}}>Task B</option>
+                                                            @isset($data['processTasks'])
+                                                                @foreach($data['processTasks'] as $task)
+                                                                 <option value="{{$task->id}}" {{$resolve->task_id ==$task->id? "selected":""}}>{{$task->name}}</option>
+                                                                @endforeach
+                                                            @endisset
 
                                                     </select>
                                                 </td>
@@ -182,9 +185,12 @@
                                             <td>1</td>
                                             <td>
                                                 <select name="itemId[]" id="" class="form-control item-id" required>
-                                                    <option value="">Select Your Task</option>
-                                                    <option value="1">Task A</option>
-                                                    <option value="2">Task B</option>
+                                                    <option value="" selected>Select Your Task</option>
+                                                    @isset($data['processTasks'])
+                                                        @foreach($data['processTasks'] as $task)
+                                                            <option value="{{$task->id}}">{{$task->name}}</option>
+                                                        @endforeach
+                                                    @endisset
                                                 </select>
                                             </td>
 

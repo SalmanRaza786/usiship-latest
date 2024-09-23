@@ -112,6 +112,7 @@
                                         @isset($data['qcItems'])
                                             @foreach($data['qcItems'] as $key=>$row)
                                                 <input type="hidden" name="hidden_id[]" value="{{$row->id}}">
+                                                <input type="hidden" name="orderQty" value="{{$row->workOrderItem->qty}}">
 
                                                 <tr>
                                                     <th scope="row" class="product-id align-middle">{{$key + 1}}</th>
@@ -123,7 +124,7 @@
 
 
                                                     <td>
-                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="{{isset($row->picked_qty)?$row->picked_qty:0}}" required>
+                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="{{isset($row->qc_picked_qty)?$row->qc_picked_qty:$row->picked_qty}}" required>
                                                     </td>
 
 

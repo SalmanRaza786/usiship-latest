@@ -3,6 +3,8 @@
 namespace App\Repositries\workOrder;
 
 use App\Http\Helpers\Helper;
+use App\Models\Carriers;
+use App\Models\Company;
 use App\Models\CustomerCompany;
 use App\Models\Inventory;
 use App\Models\PickedItem;
@@ -27,7 +29,7 @@ class WorkOrderRepositry implements WorkOrderInterface
         try {
             $data['totalRecords'] = WorkOrder::count();
             $qry= WorkOrder::query();
-            $qry= $qry->with('client:id,title','status:id,status_title,order_by');
+            $qry= $qry->with('client:id,title','status:id,status_title,order_by','carrier');
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -97,25 +99,56 @@ class WorkOrderRepositry implements WorkOrderInterface
             DB::beginTransaction();
             foreach($orders as $order){
                 $datetime = Carbon::parse($order['created_date'])->format('Y-m-d H:i:s');
+
                 $company = CustomerCompany::updateOrCreate(
                     [
                         'wms_customer_id'=>$order['customer']['id'],
                     ],
                     [
                         'title'=>$order['customer']['name'],
-                        'email'=>$company->email ?? $order['customer']['name'].'@gmail.com',
+                        'email'=>$company->email ?? null,
                     ]);
+
+                if($order['shipping_method']){
+                    $carrierCompany = Company::updateOrCreate(
+                        [
+                            'company_title' => $order['shipping_method'],
+                        ],
+                        [
+                            'company_title' => $order['shipping_method'],
+                        ]
+                    );
+
+                    if($carrierCompany) {
+                        $carrier = Carriers::updateOrCreate(
+                            [
+                                'carrier_company_name' =>$carrierCompany->company_title,
+                                'company_id' => $carrierCompany->id,
+                            ],
+                            [
+                                'company_id' => $carrierCompany->id,
+                                'carrier_company_name' =>$carrierCompany->company_title,
+                                'email' => "test@gmail.com",
+                                'contacts' => "+00000000000"
+                            ]
+                        );
+                    }
+                }
 
 
                 $workOrder = WorkOrder::updateOrCreate(
-                    ['order_reference' => $order['reference_id']],
                     [
+                        'order_reference' => $order['reference_id'],
+                        'wms_transaction_id' =>$order['id'],
+                    ],
+                    [
+                        'wms_transaction_id' =>$order['id'],
                         'client_id' =>$company->id,
                         'ship_method' => $order['shipping_method'],
                         'order_date' =>$datetime,
                         'ship_date' =>$datetime,
                         'load_type_id' => 1,
-                        'carrier_id' => 1,
+                        'carrier_id' => $carrier->id ?? null,
                         'order_reference' => $order['reference_id'],
                         'status_code' => 201,
                     ]);
@@ -168,9 +201,8 @@ class WorkOrderRepositry implements WorkOrderInterface
     public function getAllWorkOrderList()
     {
         try {
-
             $qry= WorkOrder::query();
-            $qry= $qry->with('client:id,name','status:id,status_title,order_by');
+            $qry= $qry->with('client:id,title','status:id,status_title,order_by');
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Out bound orders list");
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Outbounds;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\ProcessingTask;
 use App\Repositries\missing\MissingInterface;
 use App\Repositries\processing\ProcessingInterface;
 use App\Repositries\qc\QcInterface;
@@ -35,6 +36,7 @@ class ProcessingController extends Controller
         try {
             $data['orderInfo']=Helper::fetchOnlyData($this->qc->getProcessInfo($id));
             $data['processItems']=Helper::fetchOnlyData($this->qc->getProcessItems($id));
+            $data['processTasks']=Helper::fetchOnlyData($this->qc->getProcessTasks());
             return view('admin.outbounds.processing.processing-detail')->with(compact('data'));
         }catch (\Exception $e) {
             return    $e->getMessage();
