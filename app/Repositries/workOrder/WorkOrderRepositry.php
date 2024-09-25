@@ -30,9 +30,21 @@ class WorkOrderRepositry implements WorkOrderInterface
             $data['totalRecords'] = WorkOrder::count();
             $qry= WorkOrder::query();
             $qry= $qry->with('client:id,title','status:id,status_title,order_by','carrier');
+
+            $qry = $qry->when($request->s_title, function ($query, $name) {
+                    $query->where('order_reference', 'LIKE', "%{$name}%");
+            });
+
+            $qry=$qry->when($request->status, function ($query, $status) {
+                return $query->where('status_code',$status);
+            });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_title')) ) {
+                $data['totalRecords']=$qry->count();
+            }
             return Helper::success($data, $message="Record found");
 
         } catch (\Exception $e) {

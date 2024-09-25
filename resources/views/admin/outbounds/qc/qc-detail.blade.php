@@ -112,9 +112,10 @@
                                         @isset($data['qcItems'])
                                             @foreach($data['qcItems'] as $key=>$row)
                                                 <input type="hidden" name="hidden_id[]" value="{{$row->id}}">
-                                                <input type="hidden" name="orderQty" value="{{$row->workOrderItem->qty}}">
+
 
                                                 <tr>
+                                                    <input type="hidden" name="orderQty" class="ordqty" value="{{$row->workOrderItem->qty}}">
                                                     <th scope="row" class="product-id align-middle">{{$key + 1}}</th>
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->inventory->item_name}} - {{$row->workOrderItem->inventory->sku}}</th>
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->qty}}</th>
