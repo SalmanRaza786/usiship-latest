@@ -124,14 +124,16 @@ $(document).ready(function(){
         var row = $(this).closest('tr');
         var formData = new FormData();
         var work_order_id=$('input[name=work_order_id]').val();
-        var order_qty=$('input[name=orderQty]').val();
-        var qc_qty = row.find('.qcQty').val();
 
-        if (qc_qty !== order_qty)
-        {
-            toastr.error("QC qty not equal to order qty");
-            return false;
-        }
+        var order_qty = row.find('.ordqty').val();
+        var qc_qty = row.find('.qcQty').val();
+        console.log(qc_qty);
+        console.log(order_qty);
+        // if (qc_qty !== order_qty)
+        // {
+        //     toastr.error("QC qty not equal to order qty");
+        //     return false;
+        // }
 
 
         formData.append('hidden_id[]', $(this).attr('data'));

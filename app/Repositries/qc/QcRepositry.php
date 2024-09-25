@@ -140,9 +140,9 @@ class QcRepositry implements QcInterface
 
                     foreach ($workOrderItem as $row){
 
-                        $totalPickedQty = PickedItem::whereIn('picker_table_id', $pickerId)
-                            ->where('inventory_id', $row->inventory_id)
-                            ->sum('picked_qty');
+                        $totalPickedQty = PickedItem::where('picker_table_id', $pickerId)
+                            ->where('inventory_id', $row->inventory_id)->where('w_order_item_id',$row->id)->first();
+
 
                     $qcDetail = QcDetailWorkOrder::class::updateOrCreate(
                         [
@@ -152,7 +152,7 @@ class QcRepositry implements QcInterface
                         [
                             'qc_parent_id' => $qcWorkOrder->id,
                             'w_order_item_id' => $row->id,
-                            'picked_qty' => $totalPickedQty,
+                            'picked_qty' => $totalPickedQty->picked_qty,
                         ]
                     );
                 }

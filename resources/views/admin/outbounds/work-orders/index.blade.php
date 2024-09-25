@@ -38,8 +38,9 @@
                                     <select class="form-control"  name="s_status">
                                         <option value="">Status</option>
                                         <option value="" selected>{{__('translation.all')}}</option>
-                                        <option value="1">Active</option>
-                                        <option value="2">In-Active</option>
+                                        <option value="201">Open</option>
+                                        <option value="202">Assign</option>
+                                        <option value="204">Processed</option>
                                     </select>
                                 </div>
                             </div>
