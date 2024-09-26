@@ -121,8 +121,6 @@ class CarriersRepositry implements CarriersInterface {
                     'driver_id_pic'=> 'required',
                     'do_document' => 'required',
                     'bol_image' => 'required',
-
-
                 ]);
             }
 
