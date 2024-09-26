@@ -195,6 +195,7 @@ $('#uploadForm').on('submit', function(e) {
                 $('#roleTable').DataTable().ajax.reload();
                 $('.btn-submit').text('Upload');
                 $(".btn-submit").prop("disabled", false);
+                window.location.reload();
             }
             if (response.status==false) {
                 toastr.error(response.message);
