@@ -47,8 +47,8 @@ class OrderController extends Controller
             $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $orderData=$roleUpdateOrCreate->get('data');
-                Helper::notificationTriggerHelper(1,null);
-                Helper::notificationTriggerHelper(2,$orderData->customer_id);
+//                Helper::notificationTriggerHelper(1,null);
+//                Helper::notificationTriggerHelper(2,$orderData->customer_id);
                 return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
                 return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
