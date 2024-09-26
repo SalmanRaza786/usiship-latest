@@ -343,12 +343,8 @@ class Helper
     public static function createOrUpdateSingleMedia($imageFile,$fileableId,$fileableType,$path,$fileId,$fieldName)
     {
         try {
-            if (!is_array($imageFile)) {
-                $imageFile = [];
-            } else{
 
-                $files = self::handleFiles($imageFile, $path);
-
+            $files = self::handleFiles($imageFile, $path);
             $media = FileContent::updateOrCreate(
                 [
                     'id' => $fileId
@@ -362,8 +358,6 @@ class Helper
                     'form_id' => null,
                     'field_name' => $fieldName,
                 ]);
-        }
-
 
             return $media;
         } catch (\Exception $e) {
