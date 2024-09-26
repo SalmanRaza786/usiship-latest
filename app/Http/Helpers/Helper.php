@@ -467,7 +467,7 @@ class Helper
                     foreach ($users as $user){
                         $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$user->id));
                         $res= NotificationEvent::dispatch($notifiData);
-                        $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
+//                        $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
                     }
 
                 }
@@ -477,7 +477,7 @@ class Helper
         if($type==2){
             $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
              $res= ClientNotificationEvent::dispatch($notifiData);
-            $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
+//            $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
         }
     }
 
