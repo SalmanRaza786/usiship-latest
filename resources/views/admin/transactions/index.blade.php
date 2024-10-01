@@ -64,6 +64,7 @@
                         <thead class="text-muted table-light">
                         <tr class="text-uppercase">
                             <th class="sort" data-sort="id">Order#</th>
+                            <th class="sort" data-sort="id">Order Type</th>
                             <th class="sort" data-sort="customer_name">Customer</th>
                             <th class="sort" data-sort="id">Warehouse</th>
                             <th class="sort" data-sort="customer_name">Dock</th>
@@ -113,6 +114,7 @@
                 },
                 columns: [
                     { data: 'order_id' },
+                    { data: 'order_type' },
                     { data: 'customer_name' },
                     { data: 'warehouse_title' },
                     { data: 'dock_title' },
@@ -122,9 +124,19 @@
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
+                    {
+                        targets: 1,
+                        render: function(data, type, row, meta) {
+                            if (data == 1) {
+                                return '<span class="badge bg-success">Inbound</span>';
+                            } else  {
+                                return '<span class="badge bg-danger">Outbound</span>';
+                            }
+                        }
+                    },
 
                     {
-                        targets: 7,
+                        targets:8,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
                             const rowEncId = data.enc_id;

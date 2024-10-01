@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Outbounds;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Models\ProcessingTask;
+use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\missing\MissingInterface;
 use App\Repositries\processing\ProcessingInterface;
 use App\Repositries\qc\QcInterface;
@@ -16,10 +17,12 @@ class ProcessingController extends Controller
     private $missed;
     private $wh;
     private $qc;
-    public function __construct(MissingInterface $missed,WhInterface $wh,ProcessingInterface $qc) {
+    private $loadType;
+    public function __construct(MissingInterface $missed,WhInterface $wh,ProcessingInterface $qc,loadTypeInterface $loadType) {
         $this->missed =$missed;
         $this->wh =$wh;
         $this->qc =$qc;
+        $this->loadType =$loadType;
     }
 
     public function index()
@@ -48,10 +51,10 @@ class ProcessingController extends Controller
     public function getProcess($id)
     {
         try {
-
-            $res = $this->qc->getProcessInfo($id);
-             if($res->get('status')){
-                 return Helper::ajaxSuccess($res->get('data'),"data found");
+            $data['processing'] = $this->qc->getProcessInfo($id);
+            $data['loadTypes']=Helper::fetchOnlyData($this->loadType->getGeneralLoadTypes());
+             if($data['processing']->get('status')){
+                 return Helper::ajaxSuccess($data,"data found");
              }
             return Helper::ajaxSuccess([],"data not found");
 

@@ -79,7 +79,7 @@
                                     <div>
                                         <label for="valueInput" class="form-label">Load Type</label>
                                         <input type="text" class="form-control" id="valueInput"
-                                               value="{{$data['orderInfo']->workOrder->loadType->eqType->value}}"
+                                               value="{{$data['orderInfo']->workOrder->loadType->eqType->value ?? "-"}}"
                                                disabled="">
                                     </div>
                                 </div>

@@ -57,11 +57,11 @@
                         <i class="ri-install-line"></i> <span>Inbound</span>
                     </a>
 
-                    <div class=" menu-dropdown {{ (Route::currentRouteName()=='admin.check-in.index' OR Route::currentRouteName()=='admin.off-loading.index' OR Route::currentRouteName()=='admin.put-away.index') ?'collapse show':'collapse'}}" id="inbound">
+                    <div class=" menu-dropdown {{ (Route::currentRouteName() == 'admin.check-in.index' && request('type') == '1' OR Route::currentRouteName()=='admin.off-loading.index' OR Route::currentRouteName()=='admin.put-away.index') ?'collapse show':'collapse'}}" id="inbound">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 @canany('admin-checkin-view')
-                                    <a href="{{route('admin.check-in.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.check-in.index')?'active':''}}">Check In</a>
+                                    <a href="{{route('admin.check-in.index',['type'=>'1'])}}" class="nav-link {{ (Route::currentRouteName() == 'admin.check-in.index' && request('type') == '1') ? 'active' : '' }}">Check In</a>
                                 @endcanany
                                 @canany('admin-offloading-view')
                                     <a href="{{route('admin.off-loading.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.off-loading.index')?'active':''}}">Off Loading</a>
@@ -81,23 +81,29 @@
                     <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index')?'active':''}}" href="#sidebarDashboards4" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards4">
                         <i class="ri-uninstall-line"></i> <span>Outbound</span>
                     </a>
-                    <div class="collapse menu-dropdown {{ (Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index') ?'collapse show':''}}" id="sidebarDashboards4">
+                    <div class="collapse menu-dropdown {{ (Route::currentRouteName() == 'admin.check-in.index' && request('type') == '2' OR Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index') ?'collapse show':''}}" id="sidebarDashboards4">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                @canany('admin-w-order-view')
-                                    <a href="{{route('admin.work.orders.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.work.orders.index')?'active':''}}">Orders</a>
-                                @endcanany
-                                @canany('admin-picking-view')
-                                    <a href="{{route('admin.picking.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.picking.index')?'active':''}}">Picking</a>
-                                @endcanany
-                                    @canany('admin-missing-view')
-                                    <a href="{{route('admin.missing.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.missing.index')?'active':''}}">Missing</a>
-                                @endcanany
-                                @canany('admin-qc-view')
-                                    <a href="{{route('admin.qc.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}">Quality Check (QC)</a>
-                                @endcanany
+                                    @canany('admin-w-order-view')
+                                        <a href="{{route('admin.work.orders.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.work.orders.index')?'active':''}}">Orders</a>
+                                    @endcanany
+                                    @canany('admin-picking-view')
+                                        <a href="{{route('admin.picking.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.picking.index')?'active':''}}">Picking</a>
+                                    @endcanany
+                                        @canany('admin-missing-view')
+                                        <a href="{{route('admin.missing.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.missing.index')?'active':''}}">Missing</a>
+                                    @endcanany
+                                    @canany('admin-qc-view')
+                                        <a href="{{route('admin.qc.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}">Quality Check (QC)</a>
+                                    @endcanany
                                     @canany('admin-qc-view')
                                         <a href="{{route('admin.process.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.process.index')?'active':''}}">Processing</a>
+                                    @endcanany
+                                    @canany('admin-checkin-view')
+                                        <a href="{{route('admin.check-in.index',['type'=>'2'])}}" class="nav-link {{ (Route::currentRouteName() == 'admin.check-in.index' && request('type') == '2') ? 'active' : '' }}">Check In</a>
+                                    @endcanany
+                                    @canany('admin-offloading-view')
+                                        <a href="{{route('admin.off-loading.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.off-loading.index')?'active':''}}">On Loading</a>
                                     @endcanany
 
                             </li>

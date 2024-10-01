@@ -106,12 +106,19 @@
                 { data: 'work_order.wms_transaction_id' },
                 { data: 'work_order.order_reference' },
                 { data: 'work_order.client.title' },
-                { data: 'work_order.carrier.carrier_company_name' },
+                { data: null},
                 { data: null },
                 { data: null, orderable: false },
             ],
 
             columnDefs: [
+                {
+                    targets: 3,
+                    render: function(data, type, row, meta) {
+                        return (data.work_order.carrier ? data.work_order.carrier?.carrier_company_name : "-");
+
+                    }
+                },
                 {
                     targets: 4,
                     render: function(data, type, row, meta) {

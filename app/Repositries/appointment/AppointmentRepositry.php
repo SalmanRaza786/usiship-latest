@@ -120,7 +120,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     'dock_id' => $request->dock_id,
                     'load_type_id' => $request->load_type_id,
                     'operational_hour_id' => $request->opra_id,
-                    'order_type' => 1,
+                    'order_type' =>$request->order_type ?? 1,
                     'status_id' =>$request->order_status,
                     'order_date' => $request->order_date,
                     'created_by' => $request->created_by,
