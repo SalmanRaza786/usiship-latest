@@ -44,7 +44,6 @@ var editOrderByVal=0;
                             $('select[name="roles"]').append(`<option value="${role.id}" ${role.id == response.data.users.role_id ? 'selected' : ''}>${role.name}</option>`)
 
                         });
-
                     });
                 }else{
                     toastr.error(response.message)

@@ -328,11 +328,11 @@ class OrderController extends Controller
 
            foreach ($res['data']['data'] as $row) {
 
-
                $array = array(
                    'id' => $row->id,
                    'enc_id' => encrypt($row->id),
                    'order_id' => $row->order_id,
+                   'order_type' => ($row->order_type == 1 ? "Inbound":"Outbound"),
                    'customer_name' => $row->customer->name,
                    'warehouse_title' =>$row->warehouse->title,
                    'dock_title' =>$row->dock->dock->title,

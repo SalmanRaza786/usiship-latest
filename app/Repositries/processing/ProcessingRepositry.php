@@ -60,7 +60,6 @@ class ProcessingRepositry implements ProcessingInterface
     public function updateStartProcess($request)
     {
         try {
-
             $qry= OrderProcessing::find($request->process_id);
             if(!$qry){
                 return Helper::error('Invalid Processing Id');
@@ -74,6 +73,12 @@ class ProcessingRepositry implements ProcessingInterface
                 ($request->other_reqs)?$qry->other_require=$request->other_reqs:null;
             }
             $qry->save();
+            if($request->updateType == 1 && $qry)
+            {
+                $work_order = WorkOrder::find($qry->work_order_id);
+                $work_order->load_type_id= $request->load_type_id ?? 3;
+                $work_order->save();
+            }
             if($request->updateType == 2 && $qry)
             {
                 $work_order = WorkOrder::find($qry->work_order_id);

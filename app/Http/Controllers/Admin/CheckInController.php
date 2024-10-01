@@ -26,9 +26,10 @@ class CheckInController extends Controller
         $this->orderContact = $orderContact;
         $this->wh = $wh;
     }
-    public function index(){
+    public function index(Request $request){
         try {
-            return view('admin.checkin.index');
+            $type = $request->input('type');
+            return view('admin.checkin.index')->with(compact('type'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }
@@ -102,7 +103,6 @@ class CheckInController extends Controller
                 }
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
             }else{
-
                 return Helper::ajaxError($roleUpdateOrCreate->get('message'));
             }
 

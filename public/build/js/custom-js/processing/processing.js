@@ -255,11 +255,21 @@ $(document).ready(function(){
             success: function(response) {
                 console.log(response);
                 if(response.status==true){
-                    $('input[name=process_id]').val(response.data.id);
-                    $('input[name=order_ref]').val(response.data.work_order.order_reference);
-                    $('input[name=customer_name]').val(response.data.work_order.client.title);
-                    $('input[name=qc_start_time]').val(response.data.qc_work_order.start_time);
-                    $('input[name=staged_location]').val(response.data.work_order.staged_location);
+                    $('input[name=process_id]').val(id);
+                    $('input[name=order_ref]').val(response.data.processing.data.work_order.order_reference);
+                    $('input[name=customer_name]').val(response.data.processing.data.work_order.client.title);
+                    $('input[name=qc_start_time]').val(response.data.processing.data.qc_work_order.start_time);
+                    $('input[name=staged_location]').val(response.data.processing.data.work_order.staged_location);
+
+                    $('select[name="load_type_id"]').empty();
+                    $('select[name="load_type_id"]').append(`<option value="">Choose One</option>`);
+                    $.each(response.data.loadTypes.data, function(key, loadtype) {
+                        $('select[name="load_type_id"]').append(
+                            `<option value="${loadtype.id}" ${loadtype.id === response.data.processing.data.work_order.load_type_id ? 'selected' : ''}>
+                                ${loadtype.direction.value} - ${loadtype.eq_type.value} - ${loadtype.operation.value} -${loadtype.trans_mode.value}
+                            </option>`
+                        );
+                    });
 
 
                 }else{

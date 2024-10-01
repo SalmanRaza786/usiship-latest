@@ -23,6 +23,7 @@
                 <div class="card-body border border-dashed border-end-0 border-start-0">
 
                     <form>
+                        <input type="hidden" name="s_order_type" value="{{$type}}">
                         <div class="row g-3">
                             <div class="col-xxl-7 col-sm-6">
                                 <div class="search-box">
@@ -104,6 +105,7 @@
                 ajax: {
                     url: "order-contact-list",
                     data: function (d) {
+                        d.order_type =$('input[name=s_order_type]').val(),
                         d.s_name = $('input[name=s_name]').val(),
                             d.s_status = $('select[name=s_status]').val()
                     }

@@ -24,8 +24,6 @@ return new class extends Migration
             $table->foreign('carrier_id')->references('id')->on('load_types')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('status_id');
             $table->foreign('status_id')->references('id')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
-
-
             $table->timestamps();
         });
     }

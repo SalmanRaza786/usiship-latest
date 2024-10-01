@@ -460,6 +460,7 @@ function ShowOperationHours(data,startIndex)
 
 }
 //end code for operational hours
+
 $('#dates-container').on('click', '.btn-oprational-hour', function(){
     var opId = $(this).data('value');
     var slotDate = $(this).attr('slotDate');

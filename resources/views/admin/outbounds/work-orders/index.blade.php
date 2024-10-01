@@ -114,13 +114,20 @@
                 { data: 'wms_transaction_id' },
                 { data: 'order_reference' },
                 { data: 'client.title' },
-                { data: 'carrier.carrier_company_name' },
+                { data: null },
                 { data: 'order_date' },
                 { data: null },
                 { data: null, orderable: false },
             ],
 
             columnDefs: [
+                {
+                    targets: 3,
+                    render: function(data, type, row, meta) {
+                        return (data.carrier ? data.carrier?.carrier_company_name : "-");
+
+                    }
+                },
                 {
                     targets: 5,
                     render: function(data, type, row, meta) {
@@ -137,8 +144,8 @@
                     render: function(data, type, row, meta) {
 
                         var btnAssign = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
-                        var btnUploadDoc = ' @canany('admin-role-edit')<a href="#" type="button" class="btn btn-primary btn-check-in"  data-bs-toggle="modal" data-bs-target="#checkInModal">Upload Bol Document</a>@endcanany';
-                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-check-in"  data-bs-toggle="modal" data-bs-target="#checkInModal">Schedule Now</a>@endcanany';
+                        var btnUploadDoc = ' @canany('admin-role-edit')<a href="#" type="button" class="btn btn-primary btn-upload-bol" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#UploadBOLDoc">Upload Bol Document</a>@endcanany';
+                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.load_type_id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';
                         var btnGroup='';
                         if(row.status.order_by==201){
                              btnGroup=  btnAssign;

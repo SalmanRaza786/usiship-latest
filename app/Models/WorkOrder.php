@@ -19,6 +19,9 @@ class WorkOrder extends Model
         'load_type_id',
         'carrier_id',
         'order_reference',
+        'wms_order_status',
+        'wms_created_at',
+        'wms_updated_at',
         'status_code',
     ];
 

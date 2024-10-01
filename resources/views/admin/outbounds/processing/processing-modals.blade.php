@@ -43,14 +43,8 @@
                         </div>
                         <div class="col-md-6">
                             <div>
-                                <label for="status-field" class="form-label" data-choice>Select Load Type</label>
-                                <select name="staff_id" id="" class="form-select">
-                                    <option value="">Choose One</option>
-                                    @isset($data['loadTypes'])
-                                        @foreach($data['loadTypes'] as $row)
-                                            <option value="{{$row->id}}">{{$row->name}}</option>
-                                        @endforeach
-                                    @endisset
+                                <label for="load_type_id" class="form-label" data-choice >Select Load Type</label>
+                                <select name="load_type_id" id="load_type_id" class="form-select" required>
                                 </select>
                              </div>
                         </div>
