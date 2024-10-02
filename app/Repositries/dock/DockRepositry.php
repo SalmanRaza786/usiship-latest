@@ -145,6 +145,7 @@ class DockRepositry implements DockInterface {
             $qry=$qry->where('dock_id',$dockId);
             $qry=$qry->where('load_type_id',$loadTypeId);
             $data=$qry->first();
+
             return Helper::success($data,'dock info');
 
         } catch (ValidationException $validationException) {

@@ -109,15 +109,15 @@
             <div>
                 @include('combine')
             </div>
-            <form action="{{route('order.store')}}" method="post" id="OrderForm1" enctype="multipart/form-data" >
+            <form action="{{route('order.store')}}" method="post" id="scheduleForm" enctype="multipart/form-data" >
                 @csrf
-                <input type="number" class="d-none" name="customer_id" value="1">
+                <input type="hidden"  name="customer_id" >
                 <input type="number" class="d-none" name="order_status" value="6">
                 <input type="text" name="created_by" class="d-none" value="{{auth()->user()->id}}">
                 <input type="text" name="guard" class="d-none" id="authGuard" value="{{\Illuminate\Support\Facades\Auth::getDefaultDriver()}}">
                 <input type="hidden" name="dock_id" value="1">
-                <input type="hidden" name="wh_id" value="1">
-                <input type="hidden" name="load_type_id" value="2">
+                <input type="hidden" name="wh_id" >
+                <input type="hidden" name="load_type_id" >
                 <input type="hidden"  name="order_type" value="2">
                 <input type="hidden"  name="order_date">
                 <input name="opra_id" type="hidden">

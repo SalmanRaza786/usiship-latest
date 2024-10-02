@@ -13,10 +13,12 @@ use App\Models\WhLocation;
 use App\Models\WorkOrder;
 use App\Models\WorkOrderItem;
 use App\Models\WorkOrderPicker;
+
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 
 class WorkOrderRepositry implements WorkOrderInterface
@@ -218,5 +220,23 @@ class WorkOrderRepositry implements WorkOrderInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+
+    public function getWorkOrder($request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'work_order_id' => 'required',
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $workOrderId = $request->work_order_id;
+            $res = WorkOrder::with('loadType','client')->where('id', $workOrderId)->first();
+            return Helper::success($res, $message='Record found');
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
 }

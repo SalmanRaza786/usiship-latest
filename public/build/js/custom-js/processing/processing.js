@@ -264,11 +264,15 @@ $(document).ready(function(){
                     $('select[name="load_type_id"]').empty();
                     $('select[name="load_type_id"]').append(`<option value="">Choose One</option>`);
                     $.each(response.data.loadTypes.data, function(key, loadtype) {
-                        $('select[name="load_type_id"]').append(
-                            `<option value="${loadtype.id}" ${loadtype.id === response.data.processing.data.work_order.load_type_id ? 'selected' : ''}>
+                        if(loadtype.direction_id === 2)
+                        {
+                            $('select[name="load_type_id"]').append(
+                                `<option value="${loadtype.id}" ${loadtype.id === response.data.processing.data.work_order.load_type_id ? 'selected' : ''}>
                                 ${loadtype.direction.value} - ${loadtype.eq_type.value} - ${loadtype.operation.value} -${loadtype.trans_mode.value}
                             </option>`
-                        );
+                            );
+                        }
+
                     });
 
 

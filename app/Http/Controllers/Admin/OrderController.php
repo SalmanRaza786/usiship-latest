@@ -334,6 +334,7 @@ class OrderController extends Controller
                    'order_id' => $row->order_id,
                    'order_type' => ($row->order_type == 1 ? "Inbound":"Outbound"),
                    'customer_name' => $row->customer->name,
+                   'company_name' => $row->customer->company->title ?? "-",
                    'warehouse_title' =>$row->warehouse->title,
                    'dock_title' =>$row->dock->dock->title,
                    'order_date' => $row->order_date,

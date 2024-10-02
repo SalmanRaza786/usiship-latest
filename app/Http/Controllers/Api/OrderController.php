@@ -113,10 +113,10 @@ class OrderController extends Controller
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
-    public function getOrdersList()
+    public function getOrdersList(Request $request)
     {
         try {
-           return $res= $this->order->getAllOrders();
+           return $res= $this->order->getAllOrdersAPI($request->user_type);
             $data = collect([]);
             foreach ($res['data'] as $row){
 
