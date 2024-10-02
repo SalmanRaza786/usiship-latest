@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Notifications\OrderNotification;
 use App\Repositries\customer\CustomerInterface;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -69,6 +70,12 @@ class AuthController extends Controller
 
             if ($validator->fails()){
                 return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if ($user && $user->status == 'In-Active') {  // Assuming `is_active` is the column for the account status
+                return  Helper::createAPIResponce(true,400,'Your account is inactive and cannot reset password.',[]);
             }
 
             $user = User::where('email', $request->email)->first();
@@ -169,9 +176,16 @@ class AuthController extends Controller
     {
         try {
 
+            $user = User::where('email', $request->email)->first();
+
+            if ($user && $user->status == 'In-Active') {  // Assuming `is_active` is the column for the account status
+                return  Helper::createAPIResponce(true,400,'Your account is inactive and cannot login.',[]);
+            }
+
             if (!$user=Auth::guard('web')->attempt($request->only(['email','password']))) {
                 return  Helper::createAPIResponce(true,400,'Invalid credentials',$request->all());
             }
+
 
             $data['user']=User::where('email',$request->email)->first();
 
@@ -208,7 +222,9 @@ class AuthController extends Controller
             }
 
               $customer = $this->customer->customerSave($request,$request->id);
+
             if($customer->get('status')){
+                event(new Registered(Helper::fetchOnlyData($customer)));
                 return  Helper::createAPIResponce(false,200,'Account created successfully!',Helper::fetchOnlyData($customer));
             }else{
                 return  Helper::createAPIResponce(true,400,$customer->get('message'),[]);

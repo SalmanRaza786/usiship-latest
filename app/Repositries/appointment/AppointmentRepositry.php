@@ -399,6 +399,21 @@ class AppointmentRepositry implements AppointmentInterface {
         }
 
     }
+    public function getAllOrdersAPI($user_type)
+    {
+        try {
+            $qry= Order::query();
+            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType.direction','orderLogs.orderStatus','warehouse:id,title','operationalHour','status');
+            if($user_type != "employees"){
+                $qry= $qry->where('company_id',auth()->user()->company_id);
+            }
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
     public function getOrderDetail($id)
     {
         try {
@@ -844,7 +859,7 @@ class AppointmentRepositry implements AppointmentInterface {
 
         try {
             $data['totalRecords'] = Order::count();
-            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer');
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer.company');
 
 
             $qry = $qry->when($request->s_name, function ($query, $name) {

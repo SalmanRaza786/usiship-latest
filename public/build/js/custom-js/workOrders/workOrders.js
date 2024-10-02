@@ -95,8 +95,33 @@ $(document).ready(function(){
     let currentIndex = 0;
     let data = '';
     $('#roleTable').on('click', '.btn-schedule', function() {
-        var loadTypeId = $(this).attr('data');
-        fnGetDockWiseOperationalHours(1,loadTypeId);
+        var work_order_id = $(this).attr('data');
+        $.ajax({
+            url: route('admin.work.order.get'),
+            type: 'get',
+            async: false,
+            dataType: 'json',
+            data:{work_order_id:work_order_id},
+            success: function(response) {
+                if(response.status===true){
+                    $('input[name="customer_id"]').val(response.data.work_order.client_id);
+                    $('input[name="wh_id"]').val(response.data.work_order.load_type.wh_id);
+                    $('input[name="dock_id"]').val(response.data.dock[0].dock_id);
+                    $('input[name="load_type_id"]').val(response.data.work_order.load_type_id);
+                     fnGetDockWiseOperationalHours(response.data.dock[0].dock_id,response.data.work_order.load_type_id);
+                    // fnGetDockWiseOperationalHours(4,9);
+                }
+            },
+            error: function(xhr, status, error) {
+                if(xhr.responseText){
+                    toastr.error(xhr.responseText);
+                }
+                if(xhr.responseJSON.message){
+                    toastr.error(xhr.responseJSON.message);
+                }
+            }
+        });
+
     });
     function fnGetDockWiseOperationalHours(dockId,loadTypeId) {
 
@@ -178,6 +203,46 @@ $(document).ready(function(){
         $('input[name="order_date"]').val(slotDate);
         $('.btn-oprational-hour').removeClass('btn-dark').addClass('btn-outline-dark');
         $(this).removeClass('btn-outline-dark').addClass('btn-dark');
+    });
+
+    $('#scheduleForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-submit').text('Processing...');
+                $(".btn-submit").prop("disabled", true);
+            },
+            success: function(response) {
+
+                if (response.status==true) {
+                    toastr.success(response.message);
+                    $('.btn-close').click();
+                    $('.btn-submit').text('Save Changes');
+                    $(".btn-submit").prop("disabled", false);
+                    window.location.reload();
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+            complete: function(data) {
+                $(".btn-submit").html("Save Changes");
+                $(".btn-submit").prop("disabled", false);
+            },
+            error: function() {
+                toastr.error('something went wrong');
+                $('.btn-submit').text('Save Changes');
+                $(".btn-submit").prop("disabled", false);
+            }
+        });
+
     });
 
 

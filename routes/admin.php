@@ -206,6 +206,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::any('/import-work-orders', [WorkOrderController::class, 'fetchOrdersData'])->name('work.orders.import')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
+        Route::any('/work-order', [WorkOrderController::class, 'getWorkOrder'])->name('work.order.get')->middleware(['can:admin-w-order-view']);
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
 
         //Picking

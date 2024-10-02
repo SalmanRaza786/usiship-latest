@@ -145,7 +145,7 @@
 
                         var btnAssign = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
                         var btnUploadDoc = ' @canany('admin-role-edit')<a href="#" type="button" class="btn btn-primary btn-upload-bol" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#UploadBOLDoc">Upload Bol Document</a>@endcanany';
-                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.load_type_id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';
+                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';
                         var btnGroup='';
                         if(row.status.order_by==201){
                              btnGroup=  btnAssign;

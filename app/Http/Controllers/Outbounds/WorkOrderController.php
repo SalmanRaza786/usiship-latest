@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
 use App\Models\WhLocation;
 use App\Models\WorkOrder;
+use App\Repositries\dock\DockInterface;
 use App\Repositries\orderStatus\OrderStatusInterface;
 use App\Repositries\user\UserInterface;
 use App\Repositries\workOrder\WorkOrderInterface;
@@ -20,13 +21,15 @@ class WorkOrderController extends Controller
     private $staff;
     private $status;
     private $dataService;
+    private $dock;
 
 
-    public function __construct(WorkOrderInterface $workOrder,UserInterface $staff,OrderStatusInterface $status,DataService $dataService) {
+    public function __construct(WorkOrderInterface $workOrder,UserInterface $staff,OrderStatusInterface $status,DataService $dataService,DockInterface $dock) {
         $this->workOrder =$workOrder;
         $this->staff =$staff;
         $this->status =$status;
         $this->dataService =$dataService;
+        $this->dock =$dock;
 
     }
 
@@ -52,6 +55,24 @@ class WorkOrderController extends Controller
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
+    }
+
+
+    public function getWorkOrder(Request $request)
+    {
+        try {
+            $res= $this->workOrder->getWorkOrder($request);
+
+            if($res->get('status'))
+            {
+                $data['work_order']=Helper::fetchOnlyData($res);
+                $data['dock'] =Helper::fetchOnlyData($this->dock->getDockListByLoadtype( $data['work_order']->load_type_id, $data['work_order']->loadType->wh_id)) ;
+                return Helper::ajaxSuccess($data,$res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
     }
 
     //pickerAssign
@@ -87,7 +108,7 @@ class WorkOrderController extends Controller
     public function fetchOrdersData()
     {
 //        2024-09-05T00:00:00Z
-        $Orderendpoint = 'orders?created_date[gte]=2024-10-01T00:00:00Z';
+        $Orderendpoint = 'orders?created_date[gte]=2024-10-02T00:00:00Z';
 
         try {
             $batchSize = 1000;
@@ -134,7 +155,6 @@ class WorkOrderController extends Controller
                 }
 
             }
-
             $res=$this->workOrder->importWorkOrder($allData);
             if ($res->get('status')) {
                 return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
