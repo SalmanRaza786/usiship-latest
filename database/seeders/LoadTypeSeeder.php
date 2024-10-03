@@ -16,14 +16,13 @@ class LoadTypeSeeder extends Seeder
      */
     public function run(): void
     {
-            //direction
-            $directionOptions = ['Inbound','Outbound'];
-            foreach ($directionOptions as $key=>$val){
-                LTDirection::updateOrCreate(['value' =>$val], ['value' =>$val]);
-            }
+        //direction
+        $directionOptions = ['Inbound','Outbound'];
+        foreach ($directionOptions as $key=>$val){
+            LTDirection::updateOrCreate(['value' =>$val], ['value' =>$val]);
+        }
 
         //Equipment Type
-
         $eqTypeOptions = ['Dry Van','Container Floor Loaded','Container Palatize'];
         foreach ($eqTypeOptions as $key=>$val){
             LTEquipmentType::updateOrCreate(['value' =>$val], ['value' =>$val]);
@@ -40,12 +39,6 @@ class LoadTypeSeeder extends Seeder
         foreach ($transportOptions as $key=>$val){
             LTOperation::updateOrCreate(['value' =>$val], ['value' =>$val]);
         }
-
-
-
-
-
-
 
 
     }

@@ -57,6 +57,8 @@ class OrderContactController extends Controller
     {
         try {
 
+            session()->put('previous_url', url()->previous());
+
             $res = $this->orderContact->getOrderContact($id);
             if ($res->get('status'))
             {

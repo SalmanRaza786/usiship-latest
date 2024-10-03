@@ -58,10 +58,6 @@
                 </div>
 
 
-
-
-
-
                 <div class="card-body pt-0">
                     <table class="table table-nowrap align-middle" id="roleTable">
                         <thead class="text-muted table-light">
@@ -105,7 +101,7 @@
                 ajax: {
                     url: "order-contact-list",
                     data: function (d) {
-                        d.order_type =$('input[name=s_order_type]').val(),
+                        d.s_order_type = $('input[name=s_order_type]').val(),
                         d.s_name = $('input[name=s_name]').val(),
                             d.s_status = $('select[name=s_status]').val()
                     }

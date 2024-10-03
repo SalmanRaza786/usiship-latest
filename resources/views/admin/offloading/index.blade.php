@@ -1,5 +1,9 @@
 @extends('layouts.master')
-@section('title') Off Loading List @endsection
+@if(request()->routeIs('admin.on-loading.index'))
+    @section('title') On Loading List @endsection
+@else
+    @section('title') Off Loading List @endsection
+@endif
 @section('css')
 
 @endsection
@@ -7,18 +11,27 @@
     @component('components.breadcrumb')
         @slot('routeUrl') {{url('/')}} @endslot
         @slot('li_1') Dashboard @endslot
-        @slot('title') Off Loading List @endslot
+        @if(request()->routeIs('admin.on-loading.index'))
+            @slot('title') On Loading List @endslot
+        @else
+            @slot('title') Off Loading List @endslot
+        @endif
     @endcomponent
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex ">
                     <div class="col">
-                        <h4 class="card-title mb-0">Off Loading List</h4>
+                        @if(request()->routeIs('admin.on-loading.index'))
+                            <h4 class="card-title mb-0">On Loading List</h4>
+                        @else
+                            <h4 class="card-title mb-0">Off Loading List</h4>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body border border-dashed border-end-0 border-start-0">
                     <form>
+                        <input type="hidden" name="s_order_type" value="{{$type}}">
                         <div class="row g-3">
                             <div class="col-xxl-7 col-sm-6">
                                 <div class="search-box">
@@ -96,6 +109,7 @@
                 ajax: {
                     url: "check-in-list",
                     data: function (d) {
+                        d.s_order_type = $('input[name=s_order_type]').val(),
                         d.s_name = $('input[name=s_name]').val(),
                             d.s_status = $('select[name=s_status]').val()
                     }
@@ -135,12 +149,12 @@
                             const orderId = data.order_id ;
                             if(status.id == 3)
                             {
-                                return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary "  >Off Loading In-Progress</a>@endcanany`;
+                                return `@canany('admin-offloading-create')<a href="{{request()->routeIs('admin.on-loading.index')?route('admin.on-loading.detail', ''):route('admin.off-loading.detail', '')}}/${rowId}" type="button" class="btn btn-primary "  >{{request()->routeIs('admin.on-loading.index')?"On Loading In-Progress":"Off Loading In-Progress"}}</a>@endcanany`;
                             }else if(status.id == 10)
                             {
-                                return `@canany('admin-offloading-create')<a  href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary"  >Off Loading Completed</a>@endcanany`;
+                                return `@canany('admin-offloading-create')<a  href="{{request()->routeIs('admin.on-loading.index')?route('admin.on-loading.detail', ''):route('admin.off-loading.detail', '')}}/${rowId}" type="button" class="btn btn-primary"  >{{request()->routeIs('admin.on-loading.index')?"On Loading Completed":"Off Loading Completed"}}</a>@endcanany`;
                             }else {
-                                return `@canany('admin-offloading-create')<a href="{{ route('admin.off-loading.detail', '') }}/${rowId}" type="button" class="btn btn-primary btn-check-in"  >Start Off Loading Now</a>@endcanany`;
+                                return `@canany('admin-offloading-create')<a href="{{request()->routeIs('admin.on-loading.index')?route('admin.on-loading.detail', ''):route('admin.off-loading.detail', '')}}/${rowId}" type="button" class="btn btn-primary btn-check-in">{{request()->routeIs('admin.on-loading.index')?"Start On Loading Now":"Start Off Loading Now"}}</a>@endcanany`;
                             }
 
                         }

@@ -133,6 +133,43 @@ class OffLoadingRepositry implements OffLoadingInterface {
 
     }
 
+    public function onLoadingClose($request,$id)
+    {
+        try {
+            DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'order_id' => 'required',
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $offloading = OrderOffLoading::updateOrCreate(
+                [
+                    'order_check_in_id' => $id
+                ],
+                [
+                    'order_id' =>$request->order_id,
+                    'end_time' =>now(),
+                    'status_id' => 14,
+                ]
+            );
+            $orderCheckIn = new CheckInRepositry();
+            $orderCheckIn->changeStatus($offloading->order_check_in_id, 10);
+
+
+            DB::commit();
+
+            return Helper::success($offloading, $message="Off-Loading Closed Successfully");
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
     public function offLoadingImagesSave($request,$id)
     {
         try {
@@ -179,6 +216,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
             $fileableType = 'App\Models\OrderOffLoading';
 
             $imageSets = [
+//                'orderImages' => $request->file('orderImages', []),
                 'containerImages' => $request->file('containerImages', []),
                 'sealImages' => $request->file('sealImages', []),
                 'openTimeImages' => $request->file('openTimeImages', []),
@@ -193,6 +231,9 @@ class OffLoadingRepositry implements OffLoadingInterface {
                 'productStagedLocImages' => $request->file('productStagedLocImages', []),
                 'singedOffLoadingSlipImages' => $request->file('singedOffLoadingSlipImages', []),
                 'palletsImages' => $request->file('palletsImages', []),
+                'palletsStagedImages' => $request->file('palletsStagedImages', []),
+                'signedBolImages' => $request->file('signedBolImages', []),
+                'singedLoadingSlipImages' => $request->file('singedLoadingSlipImages', []),
             ];
 
             $media =  Helper::uploadMultipleMedia($imageSets,$fileableId,$fileableType,$this->offLoadingFilePath);

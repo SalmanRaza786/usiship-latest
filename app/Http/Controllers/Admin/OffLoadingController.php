@@ -26,7 +26,12 @@ class OffLoadingController extends Controller
 
     public function index(){
         try {
-            return view('admin.offloading.index');
+            if (request()->routeIs('admin.on-loading.index')) {
+                $type = 2; // Outbound
+            } else {
+                $type = 1; // Inbound (or any other default)
+            }
+            return view('admin.offloading.index')->with(compact('type'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }
@@ -43,7 +48,12 @@ class OffLoadingController extends Controller
     {
         try {
             $data= Helper::fetchOnlyData($this->checkin->findCheckIn($id));
-            return view('admin.offloading.detail')->with(compact('data'));
+            if (request()->routeIs('admin.on-loading.detail')) {
+                return view('admin.offloading.onloading-detail')->with(compact('data'));
+            } else {
+                return view('admin.offloading.detail')->with(compact('data'));
+            }
+
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }
@@ -78,6 +88,35 @@ class OffLoadingController extends Controller
             if ($roleUpdateOrCreate->get('status'))
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function onLoadingClose(Request $request)
+    {
+        try {
+            $roleUpdateOrCreate = $this->offloaing->onLoadingClose($request,$request->order_checkin_id);
+            if ($roleUpdateOrCreate->get('status')){
+                $offLoadingdata = $roleUpdateOrCreate->get('data');
+                $offLoading=OrderOffLoading::with('order')->find($offLoadingdata->id);
+                $orderId=$offLoading->order_id;
+                $statusId=10;
+
+                $order =$this->appointment->changeOrderStatus($orderId,$statusId);
+
+                //1 for admin 2 for user
+                $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,1);
+                $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,2);
+                Helper::notificationTriggerHelper(1,null);
+                Helper::notificationTriggerHelper(2,$offLoading->order->customer_id);
+
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
+            }else
+            {
+                return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+            }
+
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -117,7 +156,7 @@ class OffLoadingController extends Controller
         try {
             $res= $this->offloaing->changeOffLoadingStatus($id,10);
 
-             $offLoading=OrderOffLoading::with('order')->find($id);
+            $offLoading=OrderOffLoading::with('order')->find($id);
             $orderId=$offLoading->order_id;
             $statusId=10;
 
@@ -126,8 +165,8 @@ class OffLoadingController extends Controller
             //1 for admin 2 for user
              $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,1);
              $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,2);
-          //  Helper::notificationTriggerHelper(1,null);
-            //Helper::notificationTriggerHelper(2,$offLoading->order->customer_id);
+                Helper::notificationTriggerHelper(1,null);
+                Helper::notificationTriggerHelper(2,$offLoading->order->customer_id);
 
            return Helper::success($res->get('data'),'status changed');
         } catch (\Exception $e) {

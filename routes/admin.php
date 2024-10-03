@@ -151,6 +151,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
 
         //Check In
         Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-checkin-view']);
+        Route::any('/check-in-outbound', [CheckInController::class, 'index'])->name('outbound.check-in.index')->middleware(['can:admin-checkin-view']);
         Route::any('/checkin-view/{id}', [CheckInController::class, 'checkinView'])->name('checkin.view');
         Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-checkin-view']);
         Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-checkin-create']);
@@ -166,10 +167,13 @@ use App\Http\Controllers\Outbounds\ProcessingController;
 
         //Off Loading
         Route::any('/off-loading', [OffLoadingController::class, 'index'])->name('off-loading.index')->middleware(['can:admin-offloading-view']);
+        Route::any('/on-loading', [OffLoadingController::class, 'index'])->name('on-loading.index')->middleware(['can:admin-offloading-view']);
         Route::any('/off-loading-list', [OffLoadingController::class, 'offLoadingList'])->name('off-loading.list')->middleware(['can:admin-offloading-view']);
         Route::any('/off-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('off-loading.detail')->middleware(['can:admin-offloading-view']);
+        Route::any('/on-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('on-loading.detail')->middleware(['can:admin-offloading-view']);
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-offloading-create']);
         Route::any('/update-off-loading', [OffLoadingController::class, 'offLoadingUpdate'])->name('off-loading.close')->middleware(['can:admin-offloading-create']);
+        Route::any('/update-on-loading', [OffLoadingController::class, 'onLoadingClose'])->name('on-loading.close')->middleware(['can:admin-offloading-create']);
         Route::any('/off-loading-upload-images', [OffLoadingController::class, 'saveOffLoadingImages'])->name('off-loading.save.images')->middleware(['can:admin-offloading-create']);
 
         Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId'])->name('off-loading.check.checkin.id');

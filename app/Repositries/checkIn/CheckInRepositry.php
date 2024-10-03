@@ -27,11 +27,15 @@ class CheckInRepositry implements CheckInInterface {
     {
         try {
 
-            $data['totalRecords'] = OrderCheckIn::count();
+            $data['totalRecords'] = OrderCheckIn::whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            })->count();
 
             $qry = OrderCheckIn::query();
             $qry =$qry->with('orderContact','order.dock.loadType.eqType','status');
-
+            $qry =$qry->whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            });
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
