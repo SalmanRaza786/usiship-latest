@@ -2,6 +2,9 @@
 $(document).ready(function(){
     checkOffLoading();
     checkInputs();
+    if(checkInputs()){
+        $('.btn-loading-close').removeClass('d-none');
+    }
     function checkInputs() {
         let allFilled = true;
         let allDisabled = true;
@@ -21,6 +24,7 @@ $(document).ready(function(){
         return allFilled;
         if (allFilled && allDisabled) {
             $('.btn-confirm').removeClass('d-none');
+
         } else {
             $('.btn-confirm').addClass('d-none');
         }
@@ -70,6 +74,46 @@ $(document).ready(function(){
                 // toastr.error('something went wrong');
                 $('.btn-submit').text('Start Off Loading Now');
                 $(".btn-submit").prop("disabled", false);
+            }
+        });
+
+
+    });
+
+    $('#addFormClose').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-loading-close').text('Processing...');
+                $(".btn-loading-close").prop("disabled", true);
+            },
+            success: function(response) {
+                if (response.status==true) {
+                    toastr.success(response.message);
+                    $(".btn-loading-close").addClass('d-none');
+                    $('#order_id').val(response.data.order_id);
+                    window.location.reload();
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+
+            },
+            complete: function(data) {
+                $(".btn-loading-close").html("Start Off Loading Now");
+                $(".btn-loading-close").prop("disabled", false);
+            },
+            error: function() {
+                toastr.error('something went wrong');
+                $('.btn-loading-close').text('Start Off Loading Now');
+                $(".btn-loading-close").prop("disabled", false);
             }
         });
 
@@ -229,6 +273,10 @@ $(document).ready(function(){
     handleImagePreviews('productStagedLocImages', 'productStagedLocImagesPreview');
     handleImagePreviews('singedOffLoadingSlipImages', 'singedOffLoadingSlipImagesPreview');
     handleImagePreviews('palletsImages', 'palletsImagesPreview');
+    handleImagePreviews('palletsStagedImages', 'palletsStagedImagesPreview');
+    handleImagePreviews('signedBolImages', 'signedBolImagesPreview');
+    handleImagePreviews('singedLoadingSlipImages', 'singedLoadingSlipImagesPreview');
+    // handleImagePreviews('orderImages', 'orderImagesPreview');
 
     function checkOffLoading() {
         var orderCheckinId = $('#order_checkin_id').val();
@@ -249,12 +297,13 @@ $(document).ready(function(){
                         $('#off_loading_id').val(response.data.id);
                         $('#product_staged_loc').val(response.data.p_staged_location);
                         $(".btn-submit").addClass('d-none');
-                        $('.btn-loading-close').removeClass('d-none');
                         $('#offloadingContainer').removeClass('d-none');
+
                     } else {
                         $('#offloadingContainer').addClass('d-none');
                         $('.btn-submit').removeClass('d-none');
-                        $(".btn-loading-close").addClass('d-none');
+
+
                     }
                 }
                 if (response.status==false) {

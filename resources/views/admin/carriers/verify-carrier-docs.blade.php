@@ -196,7 +196,7 @@
 
                             <div class="col-lg-12">
                                 <div class="hstack justify-content-end gap-2">
-                                    <a  href="{{route('admin.check-in.index')}}" class="btn btn-primary"><i class="ri-arrow-go-back-fill align-bottom"></i> Back</a>
+                                    <a  href="{{session('previous_url', route('admin.check-in.index'))}}" class="btn btn-primary"><i class="ri-arrow-go-back-fill align-bottom"></i> Back</a>
                                     @if($data['orderContacts']['is_verify']=='Verified')
                                         <button type="submit" class="btn btn-success" >Save Changes</button>
                                     @else

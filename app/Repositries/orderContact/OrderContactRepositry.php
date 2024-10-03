@@ -23,14 +23,14 @@ class OrderContactRepositry implements OrderContactInterface {
         try {
 
             $data['totalRecords'] = OrderContacts::whereHas('order', function($query) use ($request){
-                $query->where('order_type',$request->order_type);
+                $query->where('order_type',$request->s_order_type);
             })->count();
 
             $qry = OrderContacts::query();
             $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
-         $qry = $qry->whereHas('order', function($query) use ($request){
-            $query->where('order_type',$request->order_type);
-         });
+            $qry =$qry->whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            });
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
 
