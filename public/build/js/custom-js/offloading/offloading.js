@@ -271,8 +271,8 @@ $(document).ready(function(){
     function displayImages(data) {
 
         data.forEach(function(image) {
-            const a = $('<a>').addClass('popup-img d-inline-block').attr('href','/storage/uploads/' + image.file_name);
-            var img = $('<img>').attr('src', '/storage/uploads/' + image.file_name).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
+            const a = $('<a>').addClass('popup-img d-inline-block').attr('href','/storage/uploads/' + image.file_thumbnail);
+            var img = $('<img>').attr('src', '/storage/uploads/' + image.file_thumbnail).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
             a.append(img);
             var div = $('<div>').addClass('preview').append(a);
 

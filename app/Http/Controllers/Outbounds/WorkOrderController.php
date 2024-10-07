@@ -104,11 +104,32 @@ class WorkOrderController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
-
-    public function fetchOrdersData()
+    public function uploadBol(Request $request)
     {
+        try {
+            if(!$workOrder=WorkOrder::find($request->w_order_id)){
+                return Helper::error('Invalid Order Id');
+            }
+             $res=$this->workOrder->saveUploadBOL($request);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            }else{
+                return Helper::error($res->get('message'));
+            }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function fetchOrdersData(Request $request)
+    {
+        $importDate = $request->import_date; // Assume this is a date string
+        $formattedDate = Carbon::parse($importDate)->format('Y-m-d\T00:00:00\Z');
+//        dd($formattedDate);
 //        2024-09-05T00:00:00Z
-        $Orderendpoint = 'orders?created_date[gte]=2024-10-03T00:00:00Z';
+        $Orderendpoint = 'orders?created_date[gte]='.$formattedDate;
+//        dd($Orderendpoint);
 
         try {
             $batchSize = 1000;

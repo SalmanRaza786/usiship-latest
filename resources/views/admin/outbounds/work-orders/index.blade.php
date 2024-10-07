@@ -15,10 +15,11 @@
                     <div class="col">
                         <h4 class="card-title mb-0">Work Order List</h4>
                     </div>
-                    @canany('admin-role-create')
+                    @canany('admin-w-order-create')
                     <div class="col-auto justify-content-sm-end">
 
-                        <button type="button" class="btn btn-success btn-import"><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
+                        <button type="button" class="btn btn-success btn-import1" data-bs-toggle="modal" data-bs-target="#importModal" ><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
+{{--                        <a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' >Assign Now</a>--}}
                     </div>
                         @endcanany
                 </div><!-- end card header -->
@@ -109,7 +110,6 @@
                 },
 
             },
-
             columns: [
                 { data: 'wms_transaction_id' },
                 { data: 'order_reference' },
@@ -119,7 +119,6 @@
                 { data: null },
                 { data: null, orderable: false },
             ],
-
             columnDefs: [
                 {
                     targets: 3,
@@ -143,9 +142,9 @@
                     targets: 6,
                     render: function(data, type, row, meta) {
 
-                        var btnAssign = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
-                        var btnUploadDoc = ' @canany('admin-role-edit')<a href="#" type="button" class="btn btn-primary btn-upload-bol" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#UploadBOLDoc">Upload Bol Document</a>@endcanany';
-                        var btnScheduleNow = ' @canany('admin-role-delete')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';
+                        var btnAssign = ' @canany('admin-w-order-create')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
+                        var btnUploadDoc = ' @canany('admin-w-order-edit')<a href="#" type="button" class="btn btn-primary btn-upload-bol" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#UploadBOLDoc">Upload Bol Document</a>@endcanany';
+                        var btnScheduleNow = ' @canany('admin-w-order-edit')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';
                         var btnGroup='';
                         if(row.status.order_by==201){
                              btnGroup=  btnAssign;
@@ -162,5 +161,4 @@
     });
 </script>
 @endsection
-
 

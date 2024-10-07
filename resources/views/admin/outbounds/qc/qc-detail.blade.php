@@ -21,13 +21,12 @@
 
                         </div>
                         <div class="col-auto justify-content-sm-end">
+                            @canany('admin-qc-create')
                             @if($data['orderInfo']->end_time==NULL)
                             <button type="button" class="btn btn-success btn-close-qc me-2 d-none"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
                             @endif
-
-
                             <button type="button" class="btn btn-success btn-start-qc d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
-
+                            @endcanany
                         </div>
 
                     </div>

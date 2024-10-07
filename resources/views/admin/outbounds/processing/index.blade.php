@@ -134,9 +134,9 @@
                     render: function(data, type, row, meta) {
                         var url = "{{ route('admin.process.detail', ':id') }}";
                         if(data.start_time == null){
-                            var StartPicking = ' @canany('admin-permission-view')<a href="#" type="button" class="btn btn-primary btn-start-processing" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Start Processing</a>@endcanany';
+                            var StartPicking = ' @canany('admin-processing-view')<a href="#" type="button" class="btn btn-primary btn-start-processing" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Start Processing</a>@endcanany';
                         }else {
-                            var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Processing Detail</a>@endcanany';
+                            var StartPicking = ' @canany('admin-processing-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Processing Detail</a>@endcanany';
                         }
 
                         var btnGroup=StartPicking;

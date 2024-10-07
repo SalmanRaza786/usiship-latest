@@ -259,16 +259,18 @@ class WhRepositry implements WhInterface {
 //            ($request AND $request->wh_id > 0)?$qry = $qry->where('id',$request->wh_id):'';
 //            $data = $qry->get();
 
-            $qry = WareHouse::with(['docks' => function($q) use ($request) {
-                $q->where('id', $request->dockId);
+            $dock = $request->dock_id ?? $request->dockId ?? null;
+
+            $qry = WareHouse::with(['docks' => function($q) use ($dock) {
+                $q->where('id', $dock);
             }, 'loadTypes.direction', 'loadTypes.operation', 'loadTypes.eqType', 'loadTypes.transMode', 'assignedFields.customFields']);
 
             $qry = $qry->where('status', 1);
 
             ($request AND $request->wh_id > 0) ? $qry = $qry->where('id', $request->wh_id) : '';
 
-            $qry = $qry->whereHas('docks', function($q) use ($request) {
-                $q->where('id', $request->dockId);
+            $qry = $qry->whereHas('docks', function($q) use ($dock) {
+                $q->where('id', $dock);
             });
 
             $data = $qry->get();

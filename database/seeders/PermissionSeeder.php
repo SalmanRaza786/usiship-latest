@@ -38,6 +38,7 @@ class PermissionSeeder extends Seeder
         $picking = PermissionModule::updateOrCreate(['title' => 'Picking'], ['title' =>'Picking']);
         $missing = PermissionModule::updateOrCreate(['title' => 'Missing'], ['title' =>'Missing']);
         $qc = PermissionModule::updateOrCreate(['title' => 'QC'], ['title' =>'QC']);
+        $processing = PermissionModule::updateOrCreate(['title' => 'Processing'], ['title' =>'Processing']);
 
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
 
@@ -167,6 +168,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'admin-qc-create', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
             ['name' => 'admin-qc-edit', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
             ['name' => 'admin-qc-delete', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+
+            //Processing
+            ['name' => 'admin-processing-view', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-processing-create', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-processing-edit', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-processing-delete', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
 
 
 

@@ -60,7 +60,7 @@ class LoginController extends Controller
                     return view('auth.login')->with(compact('data'));
                 }
             } else {
-                $data = 'Your account is inactive. Please contact support.';
+                $data = 'Your account is currently inactive pending approval.';
                 return view('auth.login')->with(compact('data'));
             }
         } else {

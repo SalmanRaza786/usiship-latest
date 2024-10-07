@@ -14,6 +14,7 @@ use App\Models\WorkOrder;
 use App\Models\WorkOrderItem;
 use App\Models\WorkOrderPicker;
 
+use App\Repositries\appointment\AppointmentRepositry;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Validator;
 
 class WorkOrderRepositry implements WorkOrderInterface
 {
-
+    protected $workOrderFilePath = 'work-order-media/';
 
 
     public function getWorkOrderList($request)
@@ -106,6 +107,40 @@ class WorkOrderRepositry implements WorkOrderInterface
         }
 
     }
+
+    public function saveUploadBOL($request)
+    {
+        try {
+
+            DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'BOLDocument' => 'required',
+            ]);
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $workOrder=WorkOrder::find($request->w_order_id);
+
+            $fileableId = $workOrder->id;
+            $fileableType = 'App\Models\WorkOrder';
+            $order = new AppointmentRepositry();
+
+            if($request->file('BOLDocument')){
+                $BOLDocFileName = $order->handleFiles($request->file('BOLDocument'), $this->workOrderFilePath);
+                $order->mediaUpload($BOLDocFileName,'Doc',$fileableId,$fileableType,1,"BOLDocument");
+            }
+
+            DB::commit();
+
+            return Helper::success($workOrder,'BOL Document uploaded successfully');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
     public function importWorkOrder($orders)
     {
         try {

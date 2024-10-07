@@ -212,6 +212,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
         Route::any('/work-order', [WorkOrderController::class, 'getWorkOrder'])->name('work.order.get')->middleware(['can:admin-w-order-view']);
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
+        Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol')->middleware(['can:admin-w-order-view']);
 
         //Picking
         Route::any('/picking', [PickingController::class, 'index'])->name('picking.index')->middleware(['can:admin-picking-view']);
@@ -240,16 +241,16 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc')->middleware(['can:admin-qc-create']);
 
         //Processing
-        Route::any('/processing', [ProcessingController::class, 'index'])->name('process.index')->middleware(['can:admin-qc-view']);
-        Route::any('/processing-list', [ProcessingController::class, 'ProcessList'])->name('process.list')->middleware(['can:admin-qc-view']);
-        Route::any('/processing-detail/{id}', [ProcessingController::class, 'processDetail'])->name('process.detail')->middleware(['can:admin-qc-view']);
-        Route::any('/get-work-order-processing/{id}', [ProcessingController::class, 'getProcess'])->name('process.get')->middleware(['can:admin-qc-view']);
-        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcess'])->name('process.start')->middleware(['can:admin-qc-create']);
-        Route::any('/save-processing', [ProcessingController::class, 'saveProcess'])->name('save.process')->middleware(['can:admin-qc-create']);
-        Route::any('/save-processing-detail', [ProcessingController::class, 'saveProcessDetail'])->name('save.process-detail')->middleware(['can:admin-qc-create']);
-        Route::any('/update-processing', [ProcessingController::class, 'updateProcessItem'])->name('update.process')->middleware(['can:admin-qc-create']);
-        Route::any('/close-processing', [ProcessingController::class, 'closeProcess'])->name('update.process')->middleware(['can:admin-qc-create']);
-        Route::any('/delete-processing/{id}', [ProcessingController::class, 'deleteProcessItem'])->name('process-item.delete')->middleware(['can:admin-qc-create']);
+        Route::any('/processing', [ProcessingController::class, 'index'])->name('process.index')->middleware(['can:admin-processing-view']);
+        Route::any('/processing-list', [ProcessingController::class, 'ProcessList'])->name('process.list')->middleware(['can:admin-processing-view']);
+        Route::any('/processing-detail/{id}', [ProcessingController::class, 'processDetail'])->name('process.detail')->middleware(['can:admin-processing-view']);
+        Route::any('/get-work-order-processing/{id}', [ProcessingController::class, 'getProcess'])->name('process.get')->middleware(['can:admin-processing-create']);
+        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcess'])->name('process.start')->middleware(['can:admin-processing-create']);
+        Route::any('/save-processing', [ProcessingController::class, 'saveProcess'])->name('save.process')->middleware(['can:admin-processing-create']);
+        Route::any('/save-processing-detail', [ProcessingController::class, 'saveProcessDetail'])->name('save.process-detail')->middleware(['can:admin-processing-create']);
+        Route::any('/update-processing', [ProcessingController::class, 'updateProcessItem'])->name('update.process')->middleware(['can:admin-processing-create']);
+        Route::any('/close-processing', [ProcessingController::class, 'closeProcess'])->name('update.process')->middleware(['can:admin-processing-create']);
+        Route::any('/delete-processing/{id}', [ProcessingController::class, 'deleteProcessItem'])->name('process-item.delete')->middleware(['can:admin-processing-create']);
 
         //Customer-Companies
         Route::any('/customer-companies', [CustomerCompanyController::class, 'index'])->name('customer-companies.index')->middleware(['can:admin-customer-companies-view']);

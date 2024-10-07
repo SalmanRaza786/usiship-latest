@@ -8,7 +8,7 @@ use DB;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable=['company_id','customer_id','wh_id','dock_id','operational_hour_id','order_type','status_id','order_date','created_by','guard','load_type_id'];
+    protected $fillable=['company_id','customer_id','wh_id','dock_id','operational_hour_id','order_type','status_id','order_date','created_by','guard','load_type_id','work_order_id'];
 
     protected static function boot()
     {
@@ -90,7 +90,6 @@ class Order extends Model
     {
         return $this->belongsTo(LoadType::class, 'load_type_id', 'id');
     }
-
 
     public function itemPutAway()
     {

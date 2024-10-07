@@ -17,7 +17,7 @@
                 <img src="{{ URL::asset('storage/appsettings/'.$appInfo->where('key','app_logo')->pluck('value')->first()) }}" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('storage/appsettings/'.$appInfo->where('key','app_logo')->pluck('value')->first()) }}" alt="" height="17">
+                <img src="{{ URL::asset('storage/appsettings/'.$appInfo->where('key','app_logo')->pluck('value')->first()) }}" alt="" height="50">
             </span>
         </a>
         @else
@@ -26,7 +26,7 @@
              <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="" height="22">
             </span>
                 <span class="logo-lg">
-          <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="" height="17">
+          <img src="{{ URL::asset('build/images/logo-light.png')}}" alt="" height="50">
             </span>
             </a>
 
@@ -38,19 +38,15 @@
 
     <div id="scrollbar">
         <div class="container-fluid">
-
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span>@lang('translation.menu')</span></li>
-
-
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.dashboard')?'active':''}}" href="{{route('admin.dashboard')}}" >
                         <i class="ri-dashboard-2-line"></i> <span>Dashboard</span>
                     </a>
                 </li>
-
                 @canany(['admin-checkin-view','admin-offloading-view','admin-putaway-view'])
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.check-in.index' OR Route::currentRouteName()=='admin.off-loading.index' OR Route::currentRouteName()=='admin.put-away.index')?'active':''}}" href="#inbound" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="inbound">
@@ -76,12 +72,12 @@
                 </li>
                 @endcanany
 
-                @canany(['admin-w-order-view','admin-picking-view','admin.missing.index','admin-qc-view','admin-checkin-view','admin-offloading-view'])
+                @canany(['admin-w-order-view','admin-picking-view','admin.missing.index','admin-qc-view','admin-checkin-view','admin-offloading-view','admin-processing-view'])
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.on-loading.index' OR Route::currentRouteName()=='admin.outbound.check-in.index' OR Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index')?'active':''}}" href="#sidebarDashboards4" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards4">
+                    <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.on-loading.index' OR Route::currentRouteName()=='admin.outbound.check-in.index' OR Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index' OR Route::currentRouteName()=='admin.process.index')?'active':''}}" href="#sidebarDashboards4" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards4">
                         <i class="ri-uninstall-line"></i> <span>Outbound</span>
                     </a>
-                    <div class="collapse menu-dropdown {{ (Route::currentRouteName()=='admin.on-loading.index' OR Route::currentRouteName()=='admin.outbound.check-in.index' OR Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index') ?'collapse show':''}}" id="sidebarDashboards4">
+                    <div class="collapse menu-dropdown {{ (Route::currentRouteName()=='admin.on-loading.index' OR Route::currentRouteName()=='admin.outbound.check-in.index' OR Route::currentRouteName()=='admin.work.orders.index' OR Route::currentRouteName()=='admin.picking.index' OR Route::currentRouteName()=='admin.missing.index' OR Route::currentRouteName()=='admin.qc.index' OR Route::currentRouteName()=='admin.process.index') ?'collapse show':''}}" id="sidebarDashboards4">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                     @canany('admin-w-order-view')
@@ -96,7 +92,7 @@
                                     @canany('admin-qc-view')
                                         <a href="{{route('admin.qc.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.qc.index')?'active':''}}">Quality Check (QC)</a>
                                     @endcanany
-                                    @canany('admin-qc-view')
+                                    @canany('admin-processing-view')
                                         <a href="{{route('admin.process.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.process.index')?'active':''}}">Processing</a>
                                     @endcanany
                                     @canany('admin-checkin-view')

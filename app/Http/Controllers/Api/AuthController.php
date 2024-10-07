@@ -179,7 +179,7 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if ($user && $user->status == 'In-Active') {  // Assuming `is_active` is the column for the account status
-                return  Helper::createAPIResponce(true,400,'Your account is inactive and cannot login.',[]);
+                return  Helper::createAPIResponce(true,400,'Your account is currently inactive pending approval.',[]);
             }
 
             if (!$user=Auth::guard('web')->attempt($request->only(['email','password']))) {
