@@ -14,6 +14,49 @@ $(document).ready(function(){
         $('input[name=w_order_id]').val($(this).attr('data'));
     });
 
+    $('#roleTable').on('click', '.btn-upload-bol', function() {
+        $('input[name=w_order_id]').val($(this).attr('data'));
+    });
+
+    $('#UploadBOLForm').on('submit', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-submit').text('Uploading...');
+                $(".btn-submit").prop("disabled", true);
+            },
+            success: function(response) {
+
+                if (response.status==true) {
+                    $('#roleTable').DataTable().ajax.reload();
+                    toastr.success(response.message);
+                    $('.btn-close').click();
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+
+            complete: function(data) {
+                $(".btn-submit").html("Upload");
+                $(".btn-submit").prop("disabled", false);
+            },
+
+            error: function() {
+                $('.btn-submit').text('Upload');
+                $(".btn-submit").prop("disabled", false);
+            }
+        });
+    });
+
     $('#AssignForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -48,6 +91,46 @@ $(document).ready(function(){
 
             error: function() {
                 $('.btn-submit').text('Assign Picker');
+                $(".btn-submit").prop("disabled", false);
+            }
+        });
+    });
+
+
+    $('#ImportForm').on('submit', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-submit').text('Importing Order From WHMS Please Wait...');
+                $(".btn-submit").prop("disabled", true);
+            },
+            success: function(response) {
+
+                if (response.status==true) {
+                    $('#roleTable').DataTable().ajax.reload();
+                    toastr.success(response.message);
+                    $('.btn-close').click();
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+            },
+
+            complete: function(data) {
+                $(".btn-submit").html("Import WMS Orders");
+                $(".btn-submit").prop("disabled", false);
+            },
+
+            error: function() {
+                $('.btn-submit').text('Import WMS Orders');
                 $(".btn-submit").prop("disabled", false);
             }
         });
@@ -104,6 +187,7 @@ $(document).ready(function(){
             data:{work_order_id:work_order_id},
             success: function(response) {
                 if(response.status===true){
+                    $('input[name="work_order_id"]').val(response.data.work_order.id);
                     $('input[name="customer_id"]').val(response.data.work_order.client_id);
                     $('input[name="wh_id"]').val(response.data.work_order.load_type.wh_id);
                     $('input[name="dock_id"]').val(response.data.dock[0].dock_id);

@@ -100,27 +100,34 @@ class AppointmentRepositry implements AppointmentInterface {
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
+            $userQuery = $request->order_type
+                ? User::where('company_id', $request->customer_id)
+                : User::where('id', $request->customer_id);
 
-            if (!$user = User::find($request->customer_id)) {
-                return Helper::errorWithData("Customer Not Found",[]);
+            $user = $userQuery->first();
+
+            if (!$user) {
+                return Helper::errorWithData("Customer Not Found", []);
             }
 
-            if($user->company_id == null){
-                return Helper::errorWithData("Customer is not Associated with any Company",[]);
+            if ($user->company_id === null) {
+                return Helper::errorWithData("Customer is not Associated with any Company", []);
             }
+
 
             $order = Order::updateOrCreate(
                 [
                     'id' => $id
                 ],
                 [
-                    'customer_id' =>$request->customer_id,
-                    'company_id' =>$user?$user->company_id:null,
+                    'customer_id' =>$user->id,
+                    'company_id' =>$user? $user->company_id:null,
                     'wh_id' => $request->wh_id,
                     'dock_id' => $request->dock_id,
                     'load_type_id' => $request->load_type_id,
                     'operational_hour_id' => $request->opra_id,
                     'order_type' =>$request->order_type ?? 1,
+                    'work_order_id' =>$request->work_order_id ?? null,
                     'status_id' =>$request->order_status,
                     'order_date' => $request->order_date,
                     'created_by' => $request->created_by,
@@ -706,14 +713,11 @@ class AppointmentRepositry implements AppointmentInterface {
     public function undoOrderStatus($orderId)
     {
         try {
-
-
                 $secondLastRecord = OrderLog::orderBy('id', 'desc')
                     ->offset(1)
                     ->limit(1)
                     ->first();
-
-                $order=Order::find($orderId);
+            $order=Order::find($orderId);
             $order->status_id=$secondLastRecord->status_id;
             $order->save();
 

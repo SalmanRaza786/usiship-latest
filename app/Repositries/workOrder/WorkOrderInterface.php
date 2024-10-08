@@ -8,5 +8,6 @@ interface WorkOrderInterface
     public function getWorkOrder($request);
     public function importWorkOrder($request);
     public function savePickerAssign($request);
+    public function saveUploadBOL($request);
     public function getAllWorkOrderList();
 }

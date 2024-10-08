@@ -24,13 +24,14 @@
                         </div>
                         <div class="col-auto justify-content-sm-end">
 
+                            @canany('admin-picking-create')
 {{--                            <button type="button" class="btn btn-warning add-btn me-2"><i class="ri-eye-line align-bottom me-1"></i> Report Missing</button>--}}
                                 @if($data['orderInfo']->end_time==NULL)
                             <button type="button" class="btn btn-success btn-close-picking me-2 d-none" data-bs-toggle="modal" data-bs-target="#confirmCloseModal"><i class="ri-eye-line align-bottom me-1"></i> Close Picking</button>
                               @endif
 
                             <button type="submit" class="btn btn-success btn-start-picking d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start Picking</button>
-
+                            @endcanany
                         </div>
 
                     </div>
