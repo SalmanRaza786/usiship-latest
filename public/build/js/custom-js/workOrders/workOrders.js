@@ -129,9 +129,12 @@ $(document).ready(function(){
                 $(".btn-submit").prop("disabled", false);
             },
 
-            error: function() {
-                $('.btn-submit').text('Import WMS Orders');
-                $(".btn-submit").prop("disabled", false);
+            error: function(xhr, status, error) {
+                $('.btn-import').text('Import WMS Orders');
+                $(".btn-import").prop("disabled", false);
+                if(xhr.responseJSON.message){
+                    toastr.error(xhr.responseJSON.message);
+                }
             }
         });
     });

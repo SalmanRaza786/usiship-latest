@@ -80,7 +80,7 @@
                     <div class="row gy-4">
                         <div class="col-md-12">
                             <label for="status-field" class="form-label" data-choice>Select the Date</label>
-                            <input type="date" name="import_date" class="form-control">
+                            <input type="date" name="import_date" class="form-control" required>
                         </div>
                     </div>
                 </div>

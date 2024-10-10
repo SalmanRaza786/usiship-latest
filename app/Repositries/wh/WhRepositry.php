@@ -259,19 +259,47 @@ class WhRepositry implements WhInterface {
 //            ($request AND $request->wh_id > 0)?$qry = $qry->where('id',$request->wh_id):'';
 //            $data = $qry->get();
 
+//            $dock = $request->dock_id ?? $request->dockId ?? "";
+//            if($dock)
+//            {
+//                $qry = WareHouse::with(['docks' => function($q) use ($dock) {
+//                    $q->where('id', $dock);
+//                }, 'loadTypes.direction', 'loadTypes.operation', 'loadTypes.eqType', 'loadTypes.transMode', 'assignedFields.customFields']);
+//                $qry = $qry->whereHas('docks', function($q) use ($dock) {
+//                    $q->where('id', $dock);
+//                });
+//
+//            }else{
+//                $qry = WareHouse::with('docks','loadTypes.direction','loadTypes.operation','loadTypes.eqType','loadTypes.transMode','assignedFields.customFields');
+//            }
+//
+//            $qry = $qry->where('status', 1);
+//            ($request AND $request->wh_id > 0) ? $qry = $qry->where('id', $request->wh_id) : '';
+//
+//            $data = $qry->get();
+
+
             $dock = $request->dock_id ?? $request->dockId ?? null;
 
-            $qry = WareHouse::with(['docks' => function($q) use ($dock) {
-                $q->where('id', $dock);
-            }, 'loadTypes.direction', 'loadTypes.operation', 'loadTypes.eqType', 'loadTypes.transMode', 'assignedFields.customFields']);
+            $qry = WareHouse::with([
+                'docks',
+                'loadTypes.direction',
+                'loadTypes.operation',
+                'loadTypes.eqType',
+                'loadTypes.transMode',
+                'assignedFields.customFields'
+            ]);
 
-            $qry = $qry->where('status', 1);
-
-            ($request AND $request->wh_id > 0) ? $qry = $qry->where('id', $request->wh_id) : '';
-
-            $qry = $qry->whereHas('docks', function($q) use ($dock) {
-                $q->where('id', $dock);
+            $qry->when($dock, function($query, $dock) {
+                $query->whereHas('docks', function($q) use ($dock) {
+                    $q->where('id', $dock);
+                });
             });
+
+            $qry->where('status', 1)
+                ->when($request->wh_id > 0, function($query) use ($request) {
+                    $query->where('id', $request->wh_id);
+                });
 
             $data = $qry->get();
 
