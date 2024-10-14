@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\WorkOrderController;
 use App\Http\Controllers\Api\PickingController;
 use App\Http\Controllers\Api\MissingController;
 use App\Http\Controllers\Api\QcController;
+use App\Http\Controllers\Api\ProcessingController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -50,6 +51,7 @@ use App\Http\Controllers\Api\QcController;
 
 
     Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
+    Route::any('/get-outbound-order-contacts-list', [OrderContactController::class, 'getOutboundOrderContactList']);
     Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
     Route::any('/get-order-check-in-list', [CheckInController::class, 'getOrderCheckIList']);
     Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
@@ -107,6 +109,13 @@ use App\Http\Controllers\Api\QcController;
         Route::any('/qc-detail', [QcController::class, 'qcDetail']);
         Route::any('/update-start-qc', [QcController::class, 'updateStartQc']);
         Route::any('/update-qc', [QcController::class, 'updateQcItem']);
+
+        //QC
+        Route::any('/processing-list', [ProcessingController::class, 'processingList']);
+        Route::any('/processing-detail', [ProcessingController::class, 'processingDetail']);
+        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcessing']);
+        Route::any('/update-processing', [ProcessingController::class, 'updateProcessingItem']);
+        Route::any('/remove-processing-item', [ProcessingController::class, 'updateProcessingItem']);
 
 
 

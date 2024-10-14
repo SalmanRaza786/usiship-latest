@@ -46,7 +46,6 @@ class ProcessingRepositry implements ProcessingInterface
     public function getProcessInfo($id)
     {
         try {
-
             $qry= OrderProcessing::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.eqType','qcWorkOrder');
             $data =$qry->find($id);
@@ -122,12 +121,8 @@ class ProcessingRepositry implements ProcessingInterface
     //savePickedItems
     public function createProcessItems($request)
     {
-
         try {
-
             DB::beginTransaction();
-
-
 
                 $prcessingItem = ProcessingDetail::updateOrCreate(
                     [
@@ -173,10 +168,10 @@ class ProcessingRepositry implements ProcessingInterface
     {
         try {
 
-            $qry= QcWorkOrder::query();
+            $qry= OrderProcessing::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
 //            $qry= $qry->where('status_code',205);
-            $qry= $qry->publish();
+//            $qry= $qry->publish();
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
 
