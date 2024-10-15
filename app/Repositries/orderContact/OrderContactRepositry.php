@@ -119,8 +119,31 @@ class OrderContactRepositry implements OrderContactInterface {
     public function getAllOrderContactList($limit=null)
     {
         try {
+            $type=1;
             $qry= OrderContacts::query();
             $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
+            $qry =$qry->where('status_id','=',9);
+            $qry =$qry->orderByDesc('id');
+            ($limit!=null)?$qry->take($limit):'';
+            $data=$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function getOutboundOrderContactList($limit=null)
+    {
+        try {
+            $type=2;
+            $qry= OrderContacts::query();
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
             $qry =$qry->where('status_id','=',9);
             $qry =$qry->orderByDesc('id');
             ($limit!=null)?$qry->take($limit):'';
