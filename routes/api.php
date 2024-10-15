@@ -115,7 +115,7 @@ use App\Http\Controllers\Api\ProcessingController;
         Route::any('/processing-detail', [ProcessingController::class, 'processingDetail']);
         Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcessing']);
         Route::any('/update-processing', [ProcessingController::class, 'updateProcessingItem']);
-        Route::any('/remove-processing-item', [ProcessingController::class, 'updateProcessingItem']);
+        Route::any('/remove-processing-item', [ProcessingController::class, 'removeProcessingItem']);
 
 
 

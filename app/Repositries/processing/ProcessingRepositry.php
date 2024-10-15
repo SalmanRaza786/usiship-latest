@@ -221,7 +221,6 @@ class ProcessingRepositry implements ProcessingInterface
         try {
                 $pdetail = ProcessingDetail::find($request->id);
                 $pdetail->delete();
-
                 return Helper::success($pdetail,'Items removed successfully');
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
