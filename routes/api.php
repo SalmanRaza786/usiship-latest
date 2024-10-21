@@ -54,10 +54,12 @@ use App\Http\Controllers\Api\ProcessingController;
     Route::any('/get-outbound-order-contacts-list', [OrderContactController::class, 'getOutboundOrderContactList']);
     Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
     Route::any('/get-order-check-in-list', [CheckInController::class, 'getOrderCheckIList']);
+    Route::any('/get-outbound-check-in-list', [CheckInController::class, 'getOutBoundCheckIList']);
     Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
     Route::any('/save-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate']);
     Route::any('/close-off-loading', [OffLoadingController::class, 'closeOffLoading']);
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
+    Route::any('/save-on-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
 
     //Putaway Items
     Route::any('/put-away-list', [PutAwayController::class, 'putAwayList']);

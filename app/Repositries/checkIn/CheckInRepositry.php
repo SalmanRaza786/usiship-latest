@@ -186,8 +186,30 @@ class CheckInRepositry implements CheckInInterface {
     public function getOrderCheckinList($limit=null)
     {
         try {
+            $type=1;
             $qry= OrderCheckIn::query();
             $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
+            $qry =$qry->where('status_id','!=',10);
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+    public function getOutboundCheckinList($limit=null)
+    {
+        try {
+            $type=2;
+            $qry= OrderCheckIn::query();
+            $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
             $qry =$qry->where('status_id','!=',10);
             ($limit!=null)?$qry->take($limit):'';
             $qry =$qry->orderByDesc('id');
