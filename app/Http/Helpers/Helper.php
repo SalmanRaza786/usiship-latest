@@ -449,29 +449,30 @@ class Helper
 
     public static function notificationTriggerHelper($type,$totifiableId)
     {
-        $notification=new NotificationRepositry();
+        if(env('IS_NOTIFICATION_ENABLE') == 1) {
+            $notification = new NotificationRepositry();
+            if ($type == 1) {
+                $permission = Permission::where('name', 'admin-notification-view')->first();
+                $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
+                if ($hasPermissions->count() > 0) {
 
-        if($type==1){
-            $permission = Permission::where('name', 'admin-notification-view')->first();
-            $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
-            if ($hasPermissions->count() > 0) {
-
-                foreach ($hasPermissions as $row) {
-                    $users=Admin::where('role_id',$row->role_id)->get();
-                    foreach ($users as $user){
-                        $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$user->id));
-                        $res= NotificationEvent::dispatch($notifiData);
+                    foreach ($hasPermissions as $row) {
+                        $users = Admin::where('role_id', $row->role_id)->get();
+                        foreach ($users as $user) {
+                            $notifiData = Helper::fetchOnlyData($notification->getUnreadNotifications($type, $user->id));
+                            $res = NotificationEvent::dispatch($notifiData);
 //                        $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$user->id);
+                        }
+
                     }
-
                 }
-            }
 
-        }
-        if($type==2){
-            $notifiData=Helper::fetchOnlyData($notification->getUnreadNotifications($type,$totifiableId));
-             $res= ClientNotificationEvent::dispatch($notifiData);
+            }
+            if ($type == 2) {
+                $notifiData = Helper::fetchOnlyData($notification->getUnreadNotifications($type, $totifiableId));
+                $res = ClientNotificationEvent::dispatch($notifiData);
 //            $fireBaseResponse =Helper::fireBaseNotificationTriggerHelper($type,$totifiableId);
+            }
         }
     }
 

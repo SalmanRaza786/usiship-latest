@@ -807,51 +807,54 @@ class AppointmentRepositry implements AppointmentInterface {
     public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent)
     {
         try {
-        if($status=OrderStatus::find($statusId)){
-            $statusTitle= $status->status_title;
-        }
+            if(env('IS_NOTIFICATION_ENABLE') == 1) {
+                if ($status = OrderStatus::find($statusId)) {
+                    $statusTitle = $status->status_title;
+                }
 
-            $mailData = [
-                'subject' => 'Order'. $statusTitle,
-                'greeting' => 'Hello',
-                'content' => $notifyContent->mail_content,
-                'actionText' => 'View Your Order Details',
-                'actionUrl' => url('/get-order-detail/' . ($orderId)),
-                'orderId' => $orderId,
-                'statusId' => $statusId,
-            ];
-
-            if (!$customer = User::find($customerId)) {
-                return Helper::error('customer not exist');
-            }
-             $res=$customer->notify(new OrderNotification($mailData));
-
-            if($statusId==6){
                 $mailData = [
-                    'subject' => 'Carrier Onboard',
+                    'subject' => 'Order' . $statusTitle,
                     'greeting' => 'Hello',
-                    'content' =>"Click bellow button for upload carrier documents",
-                    'actionText' => 'Carrier Onboard',
-                    'actionUrl' => url('/carrier-onboard/' . (encrypt($orderId))),
+                    'content' => $notifyContent->mail_content,
+                    'actionText' => 'View Your Order Details',
+                    'actionUrl' => url('/get-order-detail/' . ($orderId)),
                     'orderId' => $orderId,
                     'statusId' => $statusId,
                 ];
 
-                $res=$customer->notify(new OrderNotification($mailData));
-            }
-            //event(new SendEmailEvent($mailData, $customer));
+                if (!$customer = User::find($customerId)) {
+                    return Helper::error('customer not exist');
+                }
+                $res = $customer->notify(new OrderNotification($mailData));
 
-            $log = NotificationLog::updateOrCreate(
-                [
-                    'id' => 0,
-                ],
-                [
-                    'order_id' => $orderId,
-                    'status_id' => $statusId,
-                    'content' => $notifyContent->mail_content,
-                    'notification_type' => 1,
-                ]
-            );
+                if ($statusId == 6) {
+                    $mailData = [
+                        'subject' => 'Carrier Onboard',
+                        'greeting' => 'Hello',
+                        'content' => "Click bellow button for upload carrier documents",
+                        'actionText' => 'Carrier Onboard',
+                        'actionUrl' => url('/carrier-onboard/' . (encrypt($orderId))),
+                        'orderId' => $orderId,
+                        'statusId' => $statusId,
+                    ];
+
+                    $res = $customer->notify(new OrderNotification($mailData));
+
+                }
+                //event(new SendEmailEvent($mailData, $customer));
+
+                $log = NotificationLog::updateOrCreate(
+                    [
+                        'id' => 0,
+                    ],
+                    [
+                        'order_id' => $orderId,
+                        'status_id' => $statusId,
+                        'content' => $notifyContent->mail_content,
+                        'notification_type' => 1,
+                    ]
+                );
+            }
 
         } catch (\Exception $e) {
             throw $e;
