@@ -43,8 +43,6 @@ class NotificationRepositry implements NotificationInterface
     public function getUnreadNotifications($type,$notifiableId=null,$limit=null)
     {
         try {
-
-
             //if user type ==1 then $roleIdOrUserId is role_id else $roleIdOrUserId mean customer id
             $qry = Notification::query();
             if($type==1){
