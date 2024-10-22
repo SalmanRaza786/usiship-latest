@@ -82,32 +82,33 @@ class NotificationRepositry implements NotificationInterface
     public function createNotification($notifyContent,$url,$orderId)
     {
         try {
-            $permission = Permission::where('name', 'admin-notification-view')->first();
-            $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
-            if ($hasPermissions->count() > 0) {
+            if(env('IS_NOTIFICATION_ENABLE') == 1) {
+                $permission = Permission::where('name', 'admin-notification-view')->first();
+                $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
+                if ($hasPermissions->count() > 0) {
 
-                foreach ($hasPermissions as $row) {
+                    foreach ($hasPermissions as $row) {
 
 
-                    $users = Admin::where('role_id', $row->role_id)->get();
-                    foreach ($users as $user) {
+                        $users = Admin::where('role_id', $row->role_id)->get();
+                        foreach ($users as $user) {
 
-                        $notification = \App\Models\Notification::updateOrCreate(
-                            [
-                                'id' => 0,
-                            ],
-                            [
-                                'content' => $notifyContent->notify_content,
-                                'notifiable' => 'App\Models\Admin',
-                                'notifiable_id' =>$user->id,
-                                'target_model_id' =>$orderId,
-                                'url' => $url,
-                            ]
-                        );
+                            $notification = \App\Models\Notification::updateOrCreate(
+                                [
+                                    'id' => 0,
+                                ],
+                                [
+                                    'content' => $notifyContent->notify_content,
+                                    'notifiable' => 'App\Models\Admin',
+                                    'notifiable_id' => $user->id,
+                                    'target_model_id' => $orderId,
+                                    'url' => $url,
+                                ]
+                            );
+                        }
                     }
                 }
             }
-
         } catch (\Exception $e) {
             throw $e;
         }
@@ -115,6 +116,7 @@ class NotificationRepositry implements NotificationInterface
     public function createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId=null)
     {
         try {
+            if(env('IS_NOTIFICATION_ENABLE') == 1) {
                     $notification =Notification::updateOrCreate(
                         [
                             'id' => 0,
@@ -128,6 +130,7 @@ class NotificationRepositry implements NotificationInterface
                             'url' => $url,
                         ]
                     );
+            }
         } catch (\Exception $e) {
             throw $e;
         }

@@ -98,7 +98,7 @@
                                 <td class="text-start">
                                     <input type="number" class="d-none" name="putAwayId[]" value="{{$row->id}}">
 
-                                        <select name="inventory_id[]" class="form-control"  data-choices required>
+                                        <select name="inventory_id[]" class="form-control"   required>
                                             <option value="">Choose SKU 2</option>
                                             @foreach($data['inventory'] as  $inventory)
                                                 {{$inventory}}
@@ -118,16 +118,20 @@
                                     <input class="form-control" type="number" step="0.01" placeholder="Pallet #" name="pallet_number[]" required value="{{$row->pallet_number}}">
                                 </td>
                                 <td>
-                                    <select name="loc_id[]" class="form-control" data-choices required>
-                                        <option value="">Choose Location</option>
-                                        @foreach($data['locations'] as  $loc)
-                                            <option value="{{ $loc->id }}"
-                                            @if($row->location_id==$loc->id)
-                                                {{ "selected"}}
-                                                @endif
-                                            >{{ $loc->loc_title}}</option>
-                                        @endforeach
-                                    </select>
+
+                                    <input type="hidden" class="defaultLocationId" value="{{ $row->whLocation->id ?? '' }}">
+                                    <input type="hidden" class="defaultLocationName" value="{{ $row->whLocation->loc_title ?? '' }}">
+                                    <select class="location-select form-control loc-id" name="loc_id[]" required></select>
+{{--                                    <select name="loc_id[]" class="form-control" data-choices required>--}}
+{{--                                        <option value="">Choose Location</option>--}}
+{{--                                        @foreach($data['locations'] as  $loc)--}}
+{{--                                            <option value="{{ $loc->id }}"--}}
+{{--                                            @if($row->location_id==$loc->id)--}}
+{{--                                                {{ "selected"}}--}}
+{{--                                                @endif--}}
+{{--                                            >{{ $loc->loc_title}}</option>--}}
+{{--                                        @endforeach--}}
+{{--                                    </select>--}}
                                 </td>
 
                                 <td class="text-start" style="width: 150px;">
@@ -160,7 +164,7 @@
                                     <td class="text-start">
                                         <input type="number" class="d-none" name="putAwayId[]" value="0">
 
-                                        <select name="inventory_id[]" class="form-control"  data-choices required>
+                                        <select name="inventory_id[]" class="form-control"  required>
                                             <option value="">Choose SKU</option>
                                             @foreach($data['inventory'] as  $inventory)
                                                 <option value="{{$inventory->inventory->id }}">
@@ -177,14 +181,17 @@
                                         <input class="form-control" type="number" step="0.01" placeholder="Pallet #" name="pallet_number[]" required value="">
                                     </td>
                                     <td>
-                                        <select name="loc_id[]" class="form-control" required>
-                                            <option value="">Choose Location</option>
-                                            @foreach($data['locations'] as  $loc)
-                                                <option value="{{ $loc->id }}"
+                                        <input type="hidden" class="defaultLocationId" value="{{ $row->whLocation->id ?? '' }}">
+                                        <input type="hidden" class="defaultLocationName" value="{{ $row->whLocation->loc_title ?? '' }}">
+                                        <select class="location-select form-control loc-id" name="loc_id[]" required></select>
+{{--                                        <select name="loc_id[]" class="form-control" required>--}}
+{{--                                            <option value="">Choose Location</option>--}}
+{{--                                            @foreach($data['locations'] as  $loc)--}}
+{{--                                                <option value="{{ $loc->id }}"--}}
 
-                                                >{{ $loc->loc_title}}</option>
-                                            @endforeach
-                                        </select>
+{{--                                                >{{ $loc->loc_title}}</option>--}}
+{{--                                            @endforeach--}}
+{{--                                        </select>--}}
                                     </td>
 
                                     <td class="text-start" style="width: 150px;">
