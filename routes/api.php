@@ -58,6 +58,7 @@ use App\Http\Controllers\Api\ProcessingController;
     Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
     Route::any('/save-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate']);
     Route::any('/close-off-loading', [OffLoadingController::class, 'closeOffLoading']);
+    Route::any('/close-on-loading', [OffLoadingController::class, 'closeOnLoading']);
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
     Route::any('/save-on-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
 
