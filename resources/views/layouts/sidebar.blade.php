@@ -47,6 +47,29 @@
                         <i class="ri-dashboard-2-line"></i> <span>Dashboard</span>
                     </a>
                 </li>
+
+                @canany(['admin-order-view','admin-order-view'])
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.orders.list' OR Route::currentRouteName()=='admin.transactions.index')?'active':''}}" href="#sidebarDashboards3" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards3">
+                            <i class="ri-gift-2-line"></i> <span>Schedulings</span>
+                        </a>
+
+                        <div class="collapse menu-dropdown {{ (Route::currentRouteName()=='admin.orders.list' OR Route::currentRouteName()=='admin.wh.index') ?'collapse show':''}}" id="sidebarDashboards3">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    @canany('admin-order-view')
+                                        <a href="{{route('admin.orders.list')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.orders.list')?'active':''}}">Scheduling</a>
+                                    @endcanany
+                                    @canany('admin-order-view')
+                                        <a href="{{route('admin.transactions.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.transactions.index')?'active':''}}">Transactions</a>
+                                    @endcanany
+
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endcanany
+
                 @canany(['admin-checkin-view','admin-offloading-view','admin-putaway-view'])
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.check-in.index' OR Route::currentRouteName()=='admin.off-loading.index' OR Route::currentRouteName()=='admin.put-away.index')?'active':''}}" href="#inbound" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="inbound">
@@ -108,28 +131,6 @@
                 </li>
                 @endcanany
 
-                @canany(['admin-order-view','admin-order-view'])
-                    <li class="nav-item">
-                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.orders.list' OR Route::currentRouteName()=='admin.transactions.index')?'active':''}}" href="#sidebarDashboards3" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards3">
-                            <i class="ri-gift-2-line"></i> <span>Transactions</span>
-                        </a>
-
-                        <div class="collapse menu-dropdown {{ (Route::currentRouteName()=='admin.orders.list' OR Route::currentRouteName()=='admin.wh.index') ?'collapse show':''}}" id="sidebarDashboards3">
-                            <ul class="nav nav-sm flex-column">
-                                <li class="nav-item">
-                                    @canany('admin-order-view')
-                                        <a href="{{route('admin.orders.list')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.orders.list')?'active':''}}">Orders Scheduling</a>
-                                    @endcanany
-                                    @canany('admin-order-view')
-                                        <a href="{{route('admin.transactions.index')}}" class="nav-link {{ (Route::currentRouteName()=='admin.transactions.index')?'active':''}}">Transactions</a>
-                                    @endcanany
-
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                @endcanany
-
                 @canany(['admin-customer-view','admin-customer-companies-view'])
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.customer.index' OR Route::currentRouteName()=='admin.customer-companies.index')?'active':''}}" href="#customers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="customers">
@@ -151,7 +152,6 @@
                         </div>
                     </li>
                 @endcanany
-
 
                 @canany(['admin-companies-view','admin-carriers-view'])
                     <li class="nav-item">

@@ -64,6 +64,8 @@
                         <thead class="text-muted table-light">
                         <tr class="text-uppercase">
                             <th class="sort" data-sort="id">Order#</th>
+                            <th class="sort" data-sort="id">WMS Transaction ID</th>
+                            <th class="sort" data-sort="id">WMS Order Ref#</th>
                             <th class="sort" data-sort="id">Order Type</th>
                             <th class="sort" data-sort="customer_name">Company</th>
                             <th class="sort" data-sort="customer_name">Customer</th>
@@ -115,6 +117,8 @@
                 },
                 columns: [
                     { data: 'order_id' },
+                    { data: 'wms_transaction_id' },
+                    { data: 'order_reference' },
                     { data: 'order_type' },
                     { data: 'company_name' },
                     { data: 'customer_name' },
@@ -127,7 +131,7 @@
                 ],
                 columnDefs: [
                     {
-                        targets: 1,
+                        targets: 3,
                         render: function(data, type, row, meta) {
                             if (data === "Inbound") {
                                 return '<span class="badge bg-success">'+data+'</span>';
@@ -138,7 +142,7 @@
                     },
 
                     {
-                        targets:9,
+                        targets:11,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
                             const rowEncId = data.enc_id;

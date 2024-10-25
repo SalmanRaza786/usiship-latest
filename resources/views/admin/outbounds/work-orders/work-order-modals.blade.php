@@ -105,10 +105,7 @@
             </div>
             <div>
             </div>
-
-
-            <form method="post" class=" g-3 needs-validation" action="{{route('admin.upload.bol')}}" autocomplete="off" id="UploadBOLForm" enctype="multipart/form-data">
-
+            <form method="post" class=" g-3 needs-validation" action="{{route('upload.bol')}}" autocomplete="off" id="UploadBOLForm" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="w_order_id"  value="0">

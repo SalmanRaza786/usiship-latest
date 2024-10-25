@@ -53,7 +53,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
 
             $data['totalRecords'] = Order::count();
-            $qry = Order::with('warehouse','dock.dock','operationalHour','status');
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','wmsOrder');
             $qry=$qry->where('company_id',Auth::user()->company_id);
 
             $qry = $qry->when($request->s_name, function ($query, $name) {
@@ -866,7 +866,7 @@ class AppointmentRepositry implements AppointmentInterface {
 
         try {
             $data['totalRecords'] = Order::count();
-            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer.company');
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer.company','wmsOrder');
 
 
             $qry = $qry->when($request->s_name, function ($query, $name) {

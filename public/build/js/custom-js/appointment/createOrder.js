@@ -505,9 +505,9 @@ $('#OrderForm').on('submit', function(e) {
                     '<p class="text-muted">You will receive an order confirmation email with details of your order.</p>' +
                     '<h3 class="fw-semibold">Order ID: <a class="text-decoration-underline" >' + response.data.order_id + '</h3>';
 
-                if (authGuard === 'web') {
-                    html += '<button type="button" class="btn btn-primary btn-upload" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button>';
-                }
+                // if (authGuard === 'web') {
+                    html += '<button type="button" class="btn btn-primary btn-upload mx-2" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button>';
+                // }
 
                 if (authGuard === 'admin') {
                     html += '<a href="/' + authGuard + '/get-order-detail/' + response.data.id + '" class="btn btn-primary">View Order Detail</a>';

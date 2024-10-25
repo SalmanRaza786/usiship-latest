@@ -243,6 +243,28 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
+                                                        <div class="mt-2">
+                                                            <label for="vehicle_class" class="form-label">Class of Vehicle</label>
+                                                            <select class="form-control form-control-lg" id="vehicle_class" name="vehicle_class" required>
+                                                                <option>Select Vehicle Class</option>
+                                                                @if(\App\Http\Helpers\Constants::$vehicle_classes)
+                                                                    @foreach(\App\Http\Helpers\Constants::$vehicle_classes as $key => $veh_class)
+                                                                        <option value="{{$key}}">{{$veh_class}}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6" id="other_vehicle_class_container" style="display: none;">
+                                                        <div class="mt-2">
+                                                            <label for="formSizeLarge" class="form-label">Others Vehicle Class</label>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_vehicle_class" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Container/Trailer #</label>
                                                             <input class="form-control form-control-lg" id="formSizeLarge" name="vehicle_no" type="text" required>
@@ -259,14 +281,14 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL #</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no"  type="text" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no"  type="text">
 
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL Image</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"   required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file" >
                                                             <input type="text" class="d-none"  name="bolFileId" value="0">
                                                         </div>
                                                     </div>
@@ -291,7 +313,7 @@
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*"  required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*" required>
                                                             <input type="text" class="d-none"  name="driverFileId" value="0">
                                                         </div>
                                                     </div>
@@ -299,7 +321,6 @@
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
                                                             <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*"  type="file">
-
                                                             <input type="text" class="d-none"  name="otherDocFileId" value="0">
                                                         </div>
                                                     </div>
@@ -385,6 +406,16 @@
         let htmlscanner;
 
         $(document).ready(function() {
+
+
+            $('#vehicle_class').on('change', function() {
+                console.log($(this).val());
+                if ($(this).val() == 5) {
+                    $('#other_vehicle_class_container').show();
+                } else {
+                    $('#other_vehicle_class_container').hide();
+                }
+            });
 
 
 

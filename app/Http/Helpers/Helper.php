@@ -45,6 +45,7 @@ class Helper
 {
     use HandleFiles;
 
+
     public static function sendError($message, $errors = [], $code = 401)
     {
         $response = ['success' => false, 'message' => $message];
