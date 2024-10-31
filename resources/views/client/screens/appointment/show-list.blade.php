@@ -164,7 +164,7 @@
                         targets: 9,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
-                            const workID = data.wms_order.id ?? 0;
+                            const workID = data.wms_order ? data.wms_order.id : 0;
                             const orderType = data.order_type;
                             const rowDockId = data.dock_id;
                             const rowLoadTypeId = data.load_type_id;
