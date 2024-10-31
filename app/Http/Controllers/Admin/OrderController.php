@@ -340,6 +340,8 @@ class OrderController extends Controller
                    'order_date' => $row->order_date,
                    'operational_hour_working_hour' => $row->operationalHour->working_hour,
                    'status_title' => $row->status->status_title,
+                   'order_reference' => $row->wmsOrder->order_reference ?? "-",
+                   'wms_transaction_id' => $row->wmsOrder->wms_transaction_id ?? "-",
                );
                $transactionData->push($array);
            }

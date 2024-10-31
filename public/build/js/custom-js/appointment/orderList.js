@@ -251,6 +251,48 @@ $('#PackagingForm').on('submit', function(e) {
 
 });
 
+$('#roleTable').on('click', '.btn-upload-bol', function() {
+    $('input[name=w_order_id]').val($(this).attr('data'));
+});
+$('#UploadBOLForm').on('submit', function(e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: $(this).attr('action'),
+        method: 'POST',
+        data: new FormData(this),
+        dataType: 'JSON',
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            $('.btn-submit').text('Uploading...');
+            $(".btn-submit").prop("disabled", true);
+        },
+        success: function(response) {
+
+            if (response.status==true) {
+                $('#roleTable').DataTable().ajax.reload();
+                toastr.success(response.message);
+                $('.btn-close').click();
+            }
+            if (response.status==false) {
+                toastr.error(response.message);
+            }
+        },
+
+        complete: function(data) {
+            $(".btn-submit").html("Upload");
+            $(".btn-submit").prop("disabled", false);
+        },
+
+        error: function() {
+            $('.btn-submit').text('Upload');
+            $(".btn-submit").prop("disabled", false);
+        }
+    });
+});
+
 
 function ShowOperationHours(dataPerms,startIndex)
 {

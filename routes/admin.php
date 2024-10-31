@@ -212,7 +212,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
         Route::any('/work-order', [WorkOrderController::class, 'getWorkOrder'])->name('work.order.get')->middleware(['can:admin-w-order-view']);
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
-        Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol')->middleware(['can:admin-w-order-view']);
+
 
         //Picking
         Route::any('/picking', [PickingController::class, 'index'])->name('picking.index')->middleware(['can:admin-picking-view']);
@@ -277,7 +277,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
     Route::post('/save-packaging-info', [OrderController::class, 'savePackagingInfo'])->name('packaging.info.store');
     Route::any('/save-packaging-images', [OrderController::class, 'savePackagingImages'])->name('packaging.images.store');
     Route::get('/check-order-id', [OrderController::class, 'checkOrderId'])->name('checkOrderId');
-
+    Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol');
 
 
     Route::post('/verify-warehouse-id', [OrderController::class, 'verifyWarehouseId'])->name('verify.warehouse.id');

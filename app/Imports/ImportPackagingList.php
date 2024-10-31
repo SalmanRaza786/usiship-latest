@@ -20,6 +20,7 @@ class ImportPackagingList implements ToModel,WithHeadingRow,WithValidation
     public function __construct($order_id)
     {
         $this->order_id = $order_id;
+
     }
 
     public function model(array $row)

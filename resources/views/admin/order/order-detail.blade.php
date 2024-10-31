@@ -1,6 +1,6 @@
 
 @extends('layouts.master')
-@section('title') Order Detail  @endsection
+@section('title') Scheduling Detail  @endsection
 @section('css')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css" rel="stylesheet">
     <style>

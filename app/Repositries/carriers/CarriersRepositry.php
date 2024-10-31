@@ -111,22 +111,20 @@ class CarriersRepositry implements CarriersInterface {
                 'order_id' => 'required',
                 'driver_name'=> 'required',
                 'phone_no' => 'required',
-
-
+                'company_name' => 'required',
+                'company_phone_no' => 'required',
             ]);
 
             if($request->from==0){
                 $validator = Validator::make($request->all(), [
-                    'other_document' => 'required',
                     'driver_id_pic'=> 'required',
                     'do_document' => 'required',
-                    'bol_image' => 'required',
                 ]);
             }
 
-            if ($validator->fails())
+            if ($validator->fails()){
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
-
+            }
 
             $company = Company::updateOrCreate(
                 [
@@ -179,6 +177,8 @@ class CarriersRepositry implements CarriersInterface {
                             'vehicle_licence_plate' => $request->license_no,
                             'bol_number' => $request->bol_no,
                             'do_number' => $request->do_no,
+                            'vehicle_class' => $request->vehicle_class,
+                            'other_vehicle_class' => $request->other_vehicle_class,
                             'status_id' => 9,
                         ]
                     );
@@ -201,6 +201,8 @@ class CarriersRepositry implements CarriersInterface {
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
             return Helper::success($orderContact, $message);
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);

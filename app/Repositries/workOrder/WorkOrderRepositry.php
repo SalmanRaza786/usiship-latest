@@ -127,7 +127,7 @@ class WorkOrderRepositry implements WorkOrderInterface
 
             if($request->file('BOLDocument')){
                 $BOLDocFileName = $order->handleFiles($request->file('BOLDocument'), $this->workOrderFilePath);
-                $order->mediaUpload($BOLDocFileName,'Doc',$fileableId,$fileableType,1,"BOLDocument");
+                $order->mediaUpload($BOLDocFileName,'Doc',$fileableId,$fileableType,null,"BOLDocument");
             }
 
             DB::commit();

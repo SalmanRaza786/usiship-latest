@@ -96,5 +96,10 @@ class Order extends Model
         return $this->hasMany(OrderItemPutAway::class, 'order_id', 'id');
     }
 
+    public function wmsOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
+    }
+
 
 }

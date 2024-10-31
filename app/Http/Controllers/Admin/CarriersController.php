@@ -110,6 +110,8 @@ class CarriersController extends Controller
                     $update = $this->orderContact->updateOrderContact($request->orderContactId);
                 }
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),'Record save successfully');
+            }else{
+                return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
             }
         }catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
