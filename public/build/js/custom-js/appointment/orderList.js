@@ -254,6 +254,11 @@ $('#PackagingForm').on('submit', function(e) {
 $('#roleTable').on('click', '.btn-upload-bol', function() {
     $('input[name=w_order_id]').val($(this).attr('data'));
 });
+
+$('.btn-upload-bol').click(function() {
+    $('input[name=w_order_id]').val($(this).attr('data'));
+    console.log("click");
+});
 $('#UploadBOLForm').on('submit', function(e) {
     e.preventDefault();
 

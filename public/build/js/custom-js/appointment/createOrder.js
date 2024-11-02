@@ -491,8 +491,7 @@ $('#OrderForm').on('submit', function(e) {
             $(".btn-submit").prop("disabled", true);
         },
         success: function(response) {
-                    var html = " ";
-
+            var html = " ";
             var authGuard = $('#authGuard').val();
             if (response.status==true) {
                 toastr.success(response.message);
@@ -506,7 +505,7 @@ $('#OrderForm').on('submit', function(e) {
                     '<h3 class="fw-semibold">Order ID: <a class="text-decoration-underline" >' + response.data.order_id + '</h3>';
 
                 // if (authGuard === 'web') {
-                    html += '<button type="button" class="btn btn-primary btn-upload mx-2" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpoad">Upload Packaging List</button>';
+                    html += '<button type="button" class="btn btn-primary btn-upload mx-2" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpload">Upload Packaging List</button>';
                 // }
 
                 if (authGuard === 'admin') {
@@ -526,13 +525,13 @@ $('#OrderForm').on('submit', function(e) {
         },
 
         complete: function (data) {
-            $(".btn-submit").html("Confirm Appointment");
+            $(".btn-submit").html("Submit");
             $(".btn-submit").prop("disabled", false);
         },
 
         error: function (error) {
             toastr.error( error.responseJSON.message);
-            $('.btn-submit').text('Confirm Appointment');
+            $('.btn-submit').text('Submit');
             $(".btn-submit").prop("disabled", false);
         }
     });

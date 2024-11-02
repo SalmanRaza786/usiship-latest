@@ -35,18 +35,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
     <script src="{{ URL::asset('build/js/pages/select2.init.js') }}"></script>
-
 
     <script src="{{ URL::asset('build/js/custom-js/notification/notification.js') }}"></script>
 
 
+    @vite(['resources/js/app.js'])
+    @yield('script')
+    @yield('script-bottom')
 
     <script src="{{ URL::asset('build/libs/glightbox/js/glightbox.min.js')}}"></script>
     <script src="{{ URL::asset('build/libs/isotope-layout/isotope.pkgd.min.js')}}"></script>
     <script src="{{ URL::asset('build/js/pages/gallery.init.js')}}"></script>
-
-    @vite(['resources/js/app.js'])
-    @yield('script')
-    @yield('script-bottom')

@@ -91,6 +91,7 @@ class OrderContactController extends Controller
                     'is_verify'=>$contactRes->is_verify,
                     'order_id'=>$contactRes->order_id,
                     'order_reference'=>$contactRes->order->order_id,
+                    'order_type'=>$contactRes->order->order_type,
                 );
             }
 

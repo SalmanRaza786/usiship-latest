@@ -137,6 +137,26 @@ class PackagingListRepositry implements PackagingListInterface {
         }
 
     }
+    public function getPackagingListExceptions($orderId)
+    {
+
+        try {
+
+            $qry = PackgingList::query();
+            $qry = $qry->with('inventory','order');
+            $qry = $qry->where('exception_qty','!=',0 );
+            $qry = $qry->where('exception_qty','!=',null );
+            $qry = $qry->where('order_id', $orderId);
+            $qry = $qry->get();
+
+            return Helper::success($qry, 'Exception items found');
+
+
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
     public function downloadPackgingListSample()
     {
         try {

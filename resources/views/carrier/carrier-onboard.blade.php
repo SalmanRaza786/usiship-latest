@@ -202,7 +202,7 @@
                                                 <hr>
                                                 <div>
                                                     <label for="formSizeLarge" class="form-label">Order Reference
-                                                        No.</label>
+                                                        No. @if($order->order_type==2) / WMS Order Reference @endif </label>
                                                     <p class="text-muted">Please check order reference number from your
                                                         carrier email.</p>
                                                 </div>
@@ -246,7 +246,7 @@
                                                         <div class="mt-2">
                                                             <label for="vehicle_class" class="form-label">Class of Vehicle</label>
                                                             <select class="form-control form-control-lg" id="vehicle_class" name="vehicle_class" required>
-                                                                <option>Select Vehicle Class</option>
+                                                                <option value="" selected>Select Vehicle Class</option>
                                                                 @if(\App\Http\Helpers\Constants::$vehicle_classes)
                                                                     @foreach(\App\Http\Helpers\Constants::$vehicle_classes as $key => $veh_class)
                                                                         <option value="{{$key}}">{{$veh_class}}</option>
@@ -277,6 +277,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @if($order->order_type==1)
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
@@ -309,6 +310,7 @@
                                                     </div>
 
                                                 </div>
+                                                @endif
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">

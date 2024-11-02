@@ -70,16 +70,16 @@ class CheckInRepositry implements CheckInInterface {
                 'order_id' => 'required',
                 'whDoors' => 'required',
                 'container_no' => 'required',
-                'seal_no' => 'required',
-                'do_signature' => 'required',
+//                'seal_no' => 'required',
+//                'do_signature' => 'required',
             ]);
 
             if($request->orderCheckInId==0){
 
                 $validator = Validator::make($request->all(), [
                     'containerImages' => 'required',
-                    'sealImages' => 'required',
-                    'do_signatureImages' => 'required',
+//                    'sealImages' => 'required',
+//                    'do_signatureImages' => 'required',
                 ]);
             }
 
@@ -97,7 +97,7 @@ class CheckInRepositry implements CheckInInterface {
                     'door_id' =>$request->whDoors,
                     'order_contact_id' => $request->order_contact_id,
                     'container_no' => $request->container_no,
-                    'seal_no' => $request->seal_no,
+                    'seal_no' => $request->seal_no??"-",
                     'delivery_order_signature' => $request->do_signature,
                     'other_document' => $request->other_doc,
                     'status_id' => 12,

@@ -179,12 +179,12 @@ $(document).ready(function(){
                 }
             }
 
-            if(inputId=='sealImages'){
-                if(db_seal_no != seal_no){
-                    toastr.error('invalid seal#');
-                    return false;
-                }
-            }
+            // if(inputId=='sealImages'){
+            //     if(db_seal_no != seal_no){
+            //         toastr.error('invalid seal#');
+            //         return false;
+            //     }
+            // }
 
             const files = event.target.files;
             const previewContainer = $('#' + previewContainerId);

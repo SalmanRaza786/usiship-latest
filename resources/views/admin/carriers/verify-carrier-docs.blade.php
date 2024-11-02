@@ -87,6 +87,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @if($data['orderContacts']['order_type'] == 1)
                             <div class="row">
                                 <div class="col-md-6">
                                     <div  class="mt-2">
@@ -104,8 +105,8 @@
                                     <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
                                         <div class="gallery-box card">
                                             <div class="gallery-container">
-                                                <a class="image-popup" href="{{ URL::asset('storage/uploads/'.$data['orderContacts']['bol_thumbnail'])}}" title="">
-                                                    <img class="gallery-img img-fluid mx-auto" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['bol_thumbnail'])}}" alt="" />
+                                                <a class="image-popup" href="{{ URL::asset('storage/uploads/'.$data['orderContacts']['bol_image'])}}" title="">
+                                                    <img class="gallery-img img-fluid mx-auto rounded avatar-md" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['bol_thumbnail'])}}" alt="" />
                                                     <div class="gallery-overlay">
                                                         <h5 class="overlay-caption">BOL Image</h5>
                                                     </div>
@@ -136,7 +137,7 @@
                                         <div class="gallery-box card">
                                             <div class="gallery-container">
                                                 <a class="image-popup" href="{{ URL::asset('storage/uploads/'.$data['orderContacts']['do_document'])}}" title="">
-                                                    <img class="gallery-img img-fluid mx-auto" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['do_document'])}}" alt="" />
+                                                    <img class="gallery-img img-fluid mx-auto rounded avatar-md" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['do_document'])}}" alt="" />
                                                     <div class="gallery-overlay">
                                                         <h5 class="overlay-caption">Do Document</h5>
                                                     </div>
@@ -148,6 +149,7 @@
                                 </div>
 
                             </div>
+                            @endif
                             <div class="row">
                                 <div class="col-md-6">
                                     <div  class="mt-2">
@@ -159,8 +161,8 @@
                                     <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
                                         <div class="gallery-box card">
                                             <div class="gallery-container">
-                                                <a class="image-popup" href="{{ URL::asset('storage/uploads/'.$data['orderContacts']['driver_id_thumbnail'])}}" title="">
-                                                    <img class="gallery-img img-fluid mx-auto" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['driver_id_thumbnail'])}}" alt="" />
+                                                <a class="image-popup" href="{{ URL::asset('storage/uploads/'.$data['orderContacts']['driver_id'])}}" title="">
+                                                    <img class="gallery-img img-fluid mx-auto rounded avatar-md" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['driver_id_thumbnail'])}}" alt="" />
                                                     <div class="gallery-overlay">
                                                         <h5 class="overlay-caption">Driver's ID</h5>
                                                     </div>
@@ -170,18 +172,18 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div  class="mt-2">
                                         <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
                                         <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*"  type="file">
                                         <input type="text" class="d-none"  name="otherDocFileId" value="{{$data['orderContacts']['otherDocFileId']}}">
                                     </div>
-
                                     <div class="element-item col-xxl-3 col-xl-4 col-sm-6 photography" data-category="photography">
                                         <div class="gallery-box card">
                                             <div class="gallery-container">
                                                 <a class="image-popup" href="{{ URL::asset('storage/uploads/'.$data['orderContacts']['other_docs'])}}" title="">
-                                                    <img class="gallery-img img-fluid mx-auto" src="{{ URL::asset('storage/uploads/'.$data['orderContacts']['other_docs'])}}" alt="" />
+                                                    <img class="gallery-img img-fluid mx-auto rounded avatar-md" src="{{$data['orderContacts']['other_docs']!=null? URL::asset('storage/uploads/'.$data['orderContacts']['other_docs']):""}}" alt="" />
                                                     <div class="gallery-overlay">
                                                         <h5 class="overlay-caption">Driver's Other Docs</h5>
                                                     </div>

@@ -30,13 +30,18 @@
                         <div class="col">
                             <h4 class="card-title mb-0">Packaging List Confirmation - {{$data->order->order_id ?? '-'}}</h4>
                         </div>
-                        @if($data->status_id != 10)
+
                         <div class="col-auto justify-content-sm-end">
-                            <button type="button" id="alertButton" style="display:none;" class="btn btn-warning me-2">
-                                <i class="ri-alert-line align-bottom me-1"></i> Report Exception/Damages
-                            </button>
+                            <form method="post" class=" g-3 needs-validation" action="{{route('admin.report.exception')}}" autocomplete="off" id="reportException" >
+                                @csrf
+                                <input type="hidden" name="order_id" value="{{$data->order_id}}"/>
+                                <button type="submit" id="alertButton" style="display:none;" class="btn btn-warning me-2 btn-report" >
+                                    <i class="ri-alert-line align-bottom me-1"></i> Report Exception/Damages
+                                </button>
+                            </form>
 
                         </div>
+                        @if($data->status_id != 10)
                         <div class="col-auto justify-content-sm-end">
                             <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.close')}}" autocomplete="off" id="addForm" >
                                 @csrf

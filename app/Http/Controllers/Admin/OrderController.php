@@ -12,12 +12,14 @@ use App\Models\Order;
 use App\Models\OrderBookedSlot;
 use App\Models\OrderForm;
 use App\Models\OrderStatus;
+use App\Models\WorkOrder;
 use App\Notifications\OrderNotification;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customer\CustomerInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeRepositry;
 use App\Repositries\notification\NotificationInterface;
+use App\Repositries\qc\QcInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,13 +31,15 @@ class OrderController extends Controller
     private $customer;
     private $appointment;
     private $notification;
+    private $WorkOrderQC;
 
-    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment,NotificationInterface $notification){
+    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment,NotificationInterface $notification,QcInterface $WorkOrderQC){
         $this->order = $order;
         $this->wh = $wh;
         $this->customer =$customer;
         $this->appointment =$appointment;
         $this->notification =$notification;
+        $this->WorkOrderQC =$WorkOrderQC;
     }
     public function index()
     {
@@ -91,7 +95,7 @@ class OrderController extends Controller
             if (!Order::find($id)) {
                 return back()->with('error','Invalid order id');
             }
-            $data['orderDetail']=$this->getOrderInfo($id);
+             $data['orderDetail']=$this->getOrderInfo($id);
             return view('admin.order.order-detail')->with(compact('data'));
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -121,6 +125,8 @@ class OrderController extends Controller
 
             $guards = array_keys(config('auth.guards'));
             $currentGuard = null;
+            $work_order_qc = null;
+            $work_order_qc_items = null;
 
             foreach ($guards as $guard) {
                 if (Auth::guard($guard)->check()) {
@@ -133,6 +139,11 @@ class OrderController extends Controller
             }else{
                 $allow= $this->appointment->isAllowToModifyOrder($id);
             }
+            if($res->work_order_id){
+              $work_order_qc = Helper::fetchOnlyData($this->WorkOrderQC->getQcInfoByWorkId($res->work_order_id));
+              $work_order_qc_items = Helper::fetchOnlyData( $this->WorkOrderQC->getQcItems($work_order_qc->id));
+            }
+
 
 
             $data = array(
@@ -151,6 +162,7 @@ class OrderController extends Controller
                 'dock' =>$res->dock->title,
                 'status' =>$res->status->status_title,
                 'status_id' =>$res->status_id,
+                'order_type' =>$res->order_type,
                 'status_class' =>$res->status->class_name,
                 'status_order_by' =>$res->status->order_by,
                 'text_class' =>$res->status->text_class,
@@ -162,6 +174,8 @@ class OrderController extends Controller
                 'packagingList'=>$res->packgingList ?? [],
                 'orderContacts'=>$res->orderContacts ?? [],
                 'itemPutAway'=>$res->itemPutAway ?? [],
+                'workOrderQC' => $work_order_qc ?? [],
+                'workOrderQCItems' => $work_order_qc_items ?? [],
             );
             return Helper::success($data,'Order Info');
 
@@ -194,7 +208,7 @@ class OrderController extends Controller
                return Helper::error('all slots are booked of this dock',[]);
            }
 
-             $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
+           $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
            if ($roleUpdateOrCreate->get('status')){
                $orderData=$roleUpdateOrCreate->get('data');
                // 1 use for admin 2 for user
@@ -352,6 +366,24 @@ class OrderController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
 
+    }
+
+    public function uploadBolOrder(Request $request)
+    {
+        try {
+            if(!$workOrder=Order::find($request->w_order_id)){
+                return Helper::error('Invalid Order Id');
+            }
+            $res=$this->appointment->saveUploadBOL($request);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            }else{
+                return Helper::error($res->get('message'));
+            }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
     }
 
 

@@ -148,6 +148,7 @@
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
                             const status = data.status;
+                            const orderType = data.order.order_type;
                             const whId = data.order.wh_id ;
                             const orderId = data.order_id ;
                             var url = "{{ route('admin.carrier.verify', ':id') }}";
@@ -159,7 +160,7 @@
                                     return '@canany('admin-checkin-create')<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary me-2">View Carrier Documents</a>'+
                                     '<a href="'+checkInurl.replace(':id', rowId)+'" type="button" class="btn btn-primary">View CheckIn</a>@endcanany'
                                 }else{
-                                    return '@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in me-2" data="'+rowId+'" whId="'+whId+'" orderId="'+orderId+'" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>'+
+                                    return '@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in me-2" data="'+rowId+'" whId="'+whId+'" orderId="'+orderId+'" data-bs-toggle="modal" data-bs-target="'+(orderType == 1?"#checkInModal":"#checkOutModal")+'">Check In Now</a>'+
                                     '<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary">View Carrier Document</a>@endcanany';
                                 }
                             }

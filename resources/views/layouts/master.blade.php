@@ -73,6 +73,7 @@
         function hideLoader(){
             $('#myCustomPreLoader').css('display', 'none');
         }
+
     })
 </script>
 </body>

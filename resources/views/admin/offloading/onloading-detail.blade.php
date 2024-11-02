@@ -127,22 +127,7 @@
 
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div>
-                                    <label for="basiInput" class="form-label">Seal #</label>
-                                    <input type="text" class="form-control"  id="input" name="seal_no">
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-md-6">
-                                <div>
-                                    <label for="labelInput" class="form-label">Upload Seal # Photo</label>
-                                    <input type="file" class="form-control" id="sealImages" name="sealImages[]" multiple accept="image/*">
-                                </div>
-                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview" >
 
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div>
                                     <label for="basiInput" class="form-label">Pallets staged</label>
@@ -236,6 +221,22 @@
                                     <input type="file" class="form-control" id="singedLoadingSlipImages" name="singedLoadingSlipImages[]" multiple accept="image/*">
                                 </div>
                                 <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="singedLoadingSlipImagesPreview" >
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div>
+                                    <label for="basiInput" class="form-label">Seal #</label>
+                                    <input type="text" class="form-control"  id="input" name="seal_no">
+                                </div>
+                            </div>
+                            <!--end col-->
+                            <div class="col-md-6">
+                                <div>
+                                    <label for="labelInput" class="form-label">Upload Seal # Photo</label>
+                                    <input type="file" class="form-control" id="sealImages" name="sealImages[]" multiple accept="image/*">
+                                </div>
+                                <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container" id="sealImagesPreview" >
 
                                 </div>
                             </div>
