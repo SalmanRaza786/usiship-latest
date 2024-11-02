@@ -25,7 +25,7 @@
 </div>
 
 
-<div class="modal fade" id="showModalUpoad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="showModalUpload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
@@ -47,7 +47,7 @@
                     <div class="modal-footer">
                         <div class="hstack gap-2 justify-content-end">
                             <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
-                            <button type="submit" class="btn btn-success btn-submit " >Upload</button>
+                            <button type="submit" class="btn btn-success btn-submit btn-upload " >Upload</button>
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
             </div>
 
 
-            <form method="post" class=" g-3 needs-validation" action="{{route('upload.bol')}}" autocomplete="off" id="UploadBOLForm" enctype="multipart/form-data">
+            <form method="post" class=" g-3 needs-validation" action="{{route('order.upload.bol')}}" autocomplete="off" id="UploadBOLForm" enctype="multipart/form-data">
 
                 @csrf
                 <div class="modal-body">

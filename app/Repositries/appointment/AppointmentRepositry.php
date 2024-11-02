@@ -9,6 +9,7 @@ use App\Imports\ImportPackagingList;
 use App\Models\Admin;
 use App\Models\DocksLoadType;
 use App\Models\FileContent;
+use App\Models\LoadType;
 use App\Models\NotificationLog;
 use App\Models\NotificationTemplate;
 use App\Models\OperationalHour;
@@ -20,6 +21,7 @@ use App\Models\OrderStatus;
 use App\Models\PackgingList;
 use App\Models\User;
 use App\Models\WareHouse;
+use App\Models\WorkOrder;
 use App\Notifications\OrderNotification;
 use App\Repositries\dock\DockRepositry;
 use App\Traits\HandleFiles;
@@ -45,6 +47,8 @@ class AppointmentRepositry implements AppointmentInterface {
     protected $orderFileName = "";
     protected $packagingImageFileName = "";
     protected $packagingListFileName = "";
+
+    protected $BOLDocFilePath = 'bol-docs/';
 
     use HandleFiles;
     public function getAppointmentList($request)
@@ -86,6 +90,7 @@ class AppointmentRepositry implements AppointmentInterface {
     public function updateOrCreate($request,$id)
     {
         try {
+
             DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'wh_id' =>'required',
@@ -113,6 +118,10 @@ class AppointmentRepositry implements AppointmentInterface {
             if ($user->company_id === null) {
                 return Helper::errorWithData("Customer is not Associated with any Company", []);
             }
+            if ($request->load_type_id)
+            {
+                $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
+            }
 
 
             $order = Order::updateOrCreate(
@@ -126,7 +135,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     'dock_id' => $request->dock_id,
                     'load_type_id' => $request->load_type_id,
                     'operational_hour_id' => $request->opra_id,
-                    'order_type' =>$request->order_type ?? 1,
+                    'order_type' => $loadTypeDirection ?? 1,
                     'work_order_id' =>$request->work_order_id ?? null,
                     'status_id' =>$request->order_status,
                     'order_date' => $request->order_date,
@@ -466,7 +475,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     [
                         'order_id' => $orderId,
                         'field_id' => $key,
-                        'form_value' =>($isFileField==2)?$value:$this->orderFileName,
+                        'form_value' =>($isFileField==2)?$value??"-":$this->orderFileName,
                         'is_file' => $isFileField,
                     ]
                 );
@@ -678,8 +687,18 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
             $id = $request->query('id');
             $orderId = $request->query('order_id');
-            return  $res = Order::where('id', $id)->where('order_id', $orderId)->count();
-             Helper::success($res, $message='Record found');
+
+            $res = Order::where('id', $id)
+                ->where(function ($query) use ($orderId) {
+                    $query->where('order_id', $orderId)
+                        ->orWhereHas('wmsOrder', function ($query) use ($orderId) {
+                            $query->where('order_reference', $orderId);
+                        });
+                })
+                ->exists();
+
+            return $res ? 1 : 0;
+           // Helper::success($res, $message='Record found');
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         }
@@ -910,6 +929,38 @@ class AppointmentRepositry implements AppointmentInterface {
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
         }
+    }
+
+    public function saveUploadBOL($request)
+    {
+        try {
+
+            DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'BOLDocument' => 'required',
+            ]);
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $order=Order::find($request->w_order_id);
+
+            $fileableId = $order->id;
+            $fileableType = 'App\Models\Order';
+
+            if($request->file('BOLDocument')){
+                $BOLDocFileName = $this->handleFiles($request->file('BOLDocument'), $this->BOLDocFilePath);
+                $this->mediaUpload($BOLDocFileName,'Doc',$fileableId,$fileableType,null,"BOLDocument");
+            }
+
+            DB::commit();
+
+            return Helper::success($order,'BOL Document uploaded successfully');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
     }
 
 

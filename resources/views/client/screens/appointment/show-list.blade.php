@@ -187,7 +187,7 @@
                                             </li>
                                             ${orderType == 1
                                                ? `<li><a class="dropdown-item btn-upload" data="${rowId}" data-bs-toggle="modal" data-bs-target="#showModalUpload"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload packaging list</a></li>`
-                                               : `<li><a class="dropdown-item btn-upload-bol" data="${workID}" data-bs-toggle="modal" data-bs-target="#UploadBOLDoc"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload BOL Document</a></li>`
+                                               : `<li><a class="dropdown-item btn-upload-bol" data="${rowId}" data-bs-toggle="modal" data-bs-target="#UploadBOLDoc"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload BOL Document</a></li>`
                                             }
                                             <li class="dropdown-divider"></li>
                                             <li>

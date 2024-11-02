@@ -118,7 +118,7 @@ class CarriersRepositry implements CarriersInterface {
             if($request->from==0){
                 $validator = Validator::make($request->all(), [
                     'driver_id_pic'=> 'required',
-                    'do_document' => 'required',
+//                    'do_document' => 'required',
                 ]);
             }
 

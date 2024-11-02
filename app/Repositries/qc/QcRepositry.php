@@ -55,6 +55,21 @@ class QcRepositry implements QcInterface
         }
 
     }
+
+    public function getQcInfoByWorkId($id)
+    {
+        try {
+
+            $qry= QcWorkOrder::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType');
+            $data =$qry->where('work_order_id',$id)->first();
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
     public function updateStartQc($request)
     {
         try {

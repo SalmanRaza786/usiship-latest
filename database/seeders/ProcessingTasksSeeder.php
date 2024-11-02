@@ -16,6 +16,9 @@ class ProcessingTasksSeeder extends Seeder
     {
         $orderTasks = [
             [
+                'name' => 'Staged Location',
+                'status' => 1,
+            ],  [
                 'name' => 'Carton Labels',
                 'status' => 1,
             ],

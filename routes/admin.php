@@ -180,7 +180,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         Route::any('/packaging-list-confirm/{id}', [OffLoadingController::class, 'packagingListConfirmation'])->name('off-loading.confirm.packaging.list');
         Route::any('/offloading-status-change/{id}', [OffLoadingController::class, 'offloadingStatusChange'])->name('offloading.status.change');
         Route::any('/update-packaging-list', [PackagingListController::class, 'updatePackagingList'])->name('update.packaging.list');
-
+        Route::any('/report-exception', [PackagingListController::class, 'reportException'])->name('report.exception')->middleware(['can:admin-offloading-create']);
 
 
 
@@ -262,7 +262,7 @@ use App\Http\Controllers\Outbounds\ProcessingController;
 
         //Import Locations from WHMS
         Route::any('/import-locations', [WareHouseController::class, 'fetchData'])->name('import.locations');
-
+        Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol');
 
     });
 
@@ -277,7 +277,8 @@ use App\Http\Controllers\Outbounds\ProcessingController;
     Route::post('/save-packaging-info', [OrderController::class, 'savePackagingInfo'])->name('packaging.info.store');
     Route::any('/save-packaging-images', [OrderController::class, 'savePackagingImages'])->name('packaging.images.store');
     Route::get('/check-order-id', [OrderController::class, 'checkOrderId'])->name('checkOrderId');
-    Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol');
+
+    Route::any('/upload-bol', [OrderController::class, 'uploadBolOrder'])->name('order.upload.bol');
 
 
     Route::post('/verify-warehouse-id', [OrderController::class, 'verifyWarehouseId'])->name('verify.warehouse.id');
