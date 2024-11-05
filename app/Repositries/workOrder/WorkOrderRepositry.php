@@ -38,7 +38,7 @@ class WorkOrderRepositry implements WorkOrderInterface
                     $query->where('order_reference', 'LIKE', "%{$name}%");
             });
 
-            $qry=$qry->when($request->status, function ($query, $status) {
+            $qry=$qry->when($request->s_status, function ($query, $status) {
                 return $query->where('status_code',$status);
             });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
