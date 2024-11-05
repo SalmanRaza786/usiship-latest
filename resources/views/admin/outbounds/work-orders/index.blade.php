@@ -25,9 +25,7 @@
                                 <a class="dropdown-item cursor-pointer" data-bs-toggle="modal" id="create-btn" data-bs-target="#checkInModal" >Assign to Picker</a>
                             </div>
                         </div>
-
                         <button type="button" class="btn btn-success btn-import1" data-bs-toggle="modal" data-bs-target="#importModal" ><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
-{{--                        <a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' >Assign Now</a>--}}
                     </div>
                         @endcanany
                 </div><!-- end card header -->
@@ -114,8 +112,8 @@
             searching: false,
             info: true,
             bFilter: false,
-            ordering: false,
-            bLengthChange: false,
+            ordering: true,
+            bLengthChange: true,
             order: [[ 0, "desc" ]],
             lengthMenu:[[10,50,100,-1],[10,50,100,"All"]],
             ajax: {

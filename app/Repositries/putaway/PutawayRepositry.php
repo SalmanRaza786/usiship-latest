@@ -33,7 +33,7 @@ class PutawayRepositry implements PutAwayInterface {
             $data['totalRecords'] = OrderItemPutAway::count();
 
             $qry = OrderItemPutAway::query();
-            $qry =$qry->with('order.dock.loadType.eqType','status');
+            $qry =$qry->with('order.dock.loadType.eqType','status','location','inventory','order.customer','order.company');
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
@@ -53,6 +53,8 @@ class PutawayRepositry implements PutAwayInterface {
         }
 
     }
+
+
 
     public function updateOrCreatePutAway($request)
     {

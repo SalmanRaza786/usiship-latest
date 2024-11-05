@@ -70,6 +70,10 @@ class PutAwayController extends Controller
         }
 
     }
+    public function putAwayItemsList(Request $request){
+
+
+    }
 
     //storePutAway
     public function storePutAway(Request $request){

@@ -6,6 +6,7 @@ interface AppointmentInterface
 {
     public function getAppointmentList($request);
     public function getTransactionsList($request);
+    public function getReportList($request);
 
     public function uploadPackagingList($request);
     public function checkOrderId($request);

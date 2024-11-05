@@ -43,6 +43,10 @@ class OrderItemPutAway extends Model
         });
     }
 
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class, 'status_id', 'id');
+    }
 
 
 }

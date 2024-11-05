@@ -41,6 +41,28 @@ class QcRepositry implements QcInterface
         }
 
     }
+    public function getQcItemsList($request)
+    {
+        try {
+            $data['totalRecords'] = QcDetailWorkOrder::count();
+            $qry= QcDetailWorkOrder::query();
+            $qry= $qry->with('workOrderItem.workOrder.client','workOrderItem.inventory','workOrderItem.location','media');
+
+            $qry=$qry->when($request->s_name, function ($query, $name) {
+                return $query->whereRelation('workOrderItem.workOrder','wms_transaction_id', 'LIKE', "%{$name}%");
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
     public function getQcInfo($id)
     {
         try {
