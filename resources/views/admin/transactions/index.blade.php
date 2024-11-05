@@ -37,8 +37,8 @@
                                         <option value="">Status</option>
                                         <option value="" selected>{{__('translation.all')}}</option>
 
-                                        @isset($data['statuses']['data'])
-                                            @foreach($data['statuses']['data'] as $status)
+                                        @isset($data['status'])
+                                            @foreach($data['status'] as $status)
                                                 <option value="{{$status->id}}">{{$status->status_title}}</option>
                                             @endforeach
                                         @endisset
@@ -111,7 +111,7 @@
                 ajax: {
                     url: "transactions-list",
                     data: function (d) {
-                        d.name = $('input[name=s_name]').val(),
+                        d.s_name = $('input[name=s_name]').val(),
                             d.status = $('select[name=s_status]').val()
                     }
                 },

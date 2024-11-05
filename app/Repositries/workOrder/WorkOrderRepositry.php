@@ -32,7 +32,7 @@ class WorkOrderRepositry implements WorkOrderInterface
         try {
             $data['totalRecords'] = WorkOrder::count();
             $qry= WorkOrder::query();
-            $qry= $qry->with('client:id,title','status:id,status_title,order_by','carrier');
+            $qry= $qry->with('client:id,title','status:id,status_title,order_by','carrier','picker');
 
             $qry = $qry->when($request->s_title, function ($query, $name) {
                     $query->where('order_reference', 'LIKE', "%{$name}%");
@@ -61,41 +61,45 @@ class WorkOrderRepositry implements WorkOrderInterface
         try {
 
             DB::beginTransaction();
-            $workOrderPicker= WorkOrderPicker::updateOrCreate(
-                [
-                    'work_order_id' =>$request->w_order_id,
-                ],
-                [
-                    'work_order_id' => $request->w_order_id,
-                    'picker_id' => $request->staff_id,
-                    'status_code' => $request->status_code,
-                    'auth_id' =>Auth::user()->id,
-                ]
-            );
 
+            foreach ($request->selectedOrders as $order_id) {
 
-            $items=WorkOrderItem::where('work_order_id',$request->w_order_id)->get();
-            if($items->count() > 0){
-                foreach ($items as $row){
+                $workOrderPicker = WorkOrderPicker::updateOrCreate(
+                    [
+                        'work_order_id' => $order_id,
+                    ],
+                    [
+                        'work_order_id' => $order_id,
+                        'picker_id' => $request->staff_id,
+                        'status_code' => $request->status_code,
+                        'auth_id' => Auth::user()->id,
+                    ]
+                );
 
-                    $pickedItems= PickedItem::updateOrCreate(
-                        [
-                            'w_order_item_id' =>$row->id,
-                        ],
-                        [
-                            'picker_table_id' =>$workOrderPicker->id,
-                            'w_order_item_id' =>$row->id,
-                            'inventory_id' =>$row->inventory_id,
-                            'loc_id' =>$row->loc_id,
-                            'order_qty' =>$row->qty,
-                        ]
-                    );
+                $items = WorkOrderItem::where('work_order_id', $order_id)->get();
+                if ($items->count() > 0) {
+                    foreach ($items as $row) {
+
+                        $pickedItems = PickedItem::updateOrCreate(
+                            [
+                                'w_order_item_id' => $row->id,
+                            ],
+                            [
+                                'picker_table_id' => $workOrderPicker->id,
+                                'w_order_item_id' => $row->id,
+                                'inventory_id' => $row->inventory_id,
+                                'loc_id' => $row->loc_id,
+                                'order_qty' => $row->qty,
+                            ]
+                        );
+                    }
                 }
+
+                $workOrder = WorkOrder::find($order_id);
+                $workOrder->status_code = 202;
+                $workOrder->save();
             }
 
-            $workOrder=WorkOrder::find($request->w_order_id);
-            $workOrder->status_code=202;
-            $workOrder->save();
 
 
             DB::commit();

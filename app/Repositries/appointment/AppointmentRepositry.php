@@ -55,15 +55,17 @@ class AppointmentRepositry implements AppointmentInterface {
     {
 
         try {
-
+            $name = $request->s_name;
             $data['totalRecords'] = Order::count();
             $qry = Order::with('warehouse','dock.dock','operationalHour','status','wmsOrder');
             $qry=$qry->where('company_id',Auth::user()->company_id);
 
-            $qry = $qry->when($request->s_name, function ($query, $name) {
-                return $query->whereHas('warehouse', function ($q) use ($name) {
-                    $q->where('title', 'LIKE', "%{$name}%");
-                });
+            $qry = $qry->when($name, function ($query) use ($name) {
+                $query->where('order_id', 'LIKE', "%{$name}%")
+                    ->orWhereHas('wmsOrder', function ($q) use ($name) {
+                        $q->where('order_reference', 'LIKE', "%{$name}%")
+                            ->orWhere('wms_transaction_id', 'LIKE', "%{$name}%");
+                    });
             });
 
             $qry=$qry->when($request->status, function ($query, $status) {
@@ -884,14 +886,17 @@ class AppointmentRepositry implements AppointmentInterface {
     {
 
         try {
+            $name = $request->s_name;
             $data['totalRecords'] = Order::count();
             $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer.company','wmsOrder');
 
 
-            $qry = $qry->when($request->s_name, function ($query, $name) {
-                return $query->whereHas('warehouse', function ($q) use ($name) {
-                    $q->where('title', 'LIKE', "%{$name}%");
-                });
+            $qry = $qry->when($name, function ($query) use ($name) {
+                $query->where('order_id', 'LIKE', "%{$name}%")
+                    ->orWhereHas('wmsOrder', function ($q) use ($name) {
+                        $q->where('order_reference', 'LIKE', "%{$name}%")
+                            ->orWhere('wms_transaction_id', 'LIKE', "%{$name}%");
+                    });
             });
 
             $qry=$qry->when($request->status, function ($query, $status) {

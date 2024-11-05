@@ -90,9 +90,9 @@ class WorkOrderController extends Controller
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
-            if(!$workOrder=WorkOrder::find($request->w_order_id)){
-                return Helper::error('Invalid Order Id');
-            }
+//            if(!$workOrder=WorkOrder::find($request->w_order_id)){
+//                return Helper::error('Invalid Order Id');
+//            }
              $res=$this->workOrder->savePickerAssign($request);
             if ($res->get('status')) {
                 return Helper::ajaxSuccess($res->get('data'), $res->get('message'));

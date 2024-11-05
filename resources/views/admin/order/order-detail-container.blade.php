@@ -109,8 +109,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title mb-4">Order Status</h5>
                                         <div class="progress animated-progress custom-progress progress-label">
-                                            <div class="progress-bar {{$data['orderDetail']['data']['status']=="completed"?'bg-success':'bg-danger'}}" role="progressbar" style="width: {{$data['orderDetail']['data']['status']=="completed"?'100%':'30%'}} " aria-valuenow="{{$data['orderDetail']['data']['status']=="completed"?'100':'30'}}" aria-valuemin="0" aria-valuemax="100">
-                                                <div class="label">{{$data['orderDetail']['data']['status']=="completed"?'100%':'30%'}}</div>
+                                            <div class="progress-bar {{$data['orderDetail']['data']['status']=="Completed"?'bg-success':'bg-danger'}}" role="progressbar" style="width: {{$data['orderDetail']['data']['status']=="Completed"?'100%':'30%'}} " aria-valuenow="{{$data['orderDetail']['data']['status']=="Completed"?'100':'30'}}" aria-valuemin="0" aria-valuemax="100">
+                                                <div class="label">{{$data['orderDetail']['data']['status']=="Completed"?'100%':'30%'}}</div>
                                             </div>
                                         </div><p class="mt-3 mb-2">Order Status: {{$data['orderDetail']['data']['status'] ?? "-"}}
                                         </p>

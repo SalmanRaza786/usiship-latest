@@ -127,7 +127,7 @@ class CustomerRepositry implements CustomerInterface {
     public function getAllCustomers()
     {
         try {
-            $qry= User::query();
+            $qry= User::with("company");
             $data=$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
         } catch (ValidationException $validationException) {

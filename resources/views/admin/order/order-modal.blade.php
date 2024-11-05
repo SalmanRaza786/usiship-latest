@@ -189,10 +189,10 @@
                     <div class="col-12">
                         <div class="mb-3">
                             <label class="form-label">Customers</label>
-                            <select class="form-select " name="customer_id" required>
+                            <select class="form-select " name="customer_id" required data-choices>
                                 <option value="">Choose One</option>
                                 @foreach($data['customers'] as $row)
-                                    <option value="{{ $row->id }}">{{ $row->name}}</option>
+                                    <option value="{{ $row->id }}">{{ $row->name}} ({{$row->company->title ?? '-'}})</option>
                                 @endforeach
                             </select>
                         </div>

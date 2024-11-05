@@ -160,7 +160,7 @@ class OffLoadingRepositry implements OffLoadingInterface {
 
             DB::commit();
 
-            return Helper::success($offloading, $message="Off-Loading Closed Successfully");
+            return Helper::success($offloading, $message="On-Loading Closed Successfully");
 
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
