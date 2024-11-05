@@ -37,6 +37,7 @@ use App\Http\Controllers\Outbounds\QcController;
 use App\Http\Controllers\Admin\CustomerCompanyController;
 
 use App\Http\Controllers\Outbounds\ProcessingController;
+use App\Http\Controllers\Admin\ReportsController;
 
 
 
@@ -263,6 +264,12 @@ use App\Http\Controllers\Outbounds\ProcessingController;
         //Import Locations from WHMS
         Route::any('/import-locations', [WareHouseController::class, 'fetchData'])->name('import.locations');
         Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol');
+
+        Route::any('/outbound-report', [ReportsController::class, 'outboundIndex'])->name('outbound-report.index')->middleware(['can:admin-report-view']);
+        Route::any('/outbound-report-list', [ReportsController::class, 'outboundReportList'])->name('outbound-report.list')->middleware(['can:admin-report-view']);
+
+        Route::any('/inbound-report', [ReportsController::class, 'inboundIndex'])->name('inbound-report.index')->middleware(['can:admin-report-view']);
+        Route::any('/inbound-report-list', [ReportsController::class, 'inboundReportList'])->name('inbound-report.list')->middleware(['can:admin-report-view']);
 
     });
 

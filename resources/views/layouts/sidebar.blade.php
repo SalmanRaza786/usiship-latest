@@ -228,7 +228,25 @@
                         </div>
                     </li>
                 @endcanany
-
+                @canany(['admin-report-view'])
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ (Route::currentRouteName()=='admin.outbound-report.index' OR Route::currentRouteName()=='admin.inbound-report.index' ) ?'active':''}}" href="#reports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reports">
+                            <i class="ri-file-chart-line"></i> <span>Reports </span>
+                        </a>
+                        <div class="menu-dropdown collapse {{ in_array(Route::currentRouteName(), ['admin.outbound-report.index','admin.inbound-report.index']) ? 'show' : '' }}" id="reports">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    @canany('admin-report-view')
+                                        <a href="{{route('admin.inbound-report.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.inbound-report.index')?'active':''}}">Inbound Report</a>
+                                    @endcanany
+                                    @canany('admin-report-view')
+                                        <a href="{{route('admin.outbound-report.index')}}" class="nav-link {{ ( Route::currentRouteName()=='admin.outbound-report.index')?'active':''}}">Outbound Report</a>
+                                    @endcanany
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endcanany
             </ul>
         </div>
         <!-- Sidebar -->

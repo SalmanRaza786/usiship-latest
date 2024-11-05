@@ -41,6 +41,7 @@ class PermissionSeeder extends Seeder
         $processing = PermissionModule::updateOrCreate(['title' => 'Processing'], ['title' =>'Processing']);
 
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
+        $report_module = PermissionModule::updateOrCreate(['title' => 'Reports'], ['title' =>'Reports'] );
 
 
         Permission::upsert([
@@ -180,6 +181,9 @@ class PermissionSeeder extends Seeder
             //Miscellaneous
             ['name' => 'admin-settings-edit', 'module_id' =>$misc_module->id, 'guard_name' => 'admin'],
             ['name' => 'admin-dashboard-view', 'module_id' =>$misc_module->id, 'guard_name' => 'admin'],
+
+            //Report
+            ['name' => 'admin-report-view', 'module_id' =>$report_module->id, 'guard_name' => 'admin'],
 
 
 

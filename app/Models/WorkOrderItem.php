@@ -21,6 +21,10 @@ class WorkOrderItem extends Model
     {
         return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
     }
+    public function workOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
+    }
 
     public function location()
     {
