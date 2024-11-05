@@ -21,10 +21,8 @@
                             <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 Action With Selected
                             </a>
-
                             <div class="dropdown-menu" style="">
                                 <a class="dropdown-item cursor-pointer" data-bs-toggle="modal" id="create-btn" data-bs-target="#checkInModal" >Assign to Picker</a>
-
                             </div>
                         </div>
 
