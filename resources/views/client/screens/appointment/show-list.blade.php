@@ -123,7 +123,7 @@
                 ajax: {
                     url: "appointment-list",
                     data: function (d) {
-                        d.name = $('input[name=s_name]').val(),
+                        d.s_name = $('input[name=s_name]').val(),
                             d.status = $('select[name=s_status]').val()
                     }
                 },

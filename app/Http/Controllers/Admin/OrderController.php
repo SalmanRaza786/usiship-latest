@@ -327,8 +327,8 @@ class OrderController extends Controller
     public function transactionIndex()
     {
         try {
-
-            return view('admin.transactions.index');
+            $data['status']=Helper::fetchOnlyData($this->order->getAllStatus());
+            return view('admin.transactions.index')->with(compact('data'));
         } catch (\Exception $e) {
             return $e->getMessage();
         }

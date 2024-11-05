@@ -3,7 +3,13 @@
 $(document).ready(function(){
 
 
-
+    $('#master').on('click', function(e) {
+        if ($(this).is(':checked', true)) {
+            $(".sub_chk").prop('checked', true);
+        } else {
+            $(".sub_chk").prop('checked', false);
+        }
+    });
 
     $('#filter').on('click', function() {
         $('#roleTable').DataTable().ajax.reload();
@@ -60,40 +66,68 @@ $(document).ready(function(){
     $('#AssignForm').on('submit', function(e) {
         e.preventDefault();
 
+        var allSelectedOrders = [];
+        $(".sub_chk:checked").each(function() {
+            allSelectedOrders.push($(this).val());
+        });
+
+        if (allSelectedOrders.length <= 0) {
+            console.log(allSelectedOrders);
+            toastr.error("Please select Order.");
+            return 1;
+        }
+        console.log('allSelectedOrders',allSelectedOrders);
+
+        var formData = $(this).serialize();
+        for (var i = 0; i < allSelectedOrders.length; i++) {
+            formData += '&selectedOrders[]=' + encodeURIComponent(allSelectedOrders[i]);
+        }
+
         $.ajax({
             url: $(this).attr('action'),
             method: 'POST',
-            data: new FormData(this),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            data: formData,
             dataType: 'JSON',
-            contentType: false,
-            cache: false,
-            processData: false,
+
             beforeSend: function() {
                 $('.btn-submit').text('Processing...');
                 $(".btn-submit").prop("disabled", true);
             },
             success: function(response) {
-
+                console.log(response);
                 if (response.status==true) {
                     $('#roleTable').DataTable().ajax.reload();
                     toastr.success(response.message);
+                    // $('#assignForm')[0].reset();
                     $('.btn-close').click();
+
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
+                    $('.btn-submit').text('Assign');
+                    $(".btn-submit").prop("disabled", false);
                 }
+
             },
 
             complete: function(data) {
-                $(".btn-submit").html("Assign Picker");
+                $(".btn-submit").html("Assign");
                 $(".btn-submit").prop("disabled", false);
             },
 
-            error: function() {
-                $('.btn-submit').text('Assign Picker');
-                $(".btn-submit").prop("disabled", false);
+            error: function(xhr, status, error) {
+                if(xhr.responseText){
+                    toastr.error(xhr.responseText);
+                }
+                if(xhr.responseJSON.message){
+                    toastr.error(xhr.responseJSON.message);
+                }
             }
         });
+
     });
 
 

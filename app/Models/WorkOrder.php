@@ -44,4 +44,16 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(LoadType::class, 'load_type_id', 'id');
     }
+
+    public function picker()
+    {
+        return $this->hasOneThrough(
+            Admin::class,        // The model you want to retrieve (e.g., User model for picker details)
+            WorkOrderPicker::class, // The intermediate model (e.g., OrderPicker pivot table)
+            'work_order_id',    // Foreign key on the OrderPicker table
+            'id',               // Foreign key on the User table
+            'id',               // Local key on the WorkOrder table
+            'picker_id'         // Local key on the OrderPicker table that points to the picker
+        );
+    }
 }
