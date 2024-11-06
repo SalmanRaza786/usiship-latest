@@ -245,7 +245,7 @@ $(document).ready(function() {
             },
             success: function(response) {
                 toastr.success("Order Completed");
-                window.location.href =route('admin.put-away.index');
+                window.location.href = '/admin/transactions';
             },
             complete: function() {
                 $('.btn-close-putaway').text('Close Put Away');

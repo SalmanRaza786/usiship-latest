@@ -163,6 +163,12 @@ class OrderStatusSeeder extends Seeder
                 'order_by' => 205,
                 'color_code' =>'#F06549',
                 'text_class' =>'text-success',
+            ], [
+                'status_title' => 'Schedule',
+                'class_name' => 'bg-soft-success',
+                'order_by' => 206,
+                'color_code' =>'#F06549',
+                'text_class' =>'text-success',
             ],
         ];
         foreach ($orderStatuses as $status){

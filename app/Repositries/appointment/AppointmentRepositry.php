@@ -56,7 +56,7 @@ class AppointmentRepositry implements AppointmentInterface {
 
         try {
             $name = $request->s_name;
-            $data['totalRecords'] = Order::count();
+            $data['totalRecords'] = Order::where('company_id',Auth::user()->company_id)->count();
             $qry = Order::with('warehouse','dock.dock','operationalHour','status','wmsOrder');
             $qry=$qry->where('company_id',Auth::user()->company_id);
 
@@ -168,6 +168,13 @@ class AppointmentRepositry implements AppointmentInterface {
             //1 for admin 2 for user
             $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
             $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
+
+            if($order->order_type==2 && $order->work_order_id != null)
+            {
+                $workOrder = WorkOrder::find($order->work_order_id);
+                $workOrder->status_code = 206;
+                $workOrder->save();
+            }
 
 
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
@@ -694,7 +701,7 @@ class AppointmentRepositry implements AppointmentInterface {
                 ->where(function ($query) use ($orderId) {
                     $query->where('order_id', $orderId)
                         ->orWhereHas('wmsOrder', function ($query) use ($orderId) {
-                            $query->where('order_reference', $orderId);
+                            $query->where('wms_transaction_id', $orderId);
                         });
                 })
                 ->exists();

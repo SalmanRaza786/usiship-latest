@@ -72,24 +72,24 @@
                     </form>
                 </div>
                 <div class="card-body pt-0">
-                    <table class="table" id="roleTable">
-                        <thead class="text-muted table-light">
-                        <tr class="text-uppercase">
-                            <th class="sort" data-sort="id">Order#</th>
-                            <th class="sort" data-sort="id">WMS Transaction ID</th>
-                            <th class="sort" data-sort="id">WMS Order Ref#</th>
-                            <th class="sort" data-sort="id">Warehouse</th>
-                            <th class="sort" data-sort="customer_name">Dock</th>
-                            <th class="sort" data-sort="customer_name">Order Type</th>
-                            <th class="sort" data-sort="customer_name">Order Date</th>
-                            <th class="sort" data-sort="customer_name">Time Slot</th>
-                            <th class="sort" data-sort="product_name">Status</th>
-                            <th class="sort" data-sort="date">@lang('translation.action')</th>
-
-                        </tr>
-                        </thead>
-
-                    </table>
+                    <div class="table-responsive table-card">
+                        <table class="table table-nowrap align-middle" id="roleTable">
+                            <thead class="text-muted table-light">
+                            <tr class="text-uppercase">
+                                <th class="sort" data-sort="id">Order#</th>
+                                <th class="sort" data-sort="id">WMS Transaction ID</th>
+                                <th class="sort" data-sort="id">WMS Order Ref#</th>
+                                <th class="sort" data-sort="id">Warehouse</th>
+                                <th class="sort" data-sort="customer_name">Dock</th>
+                                <th class="sort" data-sort="customer_name">Order Type</th>
+                                <th class="sort" data-sort="customer_name">Order Date</th>
+                                <th class="sort" data-sort="customer_name">Time Slot</th>
+                                <th class="sort" data-sort="product_name">Status</th>
+                                <th class="sort" data-sort="date">@lang('translation.action')</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- end card body -->
             </div>

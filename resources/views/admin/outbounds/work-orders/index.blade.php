@@ -118,13 +118,10 @@
             lengthMenu:[[10,50,100,-1],[10,50,100,"All"]],
             ajax: {
                 url: "work-orders-list",
-
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),
                         d.s_status = $('select[name=s_status]').val()
-
                 },
-
             },
             columns: [
                 { data: 'id'},
@@ -160,6 +157,8 @@
                     render: function(data, type, row, meta) {
                         if (data.status_code == 204) {
                             return '<span class="badge badge-soft-success text-uppercase">'+data.status.status_title+'</span>';
+                        } else if(data.status_code == 206) {
+                            return '<span class="badge badge-soft-primary text-uppercase">'+data.status.status_title+'</span>';
                         } else  {
                             return '<span class="badge badge-soft-danger text-uppercase">'+data.status.status_title+'</span>';
                         }
