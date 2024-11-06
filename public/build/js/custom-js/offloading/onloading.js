@@ -99,7 +99,7 @@ $(document).ready(function(){
                     toastr.success(response.message);
                     $(".btn-loading-close").addClass('d-none');
                     $('#order_id').val(response.data.order_id);
-                    window.location.reload();
+                    window.location.href = '/admin/transactions';
                 }
                 if (response.status==false) {
                     toastr.error(response.message);

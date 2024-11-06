@@ -20,11 +20,11 @@ $(document).ready(function(){
             success: function(data) {
 console.log(data);
                 if (data.status==true) {
-                    // location.reload();
+
                     toastr.success(data.message);
                     $('.btn-submit').text('Save Changes');
                     $(".btn-submit").prop("disabled", false);
-
+                    location.reload();
                 }
                 if (response.status==false) {
                     toastr.error(response.message);

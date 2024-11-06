@@ -86,7 +86,8 @@
         </div>
 
     </div>
-
+    @include('client.screens.appointment.appointment-modals')
+    @include('admin.components.comon-modals.common-modal')
 @endsection
 
 @section('script')
@@ -145,18 +146,30 @@
                         targets:11,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
+                            const status = data.status_title;
+                            const rowDockId = data.dock_id;
+                            const rowLoadTypeId = data.load_type_id;
                             const rowEncId = data.enc_id;
                             var viewUrl = "{{ route('admin.orders.detail', ':id') }}";
                             var carrierUrl = "{{ route('carrier.onboard', ':id') }}";
+                            var html="";
+                            html += '<div class="dropdown">'+
+                                '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="true">' +
+                                '<i class="ri-more-fill align-middle"></i>' +
+                                '</button>' +
+                                '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">' +
+                                '<li><a class="dropdown-item" href="' + viewUrl.replace(':id', rowId) + '" data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>';
 
-                                return      '<div class="dropdown">'+
-                                    '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
-                                    '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">'+
-                                    '<li><a class="dropdown-item" href="'+viewUrl.replace(':id', rowId)+'"  data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>'+
-                                    '<li><a class="dropdown-item" target="_blank" href="'+carrierUrl.replace(':id', rowEncId)+'"  data-id=""><i class=" ri-checkbox-circle-line align-bottom me-2 text-muted"></i>Self CheckIn</a></li>'+
+                            if (status !== "Completed") {
+                                html += '<li><a class="dropdown-item btn-reschedule" data="' + rowId + '" dockId="' + rowDockId + '" loadTypeId="' + rowLoadTypeId + '" data-bs-toggle="modal" data-bs-target="#showModalReschedule">' +
+                                    '<i class="ri-timer-line align-bottom me-2 text-muted"></i>Reschedule</a></li>';
+                            }
 
-                                    '</ul>'+
-                                    '</div>';
+                            html += '<li><a class="dropdown-item" target="_blank" href="' + carrierUrl.replace(':id', rowEncId) + '" data-id=""><i class="ri-checkbox-circle-line align-bottom me-2 text-muted"></i>Self CheckIn</a></li>' +
+                                '</ul>' +
+                                '</div>';
+                            return html;
+
 
                         }
                     }
