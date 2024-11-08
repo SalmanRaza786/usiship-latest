@@ -11,6 +11,7 @@ interface CarriersInterface
     public function deleteCarriers($id);
     public function CarriersSave($request,$id);
     public function CarriersSaveInfo($request,$id);
+    public function CarriersVerifyInfo($request,$id);
 
 
 

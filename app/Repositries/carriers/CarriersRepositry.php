@@ -9,6 +9,7 @@ use App\Models\Company;
 use App\Models\CustomFields;
 use App\Models\FileContent;
 use App\Models\LoadType;
+use App\Models\Order;
 use App\Models\OrderContacts;
 use App\Repositries\appointment\AppointmentRepositry;
 use App\Traits\HandleFiles;
@@ -163,6 +164,126 @@ class CarriersRepositry implements CarriersInterface {
                     if($request->file('other_document')){
                         $media = Helper::createOrUpdateSingleMedia($request->file('other_document'), $fileableId, $fileableType, $this->carrierFilePath,$request->otherDocFileId,'other_document');
                     }
+                    $array = array_map('strval', array_map('trim', $request->input('order_no')));
+                    if (!empty($array) && is_array($array)) {
+                        $orderNoArray = explode(',', $array[0]);
+                    }
+                    $existingOrders =  Order::whereIn('order_id', $orderNoArray)->get();
+
+                    foreach ($existingOrders as $order) {
+                        $orderContact = OrderContacts::updateOrCreate(
+                            [
+                                'order_id' => $order->id,
+                                'carrier_id' => $carrier->id,
+                            ],
+                            [
+                                'order_id' => $order->id,
+                                'carrier_id' => $carrier->id,
+                                'arrival_time' => $request->currentdatetime,
+                                'vehicle_number' => $request->vehicle_no,
+                                'vehicle_licence_plate' => $request->license_no,
+                                'bol_number' => $request->bol_no,
+                                'do_number' => $request->do_no,
+                                'vehicle_class' => $request->vehicle_class,
+                                'other_vehicle_class' => $request->other_vehicle_class,
+                                'status_id' => 9,
+                            ]
+                        );
+
+                    }
+                    if($orderContact)
+                    {
+                        $fileableId = $orderContact->id;
+                        $fileableType = 'App\Models\OrderContacts';
+
+                        if($request->file('bol_image')){
+                            $media = Helper::createOrUpdateSingleMedia($request->file('bol_image'), $fileableId, $fileableType, $this->carrierFilePath,$request->bolFileId,'bol_image');
+
+                        }
+                        if($request->file('do_document')){
+                            $media = Helper::createOrUpdateSingleMedia($request->file('do_document'), $fileableId, $fileableType, $this->carrierFilePath,$request->doFileId,'do_document');
+                        }
+                    }
+
+
+                }
+            }
+
+            ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
+            DB::commit();
+            return Helper::success($orderContact, $message);
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+
+    public function CarriersVerifyInfo($request,$id)
+    {
+        try {
+            DB::beginTransaction();
+            $validator = Validator::make($request->all(), [
+                'order_id' => 'required',
+                'driver_name'=> 'required',
+                'phone_no' => 'required',
+
+
+            ]);
+
+            if($request->from==0){
+                $validator = Validator::make($request->all(), [
+                    'other_document' => 'required',
+                    'driver_id_pic'=> 'required',
+                    'do_document' => 'required',
+                    'bol_image' => 'required',
+
+
+                ]);
+            }
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+
+            $company = Company::updateOrCreate(
+                [
+                    'id' => $request->company_id,
+                ],
+                [
+                    'company_title' => $request->company_name,
+                    'contact' => $request->company_phone_no,
+                ]
+            );
+
+            if($company)
+            {
+                $carrier = Carriers::updateOrCreate(
+                    [
+                        'id' => $request->carrier_id
+                    ],
+                    [
+                        'company_id' => $company->id,
+                        'carrier_company_name' => $request->driver_name,
+                        'email' => "test@gmail.com",
+                        'contacts' => $request->phone_no,
+                        'id_card_image' =>$this->carrierFileName,
+                        'other_docs' =>$this->carrierDocFileName,
+                    ]
+                );
+                if($carrier)
+                {
+                    $fileableId = $carrier->id;
+                    $fileableType = 'App\Models\Carriers';
+
+                    if($request->file('driver_id_pic')){
+                        $media = Helper::createOrUpdateSingleMedia($request->file('driver_id_pic'), $fileableId, $fileableType, $this->carrierFilePath,$request->driverFileId,'driver_id_pic');
+                    }
+
+                    if($request->file('other_document')){
+                        $media = Helper::createOrUpdateSingleMedia($request->file('other_document'), $fileableId, $fileableType, $this->carrierFilePath,$request->otherDocFileId,'other_document');
+                    }
 
                     $orderContact = OrderContacts::updateOrCreate(
                         [
@@ -177,8 +298,6 @@ class CarriersRepositry implements CarriersInterface {
                             'vehicle_licence_plate' => $request->license_no,
                             'bol_number' => $request->bol_no,
                             'do_number' => $request->do_no,
-                            'vehicle_class' => $request->vehicle_class,
-                            'other_vehicle_class' => $request->other_vehicle_class,
                             'status_id' => 9,
                         ]
                     );
@@ -201,13 +320,13 @@ class CarriersRepositry implements CarriersInterface {
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
             return Helper::success($orderContact, $message);
-        } catch (ValidationException $validationException) {
-            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
+
+
 
     public function deleteCarriers($id)
     {

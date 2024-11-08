@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <form action="{{route('carrier.info.store')}}" method="post" id="CarrierVerifyForm" enctype="multipart/form-data" class="form-steps" autocomplete="off">
+                <form action="{{route('carrier.info.verify')}}" method="post" id="CarrierVerifyForm" enctype="multipart/form-data" class="form-steps" autocomplete="off">
                     @csrf
 
                         <input type="hidden" name="order_id" id="id" value="{{$data['orderContacts']['order_id']}}">
@@ -92,7 +92,7 @@
                                 <div class="col-md-6">
                                     <div  class="mt-2">
                                         <label for="formSizeLarge" class="form-label">BOL #</label>
-                                        <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" multiple type="text" required value="{{$data['orderContacts']['bol_number']}}">
+                                        <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no" multiple type="text"  value="{{$data['orderContacts']['bol_number']}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
