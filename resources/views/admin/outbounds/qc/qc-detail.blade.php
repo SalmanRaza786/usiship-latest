@@ -132,7 +132,7 @@
 
                                                     <td class="text-start" style="width: 150px;">
                                                         <div class="mb-2">
-                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
+                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*" required>
                                                         </div>
                                                         @isset($row->media)
                                                             <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview">

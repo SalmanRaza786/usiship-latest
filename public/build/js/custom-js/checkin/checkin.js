@@ -426,7 +426,7 @@ $(document).ready(function(){
 
                 if (response.status==true) {
                     toastr.success(response.message);
-                    window.location.reload();
+                    window.location.href = '/admin/check-in';
                 }
                 if (response.status==false) {
                     toastr.error(response.message);

@@ -207,9 +207,11 @@
                                                         carrier email.</p>
                                                 </div>
                                                 <div class="input-group input-group-lg mb-2 form-icon right">
-                                                    <input class="form-control form-control-lg" id="choices-text-unique-values" data-choices data-choices-text-unique-true type="text" value=""  name="order_no[]" required>
-                                                </div>
+                                                    <input type="text" class="form-control" id="order_id" name="order_no"
+                                                           aria-label="Sizing example input"
+                                                           aria-describedby="inputGroup-sizing-lg" required></div>
                                                 <div id="orderIdFeedback" ></div>
+
 
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -406,12 +408,6 @@
         let htmlscanner;
 
         $(document).ready(function() {
-            initChoiceTextDropdown();
-
-            function initChoiceTextDropdown(){
-
-
-            }
 
 
             $('#vehicle_class').on('change', function() {
@@ -425,7 +421,7 @@
 
 
 
-            $('#choices-text-unique-values').on('keyup', function() {
+            $('#order_id').on('keyup', function() {
                 var orderId = $(this).val();
                 var id=$('input[name=order_id]').val();
 
@@ -441,10 +437,6 @@
                             if (response.data==1) {
                                 $("#btn-carrier-submit").prop("disabled", false);
                                 errorText='<span></span>';
-                                new Choices('#choices-text-unique-values', {
-                                    removeItemButton: true,
-                                    duplicateItemsAllowed: false,
-                                });
                             }
                             if (response.data==0) {
                                 $("#btn-carrier-submit").prop("disabled", true);
@@ -522,7 +514,7 @@
                         $(".btn-submit").prop("disabled", true);
                     },
                     success: function(response) {
-                            console.log(response);
+
                         if (response.status==true) {
                             toastr.success(response.message);
                             $('.btn-submit').text('Checked In');

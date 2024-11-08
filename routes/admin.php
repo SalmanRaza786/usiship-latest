@@ -281,6 +281,7 @@ use App\Http\Controllers\Admin\ReportsController;
 
     Route::get('/carrier-onboard/{id}', [CarriersController::class, 'carrierOnboard'])->name('carrier.onboard');
     Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
+    Route::post('/verfiy-carrier-info', [CarriersController::class, 'verifyCarrierInfo'])->name('carrier.info.verify');
     Route::post('/save-packaging-info', [OrderController::class, 'savePackagingInfo'])->name('packaging.info.store');
     Route::any('/save-packaging-images', [OrderController::class, 'savePackagingImages'])->name('packaging.images.store');
     Route::get('/check-order-id', [OrderController::class, 'checkOrderId'])->name('checkOrderId');
