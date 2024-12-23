@@ -12,6 +12,7 @@ interface QcInterface
     public function getQcItems($qcId);
     public function createQcItems($request);
     public function getAllQcForApi();
+    public function getAllQcList($limit);
     public function updateQcItems($request);
 
 }

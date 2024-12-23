@@ -1,5 +1,11 @@
 <div class="row justify-content-center">
     <div class="col-xxl-9 py-5" id="congratsMessege">
+        <div class="p-3">
+{{--            <label for="status-field"  class="form-label">WMS Orders Transactions</label>--}}
+            <div id="WmsORdersSelectBoxDropdown">
+
+            </div>
+        </div>
         <div class="live-preview" id="detail-form">
 
         </div>

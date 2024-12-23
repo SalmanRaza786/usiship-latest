@@ -1,7 +1,7 @@
 
 
 $(document).ready(function(){
-
+    var allSelectedOrders = [];
 
     $('#master').on('click', function(e) {
         if ($(this).is(':checked', true)) {
@@ -66,7 +66,7 @@ $(document).ready(function(){
     $('#AssignForm').on('submit', function(e) {
         e.preventDefault();
 
-        var allSelectedOrders = [];
+
         $(".sub_chk:checked").each(function() {
             allSelectedOrders.push($(this).val());
         });
@@ -211,6 +211,20 @@ $(document).ready(function(){
         });
     })
 
+    $('#btn-schedule').click(function (event) {
+        $(".sub_chk:checked").each(function() {
+            allSelectedOrders.push($(this).val());
+        });
+        if (allSelectedOrders.length <= 0) {
+            console.log(allSelectedOrders);
+            toastr.error("Please select an order.");
+            event.preventDefault();
+            return false;
+        }
+        $('#workOrdersArray').val(JSON.stringify(allSelectedOrders));
+    });
+
+
 //code for operational hours
     let currentIndex = 0;
     let data = '';
@@ -230,7 +244,7 @@ $(document).ready(function(){
                     $('input[name="dock_id"]').val(response.data.dock[0].dock_id);
                     $('input[name="load_type_id"]').val(response.data.work_order.load_type_id);
                      fnGetDockWiseOperationalHours(response.data.dock[0].dock_id,response.data.work_order.load_type_id);
-                    // fnGetDockWiseOperationalHours(4,9);
+                     // fnGetDockWiseOperationalHours(4,9);
                 }
             },
             error: function(xhr, status, error) {

@@ -8,8 +8,12 @@ use App\Models\User;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\appSettings\AppSettingsInterface;
 use App\Repositries\checkIn\CheckInInterface;
+use App\Repositries\missing\MissingInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\orderContact\OrderContactInterface;
+use App\Repositries\picking\PickingInterface;
+use App\Repositries\processing\ProcessingInterface;
+use App\Repositries\qc\QcInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,14 +25,22 @@ class HomeController extends Controller
     private $checkIn;
     private $offLoading;
     private $appointment;
+    private $picking;
+    private $qc;
+    private $processing;
+    private $missing;
 
 
-    public function __construct(AppSettingsInterface $appSetting, OrderContactInterface $orderContact,CheckInInterface $checkIn,OffLoadingInterface $offLoading,AppointmentInterface $appointment) {
+    public function __construct(AppSettingsInterface $appSetting, OrderContactInterface $orderContact,CheckInInterface $checkIn,OffLoadingInterface $offLoading,AppointmentInterface $appointment, PickingInterface $picking, QcInterface $qc, ProcessingInterface $processing, MissingInterface $missing) {
         $this->appSetting = $appSetting;
         $this->orderContact = $orderContact;
         $this->checkIn = $checkIn;
         $this->offLoading = $offLoading;
         $this->appointment = $appointment;
+        $this->picking = $picking;
+        $this->qc = $qc;
+        $this->processing = $processing;
+        $this->missing = $missing;
 
     }
     //appSetting
@@ -52,7 +64,13 @@ class HomeController extends Controller
 
             $data=[];
               $data['checkIn'] = Helper::fetchOnlyData($this->orderContact->getAllOrderContactList($request->limit));
+              $data['outboundOnLoading'] = Helper::fetchOnlyData($this->checkIn->getOutboundCheckinList($request->limit));
               $data['offLoading'] = Helper::fetchOnlyData($this->checkIn->getOrderCheckinList($request->limit));
+              $data['outboundCheckIn'] = Helper::fetchOnlyData($this->checkIn->getOutboundCheckinList($request->limit));
+              $data['picking'] = Helper::fetchOnlyData($this->picking->getAllPickersList($request->limit));
+              $data['qc'] = Helper::fetchOnlyData($this->qc->getAllQcList($request->limit));
+              $data['processing'] = Helper::fetchOnlyData($this->processing->getAllProcessList($request->limit));
+              $data['missing'] = Helper::fetchOnlyData($this->missing->getAllMissingList($request->limit));
               $res = Helper::fetchOnlyData($this->offLoading->getOffLoadingListForPutAwayApi($request->limit));
               $data['itemPutaway'] =$res['data'];
 

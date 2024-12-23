@@ -55,6 +55,7 @@ public function fireBaseTrigger($type,$notifiableId)
     }
     $notifyContent= $notifyQuery->first();
 
+//    dd($notifyContent);
 
 
     $client = new Client();

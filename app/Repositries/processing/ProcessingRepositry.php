@@ -180,6 +180,21 @@ class ProcessingRepositry implements ProcessingInterface
         }
 
     }
+    public function getAllProcessList($limit=null)
+    {
+        try {
+            $qry= OrderProcessing::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+//            $qry= $qry->where('status_code',205);
+//            $qry= $qry->publish();
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
     public function updateProcessItems($request)
     {
         try {

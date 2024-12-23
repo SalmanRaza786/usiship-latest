@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Outbounds;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\Order;
+use App\Models\OrderStatus;
 use App\Models\WhLocation;
 use App\Models\WorkOrder;
 use App\Repositries\dock\DockInterface;
@@ -13,6 +15,7 @@ use App\Repositries\workOrder\WorkOrderInterface;
 use App\Services\DataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class WorkOrderController extends Controller
@@ -74,6 +77,32 @@ class WorkOrderController extends Controller
         }
 
     }
+    public function getAllWorkOrders()
+    {
+        try {
+            $res=$this->workOrder->getAllWorkOrderList();
+            if($res->get('status'))
+            {
+                return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+
+    public function getWMSOrderDetail($id)
+    {
+        try {
+            if(!$workOrder=WorkOrder::find($id)){
+                return Helper::error('Invalid Order Id');
+            }
+            $data['orderDetail']= Helper::fetchOnlyData($this->workOrder->getWMSOrderInfo($id));
+            return view('admin.outbounds.work-orders.wms-order-detail')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 
     //pickerAssign
     public function pickerAssign(Request $request)
@@ -90,9 +119,7 @@ class WorkOrderController extends Controller
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
-//            if(!$workOrder=WorkOrder::find($request->w_order_id)){
-//                return Helper::error('Invalid Order Id');
-//            }
+
              $res=$this->workOrder->savePickerAssign($request);
             if ($res->get('status')) {
                 return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
@@ -103,6 +130,37 @@ class WorkOrderController extends Controller
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
+    }
+    public function scheduleWorkOrder(Request $request)
+    {
+
+        try {
+            $data['customerId']="";
+            $data['workOrderArray']=$request->input('array_data');
+            $data['status']=OrderStatus::get();
+            $data['selectStatus']="6";
+            $data['isOutbound']="1";
+            $data['createdBy']=Auth::id();
+            $guards = array_keys(config('auth.guards'));
+            $currentGuard = null;
+
+            foreach ($guards as $guard) {
+                if (Auth::guard($guard)->check()) {
+                    $currentGuard = $guard;
+                    break;
+                }
+            }
+            if($currentGuard !='web'){
+                $data['guard']='admin';
+                return view('admin.order.create')->with(compact('data'));
+            }else{
+                $data['guard']='web';
+                return view('client.screens.appointment.index')->with(compact('data'));
+            }
+
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
     }
     public function uploadBol(Request $request)
     {

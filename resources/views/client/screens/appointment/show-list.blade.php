@@ -77,8 +77,6 @@
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
                                 <th class="sort" data-sort="id">Order#</th>
-                                <th class="sort" data-sort="id">WMS Transaction ID</th>
-                                <th class="sort" data-sort="id">WMS Order Ref#</th>
                                 <th class="sort" data-sort="id">Warehouse</th>
                                 <th class="sort" data-sort="customer_name">Dock</th>
                                 <th class="sort" data-sort="customer_name">Order Type</th>
@@ -129,8 +127,8 @@
                 },
                 columns: [
                     { data: 'order_id' },
-                    { data: 'wms_order' },
-                    { data: 'wms_order' },
+                    // { data: 'wms_order' },
+                    // { data: 'wms_order' },
                     { data: 'warehouse.title' },
                     { data: 'dock.dock.title' },
                     { data: 'order_type' },
@@ -140,18 +138,19 @@
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
+                    // {
+                    //     targets: 1,
+                    //     render: function(data, type, row, meta) {
+                    //        return data!=null?data.wms_transaction_id:"-";
+                    //     }
+                    // }, {
+                    //     targets: 2,
+                    //     render: function(data, type, row, meta) {
+                    //         return data!=null?data.order_reference:"-";
+                    //     }
+                    // },
                     {
-                        targets: 1,
-                        render: function(data, type, row, meta) {
-                           return data!=null?data.wms_transaction_id:"-";
-                        }
-                    }, {
-                        targets: 2,
-                        render: function(data, type, row, meta) {
-                            return data!=null?data.order_reference:"-";
-                        }
-                    }, {
-                        targets: 5,
+                        targets: 3,
                         render: function(data, type, row, meta) {
                             if (data == 1) {
                                 return '<span class="badge badge-soft-success text-uppercase">Inbound</span>';
@@ -161,7 +160,7 @@
                         }
                     },
                     {
-                        targets: 9,
+                        targets: 7,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
                             const workID = data.wms_order ? data.wms_order.id : 0;

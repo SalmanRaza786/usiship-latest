@@ -624,6 +624,29 @@ var editOrderByVal=0;
         $('#loadTypeSelectBoxDropdown').html(html);
         initLoadTypeDropdown();
     }
+    function loadTypeForMultiSelect(loadTypeData){
+
+        var html = '';
+        html += '<select  class="form-select" data-choices data-choices-removeItem multiple id="loadTypeDropdown" required data-trigger  name="load_type_id[]">' +
+            '<option value="">Choose One</option>';
+
+        $.each(loadTypeData, function (key, row) {
+
+            let isSelected = '';
+            if(editLoadTypeId.length > 0) {
+                const foundObject = editLoadTypeId.find(item => item.load_type_id === row.id);
+
+                if (foundObject != undefined) {
+                    isSelected = 'selected';
+                }
+            }
+            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
+        });
+
+        html +='</select>';
+        $('#loadTypeSelectBoxDropdown').html(html);
+        initLoadTypeDropdown();
+    }
     function initLoadTypeDropdown(){
 
         new Choices('#loadTypeDropdown', {

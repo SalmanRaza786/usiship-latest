@@ -34,7 +34,10 @@ class WorkOrder extends Model
     {
         return $this->belongsTo(OrderStatus::class, 'status_code', 'order_by');
     }
-
+    public function wOrderItems()
+    {
+        return $this->hasMany(WorkOrderItem::class, 'work_order_id','id');
+    }
     public function carrier()
     {
         return $this->belongsTo(Carriers::class, 'carrier_id', 'id');

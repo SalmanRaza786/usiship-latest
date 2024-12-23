@@ -10,6 +10,8 @@ interface MissingInterface
     public function getMissedItems($missedId);
     public function saveResolveItems($request,$guard);
     public function getAllMissingForApi();
+
+    public function getAllMissingList($limit);
     public function getResolveItems($missedId);
 
 }

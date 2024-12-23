@@ -13,6 +13,10 @@
                 @csrf
                 <div class="modal-body" >
                     <input type="hidden" name="order_id" value="0" >
+                    <div class="p-3">
+                        <div id="WmsORdersSelectBoxDropdown">
+                        </div>
+                    </div>
                     <div id="editForm">
 
                     </div>

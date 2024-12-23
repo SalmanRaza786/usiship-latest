@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\CustomerCompanyController;
 
 use App\Http\Controllers\Outbounds\ProcessingController;
 use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Client\AppointmentController;
 
 
 
@@ -149,7 +150,7 @@ use App\Http\Controllers\Admin\ReportsController;
         //Transactions
         Route::any('/transactions', [OrderController::class, 'transactionIndex'])->name('transactions.index')->middleware(['can:admin-order-view']);
         Route::any('/transactions-list', [OrderController::class, 'transactionsList'])->name('transactions.list');
-
+        Route::any('/edit-appointment/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
         //Check In
         Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-checkin-view']);
         Route::any('/check-in-outbound', [CheckInController::class, 'index'])->name('outbound.check-in.index')->middleware(['can:admin-checkin-view']);
@@ -212,7 +213,10 @@ use App\Http\Controllers\Admin\ReportsController;
         Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index')->middleware(['can:admin-w-order-view']);
         Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
         Route::any('/work-order', [WorkOrderController::class, 'getWorkOrder'])->name('work.order.get')->middleware(['can:admin-w-order-view']);
+        Route::any('/get-wms-order-detail/{id}', [WorkOrderController::class, 'getWMSOrderDetail'])->name('wms-orders.detail');
+
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
+
 
 
         //Picking
@@ -277,8 +281,7 @@ use App\Http\Controllers\Admin\ReportsController;
     Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
     Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
 
-
-
+    Route::any('/schedule-work-order', [WorkOrderController::class, 'scheduleWorkOrder'])->name('schedule.work.order');
     Route::get('/carrier-onboard/{id}', [CarriersController::class, 'carrierOnboard'])->name('carrier.onboard');
     Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
     Route::post('/verfiy-carrier-info', [CarriersController::class, 'verifyCarrierInfo'])->name('carrier.info.verify');
@@ -288,7 +291,7 @@ use App\Http\Controllers\Admin\ReportsController;
 
     Route::any('/upload-bol', [OrderController::class, 'uploadBolOrder'])->name('order.upload.bol');
 
-
+    Route::any('/get-all-work-orders', [WorkOrderController::class, 'getAllWorkOrders'])->name('work.order.get.all');
     Route::post('/verify-warehouse-id', [OrderController::class, 'verifyWarehouseId'])->name('verify.warehouse.id');
 
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');

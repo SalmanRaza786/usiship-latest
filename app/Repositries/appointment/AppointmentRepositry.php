@@ -18,6 +18,7 @@ use App\Models\OrderBookedSlot;
 use App\Models\OrderForm;
 use App\Models\OrderLog;
 use App\Models\OrderStatus;
+use App\Models\OutboundOrders;
 use App\Models\PackgingList;
 use App\Models\User;
 use App\Models\WareHouse;
@@ -94,6 +95,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
 
             DB::beginTransaction();
+
             $validator = Validator::make($request->all(), [
                 'wh_id' =>'required',
                 'dock_id' => 'required',
@@ -146,7 +148,97 @@ class AppointmentRepositry implements AppointmentInterface {
                 ]
             );
 
+
+
             $orderId=$order->id;
+            if($request->customfield){
+                $this->saveFormFields($request,$orderId);
+            }
+
+            $logData=array(
+                'orderId' => $orderId,
+                'statusId' =>$request->order_status,
+                'createdBy' => $request->created_by,
+                'guard' =>$request->guard,
+            );
+
+
+            //Create booked time slots
+            $this->createBookedSlots($orderId);
+
+            //create order log
+            $this->createOrderLog($logData);
+
+            //1 for admin 2 for user
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
+            $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
+
+            if($order->order_type==2 && $order->work_order_id != null)
+            {
+                $workOrder = WorkOrder::find($order->work_order_id);
+                $workOrder->status_code = 206;
+                $workOrder->save();
+            }
+
+
+            ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
+            DB::commit();
+            return Helper::success($order,$message);
+        } catch (ValidationException $validationException) {
+            DB::rollBack();
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+    public function updateOrCreateOutbound($request,$id)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            $validator = Validator::make($request->all(), [
+                'wh_id' =>'required',
+                'dock_id' => 'required',
+                'opra_id' => 'required',
+                'order_status' => 'required',
+                'load_type_id' => 'required',
+                'order_date' => 'required',
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            if ($request->load_type_id)
+            {
+                $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
+            }
+
+
+            $order = Order::updateOrCreate(
+                [
+                    'id' => $id
+                ],
+                [
+                    'customer_id' =>1,
+                    'company_id' =>null,
+                    'wh_id' => $request->wh_id,
+                    'dock_id' => $request->dock_id,
+                    'load_type_id' => $request->load_type_id,
+                    'operational_hour_id' => $request->opra_id,
+                    'order_type' => $loadTypeDirection ?? 1,
+                    'work_order_id' =>$request->work_order_id ?? null,
+                    'status_id' =>$request->order_status,
+                    'order_date' => $request->order_date,
+                    'created_by' => $request->created_by,
+                    'guard' => $request->guard,
+                ]
+            );
+
+            $orderId=$order->id;
+            $this->outboundWorkOrders($request->wms_order_ids_array,$orderId);
+
             if($request->customfield){
                 $this->saveFormFields($request,$orderId);
             }
@@ -304,6 +396,10 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
             DB::beginTransaction();
             $orderId=$request->order_id;
+            if($request->wms_order_ids_array)
+            {
+                $this->outboundWorkOrders($request->wms_order_ids_array,$orderId);
+            }
             if($request->customfield){
                 $this->saveFormFields($request,$orderId);
             }
@@ -397,7 +493,7 @@ class AppointmentRepositry implements AppointmentInterface {
     public function editAppointment($id)
     {
         try {
-            $res = Order::with('orderForm.customFields','orderForm.files.formData.customFields')->findOrFail($id);
+            $res = Order::with('orderForm.customFields','orderForm.files.formData.customFields','outboundOrders:work_order_id,order_id')->findOrFail($id);
             return Helper::success($res, $message='Record found');
         } catch (ValidationException $validationException) {
             return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
@@ -416,7 +512,7 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
             $qry= Order::query();
-            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType.direction','orderLogs.orderStatus','warehouse:id,title','operationalHour','status');
+            $qry= $qry->with('company','customer','bookedSlots.operationalHour','dock.loadType.direction','orderLogs.orderStatus','warehouse:id,title','operationalHour','status','wmsOrder','outboundOrders.wmsOrder','outboundOrders.company');
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
@@ -444,7 +540,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
 
             $qry= Order::query();
-            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages','itemPutAway.inventory','itemPutAway.location','itemPutAway.putAwayMedia');
+            $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages','itemPutAway.inventory','itemPutAway.location','itemPutAway.putAwayMedia','outboundOrders.wmsOrder.status','outboundOrders.company');
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
@@ -513,6 +609,28 @@ class AppointmentRepositry implements AppointmentInterface {
                     ]
                 );
 
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+    }
+    public function outboundWorkOrders($worderArray,$orderId)
+    {
+        try {
+            $workOrders = WorkOrder::whereIn('id', $worderArray)->get();
+            OutboundOrders::where('order_id', $orderId)->delete();
+
+            foreach ($workOrders as $wOrder) {
+                OutboundOrders::updateOrCreate(
+                    [
+                        'order_id' => $orderId,
+                        'work_order_id' => $wOrder->id,
+                    ],
+                    [
+                        'company_id' => $wOrder->client_id,
+                    ]
+                );
+            }
         } catch (\Exception $e) {
             throw $e;
         }
@@ -835,7 +953,7 @@ class AppointmentRepositry implements AppointmentInterface {
     public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent)
     {
         try {
-            if(env('IS_NOTIFICATION_ENABLE') == 1) {
+            if(env('IS_NOTIFICATION_ENABLE',1) == 1) {
                 if ($status = OrderStatus::find($statusId)) {
                     $statusTitle = $status->status_title;
                 }
@@ -895,7 +1013,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
             $name = $request->s_name;
             $data['totalRecords'] = Order::count();
-            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer.company','wmsOrder');
+            $qry = Order::with('warehouse','dock.dock','operationalHour','status','customer.company','wmsOrder','outboundOrders.wmsOrder','outboundOrders.company');
 
 
             $qry = $qry->when($name, function ($query) use ($name) {

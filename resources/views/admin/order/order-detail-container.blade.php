@@ -81,7 +81,6 @@
                             </li>
                         @endif
 
-
                         <li class="nav-item" role="presentation">
                             <a class="nav-link fs-14 " data-bs-toggle="tab" href="#orderDetail" role="tab" aria-selected="true">
                                 <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Order Detail</span>
@@ -94,6 +93,13 @@
                                 <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Carrier Document</span>
                             </a>
                         </li>
+                        @if($data['orderDetail']['data']['order_type'] == "2")
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link fs-14" data-bs-toggle="tab" href="#wmsOrdersList" role="tab" aria-selected="false" tabindex="-1">
+                                    <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">WMS Orders</span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                     <div class="flex-shrink-0 d-none">
                         <a href="javascript:void(0);" class="btn btn-success" ><i class="ri-edit-box-line align-bottom"></i> Edit Order</a>
@@ -743,6 +749,135 @@
                                 </div>
                             </div>
                         </div>
+                            @endif
+                        @endif
+                    </div>
+
+                    <div class="tab-pane fade" id="wmsOrdersList" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4">
+                                    <h5 class="card-title flex-grow-1 mb-0">WMS Orders List</h5>
+                                    <div class="flex-shrink-0">
+{{--                                        <a href="{{route('appointment.download-list')}}" type="button"  class="btn btn-primary" title="Download Packaging List Sample file"><i class="ri-download-2-fill me-1 align-bottom"></i>Download Packaging List Sample</a>--}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @if(count($data['orderDetail']['data']['WMSOrders']) > 0)
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless align-middle mb-0">
+                                                    <thead class="table-light">
+                                                    <tr>
+                                                        <th class="col">Sr No.</th>
+                                                        <th class="col">Transaction No.</th>
+                                                        <th class="col">Order Reference</th>
+                                                        <th class="col">Customer Name</th>
+                                                        <th class="col">Carrier</th>
+                                                        <th class="col">Order Date</th>
+                                                        <th class="col">Status</th>
+                                                        <th class="col">Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="packagingTable">
+
+                                                    @foreach($data['orderDetail']['data']['WMSOrders'] as $key => $row)
+
+                                                        <tr>
+                                                            <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                            <td>{{++$key}}</td>
+                                                            <td>{{$row->wmsOrder->wms_transaction_id ?? "-"}}</td>
+                                                            <td>{{$row->wmsOrder->order_reference ?? "-"}}</td>
+                                                            <td>{{$row->company->title ?? "-"}}</td>
+                                                            <td>{{$row->wmsOrder->ship_method ?? "-"}}</td>
+                                                            <td>{{$row->wmsOrder->order_date ?? "-"}}</td>
+                                                            <td>{{$row->wmsOrder->status->status_title ?? "-"}}</td>
+                                                            <td>
+                                                                <a href="{{ route('admin.wms-orders.detail', $row->work_order_id) }}" class="btn btn-sm btn-primary">View</a>
+                                                            </td>
+                                                        </tr>
+
+                                                    @endforeach
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @else
+                                            <div class="text-center mt-3">
+                                                <h4>WMS Orders List Not Found</h4>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(Auth::guard('admin')->check())
+                            @if(count($data['orderDetail']['data']['itemPutAway']) > 0)
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-4">
+                                            <h5 class="card-title flex-grow-1 mb-0">Items Put Away List</h5>
+                                            <div class="flex-shrink-0">
+                                                <a href="{{route('admin.put-away.export',['orderId'=>$data['orderDetail']['data']['id']])}}" type="button"  class="btn btn-primary" title="Download Excel file for WMS"><i class="ri-download-2-fill me-1 align-bottom"></i>Export Excel</a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                @if(count($data['orderDetail']['data']['itemPutAway']) > 0)
+                                                    <div class="table-responsive">
+                                                        <table class="table table-borderless align-middle mb-0">
+                                                            <thead class="table-light">
+                                                            <tr>
+                                                                <th scope="col">Sr No.</th>
+                                                                <th scope="col">Item Name</th>
+                                                                <th scope="col">Sku</th>
+                                                                <th scope="col">Qty</th>
+                                                                <th scope="col">Pallet#</th>
+                                                                <th scope="col">Location</th>
+                                                                <th scope="col">Item Put Away Images</th>
+
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody id="packagingTable">
+                                                            @foreach($data['orderDetail']['data']['itemPutAway'] as $key => $row)
+                                                                <tr>
+                                                                    <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                                    <td>{{++$key}}</td>
+                                                                    <td>{{$row->inventory->item_name ?? "-"}}</td>
+                                                                    <td>{{$row->inventory->sku ?? "-"}}</td>
+                                                                    <td>{{$row->qty ?? "-"}}</td>
+                                                                    <td>{{$row->pallet_number ?? "-"}}</td>
+                                                                    <td>{{$row->location->loc_title ?? "-"}}</td>
+                                                                    <td>
+                                                                        @isset($row->putAwayMedia)
+                                                                            <div class="avatar-group">
+                                                                                @foreach($row->putAwayMedia as $image)
+                                                                                    @if($image->field_name == 'putawayImages')
+                                                                                        <a href="{{asset('storage/uploads/'.$image->file_name)}}" class="avatar-group-item popup-img" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Damages" data-bs-original-title="Damages">
+                                                                                            <img src="{{asset('storage/uploads/'.$image->file_name)}}" alt="" class="rounded-circle avatar-sm">
+                                                                                        </a>
+                                                                                    @endif
+                                                                                @endforeach
+
+                                                                            </div>
+                                                                        @endisset
+                                                                    </td>
+                                                                </tr>
+
+                                                            @endforeach
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                @else
+                                                    <div class="text-center mt-3">
+                                                        <h4>Items Put Away List Not Found</h4>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
                         @endif
                     </div>

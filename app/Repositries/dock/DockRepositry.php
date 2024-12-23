@@ -39,7 +39,7 @@ class DockRepositry implements DockInterface {
 //here
             $qry=DocksLoadType::query();
             $qry=$qry->with('dock:id,title,wh_id');
-            $qry=$qry->with('loadType:id,wh_id,duration');
+            $qry=$qry->with('loadType:id,wh_id,duration,direction_id');
             $qry=$qry->whereRelation('dock','wh_id',$whId);
             $qry=$qry->where('load_type_id',$loadTypeId);
             $data=$qry->get();
