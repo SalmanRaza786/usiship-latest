@@ -157,7 +157,7 @@ searchElementList.addEventListener("keyup", function () {
     displayWareHouseData(filterData);
 });
 $('.btn-appointment').on('click', function() {
-
+    let isOutbound =$('input[name="outbound_scheduling"]').val();
     var whId = $(this).data('value');
     var whAddress = $(this).attr('whAddress');
     var whName = $(this).attr('whName');
@@ -168,6 +168,7 @@ $('.btn-appointment').on('click', function() {
      getLoadTypeAccordingWareHouse(whId);
      getWhFormFields(whId);
 
+
      //next tab
     let nextTabId = $(this).attr("data-nexttab");
     let nextTabButton = document.querySelector(`[data-bs-target="#${nextTabId}"]`);
@@ -177,6 +178,8 @@ $('.btn-appointment').on('click', function() {
 
     });
 function getLoadTypeAccordingWareHouse(whId){
+         let isOutbound =$('input[name="outbound_scheduling"]').val();
+
     $.ajax({
         url: route('wh.loadType.list'),
         type: 'GET',
@@ -193,13 +196,29 @@ function getLoadTypeAccordingWareHouse(whId){
                 var noresult = '';
                 if (response.data.length > 0) {
                 $.each(response.data, function (key, row) {
-                    html += '<tr>' +
-                        '<td>' + row.direction.value + '</td>' +
-                        '<td>' + row.operation.value + '</td>' +
-                        '<td>' + row.eq_type.value + '</td>' +
-                        '<td>' + row.trans_mode.value + '</td>' +
-                        '<td> <button type="button" data-value="' + row.id + '" class="btn btn-sm btn-success btn-dock" data-nexttab="pills-dock">Select</button></td>'+
-                        '</tr>';
+                    if(isOutbound != "")
+                    {
+                        if(row.direction.value === "Outbound")
+                        {
+                            html += '<tr>' +
+                                '<td>' + row.direction.value + '</td>' +
+                                '<td>' + row.operation.value + '</td>' +
+                                '<td>' + row.eq_type.value + '</td>' +
+                                '<td>' + row.trans_mode.value + '</td>' +
+                                '<td> <button type="button" data-value="' + row.id + '" class="btn btn-sm btn-success btn-dock" data-nexttab="pills-dock">Select</button></td>'+
+                                '</tr>';
+                        }
+
+                    }else {
+                        html += '<tr>' +
+                            '<td>' + row.direction.value + '</td>' +
+                            '<td>' + row.operation.value + '</td>' +
+                            '<td>' + row.eq_type.value + '</td>' +
+                            '<td>' + row.trans_mode.value + '</td>' +
+                            '<td> <button type="button" data-value="' + row.id + '" class="btn btn-sm btn-success btn-dock" data-nexttab="pills-dock">Select</button></td>'+
+                            '</tr>';
+                    }
+
                 });
                 } else {
                     noresult += '<div class="col-md-6 col-lg-12">' +
@@ -263,6 +282,9 @@ function getDockAccordingLoadType(loadTypeId){
             console.log('dock list',response.data);
             if(response.status) {
                 $('input[name="load_type_id"]').val(loadTypeId);
+                if(response.data[0].load_type.direction_id === 2){
+                    getWmsOrders();
+                }
                 var html = '';
                 if(response.data.length > 0){
                     $.each(response.data, function (key, row) {
@@ -316,7 +338,6 @@ $('#dock-list').on('click', '.btn-select-dock', function(){
     const loadTypeId=$('input[name="load_type_id"]').val();
     fnGetDockWiseOperationalHours(dockID,loadTypeId)
     $('input[name="dock_id"]').val(dockID);
-
 
 
     $('.cardBody').removeClass('bg-success text-white');
@@ -402,6 +423,27 @@ function fnGetDockWiseOperationalHours(dockId,loadTypeId) {
              data =response.data;
              ShowOperationHours(response.data,currentIndex);
 
+        },
+        error: function(xhr, status, error) {
+            if(xhr.responseText){
+                toastr.error(xhr.responseText);
+            }
+            if(xhr.responseJSON.message){
+                toastr.error(xhr.responseJSON.message);
+            }
+        }
+    });
+
+}
+function getWmsOrders() {
+
+    $.ajax({
+        url: route('work.order.get.all'),
+        type: 'GET',
+        async: false,
+        dataType: 'json',
+        success: function(response) {
+            wmsWorkORdersForMultiSelect(response.data);
         },
         error: function(xhr, status, error) {
             if(xhr.responseText){
@@ -504,9 +546,9 @@ $('#OrderForm').on('submit', function(e) {
                     '<p class="text-muted">You will receive an order confirmation email with details of your order.</p>' +
                     '<h3 class="fw-semibold">Order ID: <a class="text-decoration-underline" >' + response.data.order_id + '</h3>';
 
-                // if (authGuard === 'web') {
-                    html += '<button type="button" class="btn btn-primary btn-upload mx-2" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpload">Upload Packaging List</button>';
-                // }
+                if (response.data.order_type === 1) {
+                 html += '<button type="button" class="btn btn-primary btn-upload mx-2" data="' + response.data.id + '" data-bs-toggle="modal" data-bs-target="#showModalUpload">Upload Packaging List</button>';
+                }
 
                 if (authGuard === 'admin') {
                     html += '<a href="/' + authGuard + '/get-order-detail/' + response.data.id + '" class="btn btn-primary">View Order Detail</a>';
@@ -530,12 +572,12 @@ $('#OrderForm').on('submit', function(e) {
         },
 
         error: function (error) {
-            toastr.error( error.responseJSON.message);
+            console.log(error);
+            // toastr.error( error.responseJSON.message);
             $('.btn-submit').text('Submit');
             $(".btn-submit").prop("disabled", false);
         }
     });
-
 });
 
 $('#uploadForm').on('submit', function(e) {
@@ -574,12 +616,62 @@ $('#uploadForm').on('submit', function(e) {
             $(".btn-submit").prop("disabled", false);
         }
     });
-
 });
 
 $('#congratsMessege').on('click', '.btn-upload', function() {
     var id = $(this).attr('data');
     $('input[name="id"]').val(id);
 });
+
+function wmsWorkORdersForMultiSelect(wmsOrders) {
+    // Parse the JSON string into an array
+    let wmsOrdersArrays = JSON.parse($('input[name="work_order_array"]').val() || "[]");
+
+    // Start creating the dropdown HTML
+    let html = '<select class="form-select" data-choices data-choices-removeItem multiple id="wmsOrderDropdown" required data-trigger name="wms_order_ids_array[]">' +
+        '<option value="">Choose One</option>';
+
+    // Loop through wmsOrders to create options
+    $.each(wmsOrders, function (key, row) {
+        const id = row.id !== undefined ? sanitize(row.id) : '';
+        const transactionId = row.wms_transaction_id !== undefined ? sanitize(row.wms_transaction_id) : 'Unknown';
+
+        // Check if the current row.id exists in the wmsOrdersArrays
+        const isSelected = wmsOrdersArrays.includes(row.id.toString()) ? 'selected' : '';
+        html += `<option value="${id}" ${isSelected}>${transactionId}-(${row.client.title ?? "-"})</option>`;
+    });
+
+    html += '</select>';
+
+    // Render the dropdown in the target container
+    const dropdownContainer = $('#WmsORdersSelectBoxDropdown');
+    if (dropdownContainer.length) {
+        dropdownContainer.html(html);
+        initLoadTypeDropdown();
+    }
+}
+
+function initLoadTypeDropdown() {
+    const element = document.querySelector('#wmsOrderDropdown');
+    if (element && element.choicesInstance) {
+        element.choicesInstance.destroy();
+    }
+    new Choices('#wmsOrderDropdown', {
+        removeItemButton: true,
+    });
+}
+
+function sanitize(input) {
+    return input ? input.toString().replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+}
+
+
+
+
+
+
+
+
+
 
 

@@ -105,6 +105,10 @@ class Order extends Model
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
     }
+    public function outboundOrders()
+    {
+        return $this->hasMany(OutboundOrders::class, 'order_id', 'id');
+    }
 
 
 }

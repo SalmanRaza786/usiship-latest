@@ -82,7 +82,7 @@ class NotificationRepositry implements NotificationInterface
     public function createNotification($notifyContent,$url,$orderId)
     {
         try {
-            if(env('IS_NOTIFICATION_ENABLE') == 1) {
+            if(env('IS_NOTIFICATION_ENABLE',1) == 1) {
                 $permission = Permission::where('name', 'admin-notification-view')->first();
                 $hasPermissions = DB::table('role_has_permissions')->where('permission_id', $permission->id)->get();
                 if ($hasPermissions->count() > 0) {
@@ -116,7 +116,7 @@ class NotificationRepositry implements NotificationInterface
     public function createEndUserNotification($notifyContent,$url,$endUserId,$model,$orderId=null)
     {
         try {
-            if(env('IS_NOTIFICATION_ENABLE') == 1) {
+            if(env('IS_NOTIFICATION_ENABLE',1) == 1) {
                     $notification =Notification::updateOrCreate(
                         [
                             'id' => 0,

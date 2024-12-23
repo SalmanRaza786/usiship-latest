@@ -36,6 +36,7 @@ class WorkOrderRepositry implements WorkOrderInterface
 
             $qry = $qry->when($request->s_title, function ($query, $name) {
                     $query->where('order_reference', 'LIKE', "%{$name}%");
+                    $query->orWhere('wms_transaction_id', 'LIKE', "%{$name}%");
             });
 
             $qry=$qry->when($request->s_status, function ($query, $status) {
@@ -43,7 +44,7 @@ class WorkOrderRepositry implements WorkOrderInterface
             });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
-            $data['data'] =$qry->orderByDesc('id')->get();
+            $data['data'] =$qry->get();
 
             if (!empty($request->get('s_title')) ) {
                 $data['totalRecords']=$qry->count();
@@ -250,7 +251,50 @@ class WorkOrderRepositry implements WorkOrderInterface
     public function getAllWorkOrderList()
     {
         try {
-            $qry= WorkOrder::query();
+            $guards = array_keys(config('auth.guards'));
+            $currentGuard = null;
+
+            foreach ($guards as $guard) {
+                if (Auth::guard($guard)->check()) {
+                    $currentGuard = $guard;
+                    break;
+                }
+            }
+
+            if($currentGuard !='web'){
+                $qry= WorkOrder::query();
+            }else{
+                $qry= WorkOrder::where('client_id',Auth::user()->company_id);
+            }
+            $qry = $qry->where('status_code','!=',206);
+            $qry= $qry->with('client:id,title','status:id,status_title,order_by');
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Out bound orders list");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function getClientAllWorkOrderList()
+    {
+        try {
+
+            $guards = array_keys(config('auth.guards'));
+            $currentGuard = null;
+
+            foreach ($guards as $guard) {
+                if (Auth::guard($guard)->check()) {
+                    $currentGuard = $guard;
+                    break;
+                }
+            }
+
+            if($currentGuard !='web'){
+                $qry= WorkOrder::query();
+            }else{
+                $qry= WorkOrder::where('client_id',Auth::user()->company_id);
+            }
             $qry= $qry->with('client:id,title','status:id,status_title,order_by');
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Out bound orders list");
@@ -273,6 +317,15 @@ class WorkOrderRepositry implements WorkOrderInterface
 
             $workOrderId = $request->work_order_id;
             $res = WorkOrder::with('loadType','client')->where('id', $workOrderId)->first();
+            return Helper::success($res, $message='Record found');
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+    public function getWMSOrderInfo($id)
+    {
+        try {
+            $res = WorkOrder::with('carrier','client','status','wOrderItems.inventory','wOrderItems.location')->where('id', $id)->first();
             return Helper::success($res, $message='Record found');
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

@@ -67,19 +67,18 @@
                         <i class="ri-download-2-line"></i> <span data-key="t-dashboards">Download Packaging List Sample File</span>
                     </a>
                 </li>
-
-{{--                <li class="nav-item">--}}
-{{--                    <a class="nav-link menu-link collapsed" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">--}}
-{{--                        <i class="ri-flight-takeoff-line"></i> <span data-key="t-layouts">Shipments </span> <span class="badge badge-pill bg-danger" data-key="t-hot">Hot</span>--}}
-{{--                    </a>--}}
-{{--                    <div class="collapse menu-dropdown dropdown-custom-left" id="sidebarLayouts">--}}
-{{--                        <ul class="nav nav-sm flex-column">--}}
-{{--                            <li class="nav-item">--}}
-{{--                                <a href="#" class="nav-link" data-key="t-api-key">Shipments List</a>--}}
-{{--                            </li>--}}
-{{--                        </ul>--}}
-{{--                    </div>--}}
-{{--                </li>--}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link" {{ (Route::currentRouteName()=='user.appointment.show-wms-orders')?'active':''}} href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="true" aria-controls="sidebarLayouts">
+                        <i class="ri-flight-takeoff-line"></i> <span data-key="t-layouts">WMS Orders </span> <span class="badge badge-pill bg-danger" data-key="t-hot">Hot</span>
+                    </a>
+                    <div class="collapse menu-dropdown dropdown-custom-left" id="sidebarLayouts">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{route('user.appointment.show-wms-orders')}}" {{ (Route::currentRouteName()=='user.appointment.show-wms-orders')?'active':''}} class="nav-link" data-key="t-api-key">WMS Orders List</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 {{--                <!-- end Dashboard Menu -->--}}
 
 {{--                <li class="menu-title"><i class="ri-more-fill" aria-expanded="false"></i> <span data-key="t-pages">Pages</span></li>--}}

@@ -161,6 +161,8 @@
                                 '<li><a class="dropdown-item" href="' + viewUrl.replace(':id', rowId) + '" data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>';
 
                             if (status !== "Completed") {
+                                html += '<li><a <a class="dropdown-item btn-edit" data="'+rowId+'" data-bs-toggle="modal" data-bs-target="#showModal">' +
+                                    '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</a></li>';
                                 html += '<li><a class="dropdown-item btn-reschedule" data="' + rowId + '" dockId="' + rowDockId + '" loadTypeId="' + rowLoadTypeId + '" data-bs-toggle="modal" data-bs-target="#showModalReschedule">' +
                                     '<i class="ri-timer-line align-bottom me-2 text-muted"></i>Reschedule</a></li>';
                             }

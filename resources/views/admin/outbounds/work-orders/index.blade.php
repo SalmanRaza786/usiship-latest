@@ -23,6 +23,12 @@
                             </a>
                             <div class="dropdown-menu" style="">
                                 <a class="dropdown-item cursor-pointer" data-bs-toggle="modal" id="create-btn" data-bs-target="#checkInModal" >Assign to Picker</a>
+                                <form id="arrayForm" action="{{ route('schedule.work.order') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="array_data" id="workOrdersArray">
+                                    <button id="btn-schedule" type="submit" class="dropdown-item cursor-pointer " >Schedule Orders</button>
+                                </form>
+
                             </div>
                         </div>
                         <button type="button" class="btn btn-success btn-import1" data-bs-toggle="modal" data-bs-target="#importModal" ><i class="ri-add-line align-bottom me-1"></i> Import WMS Orders</button>
@@ -35,7 +41,7 @@
                         <div class="row g-3">
                             <div class="col-xxl-7 col-sm-6">
                                 <div class="search-box">
-                                    <input type="text" class="form-control search" placeholder=" {{__('translation.search')}}" name="s_title">
+                                    <input type="text" class="form-control search" placeholder="Search by WMS Transaction no or Order Reference no...." name="s_title">
                                     <i class="ri-search-line search-icon"></i>
                                 </div>
                             </div>
@@ -48,11 +54,11 @@
                                         <option value="201">Open</option>
                                         <option value="202">Assign</option>
                                         <option value="204">Processed</option>
+                                        <option value="206">Scheduled</option>
                                     </select>
                                 </div>
                             </div>
                             <!--end col-->
-
                             <div class="col-xxl-2 col-sm-4">
                                 <div>
                                     <button type="button" class="btn btn-primary w-100" id="filter"> <i class="ri-equalizer-fill me-1 align-bottom"></i>
@@ -106,9 +112,10 @@
     <script src="{{ URL::asset('build/js/custom-js/workOrders/workOrders.js') }}"></script>
 <script>
     $(document).ready(function(){
+        var wmsOrderDetailUrl = "{{ route('admin.wms-orders.detail', ':id') }}";
         $('#roleTable').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             searching: false,
             info: true,
             bFilter: false,
@@ -125,13 +132,13 @@
             },
             columns: [
                 { data: 'id'},
-                { data: 'wms_transaction_id' },
-                { data: 'order_reference' },
-                { data: 'client.title' },
                 { data: null },
-                { data: 'order_date' },
+                { data: 'order_reference',orderable: true },
+                { data: 'client.title',orderable: true },
                 { data: null },
-                { data: 'picker.name' },
+                { data: 'order_date',orderable: true },
+                { data: null },
+                { data: 'picker.name',orderable: true },
                 { data: null, orderable: false },
             ],
             columnDefs: [
@@ -144,9 +151,20 @@
                         '</div>';
 
                     }
+                }, {
+                    targets: 1,
+                    render: function(data, type, row, meta) {
+                        let detailUrl = wmsOrderDetailUrl.replace(':id', row.id); // Replace placeholder with row.id
+                        return '<div class="form-check">' +
+                            '<a href="' + detailUrl + '" class="form-check-link">' +
+                            row.wms_transaction_id + // Dynamically add the transaction ID as the link text
+                            '</a>' +
+                            '</div>';
+                    }
                 },
                 {
                     targets: 4,
+                    orderable: true,
                     render: function(data, type, row, meta) {
                         return (data.carrier ? data.carrier?.carrier_company_name : "-");
 
@@ -154,6 +172,7 @@
                 },
                 {
                     targets: 6,
+                    orderable: true,
                     render: function(data, type, row, meta) {
                         if (data.status_code == 204) {
                             return '<span class="badge badge-soft-success text-uppercase">'+data.status.status_title+'</span>';

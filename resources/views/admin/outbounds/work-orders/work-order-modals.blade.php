@@ -127,6 +127,7 @@
             </form>
         </div>
     </div>
+
 </div>
 
 <div class="modal fade" id="showModalSchedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">

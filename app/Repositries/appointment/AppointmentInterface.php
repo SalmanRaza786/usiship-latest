@@ -15,6 +15,7 @@ interface AppointmentInterface
     public function editAppointmentScheduling($id);
     public function deleteAppointment($id);
     public function updateOrCreate($request,$id);
+    public function updateOrCreateOutbound($request,$id);
     public function updateOrCreatePackagingInfo($request,$id);
     public function savePackagingImages($request);
     public function fileUpload($request);

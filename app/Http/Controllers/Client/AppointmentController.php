@@ -46,6 +46,15 @@ class AppointmentController extends Controller
 
         }
     }
+    public function showWMSOrdersList(){
+        try {
+            $data['statuses']=$this->appointment->getAllStatus();
+            return view('client.screens.work-orders.show-work-orders')->with(compact('data'));
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+
+        }
+    }
     public function appointmentList(Request $request){
         try {
             $res=$this->appointment->getAppointmentList($request);

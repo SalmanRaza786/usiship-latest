@@ -6,6 +6,7 @@ use App\Events\ClientNotificationEvent;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\LoadType;
 use App\Models\Notification;
 use App\Models\OperationalHour;
 use App\Models\Order;
@@ -57,7 +58,15 @@ class OrderController extends Controller
        try {
         $res = $this->order->getAllOrders();
         $data = collect([]);
+
         foreach ($res['data'] as $row) {
+
+            $orderCustomers = [];
+            foreach ($row->outboundOrders as $outboundOrder) {
+
+                $orderCustomers[] = $outboundOrder->wmsOrder->wms_transaction_id."(". $outboundOrder->company->title.")";
+            }
+            $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
 
             $fromOperationalHour = $row->bookedSlots->first();
             $toOperationalHour = $row->bookedSlots->last();
@@ -66,7 +75,7 @@ class OrderController extends Controller
             $array = array(
                 'id' => $row->id,
                 'wh_name' => $row->warehouse->title,
-                'customer_name' => $row->customer->name,
+                'customer_name' => ($row->order_type == 1 ?  $row->company->title: $orderCustomersString),
                 'start_time_hour' => count($row->bookedSlots) ? date('H', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
                 'end_time_minut' => count($row->bookedSlots) ? date('i', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
                 'end_s' => count($row->bookedSlots) ? date('H', strtotime($toOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
@@ -174,6 +183,7 @@ class OrderController extends Controller
                 'packagingList'=>$res->packgingList ?? [],
                 'orderContacts'=>$res->orderContacts ?? [],
                 'itemPutAway'=>$res->itemPutAway ?? [],
+                'WMSOrders'=>$res->outboundOrders ?? [],
                 'workOrderQC' => $work_order_qc ?? [],
                 'workOrderQCItems' => $work_order_qc_items ?? [],
             );
@@ -207,13 +217,23 @@ class OrderController extends Controller
            if($isAllow=$this->appointment->checkBookedSlot($dockInfo->slot,$request->opra_id,$request->order_date,$request->wh_id)==0){
                return Helper::error('all slots are booked of this dock',[]);
            }
+            if ($request->load_type_id)
+            {
+                $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
+            }
+            if($loadTypeDirection == 2 )
+                {
+                    $roleUpdateOrCreate = $this->appointment->updateOrCreateOutbound($request,0);
+                }else{
+                $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
+            }
 
-           $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
+
            if ($roleUpdateOrCreate->get('status')){
                $orderData=$roleUpdateOrCreate->get('data');
                // 1 use for admin 2 for user
-               $this->notificationTrigger(1,null);
-               $this->notificationTrigger(2,$orderData->customer_id);
+//               $this->notificationTrigger(1,null);
+//               $this->notificationTrigger(2,$orderData->customer_id);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
@@ -342,20 +362,35 @@ class OrderController extends Controller
 
            foreach ($res['data']['data'] as $row) {
 
+               $transactionIds = [];
+               $orderReferences = [];
+               $orderCustomers = [];
+               foreach ($row->outboundOrders as $outboundOrder) {
+                   $transactionIds[] = $outboundOrder->wmsOrder->wms_transaction_id;
+                   $orderReferences[] = $outboundOrder->wmsOrder->order_reference;
+                   $orderCustomers[] = $outboundOrder->company->title;
+               }
+
+               $transactionIdsString =!empty($transactionIds) ? implode(", ", $transactionIds) : "-";
+               $orderReferencesString = !empty($orderReferences) ? implode(", ", $orderReferences) : "-";
+               $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
+
                $array = array(
                    'id' => $row->id,
                    'enc_id' => encrypt($row->id),
                    'order_id' => $row->order_id,
                    'order_type' => ($row->order_type == 1 ? "Inbound":"Outbound"),
-                   'customer_name' => $row->customer->name,
+                   'customer_name' => ($row->order_type == 1 ?  $row->customer->name: $orderCustomersString),
                    'company_name' => $row->customer->company->title ?? "-",
                    'warehouse_title' =>$row->warehouse->title,
                    'dock_title' =>$row->dock->dock->title,
                    'order_date' => $row->order_date,
                    'operational_hour_working_hour' => $row->operationalHour->working_hour,
                    'status_title' => $row->status->status_title,
-                   'order_reference' => $row->wmsOrder->order_reference ?? "-",
-                   'wms_transaction_id' => $row->wmsOrder->wms_transaction_id ?? "-",
+                   'order_reference' => $orderReferencesString ?? "-",
+                   'wms_transaction_id' => $transactionIdsString ?? "-",
+//                   'order_reference' => $row->wmsOrder->order_reference ?? "-",
+//                   'wms_transaction_id' => $row->wmsOrder->wms_transaction_id ?? "-",
                );
                $transactionData->push($array);
            }

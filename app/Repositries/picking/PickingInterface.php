@@ -6,6 +6,8 @@ interface PickingInterface
 {
     public function getAllPickers($request);
     public function getAllPickersForApi();
+
+    public function getAllPickersList($limit);
     public function getPickerInfo($id);
     public function updateStartPicking($request);
     public function getPickingItems($pickerId);

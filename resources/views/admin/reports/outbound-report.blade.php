@@ -34,17 +34,55 @@
                             </div>
 
                             <!--end col-->
-                            <div class="col-xxl-3 col-sm-4">
-                                <div>
-                                    <select class="form-control"  name="s_status">
-                                        <option value="">Status</option>
-                                        <option value="" selected>{{__('translation.all')}}</option>
+{{--                            <div class="col-xxl-3 col-sm-4">--}}
+{{--                                <div>--}}
+{{--                                    <select class="form-control"  name="s_status">--}}
+{{--                                        <option value="">Status</option>--}}
+{{--                                        <option value="" selected>{{__('translation.all')}}</option>--}}
 
 {{--                                        @isset($data['status'])--}}
 {{--                                            @foreach($data['status'] as $status)--}}
 {{--                                                <option value="{{$status->id}}">{{$status->status_title}}</option>--}}
 {{--                                            @endforeach--}}
 {{--                                        @endisset--}}
+{{--                                    </select>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+                            <div class="col-xxl-3 col-sm-4">
+                                <div>
+                                    <select class="form-select" data-choices id="customersDropdown" required data-trigger  name="s_customers">
+                                        <option value="">Customers</option>
+                                        <option value="" selected>{{__('translation.all')}}</option>
+                                        @isset($data['customers'])
+                                            @foreach($data['customers']['data'] as $customer)
+                                                <option value="{{$customer->id}}">{{$customer->title}}</option>
+                                            @endforeach
+                                        @endisset
+                                    </select>
+                                </div>
+                            </div>    <div class="col-xxl-3 col-sm-4">
+                                <div>
+                                    <select class="form-select" data-choices id="skuDropdown" required data-trigger  name="s_sku">
+                                        <option value="">Sku</option>
+                                        <option value="" selected>{{__('translation.all')}}</option>
+                                        @isset($data['inventory'])
+                                            @foreach($data['inventory'] as $inventory)
+                                                <option value="{{$inventory->id}}">{{$inventory->sku}}</option>
+                                            @endforeach
+                                        @endisset
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-sm-4">
+                                <div>
+                                    <select class="form-select" data-choices id="wmsLocationsDropdown" required data-trigger  name="s_location">
+                                        <option value="">Locations</option>
+                                        <option value="" selected>{{__('translation.all')}}</option>
+                                        @isset($data['locations'])
+                                            @foreach($data['locations'] as $location)
+                                                <option value="{{$location->id}}">{{$location->loc_title}}</option>
+                                            @endforeach
+                                        @endisset
                                     </select>
                                 </div>
                             </div>
@@ -95,6 +133,30 @@
         @include('layouts.export-table-scripts')
     <script>
         $(document).ready(function(){
+            initLoadTypeDropdown();
+            function initLoadTypeDropdown() {
+                const element = document.querySelector('#wmsLocationsDropdown');
+                const element2 = document.querySelector('#skuDropdown');
+                const element3 = document.querySelector('#customersDropdown');
+                if (element && element.choicesInstance) {
+                    element.choicesInstance.destroy();
+                }
+                if (element2 && element2.choicesInstance) {
+                    element2.choicesInstance.destroy();
+                }
+                if (element3 && element3.choicesInstance) {
+                    element3.choicesInstance.destroy();
+                }
+                new Choices('#wmsLocationsDropdown', {
+                    removeItemButton: true,
+                });
+                new Choices('#skuDropdown', {
+                    removeItemButton: true,
+                }) ;
+                new Choices('#customersDropdown', {
+                    removeItemButton: true,
+                });
+            }
 
             $('#filter').on('click', function() {
                 $('#roleTable').DataTable().ajax.reload();
@@ -115,7 +177,10 @@
                     url: "outbound-report-list",
                     data: function (d) {
                         d.s_name = $('input[name=s_name]').val(),
-                            d.status = $('select[name=s_status]').val()
+                            d.s_status = $('select[name=s_status]').val(),
+                            d.s_sku = $('select[name=s_sku]').val(),
+                            d.s_customers = $('select[name=s_customers]').val(),
+                            d.s_location = $('select[name=s_location]').val()
                     }
                 },
                 columns: [

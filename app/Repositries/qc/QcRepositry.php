@@ -63,6 +63,37 @@ class QcRepositry implements QcInterface
         }
 
     }
+    public function outboundReportList($request)
+    {
+        try {
+            $data['totalRecords'] = QcDetailWorkOrder::count();
+            $qry= QcDetailWorkOrder::query();
+            $qry= $qry->with('workOrderItem.workOrder.client','workOrderItem.inventory','workOrderItem.location','media');
+
+            $qry=$qry->when($request->s_name, function ($query, $name) {
+                return $query->whereRelation('workOrderItem.workOrder','wms_transaction_id', 'LIKE', "%{$name}%");
+            });
+            $qry=$qry->when($request->s_location, function ($query, $loc_id) {
+                return $query->whereRelation('workOrderItem','loc_id',$loc_id);
+            });
+            $qry=$qry->when($request->s_sku, function ($query, $sku) {
+                return $query->whereRelation('workOrderItem','inventory_id',$sku);
+            });
+            $qry=$qry->when($request->s_customers, function ($query, $customer) {
+                return  $query->whereRelation('workOrderItem.workOrder','client_id', $customer);
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
     public function getQcInfo($id)
     {
         try {
@@ -216,6 +247,21 @@ class QcRepositry implements QcInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+    public function getAllQcList($limit=null)
+    {
+        try {
+            $qry= QcWorkOrder::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+//            $qry= $qry->where('status_code',205);
+            $qry= $qry->publish();
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
     public function updateQcItems($request)
     {

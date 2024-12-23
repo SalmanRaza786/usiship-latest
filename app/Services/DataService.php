@@ -10,7 +10,7 @@ class DataService
 
     public function __construct()
     {
-        $this->baseUrl = env('WMS_URL'); // config('services.api.url'); // Example of using config for base URL
+        $this->baseUrl = env('WMS_URL','http://arvist-universal/api/wms/'); // config('services.api.url'); // Example of using config for base URL
     }
 
     /**
