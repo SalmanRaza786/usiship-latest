@@ -99,7 +99,7 @@
                                 <th class="sort">Order Date</th>
                                 <th class="sort">Status</th>
 {{--                                <th class="sort">Picker Name</th>--}}
-{{--                                <th class="sort">Action</th>--}}
+                                <th class="sort">Action</th>
                             </tr>
                             </thead>
                         </table>
@@ -118,6 +118,7 @@
     <script src="{{ URL::asset('build/js/custom-js/workOrders/workOrders.js') }}"></script>
     <script>
         $(document).ready(function(){
+            var wmsOrderDetailUrl = "{{ route('user.wms-orders.detail', ':id') }}";
             $('#roleTable').DataTable({
                 processing: true,
                 serverSide: false,
@@ -144,7 +145,7 @@
                     { data: 'order_date',orderable: true },
                     { data: null },
                     // { data: 'picker.name',orderable: true },
-                    // { data: null, orderable: false },
+                    { data: null, },
                 ],
                 columnDefs: [
                     {
@@ -155,6 +156,17 @@
                                 '<label class="form-check-label" for="cardtableCheck01"></label>'+
                                 '</div>';
 
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: function(data, type, row, meta) {
+                            let detailUrl = wmsOrderDetailUrl.replace(':id', row.id); // Replace placeholder with row.id
+                            return '<div class="form-check">' +
+                                '<a href="' + detailUrl + '" class="form-check-link">' +
+                                row.wms_transaction_id + // Dynamically add the transaction ID as the link text
+                                '</a>' +
+                                '</div>';
                         }
                     },
                     {
@@ -186,24 +198,16 @@
                     //     }
                     // },
 
-                    {{--{--}}
-                    {{--    targets: 8,--}}
-                    {{--    render: function(data, type, row, meta) {--}}
+                    {
+                        targets: 7,
+                        render: function(data, type, row, meta) {
+                            let detailUrl = wmsOrderDetailUrl.replace(':id', row.id);
+                            var btnView = '<a href="'+detailUrl+'" type="button" class="btn btn-sm btn-primary " >View Detail</a>';
+                            var btnGroup= btnView;
 
-                    {{--        var btnAssign = ' @canany('admin-w-order-create')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';--}}
-                    {{--        var btnUploadDoc = ' @canany('admin-w-order-edit')<a href="#" type="button" class="btn btn-primary btn-upload-bol" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#UploadBOLDoc">Upload Bol Document</a>@endcanany';--}}
-                    {{--        var btnScheduleNow = ' @canany('admin-w-order-edit')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';--}}
-                    {{--        var btnGroup='';--}}
-                    {{--        if(row.status.order_by==201){--}}
-                    {{--            btnGroup=  "-";--}}
-                    {{--        }--}}
-                    {{--        if(row.status.order_by==204){--}}
-                    {{--            // btnGroup=  btnUploadDoc+ ' ' + btnScheduleNow;--}}
-                    {{--            btnGroup=   btnScheduleNow;--}}
-                    {{--        }--}}
-                    {{--        return btnGroup;--}}
-                    {{--    }--}}
-                    {{--}--}}
+                            return btnGroup;
+                        }
+                    }
                 ]
             });
 

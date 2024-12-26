@@ -201,8 +201,9 @@
                                                 </div>
                                                 <hr>
                                                 <div>
-                                                    <label for="formSizeLarge" class="form-label">Order Reference
-                                                        No. @if($order->order_type==2) / WMS Order Reference @endif </label>
+                                                    <label for="formSizeLarge" class="form-label">Order Reference No.
+{{--                                                         @if($order->order_type==2) / WMS Order Reference @endif--}}
+                                                    </label>
                                                     <p class="text-muted">Please check order reference number from your
                                                         carrier email.</p>
                                                 </div>
@@ -437,6 +438,7 @@
                         method: 'GET',
                         data: { order_id: orderId,id:id },
                         success: function(response) {
+                            console.log(response.data);
 
                             if (response.data==1) {
                                 $("#btn-carrier-submit").prop("disabled", false);
