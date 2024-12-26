@@ -30,7 +30,7 @@ class QcRepositry implements QcInterface
             $qry= QcWorkOrder::query();
             $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','workOrder.carrier','status');
             $qry= $qry->publish();
-//            $qry= $qry->where('status_code',205);
+
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -66,6 +66,7 @@ class QcRepositry implements QcInterface
     public function outboundReportList($request)
     {
         try {
+
             $data['totalRecords'] = QcDetailWorkOrder::count();
             $qry= QcDetailWorkOrder::query();
             $qry= $qry->with('workOrderItem.workOrder.client','workOrderItem.inventory','workOrderItem.location','media');
@@ -86,6 +87,10 @@ class QcRepositry implements QcInterface
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) || !empty($request->get('s_location')) || !empty($request->get('inventory_id')) || !empty($request->get('s_customers'))) {
+                $data['totalRecords'] = $data['data']->count();
+            }
 
             return Helper::success($data, $message="Record found");
 

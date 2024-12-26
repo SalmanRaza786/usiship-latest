@@ -428,7 +428,7 @@ $('#editOrderButton').on('click', function() {
 function getWmsOrders(ordersArray) {
 
     $.ajax({
-        url: route('admin.work.order.get.all'),
+        url: route('work.order.get.all'),
         type: 'GET',
         async: false,
         dataType: 'json',

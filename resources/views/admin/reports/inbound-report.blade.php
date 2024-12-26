@@ -73,15 +73,16 @@
                             </div>
                             <div class="col-xxl-3 col-sm-4">
                                 <div>
-                                    <select class="form-select" data-choices id="wmsLocationsDropdown" required data-trigger  name="s_location">
-                                        <option value="">Locations</option>
-                                        <option value="" selected>{{__('translation.all')}}</option>
-                                        @isset($data['locations'])
-                                            @foreach($data['locations'] as $location)
-                                                <option value="{{$location->id}}">{{$location->loc_title}}</option>
-                                            @endforeach
-                                        @endisset
-                                    </select>
+                                    <select class="location-select form-control loc-id" name="s_location" required></select>
+{{--                                    <select class="form-select" data-choices id="wmsLocationsDropdown" required data-trigger  name="s_location">--}}
+{{--                                        <option value="">Locations</option>--}}
+{{--                                        <option value="" selected>{{__('translation.all')}}</option>--}}
+{{--                                        @isset($data['locations'])--}}
+{{--                                            @foreach($data['locations'] as $location)--}}
+{{--                                                <option value="{{$location->id}}">{{$location->loc_title}}</option>--}}
+{{--                                            @endforeach--}}
+{{--                                        @endisset--}}
+{{--                                    </select>--}}
                                 </div>
                             </div>
                             <!--end col-->
@@ -130,28 +131,64 @@
     @include('layouts.export-table-scripts')
     <script>
         $(document).ready(function(){
+            initializeSelect2($('.location-select'));
             initLoadTypeDropdown();
             function initLoadTypeDropdown() {
-                const element = document.querySelector('#wmsLocationsDropdown');
+                // const element = document.querySelector('#wmsLocationsDropdown');
                 const element2 = document.querySelector('#skuDropdown');
                 const element3 = document.querySelector('#customersDropdown');
-                if (element && element.choicesInstance) {
-                    element.choicesInstance.destroy();
-                }
+                // if (element && element.choicesInstance) {
+                //     element.choicesInstance.destroy();
+                // }
                 if (element2 && element2.choicesInstance) {
                     element2.choicesInstance.destroy();
                 }
                 if (element3 && element3.choicesInstance) {
                     element3.choicesInstance.destroy();
                 }
-                new Choices('#wmsLocationsDropdown', {
-                    removeItemButton: true,
-                });
+                // new Choices('#wmsLocationsDropdown', {
+                //     removeItemButton: true,
+                // });
                 new Choices('#skuDropdown', {
                     removeItemButton: true,
                 }) ;
                 new Choices('#customersDropdown', {
                     removeItemButton: true,
+                });
+            }
+
+
+            function initializeSelect2($element) {
+                $element.each(function () {
+                    var $select = $(this); // Current select element
+
+                    // Initialize Select2 with AJAX search
+                    $select.select2({
+                        placeholder: 'Select a location',
+                        allowClear: true,
+                        ajax: {
+                            url: route('admin.locations.search'), // Adjust the route as needed
+                            dataType: 'json',
+                            delay: 250,
+                            data: function (params) {
+                                return {
+                                    q: params.term // Search term sent to the server
+                                };
+                            },
+                            processResults: function (data) {
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            id: item.id,
+                                            text: item.loc_title
+                                        }
+                                    })
+                                };
+                            },
+                            cache: true
+                        },
+                        minimumInputLength: 2
+                    });
                 });
             }
 
@@ -228,7 +265,7 @@
                                             .attr('data-bs-original-title', 'Damages');
 
                                         const img = $('<img>')
-                                            .attr('src', '/storage/uploads/' + image.file_name)
+                                            .attr('src', '/storage/uploads/' + image.file_thumbnail)
                                             .attr('alt', '')
                                             .addClass('gallery-img img-fluid mx-auto rounded avatar-md');
 

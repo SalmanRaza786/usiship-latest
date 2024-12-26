@@ -74,11 +74,13 @@ class PutawayRepositry implements PutAwayInterface {
             $qry=$qry->when($request->s_customers, function ($query, $customer) {
                 return  $query->whereRelation('order','company_id', $customer);
             });
-
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
-
             $data['data']=$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) || !empty($request->get('s_location')) || !empty($request->get('inventory_id')) || !empty($request->get('s_customers'))) {
+                $data['totalRecords'] = $data['data']->count();
+            }
 
             return Helper::success($data, $message=__('translation.record_found'));
 

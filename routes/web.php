@@ -12,7 +12,7 @@ use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\Admin\PackagingListController;
 use App\Http\Controllers\PusherController;
 use App\Http\Controllers\FirebaseController;
-use App\Http\Controllers\Api\WorkOrderController;
+use App\Http\Controllers\Outbounds\WorkOrderController;
 
 
 Auth::routes();
@@ -32,7 +32,7 @@ Auth::routes();
 
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
 
-        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersListClient'])->name('work.orders.list');
+    Route::any('/work-orders-list-client', [WorkOrderController::class, 'workOrdersListClient'])->name('work.orders.list');
 
     });
 
@@ -88,4 +88,7 @@ Auth::routes();
     return view('sidebar');
 });
     Route::get('/firebase-access-token', [FirebaseController::class, 'getAccessToken']);
+
+
+
 

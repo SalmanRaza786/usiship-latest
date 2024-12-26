@@ -34,7 +34,7 @@
                                     Action With Selected
                                 </a>
                                 <div class="dropdown-menu" style="">
-                                    <form id="arrayForm" action="{{ route('schedule.work.order') }}" method="POST">
+                                    <form id="arrayForm" action="{{ route('schedule.work.order.client') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="array_data" id="workOrdersArray">
                                         <button id="btn-schedule" type="submit" class="dropdown-item cursor-pointer " >Schedule Orders</button>
@@ -129,7 +129,7 @@
                 order: [[ 0, "desc" ]],
                 lengthMenu:[[10,50,100,-1],[10,50,100,"All"]],
                 ajax: {
-                    url: "work-orders-list",
+                    url: "work-orders-list-client",
                     data: function (d) {
                         d.s_title = $('input[name=s_title]').val(),
                             d.s_status = $('select[name=s_status]').val()
@@ -178,13 +178,13 @@
                             }
                         }
                     },
-                    {
-                        targets: 7,
-                        render: function(data, type, row, meta) {
-                            return (data ? data : "-");
-
-                        }
-                    },
+                    // {
+                    //     targets: 7,
+                    //     render: function(data, type, row, meta) {
+                    //         return (data ? data : "-");
+                    //
+                    //     }
+                    // },
 
                     {{--{--}}
                     {{--    targets: 8,--}}
