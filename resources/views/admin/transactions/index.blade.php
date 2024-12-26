@@ -3,7 +3,7 @@
 
 @section('content')
     @component('components.breadcrumb')
-        @slot('li_1') {{__('translation.settings')}} @endslot
+        @slot('li_1') Dashboard @endslot
         @slot('routeUrl') {{url('/')}} @endslot
         @slot('title') Transactions @endslot
     @endcomponent

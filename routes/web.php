@@ -31,6 +31,7 @@ Auth::routes();
     Route::any('/upload-packaging-list', [AppointmentController::class, 'uploadPackagingList'])->name('appointment.upload-list');
 
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
+    Route::any('/wms-order-detail/{id}', [WorkOrderController::class, 'getWMSOrderDetailClient'])->name('wms-orders.detail');
 
     Route::any('/work-orders-list-client', [WorkOrderController::class, 'workOrdersListClient'])->name('work.orders.list');
 

@@ -8,8 +8,10 @@ use App\Models\LoadType;
 use App\Models\OrderCheckIn;
 use App\Models\OrderContacts;
 use App\Models\OrderOffLoading;
+use App\Models\OutboundOrders;
 use App\Models\WareHouse;
 use App\Models\WhDock;
+use App\Models\WorkOrder;
 use App\Repositries\appointment\AppointmentRepositry;
 use App\Repositries\checkIn\CheckInRepositry;
 use App\Repositries\offLoading\OffLoadingInterface;
@@ -154,6 +156,12 @@ class OffLoadingRepositry implements OffLoadingInterface {
                     'status_id' => 14,
                 ]
             );
+
+            if($request->order_id){
+                $workOrderIds = OutboundOrders::where('order_id', $request->order_id)->pluck('work_order_id')->toArray();
+                $updatedRows = WorkOrder::whereIn('id', $workOrderIds)->update(['status_code' => 22]);
+            }
+
             $orderCheckIn = new CheckInRepositry();
             $orderCheckIn->changeStatus($offloading->order_check_in_id, 10);
 

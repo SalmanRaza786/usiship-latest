@@ -61,6 +61,22 @@
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
                                 <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Order Items</span>
                             </a>
+                        </li>   <li class="nav-item" role="presentation">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Picking</span>
+                            </a>
+                        </li>   <li class="nav-item" role="presentation">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Missing</span>
+                            </a>
+                        </li>   <li class="nav-item" role="presentation">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Quality Check (QC)</span>
+                            </a>
+                        </li>   <li class="nav-item" role="presentation">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Processing</span>
+                            </a>
                         </li>
                     </ul>
                     <div class="flex-shrink-0 d-none">
@@ -142,7 +158,7 @@
                             <div class="card-body">
                                 <h5 class="card-title mb-3">Order Items</h5>
                                 <div class="acitivity-timeline">
-                                    @if(Auth::guard('admin')->check())
+{{--                                    @if(Auth::guard('admin')->check())--}}
                                         @if(count($data['orderDetail']['wOrderItems']) > 0)
                                             <div class="card">
                                                 <div class="card-body">
@@ -201,7 +217,7 @@
                                                 </div>
                                             </div>
                                         @endif
-                                    @endif
+{{--                                    @endif--}}
                                 </div>
                             </div>
                             <!--end card-body-->

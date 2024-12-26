@@ -44,7 +44,7 @@ class WorkOrderRepositry implements WorkOrderInterface
             });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
-            $data['data'] =$qry->get();
+            $data['data'] =$qry->orderByDesc('id')->get();
 
             if (!empty($request->get('s_title')) ) {
                 $data['totalRecords']=$qry->count();

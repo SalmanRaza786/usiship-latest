@@ -793,7 +793,11 @@
                                                             <td>{{$row->wmsOrder->order_date ?? "-"}}</td>
                                                             <td>{{$row->wmsOrder->status->status_title ?? "-"}}</td>
                                                             <td>
-                                                                <a href="{{ route('admin.wms-orders.detail', $row->work_order_id) }}" class="btn btn-sm btn-primary">View</a>
+                                                                @if(Auth::guard('admin')->check())
+                                                                    <a href="{{ route('admin.wms-orders.detail', $row->work_order_id) }}" class="btn btn-sm btn-primary">View</a>
+                                                                @else
+                                                                    <a href="{{ route('user.wms-orders.detail', $row->work_order_id) }}" class="btn btn-sm btn-primary">View</a>
+                                                                @endif
                                                             </td>
                                                         </tr>
 

@@ -114,6 +114,9 @@ class OrderController extends Controller
     public function getAppointmentDetail($id)
     {
         try {
+            if (!Order::find($id)) {
+                return back()->with('error','Invalid order id');
+            }
             $data['orderDetail']=$this->getOrderInfo($id);
             return view('client.screens.appointment.order-detail')->with(compact('data'));
         } catch (\Exception $e) {

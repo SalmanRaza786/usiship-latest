@@ -194,18 +194,18 @@
                 {
                     targets: 8,
                     render: function(data, type, row, meta) {
-
-                        var btnAssign = ' @canany('admin-w-order-create')<a href="#" type="button" class="btn btn-primary btn-assign" data='+data.id+' data-bs-toggle="modal" data-bs-target="#checkInModal">Assign Now</a>@endcanany';
+                        let detailUrl = wmsOrderDetailUrl.replace(':id', row.id);
+                        var btnView = ' @canany('admin-w-order-create')<a href="'+detailUrl+'" type="button" class="btn btn-sm btn-primary " >View Detail</a>@endcanany';
                         var btnUploadDoc = ' @canany('admin-w-order-edit')<a href="#" type="button" class="btn btn-primary btn-upload-bol" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#UploadBOLDoc">Upload Bol Document</a>@endcanany';
                         var btnScheduleNow = ' @canany('admin-w-order-edit')<a href="#" type="button" class="btn btn-primary btn-schedule" data='+data.id+'  data-bs-toggle="modal" data-bs-target="#showModalSchedule">Schedule Now</a>@endcanany';
                         var btnGroup='';
-                        if(row.status.order_by==201){
-                             btnGroup=  "-";
-                        }
-                        if(row.status.order_by==204){
+                        // if(row.status.order_by==201){
+                             // btnGroup=  "-";
+                        // }
+                        // if(row.status.order_by==204){
                              // btnGroup=  btnUploadDoc+ ' ' + btnScheduleNow;
-                             btnGroup=   btnScheduleNow;
-                        }
+                             btnGroup=   btnView;
+                        // }
                         return btnGroup;
                     }
                 }

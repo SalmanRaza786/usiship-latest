@@ -98,10 +98,12 @@ class CarriersController extends Controller
             $missingOrders = array_diff($orderNoArray, $existingOrders);
 
             if (!empty($missingOrders)) {
-                return Helper::error("Invalid Order ID or Transaction Id - ".implode(', ', $missingOrders)); // Return missing orders
+                return Helper::error("Invalid Order ID or Transaction Id - ".implode(', ', $orderNoArray)); // Return missing orders
             }
 
             $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request, $request->id);
+
+
             if ($roleUpdateOrCreate->get('status')) {
                 if ($request->from == 0) {
                     foreach ($existingOrdersIDs as $orderId){

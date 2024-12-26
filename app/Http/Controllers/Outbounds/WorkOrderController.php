@@ -103,6 +103,18 @@ class WorkOrderController extends Controller
             return $e->getMessage();
         }
     }
+    public function getWMSOrderDetailClient($id)
+    {
+        try {
+            if(!$workOrder=WorkOrder::find($id)){
+                return Helper::error('Invalid Order Id');
+            }
+            $data['orderDetail']= Helper::fetchOnlyData($this->workOrder->getWMSOrderInfo($id));
+            return view('client.screens.work-orders.wms-order-detail')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 
     //pickerAssign
     public function pickerAssign(Request $request)
