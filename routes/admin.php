@@ -216,7 +216,7 @@ use App\Http\Controllers\Client\AppointmentController;
         Route::any('/get-wms-order-detail/{id}', [WorkOrderController::class, 'getWMSOrderDetail'])->name('wms-orders.detail');
 
         Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
-
+        Route::any('/schedule-work-order', [WorkOrderController::class, 'scheduleWorkOrder'])->name('schedule.work.order')->middleware(['can:admin-w-order-view']);
 
 
         //Picking
@@ -281,7 +281,7 @@ use App\Http\Controllers\Client\AppointmentController;
     Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
     Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
 
-    Route::any('/schedule-work-order', [WorkOrderController::class, 'scheduleWorkOrder'])->name('schedule.work.order');
+    Route::any('/schedule-work-order-clinet', [WorkOrderController::class, 'scheduleWorkOrderClient'])->name('schedule.work.order.client');
     Route::get('/carrier-onboard/{id}', [CarriersController::class, 'carrierOnboard'])->name('carrier.onboard');
     Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
     Route::post('/verfiy-carrier-info', [CarriersController::class, 'verifyCarrierInfo'])->name('carrier.info.verify');

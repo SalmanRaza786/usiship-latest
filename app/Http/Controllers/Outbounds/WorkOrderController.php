@@ -141,23 +141,25 @@ class WorkOrderController extends Controller
             $data['selectStatus']="6";
             $data['isOutbound']="1";
             $data['createdBy']=Auth::id();
-            $guards = array_keys(config('auth.guards'));
-            $currentGuard = null;
+            $data['guard']='admin';
 
-            foreach ($guards as $guard) {
-                if (Auth::guard($guard)->check()) {
-                    $currentGuard = $guard;
-                    break;
-                }
-            }
-            if($currentGuard !='web'){
-                $data['guard']='admin';
-                return view('admin.order.create')->with(compact('data'));
-            }else{
-                $data['guard']='web';
-                return view('client.screens.appointment.index')->with(compact('data'));
-            }
+             return view('admin.order.create')->with(compact('data'));
 
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
+    }
+    public function scheduleWorkOrderClient(Request $request)
+    {
+        try {
+            $data['customerId']="";
+            $data['workOrderArray']=$request->input('array_data');
+            $data['status']=OrderStatus::get();
+            $data['selectStatus']="6";
+            $data['isOutbound']="1";
+            $data['createdBy']=Auth::id();
+            $data['guard']='web';
+            return view('client.screens.appointment.index')->with(compact('data'));
             } catch (\Exception $e) {
                 return $e->getMessage();
             }
@@ -240,6 +242,17 @@ class WorkOrderController extends Controller
             }else{
                 return Helper::error($res->get('message'));
             }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function workOrdersListClient(Request $request)
+    {
+
+        try {
+            $res=$this->workOrder->getClientAllWorkOrderList($request);
+            return Helper::ajaxDatatable($res['data']['data'], $res['data']['totalRecords'],$request);
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }

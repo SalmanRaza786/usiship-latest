@@ -44,14 +44,14 @@ public function fireBaseTrigger($type,$notifiableId)
     if($type==1){
         $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
         //$deviceId=Admin::where('id',$notifiableId)->pluck('device_id')->first();
-        $deviceToken=DeviceToken::where('auth_id',$notifiableId)->where('auth_type','App\Models\Admin')->get();
+        $deviceToken=DeviceToken::where('auth_id',$notifiableId)->where('auth_type','App\Models\Admin')->latest()->first();
     }
 
 
     if($type==2){
         $notifyQuery= Helper::fetchOnlyData($notification->getUnreadNotifications($type,$notifiableId));
        // $deviceId=User::where('id',$notifiableId)->pluck('device_id')->first();
-        $deviceToken=DeviceToken::where('auth_id',$notifiableId)->where('auth_type','App\Models\User')->get();
+        $deviceToken=DeviceToken::where('auth_id',$notifiableId)->where('auth_type','App\Models\User')->latest()->first();
     }
     $notifyContent= $notifyQuery->first();
 

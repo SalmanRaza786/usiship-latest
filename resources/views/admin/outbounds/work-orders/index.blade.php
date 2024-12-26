@@ -23,7 +23,7 @@
                             </a>
                             <div class="dropdown-menu" style="">
                                 <a class="dropdown-item cursor-pointer" data-bs-toggle="modal" id="create-btn" data-bs-target="#checkInModal" >Assign to Picker</a>
-                                <form id="arrayForm" action="{{ route('schedule.work.order') }}" method="POST">
+                                <form id="arrayForm" action="{{ route('admin.schedule.work.order') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="array_data" id="workOrdersArray">
                                     <button id="btn-schedule" type="submit" class="dropdown-item cursor-pointer " >Schedule Orders</button>

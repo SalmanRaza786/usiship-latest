@@ -251,6 +251,10 @@ class WorkOrderRepositry implements WorkOrderInterface
     public function getAllWorkOrderList()
     {
         try {
+
+
+
+
             $guards = array_keys(config('auth.guards'));
             $currentGuard = null;
 
@@ -266,7 +270,8 @@ class WorkOrderRepositry implements WorkOrderInterface
             }else{
                 $qry= WorkOrder::where('client_id',Auth::user()->company_id);
             }
-            $qry = $qry->where('status_code','!=',206);
+
+//            $qry = $qry->where('status_code','!=',206);
             $qry= $qry->with('client:id,title','status:id,status_title,order_by');
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Out bound orders list");
@@ -276,28 +281,39 @@ class WorkOrderRepositry implements WorkOrderInterface
         }
 
     }
-    public function getClientAllWorkOrderList()
+    public function getClientAllWorkOrderList($request)
     {
         try {
 
-            $guards = array_keys(config('auth.guards'));
-            $currentGuard = null;
+            try {
+                $data['totalRecords'] = WorkOrder::where('client_id',Auth::user()->company_id)->count();
 
-            foreach ($guards as $guard) {
-                if (Auth::guard($guard)->check()) {
-                    $currentGuard = $guard;
-                    break;
-                }
-            }
-
-            if($currentGuard !='web'){
-                $qry= WorkOrder::query();
-            }else{
                 $qry= WorkOrder::where('client_id',Auth::user()->company_id);
+
+                $qry= $qry->with('client:id,title','status:id,status_title,order_by','carrier','picker');
+                $qry = $qry->when($request->s_title, function ($query, $name) {
+                    $query->where('order_reference', 'LIKE', "%{$name}%");
+                    $query->orWhere('wms_transaction_id', 'LIKE', "%{$name}%");
+                });
+
+                $qry=$qry->when($request->s_status, function ($query, $status) {
+                    return $query->where('status_code',$status);
+                });
+                $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+                $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+                $data['data'] =$qry->get();
+
+                if (!empty($request->get('s_title')) ) {
+                    $data['totalRecords']=$qry->count();
+                }
+                if (!empty($request->get('s_status')) ) {
+                    $data['totalRecords']=$qry->count();
+                }
+                return Helper::success($data, $message="Record found");
+
+            } catch (\Exception $e) {
+                return Helper::errorWithData($e->getMessage(),[]);
             }
-            $qry= $qry->with('client:id,title','status:id,status_title,order_by');
-            $data =$qry->orderByDesc('id')->get();
-            return Helper::success($data, $message="Out bound orders list");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

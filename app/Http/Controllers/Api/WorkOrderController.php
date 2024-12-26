@@ -59,15 +59,7 @@ class WorkOrderController extends Controller
         }
     }
 
-    public function workOrdersListClient(Request $request)
-    {
-        try {
-            $res=$this->workOrder->getClientAllWorkOrderList();
-            return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
-        } catch (\Exception $e) {
-            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
-        }
-    }
+
 
     //pickerAssign
     public function pickerAssign(Request $request)

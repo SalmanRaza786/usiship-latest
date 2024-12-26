@@ -57,29 +57,56 @@ class AppointmentRepositry implements AppointmentInterface {
 
         try {
             $name = $request->s_name;
-            $data['totalRecords'] = Order::where('company_id',Auth::user()->company_id)->count();
-            $qry = Order::with('warehouse','dock.dock','operationalHour','status','wmsOrder');
-            $qry=$qry->where('company_id',Auth::user()->company_id);
+            $companyId = Auth::user()->company_id;
+            $totalRecords = Order::where('company_id', $companyId)
+                ->orWhereHas('outboundOrders', function ($query) use ($companyId) {
+                    $query->where('company_id', $companyId);
+                })
+                ->count();
+
+            $qry = Order::with([
+                'warehouse',
+                'dock.dock',
+                'operationalHour',
+                'status',
+                'wmsOrder',
+                'outboundOrders.wmsOrder' // Include related WMS order details for outbound
+            ])
+                ->where(function ($query) use ($companyId) {
+                    $query->where('company_id', $companyId) // Inbound orders
+                    ->orWhereHas('outboundOrders', function ($q) use ($companyId) {
+                        $q->where('company_id', $companyId); // Outbound orders
+                    });
+                });
 
             $qry = $qry->when($name, function ($query) use ($name) {
                 $query->where('order_id', 'LIKE', "%{$name}%")
-                    ->orWhereHas('wmsOrder', function ($q) use ($name) {
+                    ->orWhereHas('outboundOrders.wmsOrder', function ($q) use ($name) {
                         $q->where('order_reference', 'LIKE', "%{$name}%")
                             ->orWhere('wms_transaction_id', 'LIKE', "%{$name}%");
                     });
             });
 
-            $qry=$qry->when($request->status, function ($query, $status) {
-                return $query->where('status_id',$status);
+            $qry = $qry->when($request->status, function ($query, $status) {
+                return $query->where('status_id', $status);
             });
 
-            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
-            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
-            $data['data'] =$qry->orderByDesc('id')->get();
+            $qry = $qry->when($request->start, fn($q) => $q->offset($request->start))
+                ->when($request->length, fn($q) => $q->limit($request->length));
 
-            if (!empty($request->get('s_name')) ) {
-                $data['totalRecords']=$qry->count();
+            $records = $qry->orderByDesc('id')->get();
+
+            if (!empty($name)) {
+                $totalRecords = $qry->count();
             }
+
+            $data = [
+                'totalRecords' => $totalRecords,
+                'data' => $records,
+            ];
+
+
+
             return Helper::success($data, $message=__('translation.record_found'));
 
 
@@ -221,7 +248,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     'id' => $id
                 ],
                 [
-                    'customer_id' =>1,
+                    'customer_id' =>$request->created_by,
                     'company_id' =>null,
                     'wh_id' => $request->wh_id,
                     'dock_id' => $request->dock_id,
@@ -541,6 +568,7 @@ class AppointmentRepositry implements AppointmentInterface {
 
             $qry= Order::query();
             $qry= $qry->with('customer','bookedSlots.operationalHour','dock.loadType','fileContents','orderLogs.orderStatus','warehouse.assignedFields.customFields','orderForm.customFields','packgingList.inventory','warehouse:id,title','operationalHour','orderContacts.carrier.company','orderContacts.filemedia','orderContacts.carrier.docimages','itemPutAway.inventory','itemPutAway.location','itemPutAway.putAwayMedia','outboundOrders.wmsOrder.status','outboundOrders.company');
+
             $data =$qry->find($id);
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
@@ -618,7 +646,15 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
             $workOrders = WorkOrder::whereIn('id', $worderArray)->get();
-            OutboundOrders::where('order_id', $orderId)->delete();
+            if(Auth::guard('admin')->check()){
+                $workOrderIds = OutboundOrders::where('order_id', $orderId)->pluck('work_order_id')->toArray();
+                $updatedRows = WorkOrder::whereIn('id', $workOrderIds)->update(['status_code' => 201]);
+                OutboundOrders::where('order_id', $orderId)->delete();
+            }else{
+                $workOrderIds = OutboundOrders::where('order_id', $orderId)->where('company_id', Auth::user()->company_id)->pluck('work_order_id')->toArray();
+                $updatedRows = WorkOrder::whereIn('id', $workOrderIds)->where('client_id', Auth::user()->company_id)->update(['status_code' => 201]);
+                OutboundOrders::where('order_id', $orderId)->where('company_id', Auth::user()->company_id)->delete();
+            }
 
             foreach ($workOrders as $wOrder) {
                 OutboundOrders::updateOrCreate(
@@ -631,6 +667,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     ]
                 );
             }
+            $updatedRows = WorkOrder::whereIn('id', $worderArray)->update(['status_code' => 206]);
         } catch (\Exception $e) {
             throw $e;
         }
