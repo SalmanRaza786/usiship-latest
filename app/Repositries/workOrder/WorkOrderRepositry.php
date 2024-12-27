@@ -251,26 +251,19 @@ class WorkOrderRepositry implements WorkOrderInterface
     public function getAllWorkOrderList()
     {
         try {
-
-
-
-
             $guards = array_keys(config('auth.guards'));
             $currentGuard = null;
-
             foreach ($guards as $guard) {
                 if (Auth::guard($guard)->check()) {
                     $currentGuard = $guard;
                     break;
                 }
             }
-
             if($currentGuard !='web'){
                 $qry= WorkOrder::query();
             }else{
                 $qry= WorkOrder::where('client_id',Auth::user()->company_id);
             }
-
 //            $qry = $qry->where('status_code','!=',206);
             $qry= $qry->with('client:id,title','status:id,status_title,order_by');
             $data =$qry->orderByDesc('id')->get();
@@ -338,10 +331,24 @@ class WorkOrderRepositry implements WorkOrderInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
     }
+    public function getWorkOrdersApi($request)
+    {
+        try {
+
+            $companyId = $request->company_id;
+            $qry= WorkOrder::where('client_id',$companyId);
+//            $qry = $qry->where('status_code','!=',206);
+            $qry= $qry->with('client:id,title','status:id,status_title,order_by');
+            $data =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Out bound orders list");
+        }  catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
     public function getWMSOrderInfo($id)
     {
         try {
-            $res = WorkOrder::with('carrier','client','status','wOrderItems.inventory','wOrderItems.location')->where('id', $id)->first();
+            $res = WorkOrder::with('picker','carrier','client','status','wOrderItems.inventory','wOrderItems.location','picking.workOrder','picking.pickingOrderItems.inventory','picking.pickingOrderItems.location','qc.workOrder','qc.qcOrdersItems.workOrderItem.inventory','qc.qcOrdersItems.workOrderItem.location','processing.workOrder','processing.processingOrderItems','missing.workOrder','missing.missingOrderItems.pickedItem')->where('id', $id)->first();
             return Helper::success($res, $message='Record found');
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

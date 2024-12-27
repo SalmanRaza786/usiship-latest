@@ -90,6 +90,7 @@ use App\Http\Controllers\Api\ProcessingController;
         Route::get('/get-all-staff', [WorkOrderController::class, 'getAllStaff']);
         Route::get('/get-outbound-all-status', [WorkOrderController::class, 'getAllStatus']);
         Route::get('/outbound-orders-list', [WorkOrderController::class, 'workOrdersList']);
+        Route::get('/client-outbound-orders-list', [WorkOrderController::class, 'workOrdersListClient']);
         Route::post('/picker-assign', [WorkOrderController::class, 'pickerAssign']);
 
 

@@ -13,6 +13,10 @@ class WorkOrderPicker extends Model
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
     }
+    public function pickingOrderItems()
+    {
+        return $this->hasMany(PickedItem::class, 'picker_table_id','id');
+    }
 
     public function status()
     {

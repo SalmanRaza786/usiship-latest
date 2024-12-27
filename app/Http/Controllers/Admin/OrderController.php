@@ -128,10 +128,7 @@ class OrderController extends Controller
     public function getOrderInfo($id)
     {
         try {
-
-
-             $res=Helper::fetchOnlyData($this->order->getOrderDetail($id));
-
+            $res=Helper::fetchOnlyData($this->order->getOrderDetail($id));
             $fromOperationalHour=$res->bookedSlots->first();
             $toOperationalHour=$res->bookedSlots->last();
 

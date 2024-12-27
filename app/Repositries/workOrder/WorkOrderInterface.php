@@ -11,5 +11,6 @@ interface WorkOrderInterface
     public function savePickerAssign($request);
     public function saveUploadBOL($request);
     public function getAllWorkOrderList();
+    public function getWorkOrdersApi($request);
     public function getClientAllWorkOrderList($request);
 }

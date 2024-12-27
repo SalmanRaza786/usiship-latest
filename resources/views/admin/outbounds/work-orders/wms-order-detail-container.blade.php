@@ -58,23 +58,23 @@
                             </a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#orderItems" role="tab" aria-selected="false" tabindex="-1">
                                 <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Order Items</span>
                             </a>
                         </li>   <li class="nav-item" role="presentation">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#orderPicking" role="tab" aria-selected="false" tabindex="-1">
                                 <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Picking</span>
                             </a>
                         </li>   <li class="nav-item" role="presentation">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#orderMissing" role="tab" aria-selected="false" tabindex="-1">
                                 <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Missing</span>
                             </a>
                         </li>   <li class="nav-item" role="presentation">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#orderQC" role="tab" aria-selected="false" tabindex="-1">
                                 <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Quality Check (QC)</span>
                             </a>
                         </li>   <li class="nav-item" role="presentation">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#activities" role="tab" aria-selected="false" tabindex="-1">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#orderProcessing" role="tab" aria-selected="false" tabindex="-1">
                                 <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Processing</span>
                             </a>
                         </li>
@@ -85,7 +85,6 @@
                 </div>
 
                 <div class="tab-content pt-4 text-muted">
-
                     <div class="tab-pane active show" id="overview-tab" role="tabpanel">
                         <div class="row">
                             <div class="col-xxl-3">
@@ -129,34 +128,50 @@
                                         </div>
                                     </div><!-- end card body -->
                                 </div><!-- end card -->
-
-
                                 <!--end card-->
                             </div>
                             <div class="col-xxl-9">
                                 <div class="card text-center">
-
-
-
-
-
-
-
                                     <!--end card-body-->
                                 </div>
-
-
-
-
-
                             </div>
                         </div>
                         <!--end row-->
                     </div>
-                    <div class="tab-pane fade" id="activities" role="tabpanel">
+                    <div class="tab-pane fade" id="orderItems" role="tabpanel">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title mb-3">Order Items</h5>
+                                <div class="live-preview">
+                                    <div class="row gy-4">
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="basiInput" class="form-label">Order Reference #</label>
+                                                <input type="text" class="form-control" id="basiInput" value="{{$data['orderDetail']->order_reference  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="labelInput" class="form-label">Customer Name</label>
+                                                <input type="text" class="form-control" id="labelInput" value="{{$data['orderDetail']->client->title  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="placeholderInput" class="form-label">Picker</label>
+                                                <input type="text" class="form-control" name="start_pick_time" value="{{$data['orderDetail']->picker->name  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="valueInput" class="form-label">Order Date</label>
+                                                <input type="text" class="form-control" name="staged_loc"  value="{{$data['orderDetail']->order_date ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="acitivity-timeline">
 {{--                                    @if(Auth::guard('admin')->check())--}}
                                         @if(count($data['orderDetail']['wOrderItems']) > 0)
@@ -187,7 +202,6 @@
                                                                             </th>
                                                                             <th scope="col" style="">Pallet Number</th>
                                                                             <th scope="col" style="">Location</th>
-
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody id="packagingTable">
@@ -201,9 +215,7 @@
                                                                                 <td>{{$row->pallet_number ?? "-"}}</td>
                                                                                 <td>{{$row->location->loc_title ?? "-"}}</td>
                                                                             </tr>
-
                                                                         @endforeach
-
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -224,7 +236,427 @@
                         </div>
                         <!--end card-->
                     </div>
-
+                    <div class="tab-pane fade" id="orderPicking" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Order Picking</h5>
+                                @if(count($data['orderDetail']['picking']) > 0)
+                                <div class="live-preview">
+                                    <div class="row gy-4">
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="basiInput" class="form-label">Order Reference #</label>
+                                                <input type="text" class="form-control" id="basiInput" value="{{$data['orderDetail']->picking[0]->workOrder->order_reference  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="placeholderInput" class="form-label">Picker</label>
+                                                <input type="text" class="form-control" name="picker" value="{{$data['orderDetail']->picking[0]->workOrder->picker->name  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="labelInput" class="form-label">Picking End Date/Time</label>
+                                                <input type="text" class="form-control" id="labelInput1" value="{{$data['orderDetail']->picking[0]->start_time  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label for="labelInput" class="form-label">Picking End Date/Time</label>
+                                                <input type="text" class="form-control" id="labelInput" value="{{$data['orderDetail']->picking[0]->end_time  ?? ""}}" disabled="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="acitivity-timeline">
+{{--                                    @if(Auth::guard('admin')->check())--}}
+                                        @if(count($data['orderDetail']['picking'][0]['pickingOrderItems']) > 0)
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-4">
+                                                        <h5 class="card-title flex-grow-1 mb-0"> Orders Picking Item List</h5>
+                                                        <div class="flex-shrink-0">
+{{--                                                            <a href="{{route('admin.put-away.export',['orderId'=>$data['orderDetail']['data']['id']])}}" type="button"  class="btn btn-primary" title="Download Excel file for WMS"><i class="ri-download-2-fill me-1 align-bottom"></i>Export Excel</a>--}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            @if(count($data['orderDetail']['picking'][0]['pickingOrderItems']) > 0)
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-borderless align-middle mb-0">
+                                                                        <thead class="table-light">
+                                                                        <tr >
+                                                                            <th scope="col">#</th>
+                                                                            <th scope="col">
+                                                                                Product Name
+                                                                            </th>  <th scope="col">
+                                                                                Product SKU
+                                                                            </th>
+                                                                            <th scope="col" style="">Location</th>
+                                                                            <th scope="col" style="">
+                                                                                <div class="d-flex currency-select input-light align-items-center"> Ordered Quantity
+                                                                                </div>
+                                                                            </th>
+                                                                            <th scope="col" style="">Picked Location</th>
+                                                                            <th scope="col" style="">
+                                                                                <div class="d-flex currency-select input-light align-items-center"> Picked Quantity
+                                                                                </div>
+                                                                            </th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody id="packagingTable">
+                                                                        @foreach($data['orderDetail']['picking'][0]['pickingOrderItems'] as $key => $row)
+                                                                            <tr>
+                                                                                <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                                                <td>{{++$key}}</td>
+                                                                                <td>{{$row->inventory->item_name ?? "-"}}</td>
+                                                                                <td>{{$row->inventory->sku ?? "-"}}</td>
+                                                                                <td>{{$row->location->loc_title ?? "-"}}</td>
+                                                                                <td>{{$row->order_qty ?? "-"}}</td>
+                                                                                <td>{{$row->pickedlocation->loc_title ?? "-"}}</td>
+                                                                                <td>{{$row->picked_qty ?? "-"}}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            @else
+                                                                <div class="text-center mt-3">
+                                                                    <h4>Picking Item List Not Found</h4>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+{{--                                    @endif--}}
+                                </div>
+                                @else
+                                    <div class="text-center mt-3">
+                                        <h4>Work Order Picking Not Found</h4>
+                                    </div>
+                                @endif
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <div class="tab-pane fade" id="orderMissing" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Order Missing</h5>
+                                @if(count($data['orderDetail']['missing']) > 0)
+                                    <div class="live-preview">
+                                        <div class="row gy-4">
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="basiInput" class="form-label">Order Reference #</label>
+                                                    <input type="text" class="form-control" id="basiInput" value="{{$data['orderDetail']->missing[0]->workOrder->order_reference  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="placeholderInput" class="form-label">Picker</label>
+                                                    <input type="text" class="form-control" name="picker" value="{{$data['orderDetail']->missing[0]->workOrder->picker->name  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <!--end col-->
+                                            <!--end col-->
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="labelInput" class="form-label">Picking End Date/Time</label>
+                                                    <input type="text" class="form-control" id="labelInput1" value="{{$data['orderDetail']->missing[0]->start_time  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="labelInput" class="form-label">Picking End Date/Time</label>
+                                                    <input type="text" class="form-control" id="labelInput" value="{{$data['orderDetail']->missing[0]->end_time  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="acitivity-timeline">
+                                        {{--                                    @if(Auth::guard('admin')->check())--}}
+                                        @if(count($data['orderDetail']['missing'][0]['missingOrderItems']) > 0)
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-4">
+                                                        <h5 class="card-title flex-grow-1 mb-0"> Orders Picking Item List</h5>
+                                                        <div class="flex-shrink-0">
+                                                            {{--                                                            <a href="{{route('admin.put-away.export',['orderId'=>$data['orderDetail']['data']['id']])}}" type="button"  class="btn btn-primary" title="Download Excel file for WMS"><i class="ri-download-2-fill me-1 align-bottom"></i>Export Excel</a>--}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            @if(count($data['orderDetail']['missing'][0]['missingOrderItems']) > 0)
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-borderless align-middle mb-0">
+                                                                        <thead class="table-light">
+                                                                        <tr >
+                                                                            <th scope="col">#</th>
+                                                                            <th scope="col">
+                                                                                Product Name
+                                                                            </th>  <th scope="col">
+                                                                                Product SKU
+                                                                            </th>
+                                                                            <th scope="col" style="">
+                                                                                <div class="d-flex currency-select input-light align-items-center"> Order Quantity
+                                                                                </div>
+                                                                            </th>
+                                                                            <th scope="col" style="">Location</th>
+                                                                            <th scope="col" style="">
+                                                                                <div class="d-flex currency-select input-light align-items-center"> Missing Quantity
+                                                                                </div>
+                                                                            </th>
+                                                                            <th scope="col" style="">New Location</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody id="packagingTable">
+                                                                        @foreach($data['orderDetail']['missing'][0]['missingOrderItems'] as $key => $row)
+                                                                            <tr>
+                                                                                <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                                                <td>{{++$key}}</td>
+                                                                                <td>{{$row->pickedItem->inventory->item_name ?? "-"}}</td>
+                                                                                <td>{{$row->pickedItem->inventory->sku ?? "-"}}</td>
+                                                                                <td>{{$row->pickedItem->order_qty ?? "-"}}</td>
+                                                                                <td>{{$row->pickedItem->location->loc_title ?? "-"}}</td>
+                                                                                <td>{{$row->missed_qty ?? "-"}}</td>
+                                                                                <td>{{$row->pickedItem->pickedlocation->loc_title ?? "-"}}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            @else
+                                                                <div class="text-center mt-3">
+                                                                    <h4>Picking Item List Not Found</h4>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        {{--                                    @endif--}}
+                                    </div>
+                                @else
+                                    <div class="text-center mt-3">
+                                        <h4>Work Order Picking Not Found</h4>
+                                    </div>
+                                @endif
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <div class="tab-pane fade" id="orderQC" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Order Quality Check (QC)</h5>
+                                @if(count($data['orderDetail']['qc']) > 0)
+                                    <div class="live-preview">
+                                        <div class="row gy-4">
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="basiInput" class="form-label">Order Reference #</label>
+                                                    <input type="text" class="form-control" id="basiInput" value="{{$data['orderDetail']->qc[0]->workOrder->order_reference  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="placeholderInput" class="form-label">Picker</label>
+                                                    <input type="text" class="form-control" name="picker" value="{{$data['orderDetail']->qc[0]->workOrder->picker->name  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <!--end col-->
+                                            <!--end col-->
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="labelInput" class="form-label">QC End Date/Time</label>
+                                                    <input type="text" class="form-control" id="labelInput1" value="{{$data['orderDetail']->qc[0]->start_time  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="labelInput" class="form-label">QC End Date/Time</label>
+                                                    <input type="text" class="form-control" id="labelInput" value="{{$data['orderDetail']->qc[0]->end_time  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="acitivity-timeline">
+                                        {{--                                    @if(Auth::guard('admin')->check())--}}
+                                        @if(count($data['orderDetail']['qc'][0]['qcOrdersItems']) > 0)
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-4">
+                                                        <h5 class="card-title flex-grow-1 mb-0"> Orders QC Item List</h5>
+                                                        <div class="flex-shrink-0">
+                                                            {{--                                                            <a href="{{route('admin.put-away.export',['orderId'=>$data['orderDetail']['data']['id']])}}" type="button"  class="btn btn-primary" title="Download Excel file for WMS"><i class="ri-download-2-fill me-1 align-bottom"></i>Export Excel</a>--}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            @if(count($data['orderDetail']['qc'][0]['qcOrdersItems']) > 0)
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-borderless align-middle mb-0">
+                                                                        <thead class="table-light">
+                                                                        <tr >
+                                                                            <th scope="col">#</th>
+                                                                            <th scope="col">
+                                                                                Product Name
+                                                                            </th>  <th scope="col">
+                                                                                Product SKU
+                                                                            </th>
+                                                                            <th scope="col" style="">Location</th>
+                                                                            <th scope="col" style="">
+                                                                                <div class="d-flex currency-select input-light align-items-center"> Picked Quantity
+                                                                                </div>
+                                                                            </th>
+                                                                            <th scope="col" style="">
+                                                                                <div class="d-flex currency-select input-light align-items-center"> QC Quantity
+                                                                                </div>
+                                                                            </th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody id="packagingTable">
+                                                                        @foreach($data['orderDetail']['qc'][0]['qcOrdersItems'] as $key => $row)
+                                                                            <tr>
+                                                                                <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                                                <td>{{++$key}}</td>
+                                                                                <td>{{$row->workOrderItem->inventory->item_name ?? "-"}}</td>
+                                                                                <td>{{$row->workOrderItem->inventory->sku ?? "-"}}</td>
+                                                                                <td>{{$row->workOrderItem->location->loc_title ?? "-"}}</td>
+                                                                                <td>{{$row->picked_qty ?? "-"}}</td>
+                                                                                <td>{{$row->qc_picked_qty ?? "-"}}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            @else
+                                                                <div class="text-center mt-3">
+                                                                    <h4>QC Item List Not Found</h4>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        {{--                                    @endif--}}
+                                    </div>
+                                @else
+                                    <div class="text-center mt-3">
+                                        <h4>Work Order QC Not Found</h4>
+                                    </div>
+                                @endif
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <div class="tab-pane fade" id="orderProcessing" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Order Processing</h5>
+                                @if(count($data['orderDetail']['processing']) > 0)
+                                    <div class="live-preview">
+                                        <div class="row gy-4">
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="basiInput" class="form-label">Order Reference #</label>
+                                                    <input type="text" class="form-control" id="basiInput" value="{{$data['orderDetail']->processing[0]->workOrder->order_reference  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="placeholderInput" class="form-label">Picker</label>
+                                                    <input type="text" class="form-control" name="picker" value="{{$data['orderDetail']->processing[0]->workOrder->picker->name  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <!--end col-->
+                                            <!--end col-->
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="labelInput" class="form-label">Processing End Date/Time</label>
+                                                    <input type="text" class="form-control" id="labelInput1" value="{{$data['orderDetail']->processing[0]->start_time  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-xxl-3 col-md-6">
+                                                <div>
+                                                    <label for="labelInput" class="form-label">Processing End Date/Time</label>
+                                                    <input type="text" class="form-control" id="labelInput" value="{{$data['orderDetail']->processing[0]->end_time  ?? ""}}" disabled="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="acitivity-timeline">
+                                        {{--                                    @if(Auth::guard('admin')->check())--}}
+                                        @if(count($data['orderDetail']['processing'][0]['processingOrderItems']) > 0)
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-4">
+                                                        <h5 class="card-title flex-grow-1 mb-0"> Orders Processing Item List</h5>
+                                                        <div class="flex-shrink-0">
+                                                            {{--                                                            <a href="{{route('admin.put-away.export',['orderId'=>$data['orderDetail']['data']['id']])}}" type="button"  class="btn btn-primary" title="Download Excel file for WMS"><i class="ri-download-2-fill me-1 align-bottom"></i>Export Excel</a>--}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            @if(count($data['orderDetail']['processing'][0]['processingOrderItems']) > 0)
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-borderless align-middle mb-0">
+                                                                        <thead class="table-light">
+                                                                        <tr >
+                                                                            <th scope="col">#</th>
+                                                                            <th scope="col">Tasks</th>
+                                                                            <th scope="col" style="">Qty (if any)</th>
+                                                                            <th scope="col" class=>Other comments (if any) </th>
+                                                                            <th scope="col">Status</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody id="packagingTable">
+                                                                        @foreach($data['orderDetail']['processing'][0]['processingOrderItems'] as $key => $row)
+                                                                            <tr>
+                                                                                <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
+                                                                                <td>{{++$key}}</td>
+                                                                                <td>{{$row->task->name ?? "-"}}</td>
+                                                                                <td>{{$row->qty ?? "-"}}</td>
+                                                                                <td>{{$row->comment ?? "-"}}</td>
+                                                                                <td>{{$row->status->status_title ?? "-"}}</td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            @else
+                                                                <div class="text-center mt-3">
+                                                                    <h4>Processing Item List Not Found</h4>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        {{--                                    @endif--}}
+                                    </div>
+                                @else
+                                    <div class="text-center mt-3">
+                                        <h4>Work Order Processing Not Found</h4>
+                                    </div>
+                                @endif
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
                 </div>
 
             </div>

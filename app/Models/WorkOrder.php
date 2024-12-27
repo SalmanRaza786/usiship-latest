@@ -25,6 +25,8 @@ class WorkOrder extends Model
         'status_code',
     ];
 
+
+
     public function client()
     {
         return $this->belongsTo(CustomerCompany::class, 'client_id', 'id');
@@ -41,6 +43,22 @@ class WorkOrder extends Model
     public function carrier()
     {
         return $this->belongsTo(Carriers::class, 'carrier_id', 'id');
+    }
+    public function picking()
+    {
+        return $this->hasMany(WorkOrderPicker::class, 'work_order_id', 'id');
+    }
+    public function missing()
+    {
+        return $this->hasMany(MissedItem::class, 'work_order_id', 'id');
+    }
+    public function qc()
+    {
+        return $this->hasMany(QcWorkOrder::class, 'work_order_id', 'id');
+    }
+    public function processing()
+    {
+        return $this->hasMany(OrderProcessing::class, 'work_order_id', 'id');
     }
 
     public function loadType()
