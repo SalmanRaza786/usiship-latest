@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\LoadType;
 use App\Models\Order;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\checkIn\CheckInInterface;
@@ -43,12 +44,22 @@ class OrderController extends Controller
             if ($validator->fails()){
                 return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
+            if ($request->load_type_id)
+            {
+                $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
+            }
+            if($loadTypeDirection == 2 )
+            {
+                $roleUpdateOrCreate = $this->order->updateOrCreateOutbound($request,$request->id);
+            }else{
+                $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
+            }
 
             $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $orderData=$roleUpdateOrCreate->get('data');
-                Helper::notificationTriggerHelper(1,null);
-                Helper::notificationTriggerHelper(2,$orderData->customer_id);
+//                Helper::notificationTriggerHelper(1,null);
+//                Helper::notificationTriggerHelper(2,$orderData->customer_id);
                 return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
                 return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);

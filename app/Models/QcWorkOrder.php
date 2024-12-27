@@ -14,6 +14,10 @@ class QcWorkOrder extends Model
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
     }
+    public function qcOrdersItems()
+    {
+        return $this->hasMany(QcDetailWorkOrder::class, 'qc_parent_id', 'id');
+    }
 
     public function status()
     {

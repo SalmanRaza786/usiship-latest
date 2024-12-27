@@ -18,6 +18,10 @@ class OrderProcessing extends Model
     {
         return $this->belongsTo(QcWorkOrder::class, 'qc_work_order_id', 'id');
     }
+    public function processingOrderItems()
+    {
+        return $this->hasMany(ProcessingDetail::class, 'processing_id','id');
+    }
 
     public function status()
     {

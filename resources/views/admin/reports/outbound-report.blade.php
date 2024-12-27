@@ -197,7 +197,7 @@
                 $('#roleTable').DataTable().ajax.reload();
             });
 
-
+            var wmsOrderDetailUrl = "{{ route('admin.wms-orders.detail', ':id') }}";
             $('#roleTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -220,7 +220,7 @@
                 },
                 columns: [
                     { data: null },
-                    { data: 'work_order_item.work_order.wms_transaction_id' },
+                    { data: 'work_order_item.work_order' },
                     { data: 'work_order_item.work_order.order_reference' },
                     { data: null },
                     { data: 'work_order_item.work_order.client.title' },
@@ -239,6 +239,17 @@
                             return meta.row + 1; // Row index + 1
                         },
                         orderable: false, // Disable ordering for serial number
+                    },
+                    {
+                        targets: 1,
+                        render: function(data, type, row, meta) {
+                            let detailUrl = wmsOrderDetailUrl.replace(':id', data.id); // Replace placeholder with row.id
+                            return '<div class="form-check">' +
+                                '<a href="' + detailUrl + '" class="form-check-link">' +
+                                data.wms_transaction_id + // Dynamically add the transaction ID as the link text
+                                '</a>' +
+                                '</div>';
+                        }
                     },
                     {
                         targets: 3,

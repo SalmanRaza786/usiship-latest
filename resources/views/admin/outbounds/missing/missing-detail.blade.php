@@ -112,8 +112,6 @@
                                     <tr class="table-active">
                                         <th scope="col" style="width: 50px;">#</th>
                                         <th scope="col">Product SKU</th>
-
-
                                         <th scope="col" style="">Resolve Qty</th>
                                         <th scope="col" class=>Photo</th>
                                         <th scope="col">New Location</th>
