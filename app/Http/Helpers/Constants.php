@@ -18,5 +18,14 @@ class Constants
     static public $class_8 = 4;
     static public $class_Others = 5;
 
+
+    const ADMIN = 1;
+    const USER = 2;
+
+    const INBOUND = 1;
+    const OUTBOUND = 2;
+
+
+
 }
 

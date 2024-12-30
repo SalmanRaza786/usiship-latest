@@ -3,6 +3,7 @@ namespace App\Repositries\appointment;
 
 use App\Events\SendEmailEvent;
 use App\Exceptions\ImportException;
+use App\Http\Helpers\Constants;
 use App\Http\Helpers\Helper;
 
 use App\Imports\ImportPackagingList;
@@ -264,8 +265,9 @@ class AppointmentRepositry implements AppointmentInterface {
             );
 
             $orderId=$order->id;
-            $this->outboundWorkOrders($request->wms_order_ids_array,$orderId);
-
+            if($request->wms_order_ids_array) {
+                $this->outboundWorkOrders($request->wms_order_ids_array, $orderId);
+            }
             if($request->customfield){
                 $this->saveFormFields($request,$orderId);
             }
@@ -286,7 +288,15 @@ class AppointmentRepositry implements AppointmentInterface {
 
             //1 for admin 2 for user
             $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
-            $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
+
+            $outboundCompanyIds = OutboundOrders::where('order_id', $orderId)->pluck('company_id')->toArray();
+
+            if (!empty($outboundCompanyIds)) {
+                $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                foreach ($companyContacts as $companyContact) {
+                    $this->sendNotification($orderId,$companyContact,$request->order_status,2);
+                }
+            }
 
             if($order->order_type==2 && $order->work_order_id != null)
             {

@@ -54,8 +54,7 @@ class OrderController extends Controller
             }else{
                 $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
             }
-
-            $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
+//            $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $orderData=$roleUpdateOrCreate->get('data');
 //                Helper::notificationTriggerHelper(1,null);
@@ -108,7 +107,6 @@ class OrderController extends Controller
                 'customer_name' =>$res->customer->name,
                 'order_date' => date('d M,Y',strtotime($res->order_date)) ,
                 'slot' => date('i',strtotime($res->operationalHour->working_hour)),
-
                 'dock' =>$res->dock->dock->title,
                 'status_id' =>$res->status_id,
                 'status_order_by' =>$res->status->order_by,
