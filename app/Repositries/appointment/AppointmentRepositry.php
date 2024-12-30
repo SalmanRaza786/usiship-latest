@@ -616,9 +616,7 @@ class AppointmentRepositry implements AppointmentInterface {
                             }
                         ]);
                     }
-                ])->whereHas('outboundOrders.company', function ($query) use ($companyId) {
-                    $query->where('id', $companyId);
-                });
+                ]);
             }
 
 // Fetch the specific order

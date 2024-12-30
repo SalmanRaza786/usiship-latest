@@ -104,7 +104,7 @@ class OrderController extends Controller
             if (!Order::find($id)) {
                 return back()->with('error','Invalid order id');
             }
-             $data['orderDetail']=$this->getOrderInfo($id);
+            $data['orderDetail']=$this->getOrderInfo($id);
             return view('admin.order.order-detail')->with(compact('data'));
         } catch (\Exception $e) {
             return $e->getMessage();
