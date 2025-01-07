@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\WhLocation;
 use App\Models\WorkOrder;
+use App\Repositries\customerCompanies\CustomerCompaniesInterface;
 use App\Repositries\dock\DockInterface;
 use App\Repositries\orderStatus\OrderStatusInterface;
 use App\Repositries\user\UserInterface;
@@ -25,14 +26,16 @@ class WorkOrderController extends Controller
     private $status;
     private $dataService;
     private $dock;
+    private $customerCompanies;
 
 
-    public function __construct(WorkOrderInterface $workOrder,UserInterface $staff,OrderStatusInterface $status,DataService $dataService,DockInterface $dock) {
+    public function __construct(WorkOrderInterface $workOrder,UserInterface $staff,OrderStatusInterface $status,DataService $dataService,DockInterface $dock, CustomerCompaniesInterface $customerCompanies) {
         $this->workOrder =$workOrder;
         $this->staff =$staff;
         $this->status =$status;
         $this->dataService =$dataService;
         $this->dock =$dock;
+        $this->customerCompanies =$customerCompanies;
 
     }
 
@@ -41,6 +44,7 @@ class WorkOrderController extends Controller
         try {
             $data['staff']=Helper::fetchOnlyData($this->staff->getAllUser());
             $data['status']=Helper::fetchOnlyData($this->status->getAllStatus());
+            $data['customers']=Helper::fetchOnlyData($this->customerCompanies->getAllCompanies());
             return view('admin.outbounds.work-orders.index')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());

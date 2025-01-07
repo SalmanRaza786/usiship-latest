@@ -48,6 +48,19 @@
                             <!--end col-->
                             <div class="col-xxl-3 col-sm-4">
                                 <div>
+                                    <select class="form-select" data-choices id="customersDropdown" required data-trigger  name="s_customers">
+                                        <option value="">Customers</option>
+                                        <option value="" selected>{{__('translation.all')}}</option>
+                                        @isset($data['customers'])
+                                            @foreach($data['customers']['data'] as $customer)
+                                                <option value="{{$customer->id}}">{{$customer->title}}</option>
+                                            @endforeach
+                                        @endisset
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-sm-4">
+                                <div>
                                     <select class="form-control"  name="s_status">
                                         <option value="">Status</option>
                                         <option value="" selected>{{__('translation.all')}}</option>
@@ -112,6 +125,16 @@
     <script src="{{ URL::asset('build/js/custom-js/workOrders/workOrders.js') }}"></script>
 <script>
     $(document).ready(function(){
+        initLoadTypeDropdown();
+        function initLoadTypeDropdown() {
+            const element3 = document.querySelector('#customersDropdown');
+            if (element3 && element3.choicesInstance) {
+                element3.choicesInstance.destroy();
+            }
+            new Choices('#customersDropdown', {
+                removeItemButton: true,
+            });
+        }
         var wmsOrderDetailUrl = "{{ route('admin.wms-orders.detail', ':id') }}";
         $('#roleTable').DataTable({
             processing: true,
@@ -127,7 +150,8 @@
                 url: "work-orders-list",
                 data: function (d) {
                     d.s_title = $('input[name=s_title]').val(),
-                        d.s_status = $('select[name=s_status]').val()
+                        d.s_status = $('select[name=s_status]').val(),
+                        d.s_customers = $('select[name=s_customers]').val()
                 },
             },
             columns: [

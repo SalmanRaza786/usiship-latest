@@ -271,7 +271,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="acitivity-timeline">
+                                <div class="activity-timeline">
 {{--                                    @if(Auth::guard('admin')->check())--}}
                                         @if(count($data['orderDetail']['picking'][0]['pickingOrderItems']) > 0)
                                             <div class="card">
@@ -305,6 +305,8 @@
                                                                                 <div class="d-flex currency-select input-light align-items-center"> Picked Quantity
                                                                                 </div>
                                                                             </th>
+                                                                            <th scope="col" >Images</th>
+                                                                            <th scope="col" >Stage Loc Images</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody id="packagingTable">
@@ -318,6 +320,28 @@
                                                                                 <td>{{$row->order_qty ?? "-"}}</td>
                                                                                 <td>{{$row->pickedlocation->loc_title ?? "-"}}</td>
                                                                                 <td>{{$row->picked_qty ?? "-"}}</td>
+                                                                                <td>
+                                                                                    @if($row->media)
+                                                                                        @foreach($row->media as $image)
+                                                                                            @if($image->field_name == "pickedItemImages")
+                                                                                            <a href="{{ asset('storage/uploads/'.$image->file_name) }}" class="image-popup">
+                                                                                                <img src="{{ asset('storage/uploads/'.$image->file_thumbnail) }}" alt="Image Preview" class="gallery-img img-fluid mx-auto rounded avatar-sm rounded object-fit-cover">
+                                                                                            </a>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </td>
+                                                                                <td>
+                                                                                    @if($row->media)
+                                                                                        @foreach($row->media as $image)
+                                                                                            @if($image->field_name == "pickedStagedLocImages")
+                                                                                                <a href="{{ asset('storage/uploads/'.$image->file_name) }}" class="image-popup">
+                                                                                                    <img src="{{ asset('storage/uploads/'.$image->file_thumbnail) }}" alt="Image Preview" class="gallery-img img-fluid mx-auto rounded avatar-sm rounded object-fit-cover">
+                                                                                                </a>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </td>
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>
@@ -386,7 +410,7 @@
                                             <div class="card">
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-center mb-4">
-                                                        <h5 class="card-title flex-grow-1 mb-0"> Orders Picking Item List</h5>
+                                                        <h5 class="card-title flex-grow-1 mb-0"> Orders Missing Item List</h5>
                                                         <div class="flex-shrink-0">
                                                             {{--                                                            <a href="{{route('admin.put-away.export',['orderId'=>$data['orderDetail']['data']['id']])}}" type="button"  class="btn btn-primary" title="Download Excel file for WMS"><i class="ri-download-2-fill me-1 align-bottom"></i>Export Excel</a>--}}
                                                         </div>
@@ -414,6 +438,8 @@
                                                                                 </div>
                                                                             </th>
                                                                             <th scope="col" style="">New Location</th>
+                                                                            <th scope="col" style="">Images</th>
+                                                                            <th scope="col" style="">New Location Images</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody id="packagingTable">
@@ -427,6 +453,32 @@
                                                                                 <td>{{$row->pickedItem->location->loc_title ?? "-"}}</td>
                                                                                 <td>{{$row->missed_qty ?? "-"}}</td>
                                                                                 <td>{{$row->pickedItem->pickedlocation->loc_title ?? "-"}}</td>
+                                                                                <td>
+                                                                                    @if($row->resovledMissingItems)
+                                                                                        @foreach($row->resovledMissingItems as $items)
+                                                                                            @foreach($items->media as $image)
+                                                                                                @if($image->field_name == "resolveItemImages")
+                                                                                                    <a href="{{ asset('storage/uploads/'.$image->file_name) }}" class="image-popup">
+                                                                                                        <img src="{{ asset('storage/uploads/'.$image->file_thumbnail) }}" alt="Image Preview" class="gallery-img img-fluid mx-auto rounded avatar-sm rounded object-fit-cover">
+                                                                                                    </a>
+                                                                                                @endif
+                                                                                            @endforeach
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </td>
+                                                                                <td>
+                                                                                    @if($row->resovledMissingItems)
+                                                                                        @foreach($row->resovledMissingItems as $items)
+                                                                                            @foreach($items->media as $image)
+                                                                                                @if($image->field_name == "newLocationItemImages")
+                                                                                                    <a href="{{ asset('storage/uploads/'.$image->file_name) }}" class="image-popup">
+                                                                                                        <img src="{{ asset('storage/uploads/'.$image->file_thumbnail) }}" alt="Image Preview" class="gallery-img img-fluid mx-auto rounded avatar-sm rounded object-fit-cover">
+                                                                                                    </a>
+                                                                                                @endif
+                                                                                            @endforeach
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </td>
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>
@@ -434,7 +486,7 @@
                                                                 </div>
                                                             @else
                                                                 <div class="text-center mt-3">
-                                                                    <h4>Picking Item List Not Found</h4>
+                                                                    <h4>Missing Item List Not Found</h4>
                                                                 </div>
                                                             @endif
                                                         </div>
@@ -446,7 +498,7 @@
                                     </div>
                                 @else
                                     <div class="text-center mt-3">
-                                        <h4>Work Order Picking Not Found</h4>
+                                        <h4>Work Order Missing Not Found</h4>
                                     </div>
                                 @endif
                             </div>
@@ -522,6 +574,7 @@
                                                                                 <div class="d-flex currency-select input-light align-items-center"> QC Quantity
                                                                                 </div>
                                                                             </th>
+                                                                            <th scope="col">Images</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody id="packagingTable">
@@ -534,6 +587,17 @@
                                                                                 <td>{{$row->workOrderItem->location->loc_title ?? "-"}}</td>
                                                                                 <td>{{$row->picked_qty ?? "-"}}</td>
                                                                                 <td>{{$row->qc_picked_qty ?? "-"}}</td>
+                                                                                <td>
+                                                                                    @if($row->media)
+                                                                                        @foreach($row->media as $image)
+                                                                                            @if($image->field_name == "qcItemImages")
+                                                                                                <a href="{{ asset('storage/uploads/'.$image->file_name) }}" class="image-popup">
+                                                                                                    <img src="{{ asset('storage/uploads/'.$image->file_thumbnail) }}" alt="Image Preview" class="gallery-img img-fluid mx-auto rounded avatar-sm rounded object-fit-cover">
+                                                                                                </a>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </td>
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>
@@ -619,6 +683,7 @@
                                                                             <th scope="col" style="">Qty (if any)</th>
                                                                             <th scope="col" class=>Other comments (if any) </th>
                                                                             <th scope="col">Status</th>
+                                                                            <th scope="col">Photos</th>
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody id="packagingTable">
@@ -630,6 +695,17 @@
                                                                                 <td>{{$row->qty ?? "-"}}</td>
                                                                                 <td>{{$row->comment ?? "-"}}</td>
                                                                                 <td>{{$row->status->status_title ?? "-"}}</td>
+                                                                                <td>
+                                                                                    @if($row->media)
+                                                                                        @foreach($row->media as $image)
+                                                                                            @if($image->field_name == "processingItemImages")
+                                                                                                <a href="{{ asset('storage/uploads/'.$image->file_name) }}" class="image-popup">
+                                                                                                    <img src="{{ asset('storage/uploads/'.$image->file_thumbnail) }}" alt="Image Preview" class="gallery-img img-fluid mx-auto rounded avatar-sm rounded object-fit-cover">
+                                                                                                </a>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </td>
                                                                             </tr>
                                                                         @endforeach
                                                                         </tbody>

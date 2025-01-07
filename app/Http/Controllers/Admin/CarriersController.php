@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\Constants;
 use App\Http\Helpers\Helper;
 use App\Models\Carriers;
 use App\Models\Company;
 use App\Models\Order;
+use App\Models\OutboundOrders;
+use App\Models\User;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\carriers\CarriersInterface;
 use App\Repositries\companies\CompaniesInterface;
@@ -109,14 +112,37 @@ class CarriersController extends Controller
                     foreach ($existingOrdersIDs as $orderId){
                         $order = $this->order->changeOrderStatus($orderId, 9);
                         if ($order->get('status')) {
-                            $orderData = $order->get('data');
-                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
-                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
-                            if ($notification->get('status')) {
-                                Helper::notificationTriggerHelper(1, null);
-                                Helper::notificationTriggerHelper(2, $orderData->customer_id);
+//                            $orderData = $order->get('data');
+//                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
+//                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
+//                            if ($notification->get('status')) {
+//                                Helper::notificationTriggerHelper(1, null);
+//                                Helper::notificationTriggerHelper(2, $orderData->customer_id);
+//                            }
+                            $data=$order->get('data');
+                            $notification = $this->order->sendNotification($data->id, $data->customer_id, 9, 1);
+                            Helper::notificationTriggerHelper(1, null);
+                            if($data->order_type != Constants::OUTBOUND)
+                            {
+                                $customerId = $data->customer_id;
+                                $notification = $this->order->sendNotification($orderId, $customerId, 9, 2);
+                                if ($notification->get('status')) {
+                                    Helper::notificationTriggerHelper(2, $customerId);
+                                }
+                            }else {
+                                $outboundCompanyIds = OutboundOrders::where('order_id', $data->id)->pluck('company_id')->toArray();
+                                if (!empty($outboundCompanyIds)) {
+                                    $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                                    foreach ($companyContacts as $companyContact) {
+                                        $notification = $this->order->sendNotification($orderId, $companyContact, 9, 2);
+                                        if ($notification->get('status')) {
+                                            Helper::notificationTriggerHelper(2, $companyContact);
+                                        }
+                                    }
+                                }
                             }
                         }
+
                     }
                     return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
                 }else{

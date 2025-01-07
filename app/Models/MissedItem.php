@@ -23,6 +23,10 @@ class MissedItem extends Model
     {
         return $this->belongsTo(WorkOrderPicker::class, 'picker_table_id', 'id');
     }
+    public function media()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
 
     public function status()
     {

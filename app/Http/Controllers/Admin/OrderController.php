@@ -71,6 +71,13 @@ class OrderController extends Controller
             }
             $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
 
+            $orderContainerNos = [];
+            foreach ($row->orderContacts as $orderContact) {
+
+                $orderContainerNos[] = $orderContact->vehicle_number;
+            }
+            $orderContainerNosString = !empty($orderContainerNos) ? implode(", ", $orderContainerNos) : "-";
+
             $fromOperationalHour = $row->bookedSlots->first();
             $toOperationalHour = $row->bookedSlots->last();
 
@@ -78,7 +85,7 @@ class OrderController extends Controller
             $array = array(
                 'id' => $row->id,
                 'wh_name' => $row->warehouse->title,
-                'customer_name' => ($row->order_type == 1 ?  $row->company->title: $orderCustomersString),
+                'customer_name' => ($row->order_type == 1 ?  $row->company->title."(".$orderContainerNosString.")": $orderCustomersString),
                 'start_time_hour' => count($row->bookedSlots) ? date('H', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
                 'end_time_minut' => count($row->bookedSlots) ? date('i', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
                 'end_s' => count($row->bookedSlots) ? date('H', strtotime($toOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
