@@ -42,11 +42,14 @@ class WorkOrderRepositry implements WorkOrderInterface
             $qry=$qry->when($request->s_status, function ($query, $status) {
                 return $query->where('status_code',$status);
             });
+            $qry=$qry->when($request->s_customers, function ($query, $companyId) {
+                return $query->where('client_id',$companyId);
+            });
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
 
-            if (!empty($request->get('s_title')) ) {
+            if (!empty($request->get('s_title')) || !empty($request->get('s_status')) || !empty($request->get('s_customers'))) {
                 $data['totalRecords']=$qry->count();
             }
             return Helper::success($data, $message="Record found");
@@ -348,7 +351,26 @@ class WorkOrderRepositry implements WorkOrderInterface
     public function getWMSOrderInfo($id)
     {
         try {
-            $res = WorkOrder::with('picker','carrier','client','status','wOrderItems.inventory','wOrderItems.location','picking.workOrder','picking.pickingOrderItems.inventory','picking.pickingOrderItems.location','qc.workOrder','qc.qcOrdersItems.workOrderItem.inventory','qc.qcOrdersItems.workOrderItem.location','processing.workOrder','processing.processingOrderItems','missing.workOrder','missing.missingOrderItems.pickedItem')->where('id', $id)->first();
+            $res = WorkOrder::with(
+                'picker',
+                'carrier',
+                'client',
+                'status',
+                'wOrderItems.inventory',
+                'wOrderItems.location',
+                'picking.workOrder',
+                'picking.pickingOrderItems.inventory',
+                'picking.pickingOrderItems.location',
+                'qc.workOrder',
+                'qc.qcOrdersItems.workOrderItem.inventory',
+                'qc.qcOrdersItems.workOrderItem.location',
+                'processing.workOrder',
+                'processing.processingOrderItems',
+                'missing.workOrder',
+                'missing.missingOrderItems.pickedItem'
+            )
+                ->where('id', $id)
+                ->first();
             return Helper::success($res, $message='Record found');
         }  catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

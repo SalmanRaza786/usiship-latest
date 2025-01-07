@@ -40,7 +40,7 @@
                             <input type="hidden" name="order_id" id="order_id" value="{{$data->order_id}}"/>
                                 @canany('admin-offloading-create')<button type="submit" class="btn btn-success btn-submit"  style=""><i class="ri-add-line align-bottom me-1"></i> Start On Loading Now</button>@endcanany
                         </form>
-                        <div class="col-auto justify-content-sm-end">
+                        <div class="col-auto justify-content-sm-end" >
                             <form method="post" class=" g-3 needs-validation" action="{{route('admin.on-loading.close')}}" autocomplete="off" id="addFormClose" >
                                 @csrf
                                 <input type="hidden" name="order_checkin_id" id="order_checkin_id" value="{{$data->id}}"/>

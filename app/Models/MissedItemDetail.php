@@ -14,4 +14,12 @@ class MissedItemDetail extends Model
     {
         return $this->belongsTo(PickedItem::class, 'picked_item_table_id', 'id');
     }
+
+    public function resovledMissingItems(){
+        return $this->hasMany(ResolvedMissedItem::class, 'missed_detail_parent_id', 'id');
+    }
+    public function media()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
+    }
 }

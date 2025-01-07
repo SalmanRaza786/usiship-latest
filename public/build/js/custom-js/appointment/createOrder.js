@@ -629,7 +629,7 @@ function wmsWorkORdersForMultiSelect(wmsOrders) {
 
     // Start creating the dropdown HTML
     let html = '<select class="form-select" data-choices data-choices-removeItem multiple id="wmsOrderDropdown" required data-trigger name="wms_order_ids_array[]">' +
-        '<option value="">Choose One</option>';
+        '<option value="">Search & Choose Work Orders</option>';
 
     // Loop through wmsOrders to create options
     $.each(wmsOrders, function (key, row) {

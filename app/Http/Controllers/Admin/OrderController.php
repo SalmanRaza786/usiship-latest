@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ClientNotificationEvent;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\Constants;
 use App\Http\Helpers\Helper;
 use App\Models\LoadType;
 use App\Models\Notification;
@@ -13,6 +14,8 @@ use App\Models\Order;
 use App\Models\OrderBookedSlot;
 use App\Models\OrderForm;
 use App\Models\OrderStatus;
+use App\Models\OutboundOrders;
+use App\Models\User;
 use App\Models\WorkOrder;
 use App\Notifications\OrderNotification;
 use App\Repositries\appointment\AppointmentInterface;
@@ -68,6 +71,13 @@ class OrderController extends Controller
             }
             $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
 
+            $orderContainerNos = [];
+            foreach ($row->orderContacts as $orderContact) {
+
+                $orderContainerNos[] = $orderContact->vehicle_number;
+            }
+            $orderContainerNosString = !empty($orderContainerNos) ? implode(", ", $orderContainerNos) : "-";
+
             $fromOperationalHour = $row->bookedSlots->first();
             $toOperationalHour = $row->bookedSlots->last();
 
@@ -75,7 +85,7 @@ class OrderController extends Controller
             $array = array(
                 'id' => $row->id,
                 'wh_name' => $row->warehouse->title,
-                'customer_name' => ($row->order_type == 1 ?  $row->company->title: $orderCustomersString),
+                'customer_name' => ($row->order_type == 1 ?  $row->company->title."(".$orderContainerNosString.")": $orderCustomersString),
                 'start_time_hour' => count($row->bookedSlots) ? date('H', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
                 'end_time_minut' => count($row->bookedSlots) ? date('i', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
                 'end_s' => count($row->bookedSlots) ? date('H', strtotime($toOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
@@ -228,12 +238,9 @@ class OrderController extends Controller
                 $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
             }
 
-
            if ($roleUpdateOrCreate->get('status')){
                $orderData=$roleUpdateOrCreate->get('data');
-               // 1 use for admin 2 for user
-//               $this->notificationTrigger(1,null);
-//               $this->notificationTrigger(2,$orderData->customer_id);
+               $this->triggerOrderNotifications($orderData);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
@@ -283,12 +290,25 @@ class OrderController extends Controller
             $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
              if($order->get('status')){
                  $data=$order->get('data');
-                 $customerId=$data->customer_id;
-                $notification= $this->appointment->sendNotification($orderId,$customerId,$orderStatus,2);
-
-                if($notification->get('status')){
-                    $this->notificationTrigger(2,$customerId);
-                }
+                 if($data->order_type != Constants::OUTBOUND)
+                 {
+                     $customerId = $data->customer_id;
+                     $notification = $this->appointment->sendNotification($orderId, $customerId, $orderStatus, 2);
+                     if ($notification->get('status')) {
+                         $this->notificationTrigger(Constants::USER, $customerId);
+                     }
+                 }else {
+                     $outboundCompanyIds = OutboundOrders::where('order_id', $data->id)->pluck('company_id')->toArray();
+                     if (!empty($outboundCompanyIds)) {
+                         $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                         foreach ($companyContacts as $companyContact) {
+                             $notification = $this->appointment->sendNotification($orderId, $companyContact, $orderStatus, 2);
+                             if ($notification->get('status')) {
+                                  $this->notificationTrigger(Constants::USER, $companyContact);
+                             }
+                         }
+                     }
+                 }
              }
              return $order;
         } catch (\Exception $e) {
@@ -420,6 +440,31 @@ class OrderController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
+
+    public function triggerOrderNotifications($orderData)
+    {
+        if (!$orderData) {
+            return Helper::ajaxError('Order data is null. Notification not triggered.');
+        }
+
+        $this->notificationTrigger(Constants::ADMIN, null);
+
+        if ($orderData->order_type == Constants::OUTBOUND) {
+            $outboundCompanyIds = OutboundOrders::where('order_id', $orderData->id)->pluck('company_id')->toArray();
+
+            if (!empty($outboundCompanyIds)) {
+                $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                foreach ($companyContacts as $companyContact) {
+                    $this->notificationTrigger(Constants::USER, $companyContact);
+                }
+            }
+        } else {
+            if (!empty($orderData->customer_id)) {
+                $this->notificationTrigger(Constants::USER, $orderData->customer_id);
+            }
+        }
+    }
+
 
 
 }
