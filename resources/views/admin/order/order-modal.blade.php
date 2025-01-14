@@ -192,7 +192,9 @@
                             <select class="form-select " name="customer_id" required data-choices>
                                 <option value="">Choose One</option>
                                 @foreach($data['customers'] as $row)
-                                    <option value="{{ $row->id }}">{{ $row->name}} ({{$row->company->title ?? '-'}})</option>
+                                    @if($row->company)
+                                        <option value="{{ $row->id }}">{{ $row->name}} ({{$row->company->title ?? '-'}})</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

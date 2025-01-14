@@ -60,7 +60,6 @@ class ReportsController extends Controller
             return $e->getMessage();
         }
     }
-
     public function outboundReportList(Request $request){
         try {
             $res=$this->WorkOrderQC->outboundReportList($request);
