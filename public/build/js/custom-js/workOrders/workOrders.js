@@ -66,7 +66,6 @@ $(document).ready(function(){
     $('#AssignForm').on('submit', function(e) {
         e.preventDefault();
 
-
         $(".sub_chk:checked").each(function() {
             allSelectedOrders.push($(this).val());
         });
@@ -76,7 +75,6 @@ $(document).ready(function(){
             toastr.error("Please select Order.");
             return 1;
         }
-        console.log('allSelectedOrders',allSelectedOrders);
 
         var formData = $(this).serialize();
         for (var i = 0; i < allSelectedOrders.length; i++) {
@@ -101,6 +99,7 @@ $(document).ready(function(){
                 if (response.status==true) {
                     $('#roleTable').DataTable().ajax.reload();
                     toastr.success(response.message);
+                    allSelectedOrders = [];
                     // $('#assignForm')[0].reset();
                     $('.btn-close').click();
 
@@ -108,11 +107,11 @@ $(document).ready(function(){
                 if (response.status==false) {
                     toastr.error(response.message);
                     $('.btn-submit').text('Assign');
+                    allSelectedOrders = [];
                     $(".btn-submit").prop("disabled", false);
                 }
 
             },
-
             complete: function(data) {
                 $(".btn-submit").html("Assign");
                 $(".btn-submit").prop("disabled", false);

@@ -20,25 +20,25 @@
                     <form action="{{ route('admin.permissions.assign')}}" method="post" id="PermForm">
                         @csrf
                         <div class="row g-3 mt-1 mb-3">
-                            <div class="col-xxl-2">
+                            <div class="col-4 col-xl-4 col-md-4 col-sm-4">
                             </div>
 
-                            <div class="col-xxl-2">
+                            <div class="col-2 col-xl-2 col-md-2 col-sm-2">
                                 <div class="ms-1" dir="ltr">
                                     <label class="form-check-label" for="customSwitchsizemd">View</label>
                                 </div>
                             </div>
-                            <div class="col-xxl-2">
+                            <div class="col-2 col-xl-2 col-md-2 col-sm-2">
                                 <div class="ms-1" dir="ltr">
                                     <label class="form-check-label" for="customSwitchsizemd">Add</label>
                                 </div>
                             </div>
-                            <div class="col-xxl-2">
+                            <div class="col-2 col-xl-2 col-md-2 col-sm-2">
                                 <div class="ms-1" dir="ltr">
                                     <label class="form-check-label" for="customSwitchsizemd">Edit</label>
                                 </div>
                             </div>
-                            <div class="col-xxl-2">
+                            <div class="col-2 col-xl-2 col-md-2 col-sm-2">
                                 <div class="ms-1" dir="ltr">
                                     <label class="form-check-label" for="customSwitchsizemd">Delete</label>
                                 </div>
@@ -52,7 +52,6 @@
                         </div>
                         <input type="hidden" name="role_id" value="{{($data['role'])?$data['role']->id:''}}">
 
-
                         @isset($data['permissions'])
 
                      @php  $lastElement = array_key_last($data['permissions']->toArray()); @endphp
@@ -61,18 +60,14 @@
 
                        <div class="row g-3" >
                            @if ($module->title === 'Miscellaneous') <hr>   @endif
-
-
-                          <div class="col-xxl-2" >
+                          <div class="col-4 col-xl-4 col-md-4 col-sm-4" >
                                <div >
                                  <label for="firstName" class="form-label" >{{$module->title}}</label >
                                </div >
                            </div >
                            @foreach ($module['permissions'] as $permissions)
-
-
                           @if ($module->id == $permissions->module_id)
-                            <div class="col-xxl-2" >
+                            <div class="col-2 col-xl-2 col-md-2 col-sm-2" >
                                <div class="form-check form-switch form-switch-md mb-3" dir = "ltr" >
                                    @if ($module->title === 'Miscellaneous')
                                <label class="form-check-label" >
@@ -84,7 +79,6 @@
                                        @case('admin-email-sms-edit')
                                            {{__('Email/SMS')}}
                                            @break
-
 
                                        @case('admin-dashboard-view')
                                            {{__('Admin/Dashboard')}}
@@ -121,18 +115,13 @@
                                   <input type = "checkbox" class="form-check-input"  name = "permissions[]" value = "{{$permissions->id}}"  @if(count($data['roles']->where('id', $permissions->id)))
                                       checked
                                       @endif>
-
                                </div></div >
-
-
                            @endif
                            @endforeach
                        </div >
 
                         @endforeach
                         @endisset
-
-
                         <div class="row g-3 mt-3">
                             <div class="hstack gap-2 justify-content-end">
                                 <a href="{{route('admin.roles.index')}}" class="btn btn-light">Close</a>
