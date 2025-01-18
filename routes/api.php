@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\ProcessingController;
         Route::any('/customer-home', [HomeController::class, 'customerHome']);
 
     Route::any('/ware-house-list', [WareHouseController::class, 'wareHouseList']);
+    Route::any('/customer-list', [HomeController::class, 'customersList']);
     Route::any('/dock-operational-hour', [WareHouseController::class, 'dockOperationalHour']);
     Route::any('/get-load-types', [WareHouseController::class, 'getLoadTypes']);
     Route::any('/get-wh-day-times', [WareHouseController::class, 'getWhDayTimes']);

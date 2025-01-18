@@ -617,7 +617,7 @@ var editOrderByVal=0;
                         isSelected = 'selected';
                     }
                 }
-            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
+            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.operation.value + ',' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
         });
 
         html +='</select>';
@@ -640,7 +640,7 @@ var editOrderByVal=0;
                     isSelected = 'selected';
                 }
             }
-            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
+            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.eq_type.value + ',' + row.trans_mode.value + ',' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
         });
 
         html +='</select>';

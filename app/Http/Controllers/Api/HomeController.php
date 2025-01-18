@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\appSettings\AppSettingsInterface;
 use App\Repositries\checkIn\CheckInInterface;
+use App\Repositries\customer\CustomerInterface;
 use App\Repositries\missing\MissingInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\orderContact\OrderContactInterface;
@@ -29,9 +30,10 @@ class HomeController extends Controller
     private $qc;
     private $processing;
     private $missing;
+    private $customer;
 
 
-    public function __construct(AppSettingsInterface $appSetting, OrderContactInterface $orderContact,CheckInInterface $checkIn,OffLoadingInterface $offLoading,AppointmentInterface $appointment, PickingInterface $picking, QcInterface $qc, ProcessingInterface $processing, MissingInterface $missing) {
+    public function __construct(AppSettingsInterface $appSetting, OrderContactInterface $orderContact,CheckInInterface $checkIn,OffLoadingInterface $offLoading,AppointmentInterface $appointment, PickingInterface $picking, QcInterface $qc, ProcessingInterface $processing, MissingInterface $missing,CustomerInterface $customer) {
         $this->appSetting = $appSetting;
         $this->orderContact = $orderContact;
         $this->checkIn = $checkIn;
@@ -41,6 +43,7 @@ class HomeController extends Controller
         $this->qc = $qc;
         $this->processing = $processing;
         $this->missing = $missing;
+        $this->customer = $customer;
 
     }
     //appSetting
@@ -103,4 +106,20 @@ class HomeController extends Controller
         }
 
     }
+
+    public function customersList(){
+        try {
+            $res = $this->customer->getAllCustomers();
+            if($res->get('status')){
+                return  Helper::createAPIResponce(false,200,'Customers List',$res->get('data'));
+            }else{
+                return  Helper::createAPIResponce(false,200,'Customers list empty',$res->get('data'));
+            }
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+
+    }
+
+
 }
