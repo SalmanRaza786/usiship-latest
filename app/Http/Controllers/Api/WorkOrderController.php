@@ -67,6 +67,7 @@ class WorkOrderController extends Controller
 
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
             $res=$this->workOrder->getWorkOrdersApi($request);
             return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
         } catch (\Exception $e) {

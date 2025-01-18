@@ -337,10 +337,12 @@ class WorkOrderRepositry implements WorkOrderInterface
     public function getWorkOrdersApi($request)
     {
         try {
-
             $companyId = $request->company_id;
-            $qry= WorkOrder::where('client_id',$companyId);
-//            $qry = $qry->where('status_code','!=',206);
+            if($companyId != 0){
+                $qry= WorkOrder::where('client_id',$companyId);
+            }else{
+                $qry= WorkOrder::query();
+            }
             $qry= $qry->with('client:id,title','status:id,status_title,order_by');
             $data =$qry->orderByDesc('id')->get();
             return Helper::success($data, $message="Out bound orders list");
