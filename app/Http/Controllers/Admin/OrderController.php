@@ -68,7 +68,7 @@ class OrderController extends Controller
             $orderCustomers = [];
             foreach ($row->outboundOrders as $outboundOrder) {
 
-                $orderCustomers[] = $outboundOrder->wmsOrder->wms_transaction_id."(". $outboundOrder->company->title.")";
+                $orderCustomers[] = $outboundOrder->wmsOrder->wms_transaction_id."(". $outboundOrder->company->title ?? "-".")";
             }
             $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
 
