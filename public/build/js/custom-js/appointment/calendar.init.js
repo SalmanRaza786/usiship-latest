@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     $.each(response.data, function (key, row) {
                         var newData = {
                             id: row.id,
-                            title: row.customer_name,
+                            title: row.customer_name ?? "-",
                             start: new Date(row.order_year,parseInt(row.order_month)-1,row.order_date,row.start_time_hour,row.end_time_minut),
 
                             allDay: false,
