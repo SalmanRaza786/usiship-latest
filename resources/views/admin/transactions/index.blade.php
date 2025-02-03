@@ -71,7 +71,7 @@
                             <th class="sort" data-sort="customer_name">Customer</th>
                             <th class="sort" data-sort="id">Warehouse</th>
                             <th class="sort" data-sort="customer_name">Dock</th>
-                            <th class="sort" data-sort="customer_name">Order Date</th>
+                            <th class="sort" data-sort="customer_name">Scheduled Date</th>
                             <th class="sort" data-sort="customer_name">Time Slot</th>
                             <th class="sort" data-sort="product_name">Status</th>
                             <th class="sort" data-sort="date">@lang('translation.action')</th>
