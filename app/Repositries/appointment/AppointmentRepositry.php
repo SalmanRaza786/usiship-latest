@@ -550,7 +550,7 @@ class AppointmentRepositry implements AppointmentInterface {
         try {
             $qry= Order::query();
             $qry= $qry->with('company','customer','bookedSlots.operationalHour','dock.loadType.direction','orderLogs.orderStatus','warehouse:id,title','operationalHour','status','wmsOrder','outboundOrders.wmsOrder','outboundOrders.company','orderContacts');
-            $data =$qry->orderByDesc('id')->get();
+            $data =$qry->orderBy('id','desc')->get();
             return Helper::success($data, $message="Record found");
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);

@@ -61,6 +61,7 @@ class OrderController extends Controller
        try {
         $res = $this->order->getAllOrders();
 
+
         $data = collect([]);
 
         foreach ($res['data'] as $row) {
@@ -68,7 +69,7 @@ class OrderController extends Controller
             $orderCustomers = [];
             foreach ($row->outboundOrders as $outboundOrder) {
 
-                $orderCustomers[] = $outboundOrder->wmsOrder->wms_transaction_id."(". $outboundOrder->company->title ?? "-".")";
+                $orderCustomers[] = $outboundOrder->wmsOrder->wms_transaction_id."(". $outboundOrder->company?->title ?? "-".")";
             }
             $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
 
@@ -86,7 +87,7 @@ class OrderController extends Controller
             $array = array(
                 'id' => $row->id,
                 'wh_name' => $row->warehouse->title,
-                'customer_name' => ($row->order_type == 1 ?  ($row->company->title ?? $row->order_id)."(".$orderContainerNosString.")": $orderCustomersString),
+                'customer_name' => ($row->order_type == 1 ?  ($row->company?->title ?? $row->order_id)."(".$orderContainerNosString.")": $orderCustomersString),
                 'start_time_hour' => count($row->bookedSlots) ? date('H', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
                 'end_time_minut' => count($row->bookedSlots) ? date('i', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
                 'end_s' => count($row->bookedSlots) ? date('H', strtotime($toOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
@@ -100,7 +101,7 @@ class OrderController extends Controller
             );
             $data->push($array);
             }
-          // dd($data);
+//           dd($data);
     return Helper::success($data,'Order list');
         } catch (\Exception $e) {
             return $e->getMessage();
