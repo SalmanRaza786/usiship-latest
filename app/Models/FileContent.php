@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,10 @@ class FileContent extends Model
         return $this->belongsTo(OrderForm::class, 'form_id','id');
     }
     protected $casts = [
-        'created_at' => 'datetime:d M, Y H:i:s ',
+        'created_at' => 'datetime',
     ];
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->timezone(config('app.timezone'))->format('d M, Y H:i:s');
+    }
 }

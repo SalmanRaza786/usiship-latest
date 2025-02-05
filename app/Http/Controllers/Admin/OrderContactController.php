@@ -70,6 +70,7 @@ class OrderContactController extends Controller
                     'vehicle_number'=>$contactRes->vehicle_number,
                     'vehicle_licence_plate'=>$contactRes->vehicle_licence_plate,
                     'bol_number'=>$contactRes->bol_number,
+                    'arrival_time'=>$contactRes->arrival_time,
                     'do_number'=>$contactRes->do_number,
                     'status_id'=>$contactRes->status_id,
                     'company_name'=>$contactRes->carrier->company->company_title,

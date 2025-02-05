@@ -172,15 +172,9 @@ class OrderContactRepositry implements OrderContactInterface {
     {
         try {
 
-
-            $orderContact = OrderContacts::updateOrCreate(
-                [
-                    'id' => $id
-                ],
-                [
-                    'is_verify' => '1'
-                ]
-            );
+            $orderContact = OrderContacts::find($id);
+            $orderContact->is_verify = '1';
+            $orderContact->save();
 
             return Helper::success($orderContact, $message="Carrier Documents Approved Successfully");
 
