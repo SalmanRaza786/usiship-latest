@@ -192,9 +192,10 @@
                                                                         <tr >
                                                                             <th scope="col">#</th>
                                                                             <th scope="col">
-                                                                                Product Name
-                                                                            </th>  <th scope="col">
                                                                                 Product SKU
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                Product Name
                                                                             </th>
                                                                             <th scope="col" style="">
                                                                                 <div class="d-flex currency-select input-light align-items-center">Quantity
@@ -209,8 +210,8 @@
                                                                             <tr>
                                                                                 <td class="d-none"><input type="hidden" name="id[]" value="{{$row->id}}"></td>
                                                                                 <td>{{++$key}}</td>
-                                                                                <td>{{$row->inventory->item_name ?? "-"}}</td>
                                                                                 <td>{{$row->inventory->sku ?? "-"}}</td>
+                                                                                <td>{{$row->inventory->item_name ?? "-"}}</td>
                                                                                 <td>{{$row->qty ?? "-"}}</td>
                                                                                 <td>{{$row->pallet_number ?? "-"}}</td>
                                                                                 <td>{{$row->location->loc_title ?? "-"}}</td>

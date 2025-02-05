@@ -235,12 +235,11 @@ class OrderController extends Controller
                 $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
             }
             if($loadTypeDirection == 2 )
-                {
-                    $roleUpdateOrCreate = $this->appointment->updateOrCreateOutbound($request,0);
-                }else{
+            {
+                $roleUpdateOrCreate = $this->appointment->updateOrCreateOutbound($request,0);
+            }else{
                 $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
             }
-
            if ($roleUpdateOrCreate->get('status')){
                $orderData=$roleUpdateOrCreate->get('data');
                $this->triggerOrderNotifications($orderData);
@@ -248,7 +247,6 @@ class OrderController extends Controller
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
            }
-
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -404,7 +402,7 @@ class OrderController extends Controller
                    'order_id' => $row->order_id,
                    'order_type' => ($row->order_type == 1 ? "Inbound":"Outbound"),
                    'customer_name' => ($row->order_type == 1 ?  $row->customer->name: $orderCustomersString),
-                   'company_name' => $row->customer->company->title ?? "-",
+                   'company_name' => ($row->order_type == 1 ?  $row->customer->company?->title: "-"),
                    'warehouse_title' =>$row->warehouse->title,
                    'dock_title' =>$row->dock->dock->title,
                    'order_date' => $row->order_date,
@@ -412,8 +410,6 @@ class OrderController extends Controller
                    'status_title' => $row->status->status_title,
                    'order_reference' => $orderReferencesString ?? "-",
                    'wms_transaction_id' => $transactionIdsString ?? "-",
-//                   'order_reference' => $row->wmsOrder->order_reference ?? "-",
-//                   'wms_transaction_id' => $row->wmsOrder->wms_transaction_id ?? "-",
                );
                $transactionData->push($array);
            }

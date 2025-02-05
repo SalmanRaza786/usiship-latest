@@ -249,7 +249,7 @@ class AppointmentRepositry implements AppointmentInterface {
                     'id' => $id
                 ],
                 [
-                    'customer_id' =>$request->created_by,
+                    'customer_id' =>$request->guard =="admin" ? null :$request->created_by,
                     'company_id' =>null,
                     'wh_id' => $request->wh_id,
                     'dock_id' => $request->dock_id,

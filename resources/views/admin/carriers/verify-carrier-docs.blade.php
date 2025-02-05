@@ -21,6 +21,7 @@
                         <input type="hidden" name="order_no" id="id" value="{{$data['orderContacts']['order_reference']}}">
                         <input type="hidden" name="company_id" id="id" value="{{$data['orderContacts']['company_id']}}">
                         <input type="hidden" name="carrier_id" id="id" value="{{$data['orderContacts']['carrier_id']}}">
+                        <input type="hidden" name="currentdatetime" id="id" value="{{$data['orderContacts']['arrival_time']}}">
                         <input type="hidden" name="orderContactId" id="id" value="{{$data['orderContacts']['orderContactId']}}">
                         <input type="hidden" name="from" id="id" value="1">
 
