@@ -41,7 +41,7 @@
                             </form>
 
                         </div>
-                        @if($data->status_id != 10)
+                        @if($data->start_time == null)
                         <div class="col-auto justify-content-sm-end">
                             <form method="post" class=" g-3 needs-validation" action="{{route('admin.off-loading.close')}}" autocomplete="off" id="addForm" >
                                 @csrf
@@ -158,7 +158,7 @@
                                                         <td class="product-id align-middle">{{$list->inventory->sku ?? "-"}}</td>
                                                         <td class="product-id align-middle">{{$list->qty ?? "-"}}<input type="hidden" name="qty" value="{{$list->qty??0}}"/> </td>
                                                         <td class="product-id align-middle">
-                                                            @if($data->status_id != 10)
+                                                          @if($data->start_time == null)
                                                             <div class="hstack gap-3">
                                                                 <a href="javascript:void(0);" data-row-id="{{ $key }}" class="link-success fs-15 edit-row"><i class="ri-edit-2-line fs-24"></i></a>
                                                                 <a href="javascript:void(0);" data-row-id="{{ $key }}" data-id ="{{$list->id}}" class="link-danger fs-15 save-row" style="display:none;"><i class="ri-save-line fs-24"></i></a>

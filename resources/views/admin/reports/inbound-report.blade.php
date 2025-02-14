@@ -195,7 +195,7 @@
             $('#filter').on('click', function() {
                 $('#roleTable').DataTable().ajax.reload();
             });
-
+            var OrderDetailUrl = "{{ route('admin.orders.detail', ':id') }}";
 
             $('#roleTable').DataTable({
                 processing: true,
@@ -219,7 +219,7 @@
                 },
                 columns: [
                     { data: null },
-                    { data: 'order.order_id' },
+                    { data: 'order' },
                     { data: 'order.order_type' },
                     { data: 'order.company.title' },
                     { data: 'order.customer.name' },
@@ -237,6 +237,16 @@
                             return meta.row + 1; // Row index + 1
                         },
                         orderable: false, // Disable ordering for serial number
+                    },
+                    {
+                        targets: 1,
+                        render: function(data, type, row, meta) {
+                            console.log(row);
+                            let detailUrl = OrderDetailUrl.replace(':id', data.id); // Replace placeholder with row.id
+                            return '<div class="form-check">' +
+                                '<a href="' + detailUrl + '" class="form-check-link">' + data.order_id + '</a>' +
+                                '</div>';
+                        }
                     },
                     {
                         targets: 2,

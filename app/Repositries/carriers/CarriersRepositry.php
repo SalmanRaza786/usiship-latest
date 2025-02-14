@@ -285,12 +285,21 @@ class CarriersRepositry implements CarriersInterface {
                         $media = Helper::createOrUpdateSingleMedia($request->file('other_document'), $fileableId, $fileableType, $this->carrierFilePath,$request->otherDocFileId,'other_document');
                     }
 
-                    $orderContact = OrderContacts::updateOrCreate(
-                        [
-                            'order_id' => $request->order_id,
-                            'carrier_id' => $carrier->id,
-                        ],
-                        [
+                    $orderContact = OrderContacts::where([
+                        'order_id' => $request->order_id,
+                        'carrier_id' => $carrier->id,
+                    ])->first();
+
+                    if ($orderContact) {
+                        $orderContact->update([
+                            'arrival_time' => $request->currentdatetime,
+                            'vehicle_number' => $request->vehicle_no,
+                            'vehicle_licence_plate' => $request->license_no,
+                            'bol_number' => $request->bol_no,
+                            'do_number' => $request->do_no,
+                        ]);
+                    } else {
+                        $orderContact = OrderContacts::create([
                             'order_id' => $request->order_id,
                             'carrier_id' => $carrier->id,
                             'arrival_time' => $request->currentdatetime,
@@ -299,8 +308,9 @@ class CarriersRepositry implements CarriersInterface {
                             'bol_number' => $request->bol_no,
                             'do_number' => $request->do_no,
                             'status_id' => 9,
-                        ]
-                    );
+                        ]);
+                    }
+
                     if($orderContact)
                     {
                         $fileableId = $orderContact->id;

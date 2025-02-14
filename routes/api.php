@@ -21,9 +21,9 @@ use App\Http\Controllers\Api\ProcessingController;
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
 
-        //Home
-        Route::any('/admin-home', [HomeController::class, 'adminHome']);
-        Route::any('/customer-home', [HomeController::class, 'customerHome']);
+    //Home
+    Route::any('/admin-home', [HomeController::class, 'adminHome']);
+    Route::any('/customer-home', [HomeController::class, 'customerHome']);
 
     Route::any('/ware-house-list', [WareHouseController::class, 'wareHouseList']);
     Route::any('/customer-list', [HomeController::class, 'customersList']);
@@ -83,20 +83,17 @@ use App\Http\Controllers\Api\ProcessingController;
         //Logout
         Route::any('/api-logout', [AuthController::class, 'logout']);
 
-    //Profile
-    Route::any('/update-profile', [ProfileController::class, 'updateProfile']);
+        //Profile
+        Route::any('/update-profile', [ProfileController::class, 'updateProfile']);
 
-
-    //Outbounds Order
+        //Outbounds Order
         Route::get('/get-all-staff', [WorkOrderController::class, 'getAllStaff']);
         Route::get('/get-outbound-all-status', [WorkOrderController::class, 'getAllStatus']);
         Route::get('/outbound-orders-list', [WorkOrderController::class, 'workOrdersList']);
         Route::get('/client-outbound-orders-list', [WorkOrderController::class, 'workOrdersListClient']);
         Route::post('/picker-assign', [WorkOrderController::class, 'pickerAssign']);
 
-
         //Picking
-
         Route::get('/picking-list', [PickingController::class, 'pickerList']);
         Route::get('/get-all-locations', [PickingController::class, 'getAllLocations']);
         Route::get('/picking-detail', [PickingController::class, 'startPicking']);
@@ -121,18 +118,12 @@ use App\Http\Controllers\Api\ProcessingController;
         Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcessing']);
         Route::any('/update-processing', [ProcessingController::class, 'updateProcessingItem']);
         Route::any('/remove-processing-item', [ProcessingController::class, 'removeProcessingItem']);
-
-
-
   });
 
     Route::any('/app-setting', [HomeController::class, 'appSetting']);
-
-
     Route::any('/api-login', [AuthController::class, 'login']);
     Route::any('/api-forget-password', [AuthController::class, 'forgetPassword']);
     Route::any('/api-reset-password', [AuthController::class, 'reset']);
     Route::any('/api-verify-otp', [AuthController::class, 'verifyOTP']);
     Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
     Route::any('/upload-file', [OrderController::class, 'uploadFile']);
-
