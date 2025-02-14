@@ -157,6 +157,7 @@ class AppointmentController extends Controller
             $roleUpdateOrCreate = $this->appointment->uploadPackagingList($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $order = $this->appointment->changeOrderStatus($request->id,11);
+
                 if($order->get('status')){
                     $data=$order->get('data');
                     $notification= $this->appointment->sendNotification($data->id,$data->customer_id,11,1);

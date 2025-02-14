@@ -201,14 +201,6 @@ class AppointmentRepositry implements AppointmentInterface {
             $this->sendNotification($orderId,$request->customer_id,$request->order_status,1);
             $this->sendNotification($orderId,$request->customer_id,$request->order_status,2);
 
-            if($order->order_type==2 && $order->work_order_id != null)
-            {
-                $workOrder = WorkOrder::find($order->work_order_id);
-                $workOrder->status_code = 206;
-                $workOrder->save();
-            }
-
-
             ($id==0)?$message = __('translation.record_created'): $message =__('translation.record_updated');
             DB::commit();
             return Helper::success($order,$message);
@@ -1054,6 +1046,7 @@ class AppointmentRepositry implements AppointmentInterface {
     {
         try {
             if(env('IS_NOTIFICATION_ENABLE',1) == 1) {
+
                 if ($status = OrderStatus::find($statusId)) {
                     $statusTitle = $status->status_title;
                 }

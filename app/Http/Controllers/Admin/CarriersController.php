@@ -110,7 +110,7 @@ class CarriersController extends Controller
             if ($roleUpdateOrCreate->get('status')) {
                 if ($request->from == 0) {
                     foreach ($existingOrdersIDs as $orderId){
-                        $order = $this->order->changeOrderStatus($orderId, 9);
+                        $order = $this->order->changeOrderStatus($orderId->id, 9);
                         if ($order->get('status')) {
 //                            $orderData = $order->get('data');
 //                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
@@ -125,7 +125,7 @@ class CarriersController extends Controller
                             if($data->order_type != Constants::OUTBOUND)
                             {
                                 $customerId = $data->customer_id;
-                                $notification = $this->order->sendNotification($orderId, $customerId, 9, 2);
+                                $notification = $this->order->sendNotification($data->id, $customerId, 9, 2);
                                 if ($notification->get('status')) {
                                     Helper::notificationTriggerHelper(2, $customerId);
                                 }
@@ -134,7 +134,7 @@ class CarriersController extends Controller
                                 if (!empty($outboundCompanyIds)) {
                                     $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
                                     foreach ($companyContacts as $companyContact) {
-                                        $notification = $this->order->sendNotification($orderId, $companyContact, 9, 2);
+                                        $notification = $this->order->sendNotification($data->id, $companyContact, 9, 2);
                                         if ($notification->get('status')) {
                                             Helper::notificationTriggerHelper(2, $companyContact);
                                         }
@@ -165,23 +165,40 @@ class CarriersController extends Controller
             if (Order::where('id', $request->order_id)->where('order_id', $request->order_no)->count() == 0) {
                 return Helper::error('Invalid order id or reference no');
             }
-
             $roleUpdateOrCreate = $this->carriers->CarriersVerifyInfo($request, $request->id);
             if ($roleUpdateOrCreate->get('status')) {
                 if ($request->from == 0) {
                     $order = $this->order->changeOrderStatus($request->order_id, 9);
                     if ($order->get('status')) {
-                        $orderData = $order->get('data');
-                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
-                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
-                        if ($notification->get('status')) {
-                            Helper::notificationTriggerHelper(1, null);
-                            Helper::notificationTriggerHelper(2, $orderData->customer_id);
-
-
+                        $data = $order->get('data');
+//                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
+//                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
+//                        if ($notification->get('status')) {
+//                            Helper::notificationTriggerHelper(1, null);
+//                            Helper::notificationTriggerHelper(2, $orderData->customer_id);
+//                        }
+                        $notification = $this->order->sendNotification($data->id, $data->customer_id, 9, 1);
+                        Helper::notificationTriggerHelper(1, null);
+                        if($data->order_type != Constants::OUTBOUND)
+                        {
+                            $customerId = $data->customer_id;
+                            $notification = $this->order->sendNotification($data->id, $customerId, 9, 2);
+                            if ($notification->get('status')) {
+                                Helper::notificationTriggerHelper(2, $customerId);
+                            }
+                        }else {
+                            $outboundCompanyIds = OutboundOrders::where('order_id', $data->id)->pluck('company_id')->toArray();
+                            if (!empty($outboundCompanyIds)) {
+                                $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                                foreach ($companyContacts as $companyContact) {
+                                    $notification = $this->order->sendNotification($data->id, $companyContact, 9, 2);
+                                    if ($notification->get('status')) {
+                                        Helper::notificationTriggerHelper(2, $companyContact);
+                                    }
+                                }
+                            }
                         }
                     }
-
                     return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
                 }else{
                     $update = $this->orderContact->updateOrderContact($request->orderContactId);

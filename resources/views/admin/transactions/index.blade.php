@@ -99,7 +99,7 @@
                 $('#roleTable').DataTable().ajax.reload();
             });
 
-
+            var OrderDetailUrl = "{{ route('admin.orders.detail', ':id') }}";
             $('#roleTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -117,7 +117,7 @@
                     }
                 },
                 columns: [
-                    { data: 'order_id' },
+                    { data: null },
                     { data: 'wms_transaction_id' },
                     { data: 'order_reference' },
                     { data: 'order_type' },
@@ -131,6 +131,16 @@
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
+                    {
+                        targets: 0,
+                        render: function(data, type, row, meta) {
+                            console.log(row);
+                            let detailUrl = OrderDetailUrl.replace(':id', data.id); // Replace placeholder with row.id
+                            return '<div class="form-check">' +
+                                '<a href="' + detailUrl + '" class="form-check-link">' + data.order_id + '</a>' +
+                                '</div>';
+                        }
+                    },
                     {
                         targets: 3,
                         render: function(data, type, row, meta) {
