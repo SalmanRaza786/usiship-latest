@@ -204,12 +204,15 @@ class WorkOrderController extends Controller
         $formattedDate = Carbon::parse($importDate)->format('Y-m-d\T00:00:00\Z');
 //        dd($formattedDate);
 //        2024-09-05T00:00:00Z
-        $Orderendpoint = 'orders?created_date[gte]='.$formattedDate;
+        $Orderendpoint = 'orders?status[in]=open,confirmed&created_date[gte]='.$formattedDate;
 //        dd($Orderendpoint);
 
         try {
             $batchSize = 1000;
             $wmsOrders = $this->dataService->fetchAllData($Orderendpoint);
+            if (empty($wmsOrders)) {
+                return Helper::ajaxError('Orders not found');
+            }
             $allData = [];
             foreach (array_chunk($wmsOrders, $batchSize) as $batch) {
                 foreach ($batch as &$order) {
