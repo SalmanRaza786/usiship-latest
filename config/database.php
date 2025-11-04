@@ -52,11 +52,14 @@ return [
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'strict' => true,
             'engine' => null,
+            'strict' => true,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::ATTR_EMULATE_PREPARES  => false, // use native prepares
+                PDO::ATTR_STRINGIFY_FETCHES => false, // DON'T turn numbers into strings
             ]) : [],
+
         ],
 
         'mariadb' => [
