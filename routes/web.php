@@ -90,6 +90,13 @@ Auth::routes();
 });
     Route::get('/firebase-access-token', [FirebaseController::class, 'getAccessToken']);
 
+Route::get('/_debug-pdo', function () {
+    $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
+    return [
+        'ATTR_STRINGIFY_FETCHES' => $pdo->getAttribute(PDO::ATTR_STRINGIFY_FETCHES),
+        'ATTR_EMULATE_PREPARES'  => $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+    ];
+});
 
 
 
