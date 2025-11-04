@@ -51,6 +51,6 @@ class Admin extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(\App\Models\Role::class, 'role_id', 'id');
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 }
