@@ -155,7 +155,7 @@ class OrderController extends Controller
     {
         try {
             $data=Helper::fetchOnlyData($this->order->getAllStatus());
-            return  Helper::createAPIResponce(false,200,'All Status',$data);
+            return  Helper::success($data,'All Status');
 
         } catch (\Exception $e) {
             return  Helper::createAPIResponce(false,400,$e->getMessage(),[]);
