@@ -10,7 +10,6 @@ class Role extends SpatieRole
 {
     protected $casts = [
         'id' => 'integer',
-        'status' => 'integer',
     ];
 
     public function permissions(): BelongsToMany
