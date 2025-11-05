@@ -55,7 +55,8 @@ class NormalizeJsonIds
             $key === 'id' ||
             str_ends_with($key, '_id') ||
             str_ends_with($key, '_code') ||
-            str_ends_with($key, '_by')
+            str_ends_with($key, '_by') ||
+            str_ends_with($key, 'on')
         );
     }
 
