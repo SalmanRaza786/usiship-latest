@@ -28,46 +28,35 @@ class NormalizeJsonIds
             return $value;
         }
 
-        // only numeric strings like "123"
+        // Only numeric strings like "123"
         if (!is_string($value) || !ctype_digit($value)) {
             return $value;
         }
 
-        // keep "00123" style codes
+        // Keep strings like "00123" (leading zeros)
         if ($this->hasLeadingZero($value)) {
             return $value;
         }
 
-        // ➜ NEVER cast *_code or *_by
-        if ($this->neverCastKey($parentKey)) {
-            return $value;
-        }
-
-        // ➜ cast only id / *_id
-        if ($this->looksLikeIdKey($parentKey) && $this->fitsPhpInt($value)) {
+        // Cast if key looks like an integer field
+        if ($this->looksLikeIntKey($parentKey) && $this->fitsPhpInt($value)) {
             return (int) $value;
         }
 
         return $value;
     }
 
-    private function looksLikeIdKey(?string $key): bool
+    private function looksLikeIntKey(?string $key): bool
     {
         if ($key === null) return false;
-        return $key === 'id' || str_ends_with($key, '_id');
-    }
 
-    private function neverCastKey(?string $key): bool
-    {
-        if ($key === null) return false;
-        // your request: block *_code and *_by from casting
-        if (str_ends_with($key, '_code')) return true;
-        if (str_ends_with($key, '_by')) return true;
-
-        // keep vehicle_no style fields safe as well (optional but sensible)
-        if ($key === 'vehicle_no' || str_ends_with($key, '_no')) return true;
-
-        return false;
+        // ✅ These keys should be treated as integers
+        return (
+            $key === 'id' ||
+            str_ends_with($key, '_id') ||
+            str_ends_with($key, '_code') ||
+            str_ends_with($key, '_by')
+        );
     }
 
     private function hasLeadingZero(string $s): bool
@@ -77,7 +66,7 @@ class NormalizeJsonIds
 
     private function fitsPhpInt(string $s): bool
     {
-        if (PHP_INT_SIZE < 8) return false; // don't cast on 32-bit PHP
+        if (PHP_INT_SIZE < 8) return false; // skip casting on 32-bit PHP
         $max = '9223372036854775807';
         $len = strlen($s);
         if ($len < strlen($max)) return true;
