@@ -23,11 +23,11 @@ class PickingRepositry implements PickingInterface
     public function getAllPickers($request)
     {
         try {
-            $data['totalRecords'] = WorkOrderPicker::publish()->count();
+            $data['totalRecords'] = WorkOrderPicker::publish()->where('picker_id',auth()->user()->id)->count();
             $qry= WorkOrderPicker::query();
             $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
             $qry= $qry->publish();
-//            $qry= $qry->where('status_code',205);
+            $qry= $qry->where('picker_id',auth()->user()->id);
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
@@ -68,6 +68,19 @@ class PickingRepositry implements PickingInterface
             $data['workOrder']=$qry->save();
 
 
+                if(!$request->stagedLoc)
+                {
+                    return Helper::error("Staged Location field require");
+                }
+                $wk = WorkOrder::find($request->workOrderId);
+                if(!$wk)
+                {
+                    return Helper::error("Work Order Not Found");
+                }
+                $wk->staged_location = $request->stagedLoc;
+                $wk->save();
+
+
             if($request->updateType==2) {
              $data['qc']=Helper::saveQcItems($request);
              MissedItem::where('picker_table_id',$request->pickerId)->update(['is_publish'=>1]);
@@ -87,7 +100,7 @@ class PickingRepositry implements PickingInterface
         try {
 
             $qry= PickedItem::query();
-            $qry= $qry->with('media','missedItem','inventory','location','wOrderItems');
+            $qry= $qry->with('media','missedItem','inventory','location','wOrderItems','pickedlocation');
             $qry =$qry->where('picker_table_id', $pickerId);
             $data =$qry->get();
 
@@ -164,14 +177,16 @@ class PickingRepositry implements PickingInterface
                     $fileableType = 'App\Models\PickedItem';
 
                     // Handle multiple file uploads for each row
-                    if ($request->hasFile("pickedItemImages.$key")) {
+                    if ($request->hasFile("pickedItemImages.$key") || $request->hasFile("pickedStagedLocImages.$key")) {
                         $uploadedFiles = $request->file("pickedItemImages.$key");
+                        $uploadedFilesLoc = $request->file("pickedStagedLocImages.$key");
 
                         $imageSets = [
-                            'pickedItemImages' => $uploadedFiles
+                            'pickedItemImages' => $uploadedFiles,
+                            'pickedStagedLocImages' => $uploadedFilesLoc,
                         ];
 
-                        if (!empty($imageSets['pickedItemImages'])) {
+                        if (!empty($imageSets['pickedItemImages']) || !empty($imageSets['pickedStagedLocImages'])) {
                             $media = Helper::uploadMultipleMedia($imageSets, $fileableId, $fileableType, $this->pickedItemFilePath);
                         }
                     }
@@ -206,6 +221,22 @@ class PickingRepositry implements PickingInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+
+    public function getAllPickersList($limit=null)
+    {
+        try {
+            $qry= WorkOrderPicker::query();
+            $qry= $qry->with('workOrder.client','workOrder.carrier','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->publish();
+//            $qry =$qry->where('status_code','!=',10);
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
 
 

@@ -8,7 +8,7 @@
     @component('components.breadcrumb')
         @slot('routeUrl') {{url('/')}} @endslot
         @slot('li_1') Dashboard @endslot
-        @slot('title') Orders List @endslot
+        @slot('title') Scheduling List @endslot
     @endcomponent
 
    <div class="row">
@@ -18,7 +18,7 @@
                             <div class="col-xl-3 d-none1">
                                 <div class="card card-h-100">
                                     <div class="card-body">
-                                        <button class="btn btn-primary w-100" id="btn-new-event"><i class="mdi mdi-plus"></i> Create New Order</button>
+                                        <button class="btn btn-primary w-100" id="btn-new-event"><i class="mdi mdi-plus"></i> Create New Scheduling</button>
 {{--                                          <a href="{{route('admin.order.create')}}" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Order</a>--}}
 
                                         <div id="external-events">
@@ -38,8 +38,8 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <h5 class="mb-1">Upcoming Orders</h5>
-                                    <p class="text-muted">Don't miss scheduled orders</p>
+                                    <h5 class="mb-1">Upcoming Schedulings</h5>
+                                    <p class="text-muted">Don't miss scheduled Schedulings</p>
                                     <div class="pe-2 me-n1 mb-3" data-simplebar style="height: 400px">
                                         <div id="upcoming-event-list"></div>
                                     </div>

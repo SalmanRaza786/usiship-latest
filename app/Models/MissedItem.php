@@ -14,11 +14,18 @@ class MissedItem extends Model
     {
         return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
     }
-
+    public function missingOrderItems()
+    {
+        return $this->hasMany(MissedItemDetail::class, 'missed_items_parent_id','id');
+    }
 
     public function orderPicker()
     {
         return $this->belongsTo(WorkOrderPicker::class, 'picker_table_id', 'id');
+    }
+    public function media()
+    {
+        return $this->morphMany(FileContent::class, 'fileable');
     }
 
     public function status()

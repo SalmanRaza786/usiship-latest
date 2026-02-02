@@ -25,7 +25,7 @@
 </div>
 
 
-<div class="modal fade" id="showModalUpoad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="showModalUpload" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-light p-3">
@@ -47,7 +47,7 @@
                     <div class="modal-footer">
                         <div class="hstack gap-2 justify-content-end">
                             <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">{{__('translation.close')}}</button>
-                            <button type="submit" class="btn btn-success btn-submit " >Upload</button>
+                            <button type="submit" class="btn btn-success btn-submit btn-upload " >Upload</button>
                         </div>
                     </div>
                 </div>
@@ -93,5 +93,40 @@
     <!-- end modal dialog-->
 </div>
 
+<div class="modal fade" id="UploadBOLDoc" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light p-3">
+                <h5 class="modal-title add-lang-title" id="exampleModalLabel" >Upload BOL Document</h5>
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close btn-modal-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            </div>
+            <div>
+            </div>
 
+
+            <form method="post" class=" g-3 needs-validation" action="{{route('order.upload.bol')}}" autocomplete="off" id="UploadBOLForm" enctype="multipart/form-data">
+
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="w_order_id"  value="0">
+                    <div class="row gy-4">
+                        <div class="col-md-12">
+                            <label for="status-field" class="form-label" data-choice>Select and Upload Bol Document</label>
+                            <input type="file" name="BOLDocument" class="form-control" required/>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="hstack gap-2 justify-content-end">
+                        <button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">Close</button>
+
+                        <button type="submit" class="btn btn-success btn-submit" id="add-btn" >Upload</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 

@@ -32,7 +32,7 @@ class QcController extends Controller
             }
             $data['orderInfo']=Helper::fetchOnlyData($this->qc->getQcInfo($id));
             $data['qcItems']=Helper::fetchOnlyData($this->qc->getQcItems($id));
-            $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
+//            $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations());
             return  Helper::createAPIResponce(false,200,'missed item detail',$data);
         }catch (\Exception $e) {
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);

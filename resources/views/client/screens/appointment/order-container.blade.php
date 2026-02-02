@@ -9,7 +9,9 @@
 
                     @csrf
                     <div class="step-arrow-nav mt-n3 mx-n3 mb-3">
-                        <input type="number" class="d-none" name="customer_id" value="{{$data['customerId']}}">
+                        <input type="number" class="d-none" name="customer_id" value="{{$data['customerId'] ??""}}">
+                        <input type="number" class="d-none" name="outbound_scheduling" value="{{$data['isOutbound'] ??""}}">
+                        <input type="text" class="d-none" name="work_order_array" value="{{$data['workOrderArray'] ?? ""}}">
                         <select name="order_status" id="" class="form-control d-none">
                             <option value="">Choose One</option>
                             @foreach($data['status'] as $row)
@@ -17,7 +19,7 @@
                             @endforeach
                         </select>
                         <input type="text" name="created_by" class="d-none" value="{{$data['createdBy']}}">
-                        <input type="text" name="guard" class="d-none" value="{{$data['guard']}}">
+                        <input type="text" name="guard" class="d-none" id="authGuard" value="{{$data['guard']}}">
 
                         <ul class="nav nav-pills nav-justified custom-nav" role="tablist">
                             <li class="nav-item disabled" role="presentation">

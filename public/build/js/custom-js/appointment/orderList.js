@@ -21,6 +21,10 @@ $('#roleTable').on('click', '.btn-edit', function() {
                 console.log('response',response);
             if(response.status==true){
                 $('input[name=order_id]').val(response.data.load.id);
+                if(response.data.load.order_type == 2)
+                {
+                    getWmsOrders(response.data.load.outbound_orders);
+                }
                 var html = '';
                 var baseUrl = "URL::asset('storage')" ;
                 if (response.data.load.order_form.length > 0) {
@@ -195,6 +199,7 @@ $('#uploadForm').on('submit', function(e) {
                 $('#roleTable').DataTable().ajax.reload();
                 $('.btn-submit').text('Upload');
                 $(".btn-submit").prop("disabled", false);
+                window.location.reload();
             }
             if (response.status==false) {
                 toastr.error(response.message);
@@ -248,6 +253,53 @@ $('#PackagingForm').on('submit', function(e) {
         }
     });
 
+});
+
+$('#roleTable').on('click', '.btn-upload-bol', function() {
+    $('input[name=w_order_id]').val($(this).attr('data'));
+});
+
+$('.btn-upload-bol').click(function() {
+    $('input[name=w_order_id]').val($(this).attr('data'));
+    console.log("click");
+});
+$('#UploadBOLForm').on('submit', function(e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: $(this).attr('action'),
+        method: 'POST',
+        data: new FormData(this),
+        dataType: 'JSON',
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            $('.btn-submit').text('Uploading...');
+            $(".btn-submit").prop("disabled", true);
+        },
+        success: function(response) {
+
+            if (response.status==true) {
+                $('#roleTable').DataTable().ajax.reload();
+                toastr.success(response.message);
+                $('.btn-close').click();
+            }
+            if (response.status==false) {
+                toastr.error(response.message);
+            }
+        },
+
+        complete: function(data) {
+            $(".btn-submit").html("Upload");
+            $(".btn-submit").prop("disabled", false);
+        },
+
+        error: function() {
+            $('.btn-submit').text('Upload');
+            $(".btn-submit").prop("disabled", false);
+        }
+    });
 });
 
 
@@ -372,5 +424,61 @@ $('#editOrderButton').on('click', function() {
     $('input').removeAttr('readonly');
     $('#updateButtonArea').removeClass('d-none');
 });
+
+function getWmsOrders(ordersArray) {
+
+    $.ajax({
+        url: route('work.order.get.all'),
+        type: 'GET',
+        async: false,
+        dataType: 'json',
+        success: function(response) {
+            wmsWorkORdersForMultiSelect(response.data,ordersArray);
+        },
+        error: function(xhr, status, error) {
+            if(xhr.responseText){
+                toastr.error(xhr.responseText);
+            }
+            if(xhr.responseJSON.message){
+                toastr.error(xhr.responseJSON.message);
+            }
+        }
+    });
+
+}
+function wmsWorkORdersForMultiSelect(wmsOrders,ordersArray) {
+    let html = '<select class="form-select" data-choices data-choices-removeItem multiple id="wmsOrderDropdown" required data-trigger name="wms_order_ids_array[]">' +
+        '<option value="">Choose One</option>';
+
+    $.each(wmsOrders, function (key, row) {
+        const id = row.id !== undefined ? sanitize(row.id) : '';
+        const transactionId = row.wms_transaction_id !== undefined ? sanitize(row.wms_transaction_id) : 'Unknown';
+        const isSelected = ordersArray.some(order => order.work_order_id === row.id) ? 'selected' : '';
+        html += `<option value="${id}" ${isSelected}>${transactionId}-(${row.client.title ?? "-"})</option>`;
+    });
+
+    html += '</select>';
+    const dropdownContainer = $('#WmsORdersSelectBoxDropdown');
+    if (dropdownContainer.length) {
+        dropdownContainer.html(html);
+        initLoadTypeDropdown();
+    }
+}
+
+function initLoadTypeDropdown() {
+    const element = document.querySelector('#wmsOrderDropdown');
+    if (element && element.choicesInstance) {
+        element.choicesInstance.destroy();
+    }
+    new Choices('#wmsOrderDropdown', {
+        removeItemButton: true,
+    });
+}
+
+function sanitize(input) {
+    return input ? input.toString().replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+}
+
+
 
 

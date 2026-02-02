@@ -254,16 +254,64 @@ class WhRepositry implements WhInterface {
     public function getWareHousesWithOperationHour($request=null)
     {
         try {
-            $qry = WareHouse::with('docks','loadTypes.direction','loadTypes.operation','loadTypes.eqType','loadTypes.transMode','assignedFields.customFields');
-            $qry = $qry->where('status',1);
-            ($request AND $request->wh_id > 0)?$qry = $qry->where('id',$request->wh_id):'';
+//            $qry = WareHouse::with('docks','loadTypes.direction','loadTypes.operation','loadTypes.eqType','loadTypes.transMode','assignedFields.customFields');
+//            $qry = $qry->where('status',1);
+//            ($request AND $request->wh_id > 0)?$qry = $qry->where('id',$request->wh_id):'';
+//            $data = $qry->get();
+
+//            $dock = $request->dock_id ?? $request->dockId ?? "";
+//            if($dock)
+//            {
+//                $qry = WareHouse::with(['docks' => function($q) use ($dock) {
+//                    $q->where('id', $dock);
+//                }, 'loadTypes.direction', 'loadTypes.operation', 'loadTypes.eqType', 'loadTypes.transMode', 'assignedFields.customFields']);
+//                $qry = $qry->whereHas('docks', function($q) use ($dock) {
+//                    $q->where('id', $dock);
+//                });
+//
+//            }else{
+//                $qry = WareHouse::with('docks','loadTypes.direction','loadTypes.operation','loadTypes.eqType','loadTypes.transMode','assignedFields.customFields');
+//            }
+//
+//            $qry = $qry->where('status', 1);
+//            ($request AND $request->wh_id > 0) ? $qry = $qry->where('id', $request->wh_id) : '';
+//
+//            $data = $qry->get();
+
+
+            $dock = $request->dock_id ?? $request->dockId ?? null;
+
+            $qry = WareHouse::with([
+                'docks',
+                'loadTypes.direction',
+                'loadTypes.operation',
+                'loadTypes.eqType',
+                'loadTypes.transMode',
+                'assignedFields.customFields'
+            ]);
+
+            $qry->when($dock, function($query, $dock) {
+                $query->whereHas('docks', function($q) use ($dock) {
+                    $q->where('id', $dock);
+                });
+            });
+
+            $qry->where('status', 1)
+                ->when($request->wh_id > 0, function($query) use ($request) {
+                    $query->where('id', $request->wh_id);
+                });
+
             $data = $qry->get();
+
 
             $wareHouses=collect([]);
             if($data->count() > 0){
+
                 foreach ($data as $wh)
                 {
+
                     foreach ($wh->docks as $dock){
+
                         $scheduleLimit=  $dock->schedule_limit;
                         $currentDate = Carbon::now();
                         $upToScheduleDate = $currentDate->copy()->addDays((int)$scheduleLimit);
@@ -272,22 +320,24 @@ class WhRepositry implements WhInterface {
 
                         while ($currentDate->lessThanOrEqualTo($upToScheduleDate)) {
 
-                            $daysSlots=$this->getDaysSlots($currentDate->dayName);
-                            $offDay = $this->getOffDays($currentDate->toDateString(),$wh->id);
+                            $daysSlots = $this->getDaysSlots($currentDate->dayName);
+                            $offDay = $this->getOffDays($currentDate->toDateString(), $wh->id);
 
 //                            $unwantedIds = [3];
 //                            $removedItems = $daysSlots->reject(function ($slot) use ($unwantedIds) {
 //                                return in_array($slot['id'], $unwantedIds);
 //                            });
 
-                            $slotArray=array(
-                                'day'=>$currentDate->dayName,
-                                'date'=>$currentDate->toDateString(),
-                                'availableSlots'=>(($offDay==1)?[]:$daysSlots)
+                            $slotArray = array(
+                                'day' => $currentDate->dayName,
+                                'date' => $currentDate->toDateString(),
+                                'availableSlots' => (($offDay == 1) ? [] : $daysSlots)
                             );
                             $dates->push($slotArray);
                             $currentDate->addDay();
                         }
+
+
 
                     }
 
@@ -307,6 +357,7 @@ class WhRepositry implements WhInterface {
 
                     $wareHouses->push($whArray);
                 }
+
             return Helper::success($wareHouses, $message=__('translation.record_found'));
             }
             else{
@@ -771,6 +822,7 @@ class WhRepositry implements WhInterface {
 
 
 
+
             $request->merge(['wh_id'=>$dockInfo->wh_id]);
             $whInfo =Helper::fetchOnlyData($this->getWareHousesWithOperationHour($request));
 
@@ -849,6 +901,19 @@ class WhRepositry implements WhInterface {
     }
 
 
+    public function searchWhLocations($request)
+    {
+        try {
+            $searchTerm = $request->input('q');
+
+            $locations = WhLocation::where('loc_title', 'LIKE', "%{$searchTerm}%")
+                ->limit(10)
+                ->get();
+            return Helper::success($locations, $message='Record found');
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
 }
 
 

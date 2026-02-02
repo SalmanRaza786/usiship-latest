@@ -44,7 +44,6 @@ var editOrderByVal=0;
                             $('select[name="roles"]').append(`<option value="${role.id}" ${role.id == response.data.users.role_id ? 'selected' : ''}>${role.name}</option>`)
 
                         });
-
                     });
                 }else{
                     toastr.error(response.message)
@@ -618,7 +617,30 @@ var editOrderByVal=0;
                         isSelected = 'selected';
                     }
                 }
-            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
+            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.operation.value + ',' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
+        });
+
+        html +='</select>';
+        $('#loadTypeSelectBoxDropdown').html(html);
+        initLoadTypeDropdown();
+    }
+    function loadTypeForMultiSelect(loadTypeData){
+
+        var html = '';
+        html += '<select  class="form-select" data-choices data-choices-removeItem multiple id="loadTypeDropdown" required data-trigger  name="load_type_id[]">' +
+            '<option value="">Choose One</option>';
+
+        $.each(loadTypeData, function (key, row) {
+
+            let isSelected = '';
+            if(editLoadTypeId.length > 0) {
+                const foundObject = editLoadTypeId.find(item => item.load_type_id === row.id);
+
+                if (foundObject != undefined) {
+                    isSelected = 'selected';
+                }
+            }
+            html += '<option value="' + row.id + '" ' + isSelected + '>' + row.direction.value + '(' + row.eq_type.value + ',' + row.trans_mode.value + ',' + row.operation.value + ',' + row.duration + ' Minutes)</option>';
         });
 
         html +='</select>';

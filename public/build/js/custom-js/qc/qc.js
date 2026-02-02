@@ -125,9 +125,19 @@ $(document).ready(function(){
         var formData = new FormData();
         var work_order_id=$('input[name=work_order_id]').val();
 
+        var order_qty = row.find('.ordqty').val();
+        var qc_qty = row.find('.qcQty').val();
+        console.log(qc_qty);
+        console.log(order_qty);
+        // if (qc_qty !== order_qty)
+        // {
+        //     toastr.error("QC qty not equal to order qty");
+        //     return false;
+        // }
+
 
         formData.append('hidden_id[]', $(this).attr('data'));
-        formData.append('qcQty[]', row.find('.qcQty').val());
+        formData.append('qcQty[]', qc_qty);
         formData.append('work_order_id',work_order_id);
 
 
@@ -136,6 +146,11 @@ $(document).ready(function(){
         for (var i = 0; i < selectedFiles.length; i++) {
             formData.append('qcItemImages[' + 0 + '][]', selectedFiles[i]);
         }
+
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
+
 
 
         $.ajax({
@@ -155,7 +170,7 @@ $(document).ready(function(){
                 console.log('response',response);
                 if(response.status){
                     toastr.success(response.message);
-                    // window.location.reload();
+                    window.location.reload();
                 }else{
                     toastr.error(response.message);
                 }

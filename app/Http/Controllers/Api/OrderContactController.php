@@ -31,4 +31,19 @@ class OrderContactController extends Controller
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
+    public function getOutboundOrderContactList()
+    {
+        try {
+            $res = $this->orderContact->getOutboundOrderContactList();
+            if ($res->get('status'))
+            {
+                return  Helper::createAPIResponce(false,200,'Order Contact list',$res->get('data'));
+            }else{
+                return  Helper::createAPIResponce(true,400,"Data not found",[]);
+            }
+
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+    }
 }

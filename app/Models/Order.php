@@ -8,7 +8,7 @@ use DB;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable=['customer_id','wh_id','dock_id','operational_hour_id','order_type','status_id','order_date','created_by','guard','load_type_id'];
+    protected $fillable=['company_id','customer_id','wh_id','dock_id','operational_hour_id','order_type','status_id','order_date','created_by','guard','load_type_id','work_order_id'];
 
     protected static function boot()
     {
@@ -39,6 +39,11 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'customer_id', 'id');
     }
+    public function company()
+    {
+        return $this->belongsTo(CustomerCompany::class, 'company_id', 'id');
+    }
+
     public function warehouse()
     {
         return $this->belongsTo(WareHouse::class, 'wh_id', 'id');
@@ -91,6 +96,19 @@ class Order extends Model
         return $this->belongsTo(LoadType::class, 'load_type_id', 'id');
     }
 
+    public function itemPutAway()
+    {
+        return $this->hasMany(OrderItemPutAway::class, 'order_id', 'id');
+    }
+
+    public function wmsOrder()
+    {
+        return $this->belongsTo(WorkOrder::class, 'work_order_id', 'id');
+    }
+    public function outboundOrders()
+    {
+        return $this->hasMany(OutboundOrders::class, 'order_id', 'id');
+    }
 
 
 }

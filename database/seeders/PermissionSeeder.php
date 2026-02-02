@@ -24,6 +24,7 @@ class PermissionSeeder extends Seeder
         $customer_module = PermissionModule::updateOrCreate(['title' => 'Customer'], ['title' =>'Customer']);
         $custom_fields_module = PermissionModule::updateOrCreate(['title' => 'Custom Fields'], ['title' =>'Custom Fields']);
         $cumpanies_module = PermissionModule::updateOrCreate(['title' => 'Companies'], ['title' =>'Companies']);
+        $cust_cumpanies_module = PermissionModule::updateOrCreate(['title' => 'Customer Companies'], ['title' =>'Customer Companies']);
         $carriers_module = PermissionModule::updateOrCreate(['title' => 'Carriers'], ['title' =>'Carriers']);
         $order = PermissionModule::updateOrCreate(['title' => 'Orders'], ['title' =>'Orders']);
         $notification = PermissionModule::updateOrCreate(['title' => 'Notifications'], ['title' =>'Notifications']);
@@ -33,7 +34,15 @@ class PermissionSeeder extends Seeder
 
         $notification_template = PermissionModule::updateOrCreate(['title' => 'Notification Template'], ['title' =>'Notification Template']);
 
+        $w_orders = PermissionModule::updateOrCreate(['title' => 'Work Orders'], ['title' =>'Work Orders']);
+        $picking = PermissionModule::updateOrCreate(['title' => 'Picking'], ['title' =>'Picking']);
+        $missing = PermissionModule::updateOrCreate(['title' => 'Missing'], ['title' =>'Missing']);
+        $qc = PermissionModule::updateOrCreate(['title' => 'QC'], ['title' =>'QC']);
+        $processing = PermissionModule::updateOrCreate(['title' => 'Processing'], ['title' =>'Processing']);
+
         $misc_module = PermissionModule::updateOrCreate(['title' => 'Miscellaneous'], ['title' =>'Miscellaneous'] );
+        $report_module = PermissionModule::updateOrCreate(['title' => 'Reports'], ['title' =>'Reports'] );
+
 
         Permission::upsert([
 
@@ -92,6 +101,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'admin-companies-edit', 'module_id' =>$cumpanies_module->id, 'guard_name' => 'admin'],
             ['name' => 'admin-companies-delete', 'module_id' =>$cumpanies_module->id, 'guard_name' => 'admin'],
 
+            //Customer Companies
+            ['name' => 'admin-customer-companies-view', 'module_id' =>$cust_cumpanies_module->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-customer-companies-create', 'module_id' =>$cust_cumpanies_module->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-customer-companies-edit', 'module_id' =>$cust_cumpanies_module->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-customer-companies-delete', 'module_id' =>$cust_cumpanies_module->id, 'guard_name' => 'admin'],
+
             //Carriers
             ['name' => 'admin-carriers-view', 'module_id' =>$carriers_module->id, 'guard_name' => 'admin'],
             ['name' => 'admin-carriers-create', 'module_id' =>$carriers_module->id, 'guard_name' => 'admin'],
@@ -129,10 +144,46 @@ class PermissionSeeder extends Seeder
             ['name' => 'admin-notification-template-create', 'module_id' =>$notification_template->id, 'guard_name' => 'admin'],
 
 
+            //work orders
+            ['name' => 'admin-w-order-view', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-w-order-create', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-w-order-edit', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-w-order-delete', 'module_id' =>$w_orders->id, 'guard_name' => 'admin'],
+
+
+            //Picking
+            ['name' => 'admin-picking-view', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-picking-create', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-picking-edit', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-picking-delete', 'module_id' =>$picking->id, 'guard_name' => 'admin'],
+
+
+            //Missing
+            ['name' => 'admin-missing-view', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-missing-create', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-missing-edit', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-missing-delete', 'module_id' =>$missing->id, 'guard_name' => 'admin'],
+
+            //QC
+            ['name' => 'admin-qc-view', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-qc-create', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-qc-edit', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-qc-delete', 'module_id' =>$qc->id, 'guard_name' => 'admin'],
+
+            //Processing
+            ['name' => 'admin-processing-view', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-processing-create', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-processing-edit', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+            ['name' => 'admin-processing-delete', 'module_id' =>$processing->id, 'guard_name' => 'admin'],
+
+
 
             //Miscellaneous
             ['name' => 'admin-settings-edit', 'module_id' =>$misc_module->id, 'guard_name' => 'admin'],
             ['name' => 'admin-dashboard-view', 'module_id' =>$misc_module->id, 'guard_name' => 'admin'],
+
+            //Report
+            ['name' => 'admin-report-view', 'module_id' =>$report_module->id, 'guard_name' => 'admin'],
 
 
 

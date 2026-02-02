@@ -249,11 +249,13 @@ $(document).ready(function(){
                         $('#off_loading_id').val(response.data.id);
                         $('#product_staged_loc').val(response.data.p_staged_location);
                         $(".btn-submit").addClass('d-none');
+                        $('.btn-loading-close').removeClass('d-none');
                         $('#offloadingContainer').removeClass('d-none');
+                        lightbox.reload();
                     } else {
                         $('#offloadingContainer').addClass('d-none');
                         $('.btn-submit').removeClass('d-none');
-
+                        $(".btn-loading-close").addClass('d-none');
                     }
                 }
                 if (response.status==false) {
@@ -268,30 +270,27 @@ $(document).ready(function(){
         });
     }
     function displayImages(data) {
-
         data.forEach(function(image) {
-            const a = $('<a>').addClass('popup-img d-inline-block').attr('href','/storage/uploads/' + image.file_name);
-            var img = $('<img>').attr('src', '/storage/uploads/' + image.file_name).attr('alt', 'Image Preview').attr('class','avatar-sm rounded object-fit-cover');
+            const a = $('<a>').addClass('image-popup').attr('href', '/storage/uploads/' + image.file_name);
+            const img = $('<img>').attr('src', '/storage/uploads/' + image.file_thumbnail)
+                .attr('alt', 'Image Preview')
+                .attr('class', 'gallery-img img-fluid mx-auto rounded avatar-md');
             a.append(img);
-            var div = $('<div>').addClass('preview').append(a);
-
-            $('#'+image.field_name+'Preview').append(div);
+            $('#' + image.field_name + 'Preview').append(a);
             $('#input' + image.field_name).val(image.created_at);
             $('#' + image.field_name).prop('disabled', true);
-
         });
     }
 
-    $('#confirmPackgingList').click(function (){
-        var id=$(this).attr('data');
-       console.log(id);
-       console.log(checkInputs());
-
-       if(checkInputs()){
-           window.location.href = route('admin.off-loading.confirm.packaging.list',{id:id});
-       }else{
-           toastr.error('Fill all fields');
-       }
+    $('#confirmPackgingList').click(function () {
+        var id = $(this).attr('data');
+        // console.log(id);
+        // console.log(checkInputs());
+        // if (checkInputs()) {
+            window.location.href = route('admin.off-loading.confirm.packaging.list', {id: id});
+        // } else {
+        //     toastr.error('Fill all fields');
+        // }
     })
 
 

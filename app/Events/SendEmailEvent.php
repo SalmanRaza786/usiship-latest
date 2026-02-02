@@ -23,8 +23,6 @@ class SendEmailEvent
     {
         $this->mailData=$mailData;
         $this->user=$user;
-
-
     }
 
     /**

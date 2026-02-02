@@ -21,8 +21,12 @@ use Illuminate\Notifications\Notifiable;
      */
     protected $fillable = [
         'name',
+        'company_name',
         'email',
         'password',
+        'company_id',
+        'phone_no',
+        'status',
     ];
 
     /**
@@ -47,4 +51,22 @@ use Illuminate\Notifications\Notifiable;
             'password' => 'hashed',
         ];
     }
+
+     public function company()
+     {
+         return $this->belongsTo(CustomerCompany::class, 'company_id', 'id');
+     }
+
+     public function getStatusAttribute($value)
+     {
+         if($value==1){
+             $getVal='Active';
+         }
+         if($value==2){
+             $getVal='In-Active';
+         }
+         return $getVal;
+     }
+
+
 }

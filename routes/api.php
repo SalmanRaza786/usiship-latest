@@ -16,15 +16,17 @@ use App\Http\Controllers\Api\WorkOrderController;
 use App\Http\Controllers\Api\PickingController;
 use App\Http\Controllers\Api\MissingController;
 use App\Http\Controllers\Api\QcController;
+use App\Http\Controllers\Api\ProcessingController;
 
 
     Route::group(['middleware' => ['auth:sanctum']], function(){
 
-        //Home
-        Route::any('/admin-home', [HomeController::class, 'adminHome']);
-        Route::any('/customer-home', [HomeController::class, 'customerHome']);
+    //Home
+    Route::any('/admin-home', [HomeController::class, 'adminHome']);
+    Route::any('/customer-home', [HomeController::class, 'customerHome']);
 
     Route::any('/ware-house-list', [WareHouseController::class, 'wareHouseList']);
+    Route::any('/customer-list', [HomeController::class, 'customersList']);
     Route::any('/dock-operational-hour', [WareHouseController::class, 'dockOperationalHour']);
     Route::any('/get-load-types', [WareHouseController::class, 'getLoadTypes']);
     Route::any('/get-wh-day-times', [WareHouseController::class, 'getWhDayTimes']);
@@ -50,12 +52,16 @@ use App\Http\Controllers\Api\QcController;
 
 
     Route::any('/get-order-contacts-list', [OrderContactController::class, 'getOrderContactList']);
+    Route::any('/get-outbound-order-contacts-list', [OrderContactController::class, 'getOutboundOrderContactList']);
     Route::any('/save-check-in', [CheckInController::class, 'checkinCreateOrUpdate']);
     Route::any('/get-order-check-in-list', [CheckInController::class, 'getOrderCheckIList']);
+    Route::any('/get-outbound-check-in-list', [CheckInController::class, 'getOutBoundCheckIList']);
     Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId']);
     Route::any('/save-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate']);
     Route::any('/close-off-loading', [OffLoadingController::class, 'closeOffLoading']);
+    Route::any('/close-on-loading', [OffLoadingController::class, 'closeOnLoading']);
     Route::any('/save-off-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
+    Route::any('/save-on-loading-images', [OffLoadingController::class, 'saveOffLoadingImages']);
 
     //Putaway Items
     Route::any('/put-away-list', [PutAwayController::class, 'putAwayList']);
@@ -77,19 +83,17 @@ use App\Http\Controllers\Api\QcController;
         //Logout
         Route::any('/api-logout', [AuthController::class, 'logout']);
 
-    //Profile
-    Route::any('/update-profile', [ProfileController::class, 'updateProfile']);
+        //Profile
+        Route::any('/update-profile', [ProfileController::class, 'updateProfile']);
 
-
-    //Outbounds Order
+        //Outbounds Order
         Route::get('/get-all-staff', [WorkOrderController::class, 'getAllStaff']);
         Route::get('/get-outbound-all-status', [WorkOrderController::class, 'getAllStatus']);
         Route::get('/outbound-orders-list', [WorkOrderController::class, 'workOrdersList']);
+        Route::get('/client-outbound-orders-list', [WorkOrderController::class, 'workOrdersListClient']);
         Route::post('/picker-assign', [WorkOrderController::class, 'pickerAssign']);
 
-
         //Picking
-
         Route::get('/picking-list', [PickingController::class, 'pickerList']);
         Route::get('/get-all-locations', [PickingController::class, 'getAllLocations']);
         Route::get('/picking-detail', [PickingController::class, 'startPicking']);
@@ -103,22 +107,23 @@ use App\Http\Controllers\Api\QcController;
         Route::any('/save-resolve-item', [MissingController::class, 'saveResolve']);
 
         //QC
-
         Route::any('/qc-list', [QcController::class, 'QcList']);
         Route::any('/qc-detail', [QcController::class, 'qcDetail']);
         Route::any('/update-start-qc', [QcController::class, 'updateStartQc']);
         Route::any('/update-qc', [QcController::class, 'updateQcItem']);
 
-
-
-
-
+        //QC
+        Route::any('/processing-list', [ProcessingController::class, 'processingList']);
+        Route::any('/processing-detail', [ProcessingController::class, 'processingDetail']);
+        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcessing']);
+        Route::any('/update-processing', [ProcessingController::class, 'updateProcessingItem']);
+        Route::any('/remove-processing-item', [ProcessingController::class, 'removeProcessingItem']);
   });
 
     Route::any('/app-setting', [HomeController::class, 'appSetting']);
-
-
     Route::any('/api-login', [AuthController::class, 'login']);
+    Route::any('/api-forget-password', [AuthController::class, 'forgetPassword']);
+    Route::any('/api-reset-password', [AuthController::class, 'reset']);
+    Route::any('/api-verify-otp', [AuthController::class, 'verifyOTP']);
     Route::any('/customer-signup', [AuthController::class, 'customerSignup']);
     Route::any('/upload-file', [OrderController::class, 'uploadFile']);
-

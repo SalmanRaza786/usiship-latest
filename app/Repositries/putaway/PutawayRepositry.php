@@ -33,7 +33,7 @@ class PutawayRepositry implements PutAwayInterface {
             $data['totalRecords'] = OrderItemPutAway::count();
 
             $qry = OrderItemPutAway::query();
-            $qry =$qry->with('order.dock.loadType.eqType','status');
+            $qry =$qry->with('order.dock.loadType.eqType','status','location','inventory','order.customer','order.company');
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
@@ -53,6 +53,46 @@ class PutawayRepositry implements PutAwayInterface {
         }
 
     }
+    public function inboundReportList($request)
+    {
+        try {
+
+            $data['totalRecords'] = OrderItemPutAway::count();
+
+            $qry = OrderItemPutAway::query();
+            $qry =$qry->with('order.dock.loadType.eqType','status','location','inventory','order.customer','order.company','putAwayMedia');
+
+            $qry=$qry->when($request->s_name, function ($query, $name) {
+                return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
+            });
+            $qry=$qry->when($request->s_location, function ($query, $loc_id) {
+                return $query->where('location_id',$loc_id);
+            });
+            $qry=$qry->when($request->s_sku, function ($query, $sku) {
+                return $query->where('inventory_id',$sku);
+            });
+            $qry=$qry->when($request->s_customers, function ($query, $customer) {
+                return  $query->whereRelation('order','company_id', $customer);
+            });
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data']=$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) || !empty($request->get('s_location')) || !empty($request->get('inventory_id')) || !empty($request->get('s_customers'))) {
+                $data['totalRecords'] = $data['data']->count();
+            }
+
+            return Helper::success($data, $message=__('translation.record_found'));
+
+        } catch (ValidationException $validationException) {
+            return Helper::errorWithData($validationException->errors()->first(), $validationException->errors());
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+
+
 
     public function updateOrCreatePutAway($request)
     {

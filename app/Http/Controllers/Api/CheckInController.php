@@ -50,4 +50,18 @@ class CheckInController extends Controller
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
+    public function getOutBoundCheckIList()
+    {
+        try {
+            $res = $this->checkin->getOutboundCheckinList();
+            if ($res->get('status'))
+            {
+                return  Helper::createAPIResponce(false,200,'Outbound Checkin list',$res->get('data'));
+            }else{
+                return  Helper::createAPIResponce(true,400,"Data not found",[]);
+            }
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+    }
 }

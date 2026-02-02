@@ -57,6 +57,8 @@ class OrderContactController extends Controller
     {
         try {
 
+            session()->put('previous_url', url()->previous());
+
             $res = $this->orderContact->getOrderContact($id);
             if ($res->get('status'))
             {
@@ -68,6 +70,7 @@ class OrderContactController extends Controller
                     'vehicle_number'=>$contactRes->vehicle_number,
                     'vehicle_licence_plate'=>$contactRes->vehicle_licence_plate,
                     'bol_number'=>$contactRes->bol_number,
+                    'arrival_time'=>$contactRes->arrival_time,
                     'do_number'=>$contactRes->do_number,
                     'status_id'=>$contactRes->status_id,
                     'company_name'=>$contactRes->carrier->company->company_title,
@@ -89,6 +92,7 @@ class OrderContactController extends Controller
                     'is_verify'=>$contactRes->is_verify,
                     'order_id'=>$contactRes->order_id,
                     'order_reference'=>$contactRes->order->order_id,
+                    'order_type'=>$contactRes->order->order_type,
                 );
             }
 

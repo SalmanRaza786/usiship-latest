@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderContacts extends Model
 {
     use HasFactory;
-    protected $fillable=['order_id','carrier_id','arrival_time','is_verify','vehicle_number','vehicle_licence_plate','bol_number','do_number','do_document','status_id'];
+    protected $fillable=['order_id','carrier_id','arrival_time','is_verify','vehicle_number','vehicle_licence_plate','bol_number','do_number','do_document','status_id','vehicle_class','other_vehicle_class'];
 
     public function carrier()
     {

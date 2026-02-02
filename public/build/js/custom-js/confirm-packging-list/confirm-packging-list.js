@@ -116,8 +116,9 @@ $(document).ready(function(){
             complete: function(data) {
                 row.find('.save-row').prop('disabled', false);
             },
-            error: function() {
-                 toastr.error('something went wrong');
+            error: function(error) {
+
+                 //toastr.error(error.);
                 row.find('.save-row').prop('disabled', false);
             }
         });
@@ -174,6 +175,45 @@ $(document).ready(function(){
                 // toastr.error('something went wrong');
                 $('.btn-submit').text('Save/Close Packing List');
                 $(".btn-submit").prop("disabled", false);
+            }
+        });
+
+
+    });
+
+    $('#reportException').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: new FormData(this),
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function() {
+                $('.btn-report').text('Processing...');
+                $(".btn-report").prop("disabled", true);
+            },
+            success: function(response) {
+                if (response.status==true) {
+                    $('.btn-close').click();
+                    toastr.success(response.message);
+
+                }
+                if (response.status==false) {
+                    toastr.error(response.message);
+                }
+
+            },
+            complete: function(data) {
+                $(".btn-report").html("Report Exception/Damages");
+                $(".btn-report").prop("disabled", false);
+            },
+            error: function() {
+                // toastr.error('something went wrong');
+                $('.btn-report').text('Report Exception/Damages');
+                $(".btn-report").prop("disabled", false);
             }
         });
 

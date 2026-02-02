@@ -3,7 +3,7 @@
 
 @section('content')
     @component('components.breadcrumb')
-        @slot('li_1') {{__('translation.settings')}} @endslot
+        @slot('li_1') Dashboard @endslot
         @slot('routeUrl') {{url('/')}} @endslot
         @slot('title') Transactions @endslot
     @endcomponent
@@ -37,8 +37,8 @@
                                         <option value="">Status</option>
                                         <option value="" selected>{{__('translation.all')}}</option>
 
-                                        @isset($data['statuses']['data'])
-                                            @foreach($data['statuses']['data'] as $status)
+                                        @isset($data['status'])
+                                            @foreach($data['status'] as $status)
                                                 <option value="{{$status->id}}">{{$status->status_title}}</option>
                                             @endforeach
                                         @endisset
@@ -64,10 +64,14 @@
                         <thead class="text-muted table-light">
                         <tr class="text-uppercase">
                             <th class="sort" data-sort="id">Order#</th>
+                            <th class="sort" data-sort="id">WMS Transaction ID</th>
+                            <th class="sort" data-sort="id">WMS Order Ref#</th>
+                            <th class="sort" data-sort="id">Order Type</th>
+                            <th class="sort" data-sort="customer_name">Company</th>
                             <th class="sort" data-sort="customer_name">Customer</th>
                             <th class="sort" data-sort="id">Warehouse</th>
                             <th class="sort" data-sort="customer_name">Dock</th>
-                            <th class="sort" data-sort="customer_name">Order Date</th>
+                            <th class="sort" data-sort="customer_name">Scheduled Date</th>
                             <th class="sort" data-sort="customer_name">Time Slot</th>
                             <th class="sort" data-sort="product_name">Status</th>
                             <th class="sort" data-sort="date">@lang('translation.action')</th>
@@ -82,7 +86,8 @@
         </div>
 
     </div>
-
+    @include('client.screens.appointment.appointment-modals')
+    @include('admin.components.comon-modals.common-modal')
 @endsection
 
 @section('script')
@@ -94,7 +99,7 @@
                 $('#roleTable').DataTable().ajax.reload();
             });
 
-
+            var OrderDetailUrl = "{{ route('admin.orders.detail', ':id') }}";
             $('#roleTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -107,12 +112,16 @@
                 ajax: {
                     url: "transactions-list",
                     data: function (d) {
-                        d.name = $('input[name=s_name]').val(),
+                        d.s_name = $('input[name=s_name]').val(),
                             d.status = $('select[name=s_status]').val()
                     }
                 },
                 columns: [
-                    { data: 'order_id' },
+                    { data: null },
+                    { data: 'wms_transaction_id' },
+                    { data: 'order_reference' },
+                    { data: 'order_type' },
+                    { data: 'company_name' },
                     { data: 'customer_name' },
                     { data: 'warehouse_title' },
                     { data: 'dock_title' },
@@ -122,23 +131,57 @@
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
+                    {
+                        targets: 0,
+                        render: function(data, type, row, meta) {
+                            console.log(row);
+                            let detailUrl = OrderDetailUrl.replace(':id', data.id); // Replace placeholder with row.id
+                            return '<div class="form-check">' +
+                                '<a href="' + detailUrl + '" class="form-check-link">' + data.order_id + '</a>' +
+                                '</div>';
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: function(data, type, row, meta) {
+                            if (data === "Inbound") {
+                                return '<span class="badge bg-success">'+data+'</span>';
+                            } else  {
+                                return '<span class="badge bg-danger">'+data+'</span>';
+                            }
+                        }
+                    },
 
                     {
-                        targets: 7,
+                        targets:11,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
+                            const status = data.status_title;
+                            const rowDockId = data.dock_id;
+                            const rowLoadTypeId = data.load_type_id;
                             const rowEncId = data.enc_id;
                             var viewUrl = "{{ route('admin.orders.detail', ':id') }}";
                             var carrierUrl = "{{ route('carrier.onboard', ':id') }}";
+                            var html="";
+                            html += '<div class="dropdown">'+
+                                '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="true">' +
+                                '<i class="ri-more-fill align-middle"></i>' +
+                                '</button>' +
+                                '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">' +
+                                '<li><a class="dropdown-item" href="' + viewUrl.replace(':id', rowId) + '" data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>';
 
-                                return      '<div class="dropdown">'+
-                                    '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
-                                    '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">'+
-                                    '<li><a class="dropdown-item" href="'+viewUrl.replace(':id', rowId)+'"  data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>'+
-                                    '<li><a class="dropdown-item" target="_blank" href="'+carrierUrl.replace(':id', rowEncId)+'"  data-id=""><i class=" ri-checkbox-circle-line align-bottom me-2 text-muted"></i>Self CheckIn</a></li>'+
+                            if (status !== "Completed") {
+                                html += '<li><a <a class="dropdown-item btn-edit" data="'+rowId+'" data-bs-toggle="modal" data-bs-target="#showModal">' +
+                                    '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</a></li>';
+                                html += '<li><a class="dropdown-item btn-reschedule" data="' + rowId + '" dockId="' + rowDockId + '" loadTypeId="' + rowLoadTypeId + '" data-bs-toggle="modal" data-bs-target="#showModalReschedule">' +
+                                    '<i class="ri-timer-line align-bottom me-2 text-muted"></i>Reschedule</a></li>';
+                            }
 
-                                    '</ul>'+
-                                    '</div>';
+                            html += '<li><a class="dropdown-item" target="_blank" href="' + carrierUrl.replace(':id', rowEncId) + '" data-id=""><i class="ri-checkbox-circle-line align-bottom me-2 text-muted"></i>Self CheckIn</a></li>' +
+                                '</ul>' +
+                                '</div>';
+                            return html;
+
 
                         }
                     }

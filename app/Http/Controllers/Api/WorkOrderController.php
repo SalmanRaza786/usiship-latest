@@ -58,6 +58,24 @@ class WorkOrderController extends Controller
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
+    public function workOrdersListClient(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'company_id' => 'required',
+            ]);
+
+            if ($validator->fails())
+                return Helper::errorWithData($validator->errors()->first(), $validator->errors());
+
+            $res=$this->workOrder->getWorkOrdersApi($request);
+            return  Helper::createAPIResponce(false,200,$res->get('message'),$res->get('data'));
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+    }
+
+
 
     //pickerAssign
     public function pickerAssign(Request $request)

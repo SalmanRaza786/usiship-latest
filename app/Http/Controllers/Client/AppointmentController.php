@@ -46,6 +46,15 @@ class AppointmentController extends Controller
 
         }
     }
+    public function showWMSOrdersList(){
+        try {
+            $data['statuses']=$this->appointment->getAllStatus();
+            return view('client.screens.work-orders.show-work-orders')->with(compact('data'));
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+
+        }
+    }
     public function appointmentList(Request $request){
         try {
             $res=$this->appointment->getAppointmentList($request);
@@ -114,6 +123,7 @@ class AppointmentController extends Controller
             if($res->get('data')){
                 $data['order']=$res->get('data');
                 $request = $res->get('data');
+
                 $wh= $this->wh->getWareHousesWithOperationHour($request);
                 $data['warehouse']=$wh->get('data');
                 return Helper::ajaxSuccess($data,$res->get('message'));
@@ -147,12 +157,12 @@ class AppointmentController extends Controller
             $roleUpdateOrCreate = $this->appointment->uploadPackagingList($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $order = $this->appointment->changeOrderStatus($request->id,11);
+
                 if($order->get('status')){
                     $data=$order->get('data');
                     $notification= $this->appointment->sendNotification($data->id,$data->customer_id,11,1);
                     if($notification->get('status')){
-                        Helper::notificationTriggerHelper(1,0);
-
+                        Helper::notificationTriggerHelper(1,null);
                     }
                 }
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
@@ -170,8 +180,8 @@ class AppointmentController extends Controller
               $roleUpdateOrCreate = $this->appointment->updateScheduling($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $order=$roleUpdateOrCreate->get('data');
-                Helper::notificationTriggerHelper(1,0);
-                Helper::notificationTriggerHelper(2,$order->customer_id);
+//                Helper::notificationTriggerHelper(1,0);
+//                Helper::notificationTriggerHelper(2,$order->customer_id);
 
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
             }else{

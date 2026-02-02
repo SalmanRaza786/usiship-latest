@@ -5,19 +5,25 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ClientNotificationEvent;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\Constants;
 use App\Http\Helpers\Helper;
+use App\Models\LoadType;
 use App\Models\Notification;
 use App\Models\OperationalHour;
 use App\Models\Order;
 use App\Models\OrderBookedSlot;
 use App\Models\OrderForm;
 use App\Models\OrderStatus;
+use App\Models\OutboundOrders;
+use App\Models\User;
+use App\Models\WorkOrder;
 use App\Notifications\OrderNotification;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\customer\CustomerInterface;
 use App\Repositries\dock\DockRepositry;
 use App\Repositries\loadType\loadTypeRepositry;
 use App\Repositries\notification\NotificationInterface;
+use App\Repositries\qc\QcInterface;
 use App\Repositries\wh\WhInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,13 +35,15 @@ class OrderController extends Controller
     private $customer;
     private $appointment;
     private $notification;
+    private $WorkOrderQC;
 
-    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment,NotificationInterface $notification){
+    public function __construct(AppointmentInterface $order,WhInterface $wh,CustomerInterface $customer,AppointmentInterface $appointment,NotificationInterface $notification,QcInterface $WorkOrderQC){
         $this->order = $order;
         $this->wh = $wh;
         $this->customer =$customer;
         $this->appointment =$appointment;
         $this->notification =$notification;
+        $this->WorkOrderQC =$WorkOrderQC;
     }
     public function index()
     {
@@ -52,8 +60,25 @@ class OrderController extends Controller
     {
        try {
         $res = $this->order->getAllOrders();
+
+
         $data = collect([]);
+
         foreach ($res['data'] as $row) {
+
+            $orderCustomers = [];
+            foreach ($row->outboundOrders as $outboundOrder) {
+
+                $orderCustomers[] = $outboundOrder->wmsOrder->wms_transaction_id."(". $outboundOrder->company?->title ?? "-".")";
+            }
+            $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
+
+            $orderContainerNos = [];
+            foreach ($row->orderContacts as $orderContact) {
+
+                $orderContainerNos[] = $orderContact->vehicle_number;
+            }
+            $orderContainerNosString = !empty($orderContainerNos) ? implode(", ", $orderContainerNos) : "-";
 
             $fromOperationalHour = $row->bookedSlots->first();
             $toOperationalHour = $row->bookedSlots->last();
@@ -62,7 +87,7 @@ class OrderController extends Controller
             $array = array(
                 'id' => $row->id,
                 'wh_name' => $row->warehouse->title,
-                'customer_name' => $row->customer->name,
+                'customer_name' => ($row->order_type == 1 ?  ($row->company?->title ?? $row->order_id)."(".$orderContainerNosString.")": $orderCustomersString),
                 'start_time_hour' => count($row->bookedSlots) ? date('H', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
                 'end_time_minut' => count($row->bookedSlots) ? date('i', strtotime($fromOperationalHour->operationalHour->working_hour)) : date('i', strtotime($row->operationalHour->working_hour)),
                 'end_s' => count($row->bookedSlots) ? date('H', strtotime($toOperationalHour->operationalHour->working_hour)) : date('H', strtotime($row->operationalHour->working_hour)),
@@ -76,6 +101,7 @@ class OrderController extends Controller
             );
             $data->push($array);
             }
+//           dd($data);
     return Helper::success($data,'Order list');
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -90,7 +116,6 @@ class OrderController extends Controller
         try {
             if (!Order::find($id)) {
                 return back()->with('error','Invalid order id');
-
             }
             $data['orderDetail']=$this->getOrderInfo($id);
             return view('admin.order.order-detail')->with(compact('data'));
@@ -102,6 +127,9 @@ class OrderController extends Controller
     public function getAppointmentDetail($id)
     {
         try {
+            if (!Order::find($id)) {
+                return back()->with('error','Invalid order id');
+            }
             $data['orderDetail']=$this->getOrderInfo($id);
             return view('client.screens.appointment.order-detail')->with(compact('data'));
         } catch (\Exception $e) {
@@ -113,15 +141,14 @@ class OrderController extends Controller
     public function getOrderInfo($id)
     {
         try {
-
-
-             $res=Helper::fetchOnlyData($this->order->getOrderDetail($id));
-
+            $res=Helper::fetchOnlyData($this->order->getOrderDetail($id));
             $fromOperationalHour=$res->bookedSlots->first();
             $toOperationalHour=$res->bookedSlots->last();
 
             $guards = array_keys(config('auth.guards'));
             $currentGuard = null;
+            $work_order_qc = null;
+            $work_order_qc_items = null;
 
             foreach ($guards as $guard) {
                 if (Auth::guard($guard)->check()) {
@@ -134,6 +161,11 @@ class OrderController extends Controller
             }else{
                 $allow= $this->appointment->isAllowToModifyOrder($id);
             }
+            if($res->work_order_id){
+              $work_order_qc = Helper::fetchOnlyData($this->WorkOrderQC->getQcInfoByWorkId($res->work_order_id));
+              $work_order_qc_items = Helper::fetchOnlyData( $this->WorkOrderQC->getQcItems($work_order_qc->id));
+            }
+
 
 
             $data = array(
@@ -144,14 +176,15 @@ class OrderController extends Controller
                 'ware_house' =>$res->warehouse->title,
                 'email' =>$res->warehouse->email,
                 'phone' =>$res->warehouse->phone,
-                'customer_name' =>$res->customer->name,
-                'customer_email' =>$res->customer->email,
+                'customer_name' => $res->customer ? $res->customer->name : "-",
+                'customer_email' =>$res->customer ? $res->customer->email : "-",
                 'order_date' => date('d M,Y',strtotime($res->order_date)) ,
                 'slot_from' =>count($res->bookedSlots)? $fromOperationalHour->operationalHour->working_hour:$res->operationalHour->working_hour,
                 'slot_to' => count($res->bookedSlots)? $toOperationalHour->operationalHour->working_hour:$res->operationalHour->working_hour,
                 'dock' =>$res->dock->title,
                 'status' =>$res->status->status_title,
                 'status_id' =>$res->status_id,
+                'order_type' =>$res->order_type,
                 'status_class' =>$res->status->class_name,
                 'status_order_by' =>$res->status->order_by,
                 'text_class' =>$res->status->text_class,
@@ -160,8 +193,12 @@ class OrderController extends Controller
                 'orderLogs'=>$res->orderLogs,
                 'warehouse'=>$res->warehouse,
                 'orderForm'=>$res->orderForm,
-                'packagingList'=>$res->packgingList?$res->packgingList:[],
-                'orderContacts'=>$res->orderContacts?$res->orderContacts:[],
+                'packagingList'=>$res->packgingList ?? [],
+                'orderContacts'=>$res->orderContacts ?? [],
+                'itemPutAway'=>$res->itemPutAway ?? [],
+                'WMSOrders'=>$res->outboundOrders ?? [],
+                'workOrderQC' => $work_order_qc ?? [],
+                'workOrderQCItems' => $work_order_qc_items ?? [],
             );
             return Helper::success($data,'Order Info');
 
@@ -173,7 +210,6 @@ class OrderController extends Controller
     public function createNewOrder(Request $request)
     {
         try {
-
             $data['customerId']=$request->customer_id;
             $data['status']=OrderStatus::get();
             $data['selectStatus']=$request->order_status;
@@ -194,18 +230,23 @@ class OrderController extends Controller
            if($isAllow=$this->appointment->checkBookedSlot($dockInfo->slot,$request->opra_id,$request->order_date,$request->wh_id)==0){
                return Helper::error('all slots are booked of this dock',[]);
            }
-
-             $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
+            if ($request->load_type_id)
+            {
+                $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
+            }
+            if($loadTypeDirection == 2 )
+            {
+                $roleUpdateOrCreate = $this->appointment->updateOrCreateOutbound($request,0);
+            }else{
+                $roleUpdateOrCreate = $this->appointment->updateOrCreate($request,0);
+            }
            if ($roleUpdateOrCreate->get('status')){
                $orderData=$roleUpdateOrCreate->get('data');
-               // 1 use for admin 2 for user
-               $this->notificationTrigger(1,null);
-               $this->notificationTrigger(2,$orderData->customer_id);
+               $this->triggerOrderNotifications($orderData);
                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),$roleUpdateOrCreate->get('message'));
            }else{
                return Helper::error($roleUpdateOrCreate->get('message'),[]);
            }
-
         } catch (\Exception $e) {
             return Helper::ajaxError($e->getMessage());
         }
@@ -250,12 +291,25 @@ class OrderController extends Controller
             $order = $this->appointment->changeOrderStatus($orderId,$orderStatus);
              if($order->get('status')){
                  $data=$order->get('data');
-                 $customerId=$data->customer_id;
-                $notification= $this->appointment->sendNotification($orderId,$customerId,$orderStatus,2);
-
-                if($notification->get('status')){
-                    $this->notificationTrigger(2,$customerId);
-                }
+                 if($data->order_type != Constants::OUTBOUND)
+                 {
+                     $customerId = $data->customer_id;
+                     $notification = $this->appointment->sendNotification($orderId, $customerId, $orderStatus, 2);
+                     if ($notification->get('status')) {
+                         $this->notificationTrigger(Constants::USER, $customerId);
+                     }
+                 }else {
+                     $outboundCompanyIds = OutboundOrders::where('order_id', $data->id)->pluck('company_id')->toArray();
+                     if (!empty($outboundCompanyIds)) {
+                         $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                         foreach ($companyContacts as $companyContact) {
+                             $notification = $this->appointment->sendNotification($orderId, $companyContact, $orderStatus, 2);
+                             if ($notification->get('status')) {
+                                  $this->notificationTrigger(Constants::USER, $companyContact);
+                             }
+                         }
+                     }
+                 }
              }
              return $order;
         } catch (\Exception $e) {
@@ -314,8 +368,8 @@ class OrderController extends Controller
     public function transactionIndex()
     {
         try {
-
-            return view('admin.transactions.index');
+            $data['status']=Helper::fetchOnlyData($this->order->getAllStatus());
+            return view('admin.transactions.index')->with(compact('data'));
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -329,17 +383,33 @@ class OrderController extends Controller
 
            foreach ($res['data']['data'] as $row) {
 
+               $transactionIds = [];
+               $orderReferences = [];
+               $orderCustomers = [];
+               foreach ($row->outboundOrders as $outboundOrder) {
+                   $transactionIds[] = $outboundOrder->wmsOrder->wms_transaction_id;
+                   $orderReferences[] = $outboundOrder->wmsOrder->order_reference;
+                   $orderCustomers[] = $outboundOrder->company->title;
+               }
+
+               $transactionIdsString =!empty($transactionIds) ? implode(", ", $transactionIds) : "-";
+               $orderReferencesString = !empty($orderReferences) ? implode(", ", $orderReferences) : "-";
+               $orderCustomersString = !empty($orderCustomers) ? implode(", ", $orderCustomers) : "-";
 
                $array = array(
                    'id' => $row->id,
                    'enc_id' => encrypt($row->id),
                    'order_id' => $row->order_id,
-                   'customer_name' => $row->customer->name,
+                   'order_type' => ($row->order_type == 1 ? "Inbound":"Outbound"),
+                   'customer_name' => ($row->order_type == 1 ?  $row->customer->name: $orderCustomersString),
+                   'company_name' => ($row->order_type == 1 ?  $row->customer->company?->title: "-"),
                    'warehouse_title' =>$row->warehouse->title,
                    'dock_title' =>$row->dock->dock->title,
                    'order_date' => $row->order_date,
                    'operational_hour_working_hour' => $row->operationalHour->working_hour,
                    'status_title' => $row->status->status_title,
+                   'order_reference' => $orderReferencesString ?? "-",
+                   'wms_transaction_id' => $transactionIdsString ?? "-",
                );
                $transactionData->push($array);
            }
@@ -351,6 +421,49 @@ class OrderController extends Controller
         }
 
     }
+
+    public function uploadBolOrder(Request $request)
+    {
+        try {
+            if(!$workOrder=Order::find($request->w_order_id)){
+                return Helper::error('Invalid Order Id');
+            }
+            $res=$this->appointment->saveUploadBOL($request);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            }else{
+                return Helper::error($res->get('message'));
+            }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function triggerOrderNotifications($orderData)
+    {
+        if (!$orderData) {
+            return Helper::ajaxError('Order data is null. Notification not triggered.');
+        }
+
+        $this->notificationTrigger(Constants::ADMIN, null);
+
+        if ($orderData->order_type == Constants::OUTBOUND) {
+            $outboundCompanyIds = OutboundOrders::where('order_id', $orderData->id)->pluck('company_id')->toArray();
+
+            if (!empty($outboundCompanyIds)) {
+                $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                foreach ($companyContacts as $companyContact) {
+                    $this->notificationTrigger(Constants::USER, $companyContact);
+                }
+            }
+        } else {
+            if (!empty($orderData->customer_id)) {
+                $this->notificationTrigger(Constants::USER, $orderData->customer_id);
+            }
+        }
+    }
+
 
 
 }

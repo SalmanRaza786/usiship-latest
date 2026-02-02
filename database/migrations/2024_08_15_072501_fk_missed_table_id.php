@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('work_order_pickers', function (Blueprint $table) {
             $table->unsignedBigInteger('missed_table_id')->after('id')->nullable()->default(null);
-            $table->foreign('missed_table_id')->references('id')->on('work_order_pickers')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('missed_table_id')->references('id')->on('missed_items')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

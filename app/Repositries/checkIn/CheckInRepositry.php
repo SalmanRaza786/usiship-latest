@@ -27,10 +27,15 @@ class CheckInRepositry implements CheckInInterface {
     {
         try {
 
-            $data['totalRecords'] = OrderCheckIn::count();
+            $data['totalRecords'] = OrderCheckIn::whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            })->count();
 
             $qry = OrderCheckIn::query();
             $qry =$qry->with('orderContact','order.dock.loadType.eqType','status');
+            $qry =$qry->whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            });
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
                 return $query->whereRelation('order','order_id', 'LIKE', "%{$name}%");
@@ -65,18 +70,16 @@ class CheckInRepositry implements CheckInInterface {
                 'order_id' => 'required',
                 'whDoors' => 'required',
                 'container_no' => 'required',
-                'seal_no' => 'required',
-                'do_signature' => 'required',
+//                'seal_no' => 'required',
+//                'do_signature' => 'required',
             ]);
 
             if($request->orderCheckInId==0){
 
                 $validator = Validator::make($request->all(), [
                     'containerImages' => 'required',
-                    'sealImages' => 'required',
-                    'do_signatureImages' => 'required',
-
-
+//                    'sealImages' => 'required',
+//                    'do_signatureImages' => 'required',
                 ]);
             }
 
@@ -94,7 +97,7 @@ class CheckInRepositry implements CheckInInterface {
                     'door_id' =>$request->whDoors,
                     'order_contact_id' => $request->order_contact_id,
                     'container_no' => $request->container_no,
-                    'seal_no' => $request->seal_no,
+                    'seal_no' => $request->seal_no??"-",
                     'delivery_order_signature' => $request->do_signature,
                     'other_document' => $request->other_doc,
                     'status_id' => 12,
@@ -183,8 +186,30 @@ class CheckInRepositry implements CheckInInterface {
     public function getOrderCheckinList($limit=null)
     {
         try {
+            $type=1;
             $qry= OrderCheckIn::query();
             $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
+            $qry =$qry->where('status_id','!=',10);
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+    }
+    public function getOutboundCheckinList($limit=null)
+    {
+        try {
+            $type=2;
+            $qry= OrderCheckIn::query();
+            $qry= $qry->with('orderContact','order.dock.loadType.eqType','status','door');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
             $qry =$qry->where('status_id','!=',10);
             ($limit!=null)?$qry->take($limit):'';
             $qry =$qry->orderByDesc('id');

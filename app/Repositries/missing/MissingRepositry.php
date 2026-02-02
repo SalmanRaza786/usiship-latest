@@ -26,7 +26,7 @@ class MissingRepositry implements MissingInterface
         try {
             $data['totalRecords'] = MissedItem::publish()->count();
             $qry= MissedItem::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','workOrder.carrier','status');
             $qry= $qry->publish();
 //            $qry= $qry->where('status_code',205);
 
@@ -95,7 +95,7 @@ class MissingRepositry implements MissingInterface
     }
 
     //savePickedItems
-    public function saveResolveItems($request)
+    public function saveResolveItems($request,$guard=null)
     {
 
         try {
@@ -136,19 +136,21 @@ class MissingRepositry implements MissingInterface
                     ]
                 );
 
-                $values = explode(',', $val);
+                if($guard !='api') {
+                    $values = explode(',', $val);
+                }
 
                     $pickedItems= PickedItem::updateOrCreate(
                         [
                             'picker_table_id' =>$workOrderPicker->id,
-                            'w_order_item_id' =>$values[1],
-                            'inventory_id' =>$values[0],
+                            'w_order_item_id' =>($guard=='api')?$request->w_order_item_id:$values[1],
+                            'inventory_id' =>($guard=='api')?$request->itemId[$key]:$values[0],
                             'loc_id' =>$request->newLocId[$key],
                         ],
                         [
                             'picker_table_id' =>$workOrderPicker->id,
-                            'w_order_item_id' =>$values[1],
-                            'inventory_id' =>$values[0],
+                            'w_order_item_id' =>($guard=='api')?$request->w_order_item_id:$values[1],
+                            'inventory_id' =>($guard=='api')?$request->itemId[$key]:$values[0],
                             'loc_id' =>$request->newLocId[$key],
                             'order_qty' =>$request->resolveQty[$key],
                         ]
@@ -222,6 +224,22 @@ class MissingRepositry implements MissingInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+    public function getAllMissingList($limit=null)
+    {
+        try {
+            $qry= MissedItem::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->where('is_publish',1);
+            $qry= $qry->publish();
+            // $qry= $qry->where('status_code',205);
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
 
     public function getResolveItems($missedId)

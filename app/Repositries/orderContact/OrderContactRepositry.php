@@ -22,11 +22,15 @@ class OrderContactRepositry implements OrderContactInterface {
     {
         try {
 
-            $data['totalRecords'] = OrderContacts::count();
+            $data['totalRecords'] = OrderContacts::whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            })->count();
 
             $qry = OrderContacts::query();
             $qry =$qry->with('carrier','order.dock.loadType.eqType','status');
-
+            $qry =$qry->whereHas('order', function($query) use ($request){
+                $query->where('order_type',$request->s_order_type);
+            });
 
             $qry=$qry->when($request->s_name, function ($query, $name) {
 
@@ -115,8 +119,31 @@ class OrderContactRepositry implements OrderContactInterface {
     public function getAllOrderContactList($limit=null)
     {
         try {
+            $type=1;
             $qry= OrderContacts::query();
             $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
+            $qry =$qry->where('status_id','=',9);
+            $qry =$qry->orderByDesc('id');
+            ($limit!=null)?$qry->take($limit):'';
+            $data=$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function getOutboundOrderContactList($limit=null)
+    {
+        try {
+            $type=2;
+            $qry= OrderContacts::query();
+            $qry =$qry->with('filemedia','carrier.docimages','carrier.company','order.dock.loadType.eqType','status');
+            $qry =$qry->whereHas('order', function($query) use ($type){
+                $query->where('order_type',$type);
+            });
             $qry =$qry->where('status_id','=',9);
             $qry =$qry->orderByDesc('id');
             ($limit!=null)?$qry->take($limit):'';
@@ -145,15 +172,9 @@ class OrderContactRepositry implements OrderContactInterface {
     {
         try {
 
-
-            $orderContact = OrderContacts::updateOrCreate(
-                [
-                    'id' => $id
-                ],
-                [
-                    'is_verify' => '1'
-                ]
-            );
+            $orderContact = OrderContacts::find($id);
+            $orderContact->is_verify = '1';
+            $orderContact->save();
 
             return Helper::success($orderContact, $message="Carrier Documents Approved Successfully");
 

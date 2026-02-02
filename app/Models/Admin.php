@@ -15,6 +15,7 @@ class Admin extends Authenticatable
 
     use HasFactory, Notifiable,HasRoles,HasApiTokens;
 
+
     protected $guard = "admin";
 
     protected $fillable = [
@@ -32,6 +33,8 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'created_at' => 'datetime:d M Y ',
+        'id' => 'integer',
+        'role_id' => 'integer',
     ];
 
 
@@ -48,6 +51,6 @@ class Admin extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id', 'id');
+        return $this->belongsTo(\App\Models\Role::class, 'role_id', 'id');
     }
 }

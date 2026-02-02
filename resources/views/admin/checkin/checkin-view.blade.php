@@ -159,7 +159,7 @@
                         </div>
                         <div class="modal-footer">
                             <div class="hstack gap-2 justify-content-end">
-                                <a href="{{route('admin.check-in.index')}}"><button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">Back</button></a>
+                                <a href="{{session('previous_url', route('admin.check-in.index'))}}"><button type="button" class="btn btn-light btn-modal-close" data-bs-dismiss="modal">Back</button></a>
                                 <button type="submit" class="btn btn-success btn-submit btn-add" id="add-btn">Save Changes</button>
 
                             </div>

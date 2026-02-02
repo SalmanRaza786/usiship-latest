@@ -6,6 +6,7 @@ interface AppointmentInterface
 {
     public function getAppointmentList($request);
     public function getTransactionsList($request);
+    public function getReportList($request);
 
     public function uploadPackagingList($request);
     public function checkOrderId($request);
@@ -14,6 +15,7 @@ interface AppointmentInterface
     public function editAppointmentScheduling($id);
     public function deleteAppointment($id);
     public function updateOrCreate($request,$id);
+    public function updateOrCreateOutbound($request,$id);
     public function updateOrCreatePackagingInfo($request,$id);
     public function savePackagingImages($request);
     public function fileUpload($request);
@@ -36,4 +38,6 @@ interface AppointmentInterface
     public function sendNotificationViaEmail($orderId,$customerId,$statusId,$notifyContent);
     public function mediaUpload($fileName=null,$fileType=null,$fileableId=null,$fileableType=null,$formId=null,$fieldName=null);
     public function getMyAppointmentsForApi($customerId,$limit);
+
+    public function saveUploadBOL($request);
 }

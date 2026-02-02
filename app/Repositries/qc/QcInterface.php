@@ -5,11 +5,14 @@ namespace App\Repositries\qc;
 interface QcInterface
 {
     public function getQcList($request);
+    public function getQcItemsList($request);
     public function getQcInfo($id);
+    public function getQcInfoByWorkId($id);
     public function updateStartQc($request);
     public function getQcItems($qcId);
     public function createQcItems($request);
     public function getAllQcForApi();
+    public function getAllQcList($limit);
     public function updateQcItems($request);
 
 }

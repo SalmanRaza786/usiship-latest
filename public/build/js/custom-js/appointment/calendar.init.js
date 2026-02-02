@@ -49,17 +49,14 @@ document.addEventListener("DOMContentLoaded", function () {
             },
 
             success: function(response) {
-
                 if(response.status) {
                     $.each(response.data, function (key, row) {
                         var newData = {
                             id: row.id,
-                            title: row.customer_name,
+                            title: row.customer_name ?? "-",
                             start: new Date(row.order_year,parseInt(row.order_month)-1,row.order_date,row.start_time_hour,row.end_time_minut),
-
                             allDay: false,
                             className: row.active_class,
-
                         };
 
                         defaultEvents.push(newData);
@@ -73,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             complete: function(data) {
                 hideLoader();
+
             },
             error: function(xhr, status, error) {
                 if(xhr.responseText){
@@ -83,6 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+
+
+
     }
 
     // init draggable
@@ -581,7 +582,7 @@ function eventTyped() {
 function upcomingEvent(a) {
 
     a.sort(function (o1, o2) {
-        return (new Date(o1.start)) - (new Date(o2.start));
+        return (new Date(o2.start)) - (new Date(o1.start));
     });
     document.getElementById("upcoming-event-list").innerHTML = null;
     Array.from(a).forEach(function (element) {

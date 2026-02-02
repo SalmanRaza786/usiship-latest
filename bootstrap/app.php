@@ -23,7 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'isUser' => \App\Http\Middleware\CheckGuardMiddleare::class,
             'isUser' => \Illuminate\Auth\Middleware\Authenticate::class,
         ]);
+//        $middleware->append(\App\Http\Middleware\NormalizeJsonNumbers::class);
+        $middleware->appendToGroup('api', \App\Http\Middleware\NormalizeJsonIds::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })->withCommands([
+        __DIR__.'/../app/Console/Commands',
+    ])->create();

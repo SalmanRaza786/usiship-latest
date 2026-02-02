@@ -56,7 +56,7 @@ class PutAwayController extends Controller
             }
 
             $data['offLoadingInfo']=Helper::fetchOnlyData($this->offLoading->getOffLoadingInfo($offLoadingId));
-            $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations($data['offLoadingInfo']->order->wh_id));
+//            $data['locations']=Helper::fetchOnlyData($this->wh->getWhLocations($data['offLoadingInfo']->order->wh_id));
             $data['inventory']=Helper::fetchOnlyData($this->inventory->getAllItems());
             $data['putAwayItems']=Helper::fetchOnlyData($this->putAway->getPutAwayItemsAccordingOffLoading($offLoadingId));
             return  Helper::createAPIResponce(false,200,'Putaway items',$data);

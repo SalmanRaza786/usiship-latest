@@ -37,7 +37,7 @@ class WareHouseController extends Controller
             }
 
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }
@@ -51,7 +51,7 @@ class WareHouseController extends Controller
             }
 
         } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
 
     }

@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\Constants;
 use App\Http\Helpers\Helper;
 use App\Models\Carriers;
 use App\Models\Company;
 use App\Models\Order;
+use App\Models\OutboundOrders;
+use App\Models\User;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\carriers\CarriersInterface;
 use App\Repositries\companies\CompaniesInterface;
 use App\Repositries\customField\CustomFieldInterface;
 use App\Repositries\orderContact\OrderContactInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 
 class CarriersController extends Controller
@@ -86,28 +90,115 @@ class CarriersController extends Controller
     public function saveCarrierInfo(Request $request)
     {
         try {
+
+            $array = array_map('strval', array_map('trim', $request->input('order_no')));
+            if (!empty($array) && is_array($array)) {
+                $orderNoArray = explode(',', $array[0]);
+            }
+            $existingOrders = array_map('strval', array_map('trim', Order::whereIn('order_id', $orderNoArray)->pluck('order_id')->toArray()));
+            $existingOrdersIDs =  Order::whereIn('order_id', $orderNoArray)->get();
+
+            $missingOrders = array_diff($orderNoArray, $existingOrders);
+
+            if (!empty($missingOrders)) {
+                return Helper::error("Invalid Order ID or Transaction Id - ".implode(', ', $orderNoArray)); // Return missing orders
+            }
+
+            $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request, $request->id);
+
+
+            if ($roleUpdateOrCreate->get('status')) {
+                if ($request->from == 0) {
+                    foreach ($existingOrdersIDs as $orderId){
+                        $order = $this->order->changeOrderStatus($orderId->id, 9);
+                        if ($order->get('status')) {
+//                            $orderData = $order->get('data');
+//                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
+//                            $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
+//                            if ($notification->get('status')) {
+//                                Helper::notificationTriggerHelper(1, null);
+//                                Helper::notificationTriggerHelper(2, $orderData->customer_id);
+//                            }
+                            $data=$order->get('data');
+                            $notification = $this->order->sendNotification($data->id, $data->customer_id, 9, 1);
+                            Helper::notificationTriggerHelper(1, null);
+                            if($data->order_type != Constants::OUTBOUND)
+                            {
+                                $customerId = $data->customer_id;
+                                $notification = $this->order->sendNotification($data->id, $customerId, 9, 2);
+                                if ($notification->get('status')) {
+                                    Helper::notificationTriggerHelper(2, $customerId);
+                                }
+                            }else {
+                                $outboundCompanyIds = OutboundOrders::where('order_id', $data->id)->pluck('company_id')->toArray();
+                                if (!empty($outboundCompanyIds)) {
+                                    $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                                    foreach ($companyContacts as $companyContact) {
+                                        $notification = $this->order->sendNotification($data->id, $companyContact, 9, 2);
+                                        if ($notification->get('status')) {
+                                            Helper::notificationTriggerHelper(2, $companyContact);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
+                }else{
+                    $update = $this->orderContact->updateOrderContact($request->orderContactId);
+                }
+                return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'),'Record save successfully');
+            }else{
+                return Helper::ajaxErrorWithData($roleUpdateOrCreate->get('message'), $roleUpdateOrCreate->get('data'));
+            }
+        }catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+
+    public function verifyCarrierInfo(Request $request)
+    {
+        try {
             $request->all();
             if (Order::where('id', $request->order_id)->where('order_id', $request->order_no)->count() == 0) {
                 return Helper::error('Invalid order id or reference no');
             }
-
-            $roleUpdateOrCreate = $this->carriers->CarriersSaveInfo($request, $request->id);
+            $roleUpdateOrCreate = $this->carriers->CarriersVerifyInfo($request, $request->id);
             if ($roleUpdateOrCreate->get('status')) {
                 if ($request->from == 0) {
                     $order = $this->order->changeOrderStatus($request->order_id, 9);
                     if ($order->get('status')) {
-
-                        $orderData = $order->get('data');
-                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
-                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
-                        if ($notification->get('status')) {
-                            Helper::notificationTriggerHelper(1, null);
-                            Helper::notificationTriggerHelper(2, $orderData->customer_id);
-
-
+                        $data = $order->get('data');
+//                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 1);
+//                        $notification = $this->order->sendNotification($orderData->id, $orderData->customer_id, 9, 2);
+//                        if ($notification->get('status')) {
+//                            Helper::notificationTriggerHelper(1, null);
+//                            Helper::notificationTriggerHelper(2, $orderData->customer_id);
+//                        }
+                        $notification = $this->order->sendNotification($data->id, $data->customer_id, 9, 1);
+                        Helper::notificationTriggerHelper(1, null);
+                        if($data->order_type != Constants::OUTBOUND)
+                        {
+                            $customerId = $data->customer_id;
+                            $notification = $this->order->sendNotification($data->id, $customerId, 9, 2);
+                            if ($notification->get('status')) {
+                                Helper::notificationTriggerHelper(2, $customerId);
+                            }
+                        }else {
+                            $outboundCompanyIds = OutboundOrders::where('order_id', $data->id)->pluck('company_id')->toArray();
+                            if (!empty($outboundCompanyIds)) {
+                                $companyContacts = User::whereIn('company_id', $outboundCompanyIds)->pluck('id')->toArray();
+                                foreach ($companyContacts as $companyContact) {
+                                    $notification = $this->order->sendNotification($data->id, $companyContact, 9, 2);
+                                    if ($notification->get('status')) {
+                                        Helper::notificationTriggerHelper(2, $companyContact);
+                                    }
+                                }
+                            }
                         }
                     }
-
                     return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
                 }else{
                     $update = $this->orderContact->updateOrderContact($request->orderContactId);

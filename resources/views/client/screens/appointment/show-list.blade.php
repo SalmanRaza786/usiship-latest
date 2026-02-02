@@ -72,22 +72,22 @@
                     </form>
                 </div>
                 <div class="card-body pt-0">
-                    <table class="table" id="roleTable">
-                        <thead class="text-muted table-light">
-                        <tr class="text-uppercase">
-                            <th class="sort" data-sort="id">Order#</th>
-                            <th class="sort" data-sort="id">Warehouse</th>
-                            <th class="sort" data-sort="customer_name">Dock</th>
-                            <th class="sort" data-sort="customer_name">Order Type</th>
-                            <th class="sort" data-sort="customer_name">Order Date</th>
-                            <th class="sort" data-sort="customer_name">Time Slot</th>
-                            <th class="sort" data-sort="product_name">Status</th>
-                            <th class="sort" data-sort="date">@lang('translation.action')</th>
-
-                        </tr>
-                        </thead>
-
-                    </table>
+                    <div class="table-responsive table-card">
+                        <table class="table table-nowrap align-middle" id="roleTable">
+                            <thead class="text-muted table-light">
+                            <tr class="text-uppercase">
+                                <th class="sort" data-sort="id">Order#</th>
+                                <th class="sort" data-sort="id">Warehouse</th>
+                                <th class="sort" data-sort="customer_name">Dock</th>
+                                <th class="sort" data-sort="customer_name">Order Type</th>
+                                <th class="sort" data-sort="customer_name">Scheduled Date</th>
+                                <th class="sort" data-sort="customer_name">Time Slot</th>
+                                <th class="sort" data-sort="product_name">Status</th>
+                                <th class="sort" data-sort="date">@lang('translation.action')</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
                 <!-- end card body -->
             </div>
@@ -121,12 +121,14 @@
                 ajax: {
                     url: "appointment-list",
                     data: function (d) {
-                        d.name = $('input[name=s_name]').val(),
+                        d.s_name = $('input[name=s_name]').val(),
                             d.status = $('select[name=s_status]').val()
                     }
                 },
                 columns: [
                     { data: 'order_id' },
+                    // { data: 'wms_order' },
+                    // { data: 'wms_order' },
                     { data: 'warehouse.title' },
                     { data: 'dock.dock.title' },
                     { data: 'order_type' },
@@ -136,6 +138,17 @@
                     { data: null, orderable: false },
                 ],
                 columnDefs: [
+                    // {
+                    //     targets: 1,
+                    //     render: function(data, type, row, meta) {
+                    //        return data!=null?data.wms_transaction_id:"-";
+                    //     }
+                    // }, {
+                    //     targets: 2,
+                    //     render: function(data, type, row, meta) {
+                    //         return data!=null?data.order_reference:"-";
+                    //     }
+                    // },
                     {
                         targets: 3,
                         render: function(data, type, row, meta) {
@@ -150,36 +163,64 @@
                         targets: 7,
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
+                            const workID = data.wms_order ? data.wms_order.id : 0;
+                            const orderType = data.order_type;
                             const rowDockId = data.dock_id;
                             const rowLoadTypeId = data.load_type_id;
                             const rowStatus = data.status_id;
                             var viewUrl = "{{ route('user.orders.detail', ':id') }}";
                             if(rowStatus == 6){
-                            return      '<div class="dropdown">'+
-                                    '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
-                                    '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">'+
-                                    '<li><a class="dropdown-item" href="'+viewUrl.replace(':id', rowId)+'"  data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>'+
-                                    '<li><a class="dropdown-item btn-edit"  data="'+rowId+'" data-bs-toggle="modal" data-bs-target="#showModal"  ><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</a></li>'+
-                                    '<li><a class="dropdown-item btn-reschedule"  data="'+rowId+'" dockId="'+rowDockId+'" loadTypeId="'+rowLoadTypeId+'" data-bs-toggle="modal" data-bs-target="#showModalReschedule"><i class=" ri-timer-line align-bottom me-2 text-muted"></i>Reschedule</a></li>'+
-                                    '<li><a class="dropdown-item btn-upload"  data="'+rowId+'" data-bs-toggle="modal" data-bs-target="#showModalUpoad"><i class=" ri-timer-line align-bottom me-2 text-muted"></i>Upload packaging list</a></li>'+
-                                    '<li class="dropdown-divider"></li>'+
-                                    '<li>'+
-                                        '<a class="dropdown-item remove-item-btn btn-delete" href="#"  data="'+rowId+'"  data-bs-toggle="modal" data-bs-target="#deleteRecordModal">'+
-                                            '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Cancel</a>'+
-                                    '</li>'+
-                                '</ul>'+
-                            '</div>';
+                                return `<div class="dropdown">
+                                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="true">
+                                            <i class="ri-more-fill align-middle"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">
+                                            <li>
+                                                <a class="dropdown-item" href="${viewUrl.replace(':id', rowId)}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item btn-edit" data="${rowId}" data-bs-toggle="modal" data-bs-target="#showModal"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item btn-reschedule" data="${rowId}" dockId="${rowDockId}" loadTypeId="${rowLoadTypeId}" data-bs-toggle="modal" data-bs-target="#showModalReschedule"><i class="ri-timer-line align-bottom me-2 text-muted"></i>Reschedule</a>
+                                            </li>
+                                            ${orderType == 1
+                                               ? `<li><a class="dropdown-item btn-upload" data="${rowId}" data-bs-toggle="modal" data-bs-target="#showModalUpload"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload packaging list</a></li>`
+                                               : `<li><a class="dropdown-item btn-upload-bol" data="${rowId}" data-bs-toggle="modal" data-bs-target="#UploadBOLDoc"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload BOL Document</a></li>`
+                                            }
+                                            <li class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item remove-item-btn btn-delete" href="#" data="${rowId}" data-bs-toggle="modal" data-bs-target="#deleteRecordModal">
+                                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Cancel
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>`;
                             }else if(rowStatus == 7){
                                 return '<span class="text-danger">Canceled</span>';
                             }else if(rowStatus == 2){
                                 return '<span class="text-danger">Rejected</span>';
+                            }else if(rowStatus < 9) {
+                                return     `<div class="dropdown">
+                                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="true">
+                                            <i class="ri-more-fill align-middle"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">
+                                            <li>
+                                                <a class="dropdown-item" href="${viewUrl.replace(':id', rowId)}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a>
+                                            </li>
+                                            ${orderType == 1
+                                                    ? `<li><a class="dropdown-item btn-upload" data="${rowId}" data-bs-toggle="modal" data-bs-target="#showModalUpload"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload packaging list</a></li>`
+                                                    : `<li><a class="dropdown-item btn-upload-bol" data="${rowId}" data-bs-toggle="modal" data-bs-target="#UploadBOLDoc"><i class="ri-upload-line align-bottom me-2 text-muted"></i>Upload BOL Document</a></li>`
+                                                 }
+                                            <li class="dropdown-divider"></li>
+                                        </ul>
+                                    </div>`;
                             }else {
-                                return      '<div class="dropdown">'+
+                                return  '<div class="dropdown">'+
                                     '<button class="btn btn-soft-secondary btn-sm dropdown " type="button" data-bs-toggle="dropdown" aria-expanded="true"> <i class="ri-more-fill align-middle"></i></button>'+
                                     '<ul class="dropdown-menu dropdown-menu-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-24px, 29px);" data-popper-placement="bottom-end">'+
                                     '<li><a class="dropdown-item" href="'+viewUrl.replace(':id', rowId)+'"  data-id=""><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>'+
-                                    '<li><a class="dropdown-item btn-upload"  data="'+rowId+'" data-bs-toggle="modal" data-bs-target="#showModalUpoad"><i class=" ri-timer-line align-bottom me-2 text-muted"></i>Upload packaging list</a></li>'+
-                                    '<li class="dropdown-divider"></li>'+
                                     '</ul>'+
                                     '</div>';
                             }

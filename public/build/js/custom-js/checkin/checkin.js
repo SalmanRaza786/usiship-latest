@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
 
-    $('#checkInForm').on('submit', function(e) {
+    $('.checkInForm').on('submit', function(e) {
 
         e.preventDefault();
         $.ajax({
@@ -407,6 +407,7 @@ $(document).ready(function(){
             }
         });
     });
+
     $('#CarrierVerifyForm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
@@ -425,7 +426,7 @@ $(document).ready(function(){
 
                 if (response.status==true) {
                     toastr.success(response.message);
-                    window.location.reload();
+                    window.location.href = '/admin/check-in';
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
@@ -448,7 +449,6 @@ $(document).ready(function(){
 
 
     });
-
 
     $('#UpdateCheckInForm').on('submit', function(e) {
 

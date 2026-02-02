@@ -12,6 +12,7 @@ use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\Admin\PackagingListController;
 use App\Http\Controllers\PusherController;
 use App\Http\Controllers\FirebaseController;
+use App\Http\Controllers\Outbounds\WorkOrderController;
 
 
 Auth::routes();
@@ -23,14 +24,16 @@ Auth::routes();
 
     Route::get('/book-appointment', [AppointmentController::class, 'index'])->name('appointment.index');
     Route::get('/appointments', [AppointmentController::class, 'showAppointmentList'])->name('appointment.show-list');
+    Route::get('/wms-orders', [AppointmentController::class, 'showWMSOrdersList'])->name('appointment.show-wms-orders');
     Route::any('/appointment-list', [AppointmentController::class, 'appointmentList'])->name('appointment.list');
     Route::any('/edit-appointment/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::any('/cancel-appointment/{id}', [AppointmentController::class, 'cancelAppointment'])->name('appointment.cancel');
     Route::any('/upload-packaging-list', [AppointmentController::class, 'uploadPackagingList'])->name('appointment.upload-list');
 
     Route::any('/get-order-detail/{id}', [OrderController::class, 'getAppointmentDetail'])->name('orders.detail');
+    Route::any('/wms-order-detail/{id}', [WorkOrderController::class, 'getWMSOrderDetailClient'])->name('wms-orders.detail');
 
-
+    Route::any('/work-orders-list-client', [WorkOrderController::class, 'workOrdersListClient'])->name('work.orders.list');
 
     });
 
@@ -86,4 +89,14 @@ Auth::routes();
     return view('sidebar');
 });
     Route::get('/firebase-access-token', [FirebaseController::class, 'getAccessToken']);
+
+Route::get('/_debug-pdo', function () {
+    $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
+    return [
+        'ATTR_STRINGIFY_FETCHES' => $pdo->getAttribute(PDO::ATTR_STRINGIFY_FETCHES),
+        'ATTR_EMULATE_PREPARES'  => $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+    ];
+});
+
+
 

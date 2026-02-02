@@ -6,6 +6,7 @@ use App\Http\Helpers\Helper;
 use App\Models\MissedItem;
 use App\Models\MissedItemDetail;
 use App\Models\OrderItemPutAway;
+use App\Models\OrderProcessing;
 use App\Models\PickedItem;
 use App\Models\QcDetailWorkOrder;
 use App\Models\QcWorkOrder;
@@ -27,12 +28,70 @@ class QcRepositry implements QcInterface
         try {
             $data['totalRecords'] = QcWorkOrder::publish()->count();
             $qry= QcWorkOrder::query();
-            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','workOrder.carrier','status');
             $qry= $qry->publish();
-//            $qry= $qry->where('status_code',205);
+
             $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
             $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
             $data['data'] =$qry->orderByDesc('id')->get();
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function getQcItemsList($request)
+    {
+        try {
+            $data['totalRecords'] = QcDetailWorkOrder::count();
+            $qry= QcDetailWorkOrder::query();
+            $qry= $qry->with('workOrderItem.workOrder.client','workOrderItem.inventory','workOrderItem.location','media');
+
+            $qry=$qry->when($request->s_name, function ($query, $name) {
+                return $query->whereRelation('workOrderItem.workOrder','wms_transaction_id', 'LIKE', "%{$name}%");
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
+    public function outboundReportList($request)
+    {
+        try {
+
+            $data['totalRecords'] = QcDetailWorkOrder::count();
+            $qry= QcDetailWorkOrder::query();
+            $qry= $qry->with('workOrderItem.workOrder.client','workOrderItem.inventory','workOrderItem.location','media');
+
+            $qry=$qry->when($request->s_name, function ($query, $name) {
+                return $query->whereRelation('workOrderItem.workOrder','wms_transaction_id', 'LIKE', "%{$name}%");
+            });
+            $qry=$qry->when($request->s_location, function ($query, $loc_id) {
+                return $query->whereRelation('workOrderItem','loc_id',$loc_id);
+            });
+            $qry=$qry->when($request->s_sku, function ($query, $sku) {
+                return $query->whereRelation('workOrderItem','inventory_id',$sku);
+            });
+            $qry=$qry->when($request->s_customers, function ($query, $customer) {
+                return  $query->whereRelation('workOrderItem.workOrder','client_id', $customer);
+            });
+
+            $qry=$qry->when($request->start, fn($q)=>$q->offset($request->start));
+            $qry=$qry->when($request->length, fn($q)=>$q->limit($request->length));
+            $data['data'] =$qry->orderByDesc('id')->get();
+
+            if (!empty($request->get('s_name')) || !empty($request->get('s_location')) || !empty($request->get('inventory_id')) || !empty($request->get('s_customers'))) {
+                $data['totalRecords'] = $data['data']->count();
+            }
+
             return Helper::success($data, $message="Record found");
 
         } catch (\Exception $e) {
@@ -54,6 +113,21 @@ class QcRepositry implements QcInterface
         }
 
     }
+
+    public function getQcInfoByWorkId($id)
+    {
+        try {
+
+            $qry= QcWorkOrder::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.eqType');
+            $data =$qry->where('work_order_id',$id)->first();
+            return Helper::success($data, $message="Record found");
+
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
+
+    }
     public function updateStartQc($request)
     {
         try {
@@ -65,8 +139,23 @@ class QcRepositry implements QcInterface
             ($request->updateType==1)?$qry->start_time=Carbon::now():$qry->end_time=Carbon::now();
             ($request->updateType==2)?$qry->status_code=$request->status_code:'';
             $qry->save();
+            if($request->updateType == 2)
+            {
+                $wokr_order_process = OrderProcessing::updateOrCreate(
+                    [
+                        'work_order_id' =>$qry->work_order_id,
+                    ],
+                    [
+                        'work_order_id' =>$qry->work_order_id,
+                        'qc_work_order_id' =>$qry->id,
+                        'auth_id' =>Auth::user()->id,
+                        'is_publish' =>2,
+                        'status_code' =>205
+                    ]
+                );
+            }
 
-            return Helper::success($qry, ($request->updateType==1)?"qc start success fully":"qc close success fully");
+            return Helper::success($qry, ($request->updateType==1)?"qc start successfully":"qc close successfully");
 
         } catch (\Exception $e) {
             return Helper::errorWithData($e->getMessage(),[]);
@@ -124,9 +213,8 @@ class QcRepositry implements QcInterface
 
                     foreach ($workOrderItem as $row){
 
-                        $totalPickedQty = PickedItem::whereIn('picker_table_id', $pickerId)
-                            ->where('inventory_id', $row->inventory_id)
-                            ->sum('picked_qty');
+                        $totalPickedQty = PickedItem::where('inventory_id', $row->inventory_id)->where('w_order_item_id', $row->id)->sum('picked_qty');
+
 
                     $qcDetail = QcDetailWorkOrder::class::updateOrCreate(
                         [
@@ -164,6 +252,21 @@ class QcRepositry implements QcInterface
             return Helper::errorWithData($e->getMessage(),[]);
         }
 
+    }
+    public function getAllQcList($limit=null)
+    {
+        try {
+            $qry= QcWorkOrder::query();
+            $qry= $qry->with('workOrder.client','workOrder.loadType.direction','workOrder.loadType.eqType','status');
+//            $qry= $qry->where('status_code',205);
+            $qry= $qry->publish();
+            ($limit!=null)?$qry->take($limit):'';
+            $qry =$qry->orderByDesc('id');
+            $data =$qry->get();
+            return Helper::success($data, $message="Record found");
+        } catch (\Exception $e) {
+            return Helper::errorWithData($e->getMessage(),[]);
+        }
     }
     public function updateQcItems($request)
     {

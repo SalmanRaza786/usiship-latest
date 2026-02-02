@@ -20,6 +20,10 @@ class PickedItem extends Model
     {
         return $this->belongsTo(WhLocation::class, 'loc_id','id');
     }
+    public function pickedlocation()
+    {
+        return $this->belongsTo(WhLocation::class, 'picked_loc_id','id');
+    }
 
     public function wOrderItems()
     {

@@ -8,8 +8,13 @@ use App\Models\User;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\appSettings\AppSettingsInterface;
 use App\Repositries\checkIn\CheckInInterface;
+use App\Repositries\customer\CustomerInterface;
+use App\Repositries\missing\MissingInterface;
 use App\Repositries\offLoading\OffLoadingInterface;
 use App\Repositries\orderContact\OrderContactInterface;
+use App\Repositries\picking\PickingInterface;
+use App\Repositries\processing\ProcessingInterface;
+use App\Repositries\qc\QcInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,14 +26,24 @@ class HomeController extends Controller
     private $checkIn;
     private $offLoading;
     private $appointment;
+    private $picking;
+    private $qc;
+    private $processing;
+    private $missing;
+    private $customer;
 
 
-    public function __construct(AppSettingsInterface $appSetting, OrderContactInterface $orderContact,CheckInInterface $checkIn,OffLoadingInterface $offLoading,AppointmentInterface $appointment) {
+    public function __construct(AppSettingsInterface $appSetting, OrderContactInterface $orderContact,CheckInInterface $checkIn,OffLoadingInterface $offLoading,AppointmentInterface $appointment, PickingInterface $picking, QcInterface $qc, ProcessingInterface $processing, MissingInterface $missing,CustomerInterface $customer) {
         $this->appSetting = $appSetting;
         $this->orderContact = $orderContact;
         $this->checkIn = $checkIn;
         $this->offLoading = $offLoading;
         $this->appointment = $appointment;
+        $this->picking = $picking;
+        $this->qc = $qc;
+        $this->processing = $processing;
+        $this->missing = $missing;
+        $this->customer = $customer;
 
     }
     //appSetting
@@ -52,7 +67,13 @@ class HomeController extends Controller
 
             $data=[];
               $data['checkIn'] = Helper::fetchOnlyData($this->orderContact->getAllOrderContactList($request->limit));
+              $data['outboundOnLoading'] = Helper::fetchOnlyData($this->checkIn->getOutboundCheckinList($request->limit));
               $data['offLoading'] = Helper::fetchOnlyData($this->checkIn->getOrderCheckinList($request->limit));
+              $data['outboundCheckIn'] = Helper::fetchOnlyData($this->checkIn->getOutboundCheckinList($request->limit));
+              $data['picking'] = Helper::fetchOnlyData($this->picking->getAllPickersList($request->limit));
+              $data['qc'] = Helper::fetchOnlyData($this->qc->getAllQcList($request->limit));
+              $data['processing'] = Helper::fetchOnlyData($this->processing->getAllProcessList($request->limit));
+              $data['missing'] = Helper::fetchOnlyData($this->missing->getAllMissingList($request->limit));
               $res = Helper::fetchOnlyData($this->offLoading->getOffLoadingListForPutAwayApi($request->limit));
               $data['itemPutaway'] =$res['data'];
 
@@ -85,4 +106,20 @@ class HomeController extends Controller
         }
 
     }
+
+    public function customersList(){
+        try {
+            $res = $this->customer->getAllCustomers();
+            if($res->get('status')){
+                return  Helper::createAPIResponce(false,200,'Customers List',$res->get('data'));
+            }else{
+                return  Helper::createAPIResponce(false,200,'Customers list empty',$res->get('data'));
+            }
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+
+    }
+
+
 }

@@ -57,10 +57,10 @@
                         <table class="table table-nowrap align-middle" id="roleTable">
                             <thead class="text-muted table-light">
                             <tr class="text-uppercase">
+                                <th class="sort">Transaction No.</th>
+                                <th class="sort">Order Reference</th>
                                 <th class="sort">Customer Name</th>
-                                <th class="sort">Direction</th>
-                                <th class="sort">Load Type</th>
-                                <th class="sort">Order Ref</th>
+                                <th class="sort">Carrier</th>
 
                                 <th class="sort">Status</th>
                                 <th class="sort">Action</th>
@@ -103,15 +103,22 @@
             },
 
             columns: [
-                { data: 'work_order.client.name' },
-                { data: 'work_order.load_type.direction.value' },
-                { data: 'work_order.load_type.eq_type.value' },
+                { data: 'work_order.wms_transaction_id' },
                 { data: 'work_order.order_reference' },
+                { data: 'work_order.client.title' },
+                { data: null},
                 { data: null },
                 { data: null, orderable: false },
             ],
 
             columnDefs: [
+                {
+                    targets: 3,
+                    render: function(data, type, row, meta) {
+                        return (data.work_order.carrier ? data.work_order.carrier?.carrier_company_name : "-");
+
+                    }
+                },
                 {
                     targets: 4,
                     render: function(data, type, row, meta) {
@@ -127,7 +134,7 @@
                     targets: 5,
                     render: function(data, type, row, meta) {
                         var url = "{{ route('admin.missing.detail', ':id') }}";
-                        var StartPicking = ' @canany('admin-permission-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Missing Detail</a>@endcanany';
+                        var StartPicking = ' @canany('admin-missing-view')<a href="'+url.replace(':id', data.id)+'" class="btn btn-primary btn-assign" >Missing Detail</a>@endcanany';
                         var btnGroup=StartPicking;
 
                         return btnGroup;

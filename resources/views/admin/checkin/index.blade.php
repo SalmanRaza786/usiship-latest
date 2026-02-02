@@ -23,6 +23,7 @@
                 <div class="card-body border border-dashed border-end-0 border-start-0">
 
                     <form>
+                        <input type="hidden" name="s_order_type" value="{{$type}}">
                         <div class="row g-3">
                             <div class="col-xxl-7 col-sm-6">
                                 <div class="search-box">
@@ -36,7 +37,7 @@
                                     <select class="form-control"  name="s_status">
                                         <option value="">Choose One</option>
                                         <option value="" selected>All</option>
-                                        <option  value="9">Pending</option>
+                                        <option selected  value="9">Pending</option>
                                         <option value="12">Completed</option>
                                     </select>
                                 </div>
@@ -55,10 +56,6 @@
                         <!--end row-->
                     </form>
                 </div>
-
-
-
-
 
 
                 <div class="card-body pt-0">
@@ -104,6 +101,7 @@
                 ajax: {
                     url: "order-contact-list",
                     data: function (d) {
+                        d.s_order_type = $('input[name=s_order_type]').val(),
                         d.s_name = $('input[name=s_name]').val(),
                             d.s_status = $('select[name=s_status]').val()
                     }
@@ -150,6 +148,7 @@
                         render: function(data, type, row, meta) {
                             const rowId = data.id;
                             const status = data.status;
+                            const orderType = data.order.order_type;
                             const whId = data.order.wh_id ;
                             const orderId = data.order_id ;
                             var url = "{{ route('admin.carrier.verify', ':id') }}";
@@ -161,7 +160,7 @@
                                     return '@canany('admin-checkin-create')<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary me-2">View Carrier Documents</a>'+
                                     '<a href="'+checkInurl.replace(':id', rowId)+'" type="button" class="btn btn-primary">View CheckIn</a>@endcanany'
                                 }else{
-                                    return '@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in me-2" data="'+rowId+'" whId="'+whId+'" orderId="'+orderId+'" data-bs-toggle="modal" data-bs-target="#checkInModal">Check In Now</a>'+
+                                    return '@canany('admin-checkin-create')<a href="#" type="button" class="btn btn-primary btn-check-in me-2" data="'+rowId+'" whId="'+whId+'" orderId="'+orderId+'" data-bs-toggle="modal" data-bs-target="'+(orderType == 1?"#checkInModal":"#checkOutModal")+'">Check In Now</a>'+
                                     '<a href="'+url.replace(':id', rowId)+'" type="button" class="btn btn-primary">View Carrier Document</a>@endcanany';
                                 }
                             }

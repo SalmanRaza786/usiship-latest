@@ -24,7 +24,7 @@
                     $('#roleTable').DataTable().ajax.reload();
                     $('.btn-submit').text('Save');
                     $(".btn-submit").prop("disabled", false);
-                    $('#addForm')[0].reset();
+                    $('#addFrom')[0].reset();
                 }
                 if (response.status==false) {
                     toastr.error(response.message);
@@ -121,7 +121,7 @@
         $('.btn-add').css('display', 'block');
         $('.add-lang-title').css('display', 'block');
         $('.edit-lang-title').css('display', 'none');
-        // $('#WhAddForm')[0].reset();
+        $('#addFrom')[0].reset();
     }
     function editElement(){
 

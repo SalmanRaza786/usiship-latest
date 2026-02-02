@@ -190,8 +190,9 @@ class loadTypeRepositry implements loadTypeInterface {
     {
         try {
 
-            $qry = LoadType::query();
+            $qry = LoadType::with('direction','operation','eqType','transMode');
             $qry = $qry->where('wh_id',null);
+            $qry = $qry->orWhere('wh_id','!=',null);
             $data['data']=$qry->orderByDesc('id')->get();
             return Helper::success($data, $message=__('translation.record_found'));
 

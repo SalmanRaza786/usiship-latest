@@ -59,6 +59,34 @@ class OffLoadingController extends Controller
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
+    public function closeOnLoading(Request $request)
+    {
+        try {
+            if (!OrderOffLoading::find($request->id)) {
+                return  Helper::createAPIResponce(true,400,'Invalid offloading id',[]);
+            }
+            $roleUpdateOrCreate = $this->offloaing->offLoadingUpdate($request,$request->id);
+            if ($roleUpdateOrCreate->get('status')){
+                $offLoadingdata = $roleUpdateOrCreate->get('data');
+                $offLoading=OrderOffLoading::with('order')->find($offLoadingdata->id);
+                $orderId=$offLoading->order_id;
+                $statusId=10;
+
+                $order =$this->appointment->changeOrderStatus($orderId,$statusId);
+
+                //1 for admin 2 for user
+                $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,1);
+                $this->appointment->sendNotification($orderId,$offLoading->order->customer_id,$statusId,2);
+                Helper::notificationTriggerHelper(1,null);
+                Helper::notificationTriggerHelper(2,$offLoading->order->customer_id);
+                return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
+            }else{
+                return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
+            }
+        } catch (\Exception $e) {
+            return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
+        }
+    }
     public function packagingListConfirmation(Request $request){
 
         try {

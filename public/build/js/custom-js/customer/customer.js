@@ -69,12 +69,27 @@ $(document).ready(function(){
             dataType: 'json',
             data: { id: id },
             success: function(response) {
-                 // console.log(response.data.roles);
+               console.log(response.data);
                 if(response.status==true){
                     $('input[name=id]').val(response.data.load.id);
                     $('input[name=name]').val(response.data.load.name);
+                    $('input[name=company_name]').val(response.data.load.company_name);
+                    $('input[name=phone_no]').val(response.data.load.phone_no);
                     $('input[name=email]').val(response.data.load.email);
-                    // $('input[name=password]').val(response.data.load.password);
+
+                    $('select[name="company_id"]').empty();
+                    $('select[name="company_id"]').append(`<option value="">Choose One</option>`);
+
+                    $.each(response.data.companies.data.data, function(key, row) {
+                        $('select[name="company_id"]').append(`<option value="${row.id}" ${row.id == response.data.load.company_id ? 'selected' : ''}>${row.title}</option>`);
+                    });
+
+                    $('select[name="status"]')
+                        .html(
+                            `<option value="">Choose One</option>`+
+                            `<option value="1" ${response.data.load.status == 'Active' ? 'selected' : ''}>Active</option>`+
+                            `<option value="2" ${response.data.load.status== 'In-Active' ? 'selected' : ''}>In-Active</option>`
+                        )
                 }else{
                     toastr.error(response.message)
                 }

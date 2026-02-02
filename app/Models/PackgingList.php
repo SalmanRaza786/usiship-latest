@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PackgingList extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $fillable=[
         'order_id',
         'inventory_id',
@@ -38,6 +39,10 @@ class PackgingList extends Model
     public function inventory()
     {
         return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
+    }
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
     public function filemedia()
     {

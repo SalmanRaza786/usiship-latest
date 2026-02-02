@@ -1,6 +1,6 @@
 
 @extends('client.layouts.master')
-@section('title') Order Detail  @endsection
+@section('title') Appointment Detail  @endsection
 @section('css')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css" rel="stylesheet">
     <style>
@@ -13,8 +13,27 @@
     </style>
 @endsection
 @section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0">Appointment Detail</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('user.appointment.show-list')}}">Appointment List</a></li>
+                        <li class="breadcrumb-item active">Appointment Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-xl-12">
     @include('admin.order.order-detail-container')
     @include('admin.components.comon-modals.common-modal')
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="{{ URL::asset('build/js/custom-js/appointment/orderList.js') }}"></script>

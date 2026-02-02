@@ -2,7 +2,7 @@
     <div class="modal-dialog  modal-xl modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header p-3 bg-soft-info">
-                <h5 class="modal-title" id="modal-title">Add New  Order</h5>
+                <h5 class="modal-title" id="modal-title">Create New Scheduling</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body p-4">
@@ -101,7 +101,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header p-3 bg-soft-info">
-                <h5 class="modal-title" id="modal-title">Order information</h5>
+                <h5 class="modal-title" id="modal-title">Scheduling information</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body p-4">
@@ -181,7 +181,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header p-3 bg-soft-info">
-                <h5 class="modal-title" id="modal-title">Add New  Order</h5>
+                <h5 class="modal-title" id="modal-title">Create New Scheduling</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div class="modal-body p-4">
@@ -189,10 +189,12 @@
                     <div class="col-12">
                         <div class="mb-3">
                             <label class="form-label">Customers</label>
-                            <select class="form-select " name="customer_id" required>
+                            <select class="form-select " name="customer_id" required data-choices>
                                 <option value="">Choose One</option>
                                 @foreach($data['customers'] as $row)
-                                    <option value="{{ $row->id }}">{{ $row->name}}</option>
+                                    @if($row->company)
+                                        <option value="{{ $row->id }}">{{ $row->name}} ({{$row->company->title ?? '-'}})</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

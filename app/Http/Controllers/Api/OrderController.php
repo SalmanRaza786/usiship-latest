@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\LoadType;
 use App\Models\Order;
 use App\Repositries\appointment\AppointmentInterface;
 use App\Repositries\checkIn\CheckInInterface;
@@ -43,12 +44,21 @@ class OrderController extends Controller
             if ($validator->fails()){
                 return  Helper::createAPIResponce(true,400,$validator->errors()->first(),$validator->errors());
             }
-
-            $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
+            if ($request->load_type_id)
+            {
+                $loadTypeDirection = LoadType::where('id', $request->load_type_id)->value('direction_id');
+            }
+            if($loadTypeDirection == 2 )
+            {
+                $roleUpdateOrCreate = $this->order->updateOrCreateOutbound($request,$request->id);
+            }else{
+                $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
+            }
+//            $roleUpdateOrCreate = $this->order->updateOrCreate($request,$request->id);
             if ($roleUpdateOrCreate->get('status')){
                 $orderData=$roleUpdateOrCreate->get('data');
-                Helper::notificationTriggerHelper(1,null);
-                Helper::notificationTriggerHelper(2,$orderData->customer_id);
+//                Helper::notificationTriggerHelper(1,null);
+//                Helper::notificationTriggerHelper(2,$orderData->customer_id);
                 return  Helper::createAPIResponce(false,200,$roleUpdateOrCreate->get('message'),$roleUpdateOrCreate->get('data'));
             }else{
                 return  Helper::createAPIResponce(true,400,$roleUpdateOrCreate->get('message'),[]);
@@ -97,7 +107,6 @@ class OrderController extends Controller
                 'customer_name' =>$res->customer->name,
                 'order_date' => date('d M,Y',strtotime($res->order_date)) ,
                 'slot' => date('i',strtotime($res->operationalHour->working_hour)),
-
                 'dock' =>$res->dock->dock->title,
                 'status_id' =>$res->status_id,
                 'status_order_by' =>$res->status->order_by,
@@ -113,10 +122,10 @@ class OrderController extends Controller
             return  Helper::createAPIResponce(true,400,$e->getMessage(),[]);
         }
     }
-    public function getOrdersList()
+    public function getOrdersList(Request $request)
     {
         try {
-           return $res= $this->order->getAllOrders();
+           return $res= $this->order->getAllOrdersAPI($request->user_type);
             $data = collect([]);
             foreach ($res['data'] as $row){
 
@@ -146,7 +155,7 @@ class OrderController extends Controller
     {
         try {
             $data=Helper::fetchOnlyData($this->order->getAllStatus());
-            return  Helper::createAPIResponce(false,200,'All Status',$data);
+            return  Helper::ajaxSuccess($data,'All Status');
 
         } catch (\Exception $e) {
             return  Helper::createAPIResponce(false,400,$e->getMessage(),[]);

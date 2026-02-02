@@ -9,6 +9,10 @@ use Spatie\Permission\Models\Permission;
 class PermissionModule extends Model
 {
     use HasFactory;
+    protected $casts = [
+        'id' => 'integer',
+        'module_id' => 'integer',
+    ];
     public function permissions()
     {
         return $this->hasMany(Permission::class, 'module_id', 'id')->select(['id','module_id','name']);

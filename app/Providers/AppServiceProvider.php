@@ -24,6 +24,8 @@ use App\Repositries\inventory\InventoryInterface;
 use App\Repositries\inventory\InventoryRepositry;
 use App\Repositries\loadType\loadTypeInterface;
 use App\Repositries\loadType\loadTypeRepositry;
+use App\Repositries\customerCompanies\CustomerCompaniesRepositry;
+use App\Repositries\customerCompanies\CustomerCompaniesInterface;
 
 use App\Repositries\media\MediaInterface;
 use App\Repositries\media\MediaRepositry;
@@ -48,6 +50,8 @@ use App\Repositries\permissions\PermissionInterface;
 use App\Repositries\permissions\PermissionRepositry;
 use App\Repositries\picking\PickingInterface;
 use App\Repositries\picking\PickingRepositry;
+use App\Repositries\processing\ProcessingInterface;
+use App\Repositries\processing\ProcessingRepositry;
 use App\Repositries\putaway\PutAwayInterface;
 use App\Repositries\putaway\PutawayRepositry;
 use App\Repositries\qc\QcInterface;
@@ -60,6 +64,7 @@ use App\Repositries\wh\WhInterface;
 use App\Repositries\wh\WhRepositry;
 use App\Repositries\workOrder\WorkOrderInterface;
 use App\Repositries\workOrder\WorkOrderRepositry;
+use App\Services\DataService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -69,7 +74,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(DataService::class, function ($app) {
+            return new DataService();
+        });
     }
 
     /**
@@ -87,6 +94,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CustomFieldInterface::class,CustomFieldRepositry::class);
 
         $this->app->bind(CompaniesInterface::class,CompaniesRepositry::class);
+        $this->app->bind(CustomerCompaniesInterface::class,CustomerCompaniesRepositry::class);
         $this->app->bind(CarriersInterface::class,CarriersRepositry::class);
 
         $this->app->bind(DockInterface::class,DockRepositry::class);
@@ -107,6 +115,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PickingInterface::class,PickingRepositry::class);
         $this->app->bind(MissingInterface::class,MissingRepositry::class);
         $this->app->bind(QcInterface::class,QcRepositry::class);
+        $this->app->bind(ProcessingInterface::class,ProcessingRepositry::class);
 
 
 

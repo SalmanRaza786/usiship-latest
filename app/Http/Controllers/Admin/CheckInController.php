@@ -28,7 +28,12 @@ class CheckInController extends Controller
     }
     public function index(){
         try {
-            return view('admin.checkin.index');
+            if (request()->routeIs('admin.outbound.check-in.index')) {
+                    $type = 2; // Outbound
+                } else {
+                    $type = 1; // Inbound (or any other default)
+                }
+            return view('admin.checkin.index')->with(compact('type'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
         }
@@ -37,6 +42,8 @@ class CheckInController extends Controller
     //checkinView
     public function checkinView($orderContactId){
         try {
+
+            session()->put('previous_url', url()->previous());
 
             $checkIn=OrderCheckIn::where('order_contact_id',$orderContactId)->first();
             if(!$checkIn){
@@ -102,7 +109,6 @@ class CheckInController extends Controller
                 }
                 return Helper::ajaxSuccess($roleUpdateOrCreate->get('data'), $roleUpdateOrCreate->get('message'));
             }else{
-
                 return Helper::ajaxError($roleUpdateOrCreate->get('message'));
             }
 

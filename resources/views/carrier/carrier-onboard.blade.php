@@ -201,17 +201,16 @@
                                                 </div>
                                                 <hr>
                                                 <div>
-                                                    <label for="formSizeLarge" class="form-label">Order Reference
-                                                        No.</label>
+                                                    <label for="formSizeLarge" class="form-label">Order Reference No.
+{{--                                                         @if($order->order_type==2) / WMS Order Reference @endif--}}
+                                                    </label>
                                                     <p class="text-muted">Please check order reference number from your
                                                         carrier email.</p>
                                                 </div>
                                                 <div class="input-group input-group-lg mb-2 form-icon right">
-                                                    <input type="text" class="form-control" id="order_id" name="order_no"
-                                                           aria-label="Sizing example input"
-                                                           aria-describedby="inputGroup-sizing-lg" required></div>
+                                                    <input class="form-control form-control-lg" id="choices-text-unique-values" data-choices data-choices-text-unique-true type="text" value=""  name="order_no[]" required>
+                                                </div>
                                                 <div id="orderIdFeedback" ></div>
-
 
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -243,6 +242,28 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
+                                                        <div class="mt-2">
+                                                            <label for="vehicle_class" class="form-label">Class of Vehicle</label>
+                                                            <select class="form-control form-control-lg" id="vehicle_class" name="vehicle_class" required>
+                                                                <option value="" selected>Select Vehicle Class</option>
+                                                                @if(\App\Http\Helpers\Constants::$vehicle_classes)
+                                                                    @foreach(\App\Http\Helpers\Constants::$vehicle_classes as $key => $veh_class)
+                                                                        <option value="{{$key}}">{{$veh_class}}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6" id="other_vehicle_class_container" style="display: none;">
+                                                        <div class="mt-2">
+                                                            <label for="formSizeLarge" class="form-label">Others Vehicle Class</label>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="other_vehicle_class" type="text">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Container/Trailer #</label>
                                                             <input class="form-control form-control-lg" id="formSizeLarge" name="vehicle_no" type="text" required>
@@ -255,18 +276,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @if($order->order_type==1)
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL #</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no"  type="text" required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_no"  type="text">
 
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">BOL Image</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file"   required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="bol_image" type="file" >
                                                             <input type="text" class="d-none"  name="bolFileId" value="0">
                                                         </div>
                                                     </div>
@@ -287,11 +309,12 @@
                                                     </div>
 
                                                 </div>
+                                                @endif
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's ID</label>
-                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*"  required>
+                                                            <input class="form-control form-control-lg" id="formSizeLarge" name="driver_id_pic" type="file"  accept="image/*" required>
                                                             <input type="text" class="d-none"  name="driverFileId" value="0">
                                                         </div>
                                                     </div>
@@ -299,7 +322,6 @@
                                                         <div  class="mt-2">
                                                             <label for="formSizeLarge" class="form-label">Upload Driver's Other Docs</label>
                                                             <input class="form-control form-control-lg" id="formSizeLarge" name="other_document"  accept="image/*"  type="file">
-
                                                             <input type="text" class="d-none"  name="otherDocFileId" value="0">
                                                         </div>
                                                     </div>
@@ -385,10 +407,26 @@
         let htmlscanner;
 
         $(document).ready(function() {
+            initChoiceTextDropdown();
+
+            function initChoiceTextDropdown(){
+
+
+            }
+
+
+            $('#vehicle_class').on('change', function() {
+                console.log($(this).val());
+                if ($(this).val() == 5) {
+                    $('#other_vehicle_class_container').show();
+                } else {
+                    $('#other_vehicle_class_container').hide();
+                }
+            });
 
 
 
-            $('#order_id').on('keyup', function() {
+            $('#choices-text-unique-values').on('keyup', function() {
                 var orderId = $(this).val();
                 var id=$('input[name=order_id]').val();
 
@@ -400,10 +438,15 @@
                         method: 'GET',
                         data: { order_id: orderId,id:id },
                         success: function(response) {
+                            console.log(response.data);
 
                             if (response.data==1) {
                                 $("#btn-carrier-submit").prop("disabled", false);
                                 errorText='<span></span>';
+                                new Choices('#choices-text-unique-values', {
+                                    removeItemButton: true,
+                                    duplicateItemsAllowed: false,
+                                });
                             }
                             if (response.data==0) {
                                 $("#btn-carrier-submit").prop("disabled", true);
@@ -481,9 +524,10 @@
                         $(".btn-submit").prop("disabled", true);
                     },
                     success: function(response) {
+                            console.log(response);
                         if (response.status==true) {
                             toastr.success(response.message);
-                            $('.btn-submit').text('>Checked In');
+                            $('.btn-submit').text('Checked In');
                             $(".btn-submit").prop("disabled", false);
                             $('#' + targetTab).tab('show');
                         }
@@ -492,12 +536,12 @@
                         }
                     },
                     complete: function(data) {
-                        $(".btn-submit").html(">Checked In");
+                        $(".btn-submit").html("Checked In");
                         $(".btn-submit").prop("disabled", false);
                     },
-                    error: function() {
-                        // toastr.error('something went wrong');
-                        $('.btn-submit').text('>Checked In');
+                    error: function(error) {
+                        toastr.error( error.responseJSON.message);
+                        $('.btn-submit').text('Checked In');
                         $(".btn-submit").prop("disabled", false);
                     }
                 });

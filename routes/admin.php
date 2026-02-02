@@ -34,6 +34,11 @@ use App\Http\Controllers\Outbounds\WorkOrderController;
 use App\Http\Controllers\Outbounds\PickingController;
 use App\Http\Controllers\Outbounds\MissingController;
 use App\Http\Controllers\Outbounds\QcController;
+use App\Http\Controllers\Admin\CustomerCompanyController;
+
+use App\Http\Controllers\Outbounds\ProcessingController;
+use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Client\AppointmentController;
 
 
 
@@ -49,7 +54,7 @@ use App\Http\Controllers\Outbounds\QcController;
     Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
 
 
-
+    Route::get('/locations/search', [WareHouseController::class, 'search'])->name('locations.search');
     Route::get('dashboard', [AdminHomeController::class, 'index'])->name('dashboard');
     Route::get('/app-settings', [AppSettingsController::class, 'index'])->name('app-settings.index')->middleware(['can:admin-settings-edit']);
     Route::post('/update-app-settings', [AppSettingsController::class, 'update'])->name('app-settings.update')->middleware(['can:admin-settings-edit']);
@@ -145,9 +150,10 @@ use App\Http\Controllers\Outbounds\QcController;
         //Transactions
         Route::any('/transactions', [OrderController::class, 'transactionIndex'])->name('transactions.index')->middleware(['can:admin-order-view']);
         Route::any('/transactions-list', [OrderController::class, 'transactionsList'])->name('transactions.list');
-
+        Route::any('/edit-appointment/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
         //Check In
         Route::any('/check-in', [CheckInController::class, 'index'])->name('check-in.index')->middleware(['can:admin-checkin-view']);
+        Route::any('/check-in-outbound', [CheckInController::class, 'index'])->name('outbound.check-in.index')->middleware(['can:admin-checkin-view']);
         Route::any('/checkin-view/{id}', [CheckInController::class, 'checkinView'])->name('checkin.view');
         Route::any('/check-in-list', [CheckInController::class, 'checkInList'])->name('check-in.list')->middleware(['can:admin-checkin-view']);
         Route::any('/save-update-check-in', [CheckInController::class, 'checkinCreateOrUpdate'])->name('checkin.store')->middleware(['can:admin-checkin-create']);
@@ -163,17 +169,20 @@ use App\Http\Controllers\Outbounds\QcController;
 
         //Off Loading
         Route::any('/off-loading', [OffLoadingController::class, 'index'])->name('off-loading.index')->middleware(['can:admin-offloading-view']);
+        Route::any('/on-loading', [OffLoadingController::class, 'index'])->name('on-loading.index')->middleware(['can:admin-offloading-view']);
         Route::any('/off-loading-list', [OffLoadingController::class, 'offLoadingList'])->name('off-loading.list')->middleware(['can:admin-offloading-view']);
         Route::any('/off-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('off-loading.detail')->middleware(['can:admin-offloading-view']);
+        Route::any('/on-loading-detail/{id}', [OffLoadingController::class, 'offLoadingDetail'])->name('on-loading.detail')->middleware(['can:admin-offloading-view']);
         Route::any('/save-update-off-loading', [OffLoadingController::class, 'offLoadingCreateOrUpdate'])->name('off-loading.store')->middleware(['can:admin-offloading-create']);
         Route::any('/update-off-loading', [OffLoadingController::class, 'offLoadingUpdate'])->name('off-loading.close')->middleware(['can:admin-offloading-create']);
+        Route::any('/update-on-loading', [OffLoadingController::class, 'onLoadingClose'])->name('on-loading.close')->middleware(['can:admin-offloading-create']);
         Route::any('/off-loading-upload-images', [OffLoadingController::class, 'saveOffLoadingImages'])->name('off-loading.save.images')->middleware(['can:admin-offloading-create']);
 
         Route::any('/check-order-checkin-id', [OffLoadingController::class, 'checkOrderCheckInId'])->name('off-loading.check.checkin.id');
         Route::any('/packaging-list-confirm/{id}', [OffLoadingController::class, 'packagingListConfirmation'])->name('off-loading.confirm.packaging.list');
         Route::any('/offloading-status-change/{id}', [OffLoadingController::class, 'offloadingStatusChange'])->name('offloading.status.change');
         Route::any('/update-packaging-list', [PackagingListController::class, 'updatePackagingList'])->name('update.packaging.list');
-
+        Route::any('/report-exception', [PackagingListController::class, 'reportException'])->name('report.exception')->middleware(['can:admin-offloading-create']);
 
 
 
@@ -184,7 +193,8 @@ use App\Http\Controllers\Outbounds\QcController;
         Route::any('/store-put-away', [PutAwayController::class, 'storePutAway'])->name('put-away.store')->middleware(['can:admin-putaway-create']);
         Route::get('/delete-putaway-item/{id}', [PutAwayController::class, 'deletePutAwayItem'])->name('put-away.delete')->middleware(['can:admin-putaway-delete']);
         Route::get('/check-putaway-status/{offloadingId}/{orderId}', [PutAwayController::class, 'checkPutAwayStatus'])->name('put-away.status')->middleware(['can:admin-putaway-create']);
-
+        Route::get('/export-order-items/{orderId}', [PutAwayController::class, 'export'])->name('put-away.export')->middleware(['can:admin-putaway-create']);
+        Route::get('/locations/search', [WareHouseController::class, 'search'])->name('locations.search');
         //Notificationss
         Route::any('/trigger-notification/{type}/{totifiableId}', [OrderController::class, 'notificationTrigger']);
 
@@ -199,38 +209,71 @@ use App\Http\Controllers\Outbounds\QcController;
 
 
         //Outbounds
-        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index');
-        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list');
-        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign');
+        Route::any('/import-work-orders', [WorkOrderController::class, 'fetchOrdersData'])->name('work.orders.import')->middleware(['can:admin-w-order-view']);
+        Route::any('/work-orders', [WorkOrderController::class, 'workOrders'])->name('work.orders.index')->middleware(['can:admin-w-order-view']);
+        Route::any('/work-orders-list', [WorkOrderController::class, 'workOrdersList'])->name('work.orders.list')->middleware(['can:admin-w-order-view']);
+        Route::any('/work-order', [WorkOrderController::class, 'getWorkOrder'])->name('work.order.get')->middleware(['can:admin-w-order-view']);
+        Route::any('/get-wms-order-detail/{id}', [WorkOrderController::class, 'getWMSOrderDetail'])->name('wms-orders.detail');
+
+        Route::any('/picker-assign', [WorkOrderController::class, 'pickerAssign'])->name('picker.assign')->middleware(['can:admin-w-order-view']);
+        Route::any('/schedule-work-order', [WorkOrderController::class, 'scheduleWorkOrder'])->name('schedule.work.order')->middleware(['can:admin-w-order-view']);
+
 
         //Picking
-        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index');
-        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list');
-        Route::any('/picking-detail/{id}', [PickingController::class, 'pickingDetail'])->name('picking.start');
-        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update');
-        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items');
+        Route::any('/picking', [PickingController::class, 'index'])->name('picking.index')->middleware(['can:admin-picking-view']);
+        Route::any('/picker-list', [PickingController::class, 'pickerList'])->name('picker.list')->middleware(['can:admin-picking-view']);
+        Route::any('/picking-detail/{id}', [PickingController::class, 'pickingDetail'])->name('picking.start')->middleware(['can:admin-picking-view']);
+        Route::any('/update-start-picking', [PickingController::class, 'updateStartPicking'])->name('picking.update')->middleware(['can:admin-picking-create']);
+        Route::any('/save-picked-items', [PickingController::class, 'savePickedItems'])->name('save-picked.items')->middleware(['can:admin-w-order-create']);
 
         //File
         Route::any('/file-remove', [PickingController::class, 'fileRemove'])->name('file.remove');
 
         //Missing
-        Route::any('/missing', [MissingController::class, 'index'])->name('missing.index');
-        Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list');
-        Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail');
-        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update');
-        Route::any('/save-resolve', [MissingController::class, 'saveResolve'])->name('save.resolve');
+        Route::any('/missing', [MissingController::class, 'index'])->name('missing.index')->middleware(['can:admin-missing-view']);
+        Route::any('/missing-list', [MissingController::class, 'missedList'])->name('missing.list')->middleware(['can:admin-missing-view']);
+        Route::any('/missing-detail/{id}', [MissingController::class, 'missedDetail'])->name('missing.detail')->middleware(['can:admin-missing-view']);
+        Route::any('/update-start-resolve', [MissingController::class, 'updateStartResolve'])->name('missed.update')->middleware(['can:admin-missing-create']);
+        Route::any('/save-resolve', [MissingController::class, 'saveResolve'])->name('save.resolve')->middleware(['can:admin-missing-create']);
 
 
         //QC
-        Route::any('/qc', [QcController::class, 'index'])->name('qc.index');
-        Route::any('/qc-list', [QcController::class, 'QcList'])->name('qc.list');
-        Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail');
-        Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start');
-        Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc');
-        Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc');
+        Route::any('/qc', [QcController::class, 'index'])->name('qc.index')->middleware(['can:admin-qc-view']);
+        Route::any('/qc-list', [QcController::class, 'QcList'])->name('qc.list')->middleware(['can:admin-qc-view']);
+        Route::any('/qc-detail/{id}', [QcController::class, 'qcDetail'])->name('qc.detail')->middleware(['can:admin-qc-view']);
+        Route::any('/update-start-qc', [QcController::class, 'updateStartQc'])->name('qc.start')->middleware(['can:admin-qc-create']);
+        Route::any('/save-qc', [QcController::class, 'saveQc'])->name('save.qc')->middleware(['can:admin-qc-create']);
+        Route::any('/update-qc', [QcController::class, 'updateQcItem'])->name('update.qc')->middleware(['can:admin-qc-create']);
 
+        //Processing
+        Route::any('/processing', [ProcessingController::class, 'index'])->name('process.index')->middleware(['can:admin-processing-view']);
+        Route::any('/processing-list', [ProcessingController::class, 'ProcessList'])->name('process.list')->middleware(['can:admin-processing-view']);
+        Route::any('/processing-detail/{id}', [ProcessingController::class, 'processDetail'])->name('process.detail')->middleware(['can:admin-processing-view']);
+        Route::any('/get-work-order-processing/{id}', [ProcessingController::class, 'getProcess'])->name('process.get')->middleware(['can:admin-processing-create']);
+        Route::any('/update-start-processing', [ProcessingController::class, 'updateStartProcess'])->name('process.start')->middleware(['can:admin-processing-create']);
+        Route::any('/save-processing', [ProcessingController::class, 'saveProcess'])->name('save.process')->middleware(['can:admin-processing-create']);
+        Route::any('/save-processing-detail', [ProcessingController::class, 'saveProcessDetail'])->name('save.process-detail')->middleware(['can:admin-processing-create']);
+        Route::any('/update-processing', [ProcessingController::class, 'updateProcessItem'])->name('update.process')->middleware(['can:admin-processing-create']);
+        Route::any('/close-processing', [ProcessingController::class, 'closeProcess'])->name('update.process')->middleware(['can:admin-processing-create']);
+        Route::any('/delete-processing/{id}', [ProcessingController::class, 'deleteProcessItem'])->name('process-item.delete')->middleware(['can:admin-processing-create']);
 
+        //Customer-Companies
+        Route::any('/customer-companies', [CustomerCompanyController::class, 'index'])->name('customer-companies.index')->middleware(['can:admin-customer-companies-view']);
+        Route::any('/customer-companies-list', [CustomerCompanyController::class, 'companiesList'])->name('customer-companies.List')->middleware(['can:admin-customer-companies-view']);
+        Route::any('/customer-companies-create', [CustomerCompanyController::class, 'companiesCreate'])->name('customer-companies.create')->middleware(['can:admin-customer-companies-create']);
+        Route::any('/save-update-customer-companies', [CustomerCompanyController::class, 'companiesCreateOrUpdate'])->name('customer-companies.store')->middleware(['can:admin-customer-companies-create']);
+        Route::any('/edit-customer-companies/{id}', [CustomerCompanyController::class, 'edit'])->name('customer-companies.edit')->middleware(['can:admin-customer-companies-edit']);
+        Route::any('/delete-customer-companies/{id}', [CustomerCompanyController::class, 'destroy'])->name('customer-companies.delete')->middleware(['can:admin-customer-companies-delete']);
 
+        //Import Locations from WHMS
+        Route::any('/import-locations', [WareHouseController::class, 'fetchData'])->name('import.locations');
+        Route::any('/upload-bol', [WorkOrderController::class, 'uploadBol'])->name('upload.bol');
+
+        Route::any('/outbound-report', [ReportsController::class, 'outboundIndex'])->name('outbound-report.index')->middleware(['can:admin-report-view']);
+        Route::any('/outbound-report-list', [ReportsController::class, 'outboundReportList'])->name('outbound-report.list')->middleware(['can:admin-report-view']);
+
+        Route::any('/inbound-report', [ReportsController::class, 'inboundIndex'])->name('inbound-report.index')->middleware(['can:admin-report-view']);
+        Route::any('/inbound-report-list', [ReportsController::class, 'inboundReportList'])->name('inbound-report.list')->middleware(['can:admin-report-view']);
 
     });
 
@@ -238,16 +281,17 @@ use App\Http\Controllers\Outbounds\QcController;
     Route::get('/read-notification/{id}', [NotificationController::class, 'readNotification'])->name('notification.read');
     Route::get('/notification-list', [NotificationController::class, 'getUnreadNotifications'])->name('notification.unread');
 
-
-
+    Route::any('/schedule-work-order-clinet', [WorkOrderController::class, 'scheduleWorkOrderClient'])->name('schedule.work.order.client');
     Route::get('/carrier-onboard/{id}', [CarriersController::class, 'carrierOnboard'])->name('carrier.onboard');
     Route::post('/save-carrier-info', [CarriersController::class, 'saveCarrierInfo'])->name('carrier.info.store');
+    Route::post('/verfiy-carrier-info', [CarriersController::class, 'verifyCarrierInfo'])->name('carrier.info.verify');
     Route::post('/save-packaging-info', [OrderController::class, 'savePackagingInfo'])->name('packaging.info.store');
     Route::any('/save-packaging-images', [OrderController::class, 'savePackagingImages'])->name('packaging.images.store');
     Route::get('/check-order-id', [OrderController::class, 'checkOrderId'])->name('checkOrderId');
 
+    Route::any('/upload-bol', [OrderController::class, 'uploadBolOrder'])->name('order.upload.bol');
 
-
+    Route::any('/get-all-work-orders', [WorkOrderController::class, 'getAllWorkOrders'])->name('work.order.get.all');
     Route::post('/verify-warehouse-id', [OrderController::class, 'verifyWarehouseId'])->name('verify.warehouse.id');
 
     Route::any('/get-wh-fields', [CustomFieldController::class, 'getWhFields'])->name('wh.fields');

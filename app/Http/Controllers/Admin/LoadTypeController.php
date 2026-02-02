@@ -114,15 +114,16 @@ class LoadTypeController extends Controller
         }
     }
 
-    public function whLoadTypeList(Request $request){
+    public function whLoadTypeList(Request $request)
+    {
         try {
 
-            $res=$this->load->getloadList($request,$request->wh_id);
-            return  Helper::success($res['data']['data'],'Load Type List');
+                $res=$this->load->getloadList($request,$request->wh_id);
+                return  Helper::success($res['data']['data'],'Load Type List');
 
-        } catch (\Exception $e) {
-            return Helper::ajaxError($e->getMessage());
-        }
+            } catch (\Exception $e) {
+                return Helper::ajaxError($e->getMessage());
+            }
 
     }
 

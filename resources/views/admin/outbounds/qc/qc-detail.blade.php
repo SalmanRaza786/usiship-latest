@@ -21,13 +21,12 @@
 
                         </div>
                         <div class="col-auto justify-content-sm-end">
+                            @canany('admin-qc-create')
                             @if($data['orderInfo']->end_time==NULL)
                             <button type="button" class="btn btn-success btn-close-qc me-2 d-none"><i class="ri-eye-line align-bottom me-1"></i> Close Q/C</button>
                             @endif
-
-
                             <button type="button" class="btn btn-success btn-start-qc d-none" updateType="1" ><i class="ri-add-line align-bottom me-1"></i> Start  Q/C Now</button>
-
+                            @endcanany
                         </div>
 
                     </div>
@@ -47,7 +46,7 @@
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label for="labelInput" class="form-label">Customer Name</label>
-                                        <input type="text" class="form-control" id="labelInput" value="{{$data['orderInfo']->workOrder->client->name}}" disabled="">
+                                        <input type="text" class="form-control" id="labelInput" value="{{$data['orderInfo']->workOrder->client->title}}" disabled="">
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -60,7 +59,7 @@
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label for="valueInput" class="form-label">Load Type</label>
-                                        <input type="text" class="form-control" id="valueInput" value="{{$data['orderInfo']->workOrder->loadType->eqType->value}}" disabled="">
+                                        <input type="text" class="form-control" id="valueInput" value="{{$data['orderInfo']->workOrder->loadType->eqType->value ?? "-"}}" disabled="">
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +112,9 @@
                                             @foreach($data['qcItems'] as $key=>$row)
                                                 <input type="hidden" name="hidden_id[]" value="{{$row->id}}">
 
+
                                                 <tr>
+                                                    <input type="hidden" name="orderQty" class="ordqty" value="{{$row->workOrderItem->qty}}">
                                                     <th scope="row" class="product-id align-middle">{{$key + 1}}</th>
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->inventory->item_name}} - {{$row->workOrderItem->inventory->sku}}</th>
                                                     <th scope="row" class="product-id align-middle">{{$row->workOrderItem->qty}}</th>
@@ -123,7 +124,7 @@
 
 
                                                     <td>
-                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="{{isset($row->picked_qty)?$row->picked_qty:0}}" required>
+                                                        <input class="form-control bg-light border-0 qcQty" name="qcQty[]" type="number" placeholder="Qty" value="{{isset($row->qc_picked_qty)?$row->qc_picked_qty:$row->picked_qty}}" required>
                                                     </td>
 
 
@@ -131,7 +132,7 @@
 
                                                     <td class="text-start" style="width: 150px;">
                                                         <div class="mb-2">
-                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*">
+                                                            <input class="form-control bg-light border-0" style="width: 170px;" type="file" name="pickedItemImages[{{$key}}][]" placeholder="Damage" multiple accept="image/*" required>
                                                         </div>
                                                         @isset($row->media)
                                                             <div class="d-flex flex-grow-1 gap-2 mt-2 preview-container sealImagesPreview">

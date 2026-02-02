@@ -4,11 +4,19 @@ namespace App\Http\Controllers\Outbounds;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Helper;
+use App\Models\Order;
+use App\Models\OrderStatus;
+use App\Models\WhLocation;
 use App\Models\WorkOrder;
+use App\Repositries\customerCompanies\CustomerCompaniesInterface;
+use App\Repositries\dock\DockInterface;
 use App\Repositries\orderStatus\OrderStatusInterface;
 use App\Repositries\user\UserInterface;
 use App\Repositries\workOrder\WorkOrderInterface;
+use App\Services\DataService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class WorkOrderController extends Controller
@@ -16,12 +24,18 @@ class WorkOrderController extends Controller
     private $workOrder;
     private $staff;
     private $status;
+    private $dataService;
+    private $dock;
+    private $customerCompanies;
 
 
-    public function __construct(WorkOrderInterface $workOrder,UserInterface $staff,OrderStatusInterface $status) {
+    public function __construct(WorkOrderInterface $workOrder,UserInterface $staff,OrderStatusInterface $status,DataService $dataService,DockInterface $dock, CustomerCompaniesInterface $customerCompanies) {
         $this->workOrder =$workOrder;
         $this->staff =$staff;
         $this->status =$status;
+        $this->dataService =$dataService;
+        $this->dock =$dock;
+        $this->customerCompanies =$customerCompanies;
 
     }
 
@@ -30,6 +44,7 @@ class WorkOrderController extends Controller
         try {
             $data['staff']=Helper::fetchOnlyData($this->staff->getAllUser());
             $data['status']=Helper::fetchOnlyData($this->status->getAllStatus());
+            $data['customers']=Helper::fetchOnlyData($this->customerCompanies->getAllCompanies());
             return view('admin.outbounds.work-orders.index')->with(compact('data'));
         }catch (\Exception $e) {
             return redirect()->back()->with('error',$e->getMessage());
@@ -49,6 +64,62 @@ class WorkOrderController extends Controller
         }
     }
 
+
+    public function getWorkOrder(Request $request)
+    {
+        try {
+            $res= $this->workOrder->getWorkOrder($request);
+
+            if($res->get('status'))
+            {
+                $data['work_order']=Helper::fetchOnlyData($res);
+                $data['dock'] =Helper::fetchOnlyData($this->dock->getDockListByLoadtype( $data['work_order']->load_type_id, $data['work_order']->loadType->wh_id)) ;
+                return Helper::ajaxSuccess($data,$res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+    public function getAllWorkOrders()
+    {
+        try {
+            $res=$this->workOrder->getAllWorkOrderList();
+            if($res->get('status'))
+            {
+                return Helper::ajaxSuccess($res->get('data'),$res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+
+    }
+
+    public function getWMSOrderDetail($id)
+    {
+        try {
+            if(!$workOrder=WorkOrder::find($id)){
+                return Helper::error('Invalid Order Id');
+            }
+            $data['orderDetail']= Helper::fetchOnlyData($this->workOrder->getWMSOrderInfo($id));
+            return view('admin.outbounds.work-orders.wms-order-detail')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function getWMSOrderDetailClient($id)
+    {
+        try {
+            if(!$workOrder=WorkOrder::find($id)){
+                return Helper::error('Invalid Order Id');
+            }
+            $data['orderDetail']= Helper::fetchOnlyData($this->workOrder->getWMSOrderInfo($id));
+            return view('client.screens.work-orders.wms-order-detail')->with(compact('data'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     //pickerAssign
     public function pickerAssign(Request $request)
     {
@@ -64,9 +135,7 @@ class WorkOrderController extends Controller
             if ($validator->fails())
                 return Helper::errorWithData($validator->errors()->first(), $validator->errors());
 
-            if(!$workOrder=WorkOrder::find($request->w_order_id)){
-                return Helper::error('Invalid Order Id');
-            }
+
              $res=$this->workOrder->savePickerAssign($request);
             if ($res->get('status')) {
                 return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
@@ -78,4 +147,138 @@ class WorkOrderController extends Controller
             return Helper::ajaxError($e->getMessage());
         }
     }
+    public function scheduleWorkOrder(Request $request)
+    {
+
+        try {
+            $data['customerId']="";
+            $data['workOrderArray']=$request->input('array_data');
+            $data['status']=OrderStatus::get();
+            $data['selectStatus']="6";
+            $data['isOutbound']="1";
+            $data['createdBy']=Auth::id();
+            $data['guard']='admin';
+
+             return view('admin.order.create')->with(compact('data'));
+
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
+    }
+    public function scheduleWorkOrderClient(Request $request)
+    {
+        try {
+            $data['customerId']="";
+            $data['workOrderArray']=$request->input('array_data');
+            $data['status']=OrderStatus::get();
+            $data['selectStatus']="6";
+            $data['isOutbound']="1";
+            $data['createdBy']=Auth::id();
+            $data['guard']='web';
+            return view('client.screens.appointment.index')->with(compact('data'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
+    }
+    public function uploadBol(Request $request)
+    {
+        try {
+            if(!$workOrder=WorkOrder::find($request->w_order_id)){
+                return Helper::error('Invalid Order Id');
+            }
+             $res=$this->workOrder->saveUploadBOL($request);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            }else{
+                return Helper::error($res->get('message'));
+            }
+
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function fetchOrdersData(Request $request)
+    {
+        $importDate = $request->import_date; // Assume this is a date string
+        $formattedDate = Carbon::parse($importDate)->format('Y-m-d\T00:00:00\Z');
+//        dd($formattedDate);
+//        2024-09-05T00:00:00Z
+        $Orderendpoint = 'orders?status[in]=open,confirmed&created_date[gte]='.$formattedDate;
+//        dd($Orderendpoint);
+
+        try {
+            $batchSize = 1000;
+            $wmsOrders = $this->dataService->fetchAllData($Orderendpoint);
+            if (empty($wmsOrders)) {
+                return Helper::ajaxError('Orders not found');
+            }
+            $allData = [];
+            foreach (array_chunk($wmsOrders, $batchSize) as $batch) {
+                foreach ($batch as &$order) {
+                    $Customerendpoint = 'warehouse-customers/' . $order['warehouse_customer_id'];
+                    $customer = $this->dataService->fetchAllData($Customerendpoint);
+                    $order['customer'] = $customer;
+
+                    foreach ($order['line_items'] as &$item) {
+//                        $Inventoryendpoint = 'inventory?warehouse_customer_id=198&sku=' . $item['sku'];
+                        $Inventoryendpoint = 'inventory?warehouse_customer_id=' . $order['warehouse_customer_id'] . '&sku=' . $item['sku'];
+                        $inventory = $this->dataService->fetchAllData($Inventoryendpoint);
+
+                        foreach ($inventory as &$product) {
+                            $remainingQuantity = $item['quantity'];
+                            $selectedLocations = [];
+
+                            foreach ($product['locations'] as $location) {
+
+                                if ($location['quantity'] >= $remainingQuantity) {
+
+                                    $location['quantity'] = $remainingQuantity;
+                                    $selectedLocations[] = $location;
+                                    $remainingQuantity = 0;
+                                    break;
+                                } else {
+
+                                    $selectedLocations[] = $location;
+                                    $remainingQuantity -= $location['quantity'];
+                                }
+                            }
+
+
+                            $product['locations'] = $selectedLocations;
+                        }
+
+                        $item['inventory'] = $inventory;
+                    }
+
+                    $allData[] = $order;
+                }
+
+            }
+            $res=$this->workOrder->importWorkOrder($allData);
+            if ($res->get('status')) {
+                return Helper::ajaxSuccess($res->get('data'), $res->get('message'));
+            }else{
+                return Helper::error($res->get('message'));
+            }
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+    public function workOrdersListClient(Request $request)
+    {
+
+        try {
+            $res=$this->workOrder->getClientAllWorkOrderList($request);
+            return Helper::ajaxDatatable($res['data']['data'], $res['data']['totalRecords'],$request);
+        } catch (\Exception $e) {
+            return Helper::ajaxError($e->getMessage());
+        }
+    }
+
+
+
+
+
 }
